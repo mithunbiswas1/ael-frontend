@@ -39,7 +39,17 @@ const navLinks = [
       { name: "Global Price Indexes", href: "/market-updates?category=global" },
     ],
   },
-  { name: "Training & Quiz", href: "/courses" },
+  {
+    name: "Training & Quiz",
+    href: "/courses",
+    subItems: [
+      { name: "Browse All Courses", href: "/courses" },
+      { name: "Verify Certificate", href: "/verify-certificate" },
+      { name: "Subscription Plans", href: "/pricing" },
+      { name: "Related Acts & Rules", href: "/acts-and-rules" },
+      { name: "FAQ & Help Center", href: "/faq" },
+    ],
+  },
   { name: "Blog", href: "/blogs" },
   { name: "About Us", href: "/about" },
   { name: "Contact Us", href: "/contact" },

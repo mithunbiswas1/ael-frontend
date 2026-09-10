@@ -109,13 +109,13 @@ export default function Footer() {
             </h4>
             <ul className="mt-3.5 space-y-2 text-xs">
               <li>
-                <Link href="/safety-guidelines.pdf" className="hover:text-white transition-colors">
-                  Safety Guidelines (PDF)
+                <Link href="/safety-guidelines" className="hover:text-white transition-colors">
+                  Safety Guidelines
                 </Link>
               </li>
               <li>
                 <a href="tel:16137" className="hover:text-white transition-colors">
-                  Emergency Hotline
+                  Emergency Hotline (16137)
                 </a>
               </li>
               <li>
@@ -124,13 +124,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/downloads" className="hover:text-white transition-colors">
-                  Downloads
+                <Link href="/verify-certificate" className="hover:text-white transition-colors">
+                  Verify Certificate
                 </Link>
               </li>
               <li>
                 <Link href="/faq" className="hover:text-white transition-colors">
-                  FAQ
+                  FAQ &amp; Help Center
                 </Link>
               </li>
             </ul>
@@ -143,8 +143,8 @@ export default function Footer() {
             </h4>
             <ul className="mt-3.5 space-y-2 text-xs">
               <li>
-                <Link href="/help" className="hover:text-white transition-colors">
-                  Help Center
+                <Link href="/pricing" className="hover:text-white transition-colors">
+                  Subscription Plans
                 </Link>
               </li>
               <li>
@@ -158,13 +158,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/data-security" className="hover:text-white transition-colors">
-                  Data Security Policy
+                <Link href="/checkout" className="hover:text-white transition-colors">
+                  Checkout &amp; Billing
                 </Link>
               </li>
               <li>
-                <Link href="/refund" className="hover:text-white transition-colors">
-                  Refund Policy
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Contact Support
                 </Link>
               </li>
             </ul>

@@ -43,19 +43,19 @@ export default function EmergencySupportBar() {
 
             <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-2">
               <Link
-                href="/safety-guidelines.pdf"
+                href="/safety-guidelines"
                 className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white/90 p-2.5 text-xs font-semibold text-slate-700 backdrop-blur-xs transition-colors duration-200 hover:border-red-400 hover:bg-white hover:text-red-600"
               >
                 <FileText className="h-4 w-4 shrink-0 text-red-500" />
-                <span className="truncate">LPG Safety Guidelines (PDF)</span>
+                <span className="truncate">LPG Safety Guidelines</span>
               </Link>
 
               <Link
-                href="/emergency-contacts"
+                href="/contact"
                 className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white/90 p-2.5 text-xs font-semibold text-slate-700 backdrop-blur-xs transition-colors duration-200 hover:border-purple-400 hover:bg-white hover:text-purple-600"
               >
                 <PhoneForwarded className="h-4 w-4 shrink-0 text-purple-500" />
-                <span className="truncate">Emergency Contact List</span>
+                <span className="truncate">Emergency Contact Desk</span>
               </Link>
 
               <Link
@@ -67,11 +67,11 @@ export default function EmergencySupportBar() {
               </Link>
 
               <Link
-                href="/safety-posters"
+                href="/verify-certificate"
                 className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white/90 p-2.5 text-xs font-semibold text-slate-700 backdrop-blur-xs transition-colors duration-200 hover:border-emerald-400 hover:bg-white hover:text-emerald-600"
               >
                 <ImageIcon className="h-4 w-4 shrink-0 text-emerald-500" />
-                <span className="truncate">Safety Posters</span>
+                <span className="truncate">Verify Certificate</span>
               </Link>
             </div>
           </div>
