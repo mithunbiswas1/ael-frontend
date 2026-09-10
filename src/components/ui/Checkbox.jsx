@@ -85,3 +85,4 @@ const Checkbox = React.forwardRef(
 Checkbox.displayName = "Checkbox";
 
 export { Checkbox };
+export default Checkbox;
