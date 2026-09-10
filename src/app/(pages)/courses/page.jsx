@@ -430,14 +430,12 @@ export default function CoursesPage() {
                         </div>
 
                         <div className="mt-4">
-                          <button
-                            onClick={() =>
-                              toast.success(`Redirecting to enrollment for ${course.title}`)
-                            }
-                            className="w-full rounded-lg bg-primary py-2 text-xs font-bold text-white transition-colors hover:bg-blue-700 shadow-xs"
+                          <Link
+                            href={`/courses/${course.id}`}
+                            className="flex w-full items-center justify-center rounded-lg bg-primary py-2 text-xs font-bold text-white transition-colors hover:bg-blue-700 shadow-xs"
                           >
                             {course.isPaid ? "Buy Now" : "Enroll Free"}
-                          </button>
+                          </Link>
                         </div>
                       </div>
                     </div>

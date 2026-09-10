@@ -1,48 +1,87 @@
 // src/components/ui/Checkbox.jsx
-
 "use client";
 
 import * as React from "react";
-import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 import { Check } from "lucide-react";
-import { cva } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
-const checkboxVariants = cva(
-  "peer size-5 shrink-0 rounded-md border-2 border-border_gray ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-none shadow-sm hover:border-primary/50 cursor-pointer",
-  {
-    variants: {
-      variant: {
-        primary:
-          "data-[state=checked]:bg-primary data-[state=checked]:text-foreground_primary",
-        success:
-          "data-[state=checked]:bg-success data-[state=checked]:text-gray-50",
-        info: "data-[state=checked]:bg-info data-[state=checked]:text-gray-50",
-        warning:
-          "data-[state=checked]:bg-warning data-[state=checked]:text-gray-50",
-        danger:
-          "data-[state=checked]:bg-danger data-[state=checked]:text-gray-50",
-      },
+const variantStyles = {
+  primary: "data-[checked=true]:bg-primary data-[checked=true]:border-primary text-white",
+  success: "data-[checked=true]:bg-emerald-600 data-[checked=true]:border-emerald-600 text-white",
+  info: "data-[checked=true]:bg-blue-600 data-[checked=true]:border-blue-600 text-white",
+  warning: "data-[checked=true]:bg-amber-500 data-[checked=true]:border-amber-500 text-white",
+  danger: "data-[checked=true]:bg-red-500 data-[checked=true]:border-red-500 text-white",
+};
+
+const Checkbox = React.forwardRef(
+  (
+    {
+      className,
+      variant = "primary",
+      checked: controlledChecked,
+      defaultChecked = false,
+      onCheckedChange,
+      onChange,
+      disabled = false,
+      id,
+      name,
+      ...props
     },
-    defaultVariants: {
-      variant: "primary",
-    },
-  },
+    ref
+  ) => {
+    const isControlled = controlledChecked !== undefined;
+    const [uncontrolledChecked, setUncontrolledChecked] = React.useState(defaultChecked);
+    const isChecked = isControlled ? controlledChecked : uncontrolledChecked;
+
+    const handleClick = (e) => {
+      if (disabled) return;
+      const nextChecked = !isChecked;
+      if (!isControlled) {
+        setUncontrolledChecked(nextChecked);
+      }
+      onCheckedChange?.(nextChecked);
+      onChange?.({
+        target: { id, name, checked: nextChecked, value: nextChecked },
+      });
+    };
+
+    const handleKeyDown = (e) => {
+      if (disabled) return;
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        handleClick(e);
+      }
+    };
+
+    return (
+      <button
+        type="button"
+        role="checkbox"
+        id={id}
+        name={name}
+        ref={ref}
+        aria-checked={isChecked}
+        data-checked={isChecked}
+        disabled={disabled}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        className={cn(
+          "peer relative flex h-4 w-4 shrink-0 items-center justify-center rounded border border-slate-300 bg-white transition-all",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          variantStyles[variant] || variantStyles.primary,
+          className
+        )}
+        {...props}
+      >
+        {isChecked && (
+          <Check className="h-3 w-3 stroke-[3px] animate-in zoom-in-75 duration-150" />
+        )}
+      </button>
+    );
+  }
 );
 
-const Checkbox = React.forwardRef(({ className, variant, ...props }, ref) => (
-  <CheckboxPrimitive.Root
-    ref={ref}
-    className={cn(checkboxVariants({ variant, className }))}
-    {...props}
-  >
-    <CheckboxPrimitive.Indicator
-      className={cn("flex items-center justify-center text-current")}
-    >
-      <Check className="size-3.5 stroke-[3.5px] animate-in zoom-in-50 duration-200" />
-    </CheckboxPrimitive.Indicator>
-  </CheckboxPrimitive.Root>
-));
-Checkbox.displayName = CheckboxPrimitive.Root.displayName;
+Checkbox.displayName = "Checkbox";
 
 export { Checkbox };

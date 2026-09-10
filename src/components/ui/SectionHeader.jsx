@@ -8,8 +8,8 @@ export default function SectionHeader({
   title,
   accent,
   subtitle,
-  align = "left", // "left" | "center"
-  level = "h2", // "h2" | "h3"
+  align = "left",
+  level = "h2",
   action,
   dark = false,
   className,

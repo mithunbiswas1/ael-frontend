@@ -42,7 +42,7 @@ const guidelinesData = [
     id: "industrial",
     icon: Factory,
     badgeText: "Industrial Customer",
-    imageUrl: "https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
     description: "Safety for industrial LPG usage.",
     href: "/safety-guidelines?tab=industrial",
   },

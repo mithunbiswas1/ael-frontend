@@ -273,7 +273,7 @@ export default function Navbar() {
 
             {/* Subscribe Button */}
             <Link
-              href="#subscribe"
+              href="/pricing"
               className="rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-white shadow-xs transition-colors hover:bg-blue-700 active:scale-95"
             >
               Subscribe
@@ -344,11 +344,11 @@ export default function Navbar() {
                 Login
               </Link>
               <Link
-                href="#subscribe"
+                href="/pricing"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block w-full text-center rounded-lg bg-primary py-2 text-xs font-bold text-white hover:bg-blue-700"
               >
-                Subscribe to Newsletter
+                Subscription Plans
               </Link>
             </div>
           </div>
