@@ -211,7 +211,7 @@ export default function CourseQuizPage({ params }) {
       {/* 2. Quiz Body */}
       <section className="relative z-20 -mt-6 mx-auto w-full max-w-3xl px-4 pb-20">
         {!isSubmitted ? (
-          <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-2xs">
+          <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-8 shadow-2xs">
             {/* Question Counter Progress */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6 text-xs font-bold text-slate-600">
               <span className="text-primary font-black uppercase tracking-wider">
@@ -237,7 +237,7 @@ export default function CourseQuizPage({ params }) {
                   <button
                     key={optIdx}
                     onClick={() => handleSelectOption(optIdx)}
-                    className={`w-full text-left p-4 rounded-lg border text-xs sm:text-sm font-medium transition-all flex items-start gap-3 ${
+                    className={`w-full text-left p-3.5 sm:p-4 rounded-lg border text-xs sm:text-sm font-medium transition-all flex items-start gap-3 ${
                       isSelected
                         ? "border-primary bg-blue-50/70 text-slate-900 shadow-2xs"
                         : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
@@ -259,11 +259,11 @@ export default function CourseQuizPage({ params }) {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex items-center justify-between border-t border-slate-100 pt-6">
+            <div className="flex items-center justify-between border-t border-slate-100 pt-6 gap-2">
               <button
                 onClick={handlePrev}
                 disabled={currentQuestionIdx === 0}
-                className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+                className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 sm:px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
               >
                 <ChevronLeft className="h-4 w-4" />
                 <span>Previous</span>
@@ -272,7 +272,7 @@ export default function CourseQuizPage({ params }) {
               {currentQuestionIdx === QUIZ_QUESTIONS.length - 1 ? (
                 <button
                   onClick={handleSubmit}
-                  className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shadow-xs"
+                  className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 sm:px-6 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shadow-xs"
                 >
                   <Award className="h-4 w-4" />
                   <span>Submit Quiz</span>
@@ -280,9 +280,9 @@ export default function CourseQuizPage({ params }) {
               ) : (
                 <button
                   onClick={handleNext}
-                  className="flex items-center gap-1 rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs"
+                  className="flex items-center gap-1 rounded-lg bg-primary px-3.5 sm:px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs"
                 >
-                  <span>Next Question</span>
+                  <span>Next</span>
                   <ChevronRight className="h-4 w-4" />
                 </button>
               )}
@@ -290,7 +290,7 @@ export default function CourseQuizPage({ params }) {
           </div>
         ) : (
           /* Result Card */
-          <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-md">
+          <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-8 shadow-md">
             <div className="text-center pb-6 border-b border-slate-100">
               {isPassed ? (
                 <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border-2 border-emerald-500">

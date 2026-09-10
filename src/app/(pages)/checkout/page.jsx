@@ -177,7 +177,7 @@ function CheckoutContent() {
             {/* LEFT COLUMN: Customer & Payment Method (7 cols) */}
             <div className="space-y-6 lg:col-span-7">
               {/* Box 1: Customer Details */}
-              <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs">
+              <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
                 <h2 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
                   <span>1. BILLING DETAILS</span>
                 </h2>
@@ -223,7 +223,7 @@ function CheckoutContent() {
               </div>
 
               {/* Box 2: Payment Methods */}
-              <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs">
+              <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
                 <h2 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
                   <span>2. SELECT PAYMENT METHOD</span>
                 </h2>
@@ -342,7 +342,7 @@ function CheckoutContent() {
 
             {/* RIGHT COLUMN: Order Summary & Pay Button (5 cols) */}
             <div className="lg:col-span-5 sticky top-24">
-              <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-md">
+              <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-md">
                 <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-3 mb-4">
                   ORDER SUMMARY
                 </h3>

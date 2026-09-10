@@ -235,7 +235,7 @@ function SafetyGuidelinesContent() {
 
       {/* 2. Stakeholder Tabs Bar */}
       <section className="relative z-20 -mt-6 sm:-mt-7 mx-auto w-full max-w-6xl px-4">
-        <div className="flex flex-wrap items-center justify-between gap-1.5 rounded-xl border border-slate-200/80 bg-white p-2 shadow-xs backdrop-blur-md">
+        <div className="flex items-center gap-1.5 overflow-x-auto p-1.5 sm:p-2 rounded-xl border border-slate-200/80 bg-white shadow-xs backdrop-blur-md scrollbar-none sm:flex-wrap sm:justify-between">
           {stakeholderTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -243,7 +243,7 @@ function SafetyGuidelinesContent() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-bold transition-all min-w-[150px] ${
+                className={`flex shrink-0 sm:flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all whitespace-nowrap min-w-[130px] sm:min-w-[140px] ${
                   isActive
                     ? "bg-primary text-white shadow-xs"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"

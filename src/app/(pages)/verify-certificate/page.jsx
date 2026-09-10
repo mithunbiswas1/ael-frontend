@@ -129,7 +129,7 @@ function VerifyCertificateContent() {
 
       {/* 2. Verification Form Card */}
       <section className="relative z-20 -mt-8 mx-auto w-full max-w-2xl px-4 pb-20">
-        <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-md">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-8 shadow-md">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
             Enter Certificate Number or Scan QR
           </label>
@@ -154,7 +154,7 @@ function VerifyCertificateContent() {
           </div>
 
           {/* Quick Click Sample IDs */}
-          <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
+          <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px] text-slate-500">
             <span>Try sample IDs:</span>
             {Object.keys(VERIFIED_CERTIFICATES).map((key) => (
               <button
@@ -175,10 +175,10 @@ function VerifyCertificateContent() {
             <div className="mt-8 border-t border-slate-100 pt-6">
               {result ? (
                 /* Valid Certificate Card */
-                <div className="overflow-hidden rounded-xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-50/50 via-white to-emerald-50/20 p-6 shadow-xs">
-                  <div className="flex items-start justify-between gap-3 border-b border-emerald-100 pb-4 mb-4">
+                <div className="overflow-hidden rounded-xl border-2 border-emerald-500/40 bg-gradient-to-br from-emerald-50/50 via-white to-emerald-50/20 p-4 sm:p-6 shadow-xs">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-3 border-b border-emerald-100 pb-4 mb-4">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-xs">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white shadow-xs">
                         <Award className="h-6 w-6" />
                       </div>
                       <div>
@@ -192,7 +192,7 @@ function VerifyCertificateContent() {
                       </div>
                     </div>
 
-                    <div className="text-right">
+                    <div className="text-left sm:text-right">
                       <span className="text-[10px] text-slate-400 block font-mono">
                         ID: {result.id}
                       </span>
@@ -242,12 +242,12 @@ function VerifyCertificateContent() {
                     <span>{result.issuingAuthority}</span>
                   </div>
 
-                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-emerald-100/70">
+                  <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 border-t border-emerald-100/70">
                     <button
                       onClick={() =>
                         toast.success(`Downloading verified PDF for ${result.id}...`)
                       }
-                      className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shadow-xs"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shadow-xs w-full sm:w-auto"
                     >
                       <Download className="h-3.5 w-3.5" />
                       <span>Download Official PDF</span>
@@ -255,7 +255,7 @@ function VerifyCertificateContent() {
 
                     <Link
                       href="/courses"
-                      className="text-xs font-bold text-primary hover:underline"
+                      className="text-xs font-bold text-primary hover:underline text-center sm:text-left"
                     >
                       Explore Other Safety Certifications →
                     </Link>

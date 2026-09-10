@@ -10,12 +10,12 @@ export default function EmergencySupportBar() {
   return (
     <section className="mt-14 pb-12">
       <div className="site-container">
-        <div className="grid grid-cols-1 gap-6 rounded-xl border border-slate-200/80 bg-white/95 p-6 shadow-xs backdrop-blur-xl lg:grid-cols-12 lg:items-center lg:gap-8">
+        <div className="grid grid-cols-1 gap-6 rounded-xl border border-slate-200/80 bg-white/95 p-4 sm:p-6 shadow-xs backdrop-blur-xl lg:grid-cols-12 lg:items-center lg:gap-8">
 
           {/* 1. Emergency Hotline (4 cols) */}
           <div className="flex items-center gap-4 lg:col-span-4 lg:border-r lg:border-slate-200/80 lg:pr-6">
-            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-xs">
-              <PhoneCall className="h-6 w-6" />
+            <div className="flex h-12 w-12 sm:h-13 sm:w-13 shrink-0 items-center justify-center rounded-full bg-primary text-white shadow-xs">
+              <PhoneCall className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             <div>
               <span className="mb-0.5 inline-block text-[10px] font-black uppercase tracking-widest text-primary">
@@ -25,7 +25,7 @@ export default function EmergencySupportBar() {
                 In case of LPG emergency, call us immediately
               </P>
               <div className="mt-1 flex items-baseline gap-2">
-                <span className="text-2xl font-black tracking-tight text-slate-900">
+                <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
                   16137
                 </span>
                 <span className="text-xs font-semibold text-slate-500">
@@ -41,7 +41,7 @@ export default function EmergencySupportBar() {
               SAFETY RESOURCES
             </span>
 
-            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-2">
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
               <Link
                 href="/safety-guidelines"
                 className="flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white/90 p-2.5 text-xs font-semibold text-slate-700 backdrop-blur-xs transition-colors duration-200 hover:border-red-400 hover:bg-white hover:text-red-600"

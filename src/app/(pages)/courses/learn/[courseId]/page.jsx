@@ -89,7 +89,7 @@ export default function ClassroomPlayerPage({ params }) {
 
   const [currentLessonIdx, setCurrentLessonIdx] = useState(0);
   const [completedLessonIds, setCompletedLessonIds] = useState([1]);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("notes");
 
   const currentLesson = MOCK_LESSONS[currentLessonIdx];
@@ -119,21 +119,21 @@ export default function ClassroomPlayerPage({ params }) {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-slate-950 text-slate-100">
       {/* 1. Classroom Top Navigation Bar */}
-      <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-800 bg-slate-900 px-4">
-        <div className="flex items-center gap-3">
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-slate-800 bg-slate-900 px-3 sm:px-4 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Link
             href={`/courses/${courseId}`}
-            className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+            className="flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-2 py-1 sm:px-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 hover:text-white transition-colors shrink-0"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Back to Course</span>
           </Link>
 
-          <span className="h-4 w-px bg-slate-800" />
+          <span className="h-4 w-px bg-slate-800 shrink-0" />
 
-          <div className="flex flex-col">
-            <h1 className="text-xs sm:text-sm font-bold text-white line-clamp-1">
-              LPG Safety Training Classroom
+          <div className="flex flex-col min-w-0">
+            <h1 className="text-xs sm:text-sm font-bold text-white truncate">
+              LPG Safety Training
             </h1>
             <span className="text-[10px] text-slate-400">
               Lesson {currentLessonIdx + 1} of {MOCK_LESSONS.length}
@@ -142,7 +142,7 @@ export default function ClassroomPlayerPage({ params }) {
         </div>
 
         {/* Progress & Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Progress Bar */}
           <div className="hidden md:flex flex-col items-end gap-1 w-32">
             <div className="flex items-center justify-between w-full text-[10px] text-slate-400">
@@ -159,10 +159,11 @@ export default function ClassroomPlayerPage({ params }) {
 
           <Link
             href={`/courses/${courseId}/quiz`}
-            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-500 transition-colors shadow-xs"
+            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-500 transition-colors shadow-xs"
           >
             <Award className="h-3.5 w-3.5" />
-            <span>Take Assessment Quiz</span>
+            <span className="hidden sm:inline">Take Assessment Quiz</span>
+            <span className="sm:hidden">Quiz</span>
           </Link>
 
           <button
@@ -356,11 +357,21 @@ export default function ClassroomPlayerPage({ params }) {
           </div>
         </main>
 
+        {/* Mobile Drawer Backdrop */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 top-14 bg-black/70 z-30 lg:hidden backdrop-blur-xs"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
         {/* Right: Curriculum Sidebar */}
         <aside
-          className={`${
-            sidebarOpen ? "block" : "hidden"
-          } w-80 shrink-0 border-l border-slate-800 bg-slate-950 overflow-y-auto lg:block`}
+          className={`border-l border-slate-800 bg-slate-950 overflow-y-auto ${
+            sidebarOpen
+              ? "fixed inset-y-14 right-0 z-40 w-80 max-w-[85vw] shadow-2xl block"
+              : "hidden lg:block lg:w-80 lg:shrink-0"
+          }`}
         >
           <div className="border-b border-slate-800 p-4">
             <h2 className="text-xs font-black uppercase tracking-wider text-slate-300">
@@ -379,7 +390,12 @@ export default function ClassroomPlayerPage({ params }) {
               return (
                 <button
                   key={lesson.id}
-                  onClick={() => setCurrentLessonIdx(idx)}
+                  onClick={() => {
+                    setCurrentLessonIdx(idx);
+                    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+                      setSidebarOpen(false);
+                    }
+                  }}
                   className={`w-full text-left p-3.5 text-xs transition-colors flex items-start gap-3 ${
                     isActive
                       ? "bg-slate-900 text-white border-l-2 border-primary"

@@ -34,22 +34,22 @@ const metrics = [
 export default function MetricsBar() {
   return (
     <div className="relative z-20 -mt-8 sm:-mt-10 mx-auto w-full max-w-6xl px-4">
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 rounded-xl border border-slate-200/80 bg-white/95 p-5 sm:p-6 shadow-xs backdrop-blur-xl md:grid-cols-4 md:gap-6">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 rounded-xl border border-slate-200/80 bg-white/95 p-3 sm:p-6 shadow-xs backdrop-blur-xl md:grid-cols-4 md:gap-6">
         {metrics.map((item) => {
           const Icon = item.icon;
           return (
             <div
               key={item.id}
-              className="flex items-center gap-3.5 rounded-lg p-2.5 transition-colors duration-200 hover:bg-slate-50/80"
+              className="flex items-center gap-2 sm:gap-3.5 rounded-lg p-1.5 sm:p-2.5 transition-colors duration-200 hover:bg-slate-50/80"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-xs">
-                <Icon className="h-5 w-5" strokeWidth={2.5} />
+              <div className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-xs">
+                <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
               </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              <div className="min-w-0">
+                <div className="text-base sm:text-2xl font-black text-slate-900 tracking-tight">
                   {item.value}
                 </div>
-                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 truncate sm:whitespace-normal">
                   {item.label}
                 </div>
               </div>

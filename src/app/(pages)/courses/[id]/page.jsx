@@ -306,7 +306,7 @@ export default async function CourseDetailPage({ params }) {
           {/* LEFT 8 COLUMNS: Overview, Outcomes, Syllabus, Instructor */}
           <div className="space-y-6 lg:col-span-8">
             {/* Box 1: What You Will Learn */}
-            <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs">
+            <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
               <h2 className="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 <span>WHAT YOU WILL LEARN</span>
@@ -326,7 +326,7 @@ export default async function CourseDetailPage({ params }) {
             </div>
 
             {/* Box 2: Course Curriculum & Modules */}
-            <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs">
+            <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
               <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
                 <div>
                   <h2 className="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900">
@@ -399,7 +399,7 @@ export default async function CourseDetailPage({ params }) {
             </div>
 
             {/* Box 3: Lead Instructor */}
-            <div className="rounded-xl border border-slate-200/80 bg-white p-6 shadow-2xs">
+            <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
               <h2 className="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
                 <User className="h-4 w-4 text-blue-600" />
                 <span>MEET YOUR INSTRUCTOR</span>
@@ -455,7 +455,7 @@ export default async function CourseDetailPage({ params }) {
               </div>
 
               {/* Price & Action */}
-              <div className="p-5">
+              <div className="p-4 sm:p-5">
                 <div className="flex items-baseline gap-2 mb-4">
                   <span className="text-2xl font-black text-slate-900">
                     {isFree ? "FREE" : `৳ ${course.price}`}

@@ -79,17 +79,17 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full shadow-xs">
       {/* 1. Top Utility Header Bar */}
-      <div className="bg-slate-950 text-slate-300 py-1.5 px-4 border-b border-slate-900 text-xs">
-        <div className="site-container flex flex-wrap items-center justify-between gap-3">
+      <div className="bg-slate-950 text-slate-300 py-1.5 border-b border-slate-900 text-xs">
+        <div className="site-container flex flex-wrap items-center justify-between gap-2 sm:gap-3">
           {/* Left: Hotline & Email */}
-          <div className="flex flex-wrap items-center gap-5 text-[11px] sm:text-xs">
+          <div className="flex items-center gap-3 sm:gap-5 text-[11px] sm:text-xs">
             <a
               href="tel:16137"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Phone className="h-3.5 w-3.5 text-blue-400" />
               <span>
-                Emergency Hotline: <strong className="text-white">16137</strong>
+                Hotline: <strong className="text-white">16137</strong>
               </span>
             </a>
 
@@ -97,7 +97,7 @@ export default function Navbar() {
 
             <a
               href="mailto:info@lpgsafety.org.bd"
-              className="flex items-center gap-1.5 hover:text-white transition-colors"
+              className="hidden sm:flex items-center gap-1.5 hover:text-white transition-colors"
             >
               <Mail className="h-3.5 w-3.5 text-blue-400" />
               <span>
@@ -107,8 +107,8 @@ export default function Navbar() {
           </div>
 
           {/* Right: Follow Us & Social Icons */}
-          <div className="flex items-center gap-2.5 text-[11px] sm:text-xs">
-            <span className="text-slate-400 font-medium">Follow Us:</span>
+          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs">
+            <span className="text-slate-400 font-medium hidden xs:inline">Follow Us:</span>
             <div className="flex items-center gap-1.5">
               <a
                 href="https://facebook.com"
@@ -238,7 +238,7 @@ export default function Navbar() {
           </div>
 
           {/* Right: Search, Login, Subscribe */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Search Icon Trigger */}
             <div className="relative">
               <button
@@ -252,7 +252,7 @@ export default function Navbar() {
 
               {/* Popover Search Box */}
               {searchOpen && (
-                <div className="absolute right-0 top-10 z-50 w-72 rounded-xl border border-slate-200 bg-white p-2 shadow-xl animate-in fade-in duration-150">
+                <div className="absolute right-0 top-10 z-50 w-[calc(100vw-2.5rem)] max-w-xs sm:w-72 rounded-xl border border-slate-200 bg-white p-2 shadow-xl animate-in fade-in duration-150">
                   <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5">
                     <input
                       type="text"
@@ -276,15 +276,15 @@ export default function Navbar() {
             {/* Login Button */}
             <Link
               href="/login"
-              className="rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-xs font-bold text-slate-800 transition-colors hover:border-primary hover:text-primary hover:bg-slate-50"
+              className="rounded-lg border border-slate-300 bg-white px-3 sm:px-4 py-1.5 text-xs font-bold text-slate-800 transition-colors hover:border-primary hover:text-primary hover:bg-slate-50"
             >
               Login
             </Link>
 
-            {/* Subscribe Button */}
+            {/* Subscribe Button - hidden on mobile (already inside mobile drawer) */}
             <Link
               href="/pricing"
-              className="rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-white shadow-xs transition-colors hover:bg-blue-700 active:scale-95"
+              className="hidden sm:inline-flex rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-white shadow-xs transition-colors hover:bg-blue-700 active:scale-95"
             >
               Subscribe
             </Link>

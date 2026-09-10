@@ -35,12 +35,12 @@ export default function HeroSection() {
             </P>
 
             {/* CTAs */}
-            <div className="mt-7 flex flex-wrap items-center gap-3.5">
+            <div className="mt-7 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <LinkButton
                 href="/safety-guidelines"
                 variant="solid"
                 size="lg"
-                className="bg-primary hover:bg-blue-700 border-primary text-white rounded-lg font-bold text-xs md:text-sm px-5 py-3 shadow-xs transition-colors duration-200"
+                className="w-full sm:w-auto justify-center bg-primary hover:bg-blue-700 border-primary text-white rounded-lg font-bold text-xs md:text-sm px-5 py-3 shadow-xs transition-colors duration-200"
               >
                 <span>Explore Safety Guidelines</span>
                 <ArrowRight className="h-4 w-4" />
@@ -50,7 +50,7 @@ export default function HeroSection() {
                 href="/courses"
                 variant="outline"
                 size="lg"
-                className="bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-lg font-bold text-xs md:text-sm px-5 py-3 transition-colors duration-200"
+                className="w-full sm:w-auto justify-center bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 text-white rounded-lg font-bold text-xs md:text-sm px-5 py-3 transition-colors duration-200"
               >
                 <span>Start Training &amp; Quiz</span>
                 <ArrowRight className="h-4 w-4" />
