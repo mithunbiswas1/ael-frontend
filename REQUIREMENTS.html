@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Project Requirements Specification - LPG Safety & Awareness</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    @page {
+      size: A4;
+      margin: 18mm 16mm 18mm 16mm;
+      @bottom-right {
+        content: counter(page);
+        font-size: 9pt;
+        color: #718096;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1a202c;
+      line-height: 1.55;
+      font-size: 10pt;
+      margin: 0;
+      padding: 24px;
+      background: #ffffff;
+    }
+
+    .cover {
+      border-bottom: 3px solid #2563eb;
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      border-radius: 9999px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 6px 0;
+      line-height: 1.2;
+    }
+
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 22px 0 10px 0;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 6px;
+      page-break-after: avoid;
+    }
+
+    h3 {
+      font-size: 11pt;
+      font-weight: 600;
+      color: #2563eb;
+      margin: 16px 0 6px 0;
+      page-break-after: avoid;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+      color: #334155;
+    }
+
+    ul, ol {
+      margin: 4px 0 12px 18px;
+      padding: 0;
+      color: #334155;
+    }
+
+    li {
+      margin-bottom: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 16px 0;
+      font-size: 8.5pt;
+      page-break-inside: avoid;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 600;
+      text-align: left;
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+    }
+
+    td {
+      padding: 6px 10px;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    pre, code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+
+    code {
+      padding: 2px 4px;
+      color: #0369a1;
+    }
+
+    pre {
+      padding: 12px;
+      border: 1px solid #e2e8f0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      page-break-inside: avoid;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .meta-box {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      font-size: 8.5pt;
+      color: #475569;
+    }
+
+    .meta-box strong {
+      color: #0f172a;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      padding-top: 10px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 8pt;
+      color: #94a3b8;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cover">
+    <div class="badge">Official Technical Proposal & Scope Document</div>
+    <h1>Safety & Awareness in the LPG Sector</h1>
+    <p style="font-size: 12pt; color: #475569; font-weight: 500; margin: 0 0 12px 0;">Website with Integrated Learning Management System (LMS)</p>
+    
+    <div class="meta-box">
+      <strong>Client / Organization:</strong> STAR IT LTD. &bull; House No-8A/10 (Doreen Tower), Suite-5B, Road No 13, Dhanmondi, Dhaka 1209<br>
+      <strong>Contact:</strong> +88 09603 44 66 89 | info@staritltd.com | www.staritltd.com<br>
+      <strong>Design Reference:</strong> <a href="https://templates.hibotheme.com/clim/default/index.html" style="color: #2563eb;">CLIM Template Reference</a> &bull; <strong>Target Timeline:</strong> August 2026
+    </div>
+  </div>
+
+  <h2>1. Executive Summary & Core Objectives</h2>
+  <p>The primary mandate of this platform is to build a high-performance, secure digital infrastructure dedicated to raising nationwide LPG safety awareness across Bangladesh, standardizing stakeholder guidelines, and providing accredited digital certifications.</p>
+  <ul>
+    <li><strong>Safety & Awareness Portal:</strong> Direct access to safety norms for domestic consumers, commercial retailers, distributors, auto-gas station operators, and industrial plants.</li>
+    <li><strong>Subscription & Regulatory Information Hub:</strong> Real-time incident logs, inquiry reports, safety directives, and regulatory circulars from BERC, LOAB, DoE, and Fire Service & Civil Defense.</li>
+    <li><strong>Accredited LMS & Certification:</strong> Comprehensive learning management system hosting modular video lessons, automated quiz generation from pre-set question banks, and QR-verifiable PDF certificates.</li>
+    <li><strong>Revenue & Monetization Channels:</strong> Multi-tiered subscriber memberships, commercial advertisement slots, and payment gateway automation (SSLCommerz, bKash, Nagad, Cards).</li>
+    <li><strong>Enterprise Communication:</strong> Targeted bulk SMS (Unicode Bangla support) and bulk email campaign managers.</li>
+  </ul>
+
+  <h2>2. Stakeholders & User Roles Matrix</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Feature / Capability</th>
+        <th style="text-align:center;">Guest</th>
+        <th style="text-align:center;">Free Subscriber</th>
+        <th style="text-align:center;">Paid Subscriber</th>
+        <th style="text-align:center;">Professional / Dealer</th>
+        <th style="text-align:center;">Admin Team</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>View Public Guidelines & News</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Newsletter Subscription</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Comment on Blog / Incident Posts</td><td align="center">❌</td><td align="center">✅ (moderated)</td><td align="center">✅ (moderated)</td><td align="center">✅ (moderated)</td><td align="center">✅</td></tr>
+      <tr><td>Access Free Safety Courses</td><td align="center">❌</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Enroll in Premium Paid Courses</td><td align="center">❌</td><td align="center">❌</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Attend Quiz & Generate Certificate</td><td align="center">❌</td><td align="center">❌</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Download Premium Technical PDFs</td><td align="center">❌</td><td align="center">❌</td><td align="center">✅</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Access Industrial Compliance Modules</td><td align="center">❌</td><td align="center">❌</td><td align="center">❌</td><td align="center">✅</td><td align="center">✅</td></tr>
+      <tr><td>Admin Management Portal</td><td align="center">❌</td><td align="center">❌</td><td align="center">❌</td><td align="center">❌</td><td align="center">✅</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Dynamic Admin Roles</h3>
+  <ul>
+    <li><strong>Super Admin:</strong> Full unrestricted system control, financial logs, gateway credentials, database management, and role delegation.</li>
+    <li><strong>Content Admin:</strong> Editorial rights over blogs, incident reports, safety circulars, and comment moderation.</li>
+    <li><strong>Course Admin:</strong> Creation and maintenance of LMS categories, video lesson metadata, question pools, pass marks, and certificates.</li>
+    <li><strong>Advertisement Manager:</strong> Commercial banner scheduling, placement slot configuration, and impression/click analytics.</li>
+    <li><strong>SMS/Email Manager:</strong> Subscriber segmentation, Unicode Bangla SMS dispatches, and newsletter broadcasts.</li>
+  </ul>
+
+  <div class="page-break"></div>
+
+  <h2>3. Public Website Modules & Page Structure</h2>
+  
+  <h3>1. Home Page (<code>/</code>)</h3>
+  <ul>
+    <li><strong>Hero Awareness Banner:</strong> High-impact safety message, promotional video integration, and primary CTA for courses.</li>
+    <li><strong>Breaking News & Incidents Carousel:</strong> Real-time carousel of urgent industry notifications.</li>
+    <li><strong>Safety Metrics Counter:</strong> Certified personnel, inspected sites, registered dealers, and trained learners count.</li>
+    <li><strong>LMS Enrollment Showcase:</strong> Featured free and paid training programs with immediate enrollment links.</li>
+    <li><strong>Quick Newsletter Subscription:</strong> Name, Phone Number (+88 autofill), and Email with OTP verification.</li>
+    <li><strong>Emergency Hotline Directory:</strong> Instant contact numbers for Fire Service, Civil Defense, BERC, and Police.</li>
+  </ul>
+
+  <h3>2. Safety Guidelines Page (<code>/safety-guidelines</code>)</h3>
+  <ul>
+    <li><strong>Audience Segmented Tabs:</strong>
+      <ul>
+        <li><strong>Consumers:</strong> Cylinder inspection, regulator locking, gas leak checks, ventilation.</li>
+        <li><strong>Dealers & Retailers:</strong> Storage volume limits, vertical stacking, fire extinguisher readiness.</li>
+        <li><strong>Distributors:</strong> Transport vehicle safety, loading/unloading standards, hazard signage.</li>
+        <li><strong>Auto Gas Stations:</strong> Dispenser maintenance, high-pressure hose standards, emergency shutoff valves.</li>
+        <li><strong>Industrial Customers:</strong> Bulk LPG storage spheres/mounds, vaporizers, gas detector integration.</li>
+      </ul>
+    </li>
+    <li><strong>Regulatory Circulars:</strong> Downloadable PDF documents linked to official DoE, Civil Defense, and BERC notifications.</li>
+  </ul>
+
+  <h3>3. LPG Market Update Page (<code>/market-updates</code>)</h3>
+  <ul>
+    <li><strong>Incident Logging System:</strong> Chronological archive of cylinder explosions, transport leaks, and facility incidents.</li>
+    <li><strong>Inquiry Reports:</strong> Official post-incident investigation reports linked directly to the case records.</li>
+    <li><strong>BERC Official Announcements:</strong> Monthly consumer and commercial cylinder rate circulars.</li>
+    <li><strong>Global Market Feed:</strong> International LPG price indices (Saudi Aramco CP benchmarks, freight trends).</li>
+  </ul>
+
+  <h3>4. Blog, Articles & Seminar Hub (<code>/blogs</code>)</h3>
+  <ul>
+    <li>Categorized view: Association programs, technical papers, safety seminars, regulatory symposiums.</li>
+    <li>Rich article details with embedded multimedia (YouTube/S3), author credentials, and social share widgets.</li>
+    <li>Subscriber-only commenting with administrative pre-approval and rate-limiting anti-spam protection.</li>
+  </ul>
+
+  <h3>5. About Us & Dynamic Consultant Pool (<code>/about</code>)</h3>
+  <ul>
+    <li>Vision, organizational background, and governance mandate.</li>
+    <li><strong>Consultant Pool Directory:</strong> Dynamic admin-managed directory with consultant photo, credentials, bio, and area of expertise.</li>
+  </ul>
+
+  <h3>6. Contact Us Page (<code>/contact</code>)</h3>
+  <ul>
+    <li>Standard inquiry form with reCAPTCHA validation.</li>
+    <li>Interactive Google Maps location for Doreen Tower, Dhanmondi office.</li>
+    <li>Floating WhatsApp Business integration with pre-configured automated greeting.</li>
+  </ul>
+
+  <div class="page-break"></div>
+
+  <h2>4. Learning Management System (LMS) & Quiz Engine</h2>
+  
+  <h3>Course Architecture</h3>
+  <pre>Category (Consumer / Retail / Industrial)
+└── Course (Metadata, Thumbnail, Price [Free/Paid], Certificate Eligibility)
+    └── Module / Section (e.g. "Module 1: Basic Cylinder Mechanics")
+        └── Lesson (Hosted Video URL [S3/Vimeo], Duration, Supplementary Notes)
+            └── Randomized Quiz (Pre-set question pool, Anti-cheat shuffle)
+                └── PDF Digital Certificate (Unique ID & Verification QR)</pre>
+
+  <h3>Learning & Evaluation Workflow</h3>
+  <ol>
+    <li><strong>Catalog & Preview:</strong> Users browse courses; introductory lecture available without purchase.</li>
+    <li><strong>Enrollment:</strong> Instant activation for Free courses; SSLCommerz checkout for Paid tiers.</li>
+    <li><strong>Interactive Learning Player:</strong> Course syllabus sidebar, resume playback from last saved timestamp, automatic progress synchronization every 10 seconds.</li>
+    <li><strong>Quiz Gate:</strong> Unlocks strictly upon completing $\ge 85\%$ of all course lessons.</li>
+    <li><strong>Exam Session:</strong> Shuffled questions from course question bank (MCQ single/multi-select, True/False), optional countdown timer, anti-cheat restriction (no previewing answers during attempt).</li>
+    <li><strong>Instant Digital Certification:</strong> Automatic generation of tamper-proof PDF certificate upon scoring $\ge$ pass threshold. Each certificate includes learner's name, completion date, unique serial number, and a verifiable QR code.</li>
+  </ol>
+
+  <h2>5. Subscription Tiers & Payment Gateway</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Subscription Tier</th>
+        <th>Duration</th>
+        <th>Target Segment</th>
+        <th>Included Features</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Free / Newsletter</strong></td>
+        <td>Ongoing</td>
+        <td>General Public</td>
+        <td>Weekly safety bulletin, public circulars, introductory free courses</td>
+      </tr>
+      <tr>
+        <td><strong>Monthly Tier</strong></td>
+        <td>30 Days</td>
+        <td>Trainees & Students</td>
+        <td>Full access to all premium video courses, quiz certification, incident archive</td>
+      </tr>
+      <tr>
+        <td><strong>Half-Yearly Tier</strong></td>
+        <td>180 Days</td>
+        <td>Technicians & Retailers</td>
+        <td>Monthly tier benefits + discounted billing + priority comment review</td>
+      </tr>
+      <tr>
+        <td><strong>Yearly Tier</strong></td>
+        <td>365 Days</td>
+        <td>Dealers & Station Staff</td>
+        <td>All premium features + maximum discount + compliance advisory bulletins</td>
+      </tr>
+      <tr>
+        <td><strong>Professional Tier</strong></td>
+        <td>365 Days</td>
+        <td>Safety Engineers & Auditors</td>
+        <td>Specialized industrial modules, raw regulatory datasets, bulk data exports</td>
+      </tr>
+    </tbody>
+  </table>
+  <p><strong>Payment Processing:</strong> Integrated SSLCommerz gateway supporting bKash, Nagad, Visa, Mastercard, and Internet Banking. Automatic PDF invoice dispatch upon IPN confirmation.</p>
+
+  <h2>6. Enterprise Communications & Commercial Ads</h2>
+  <ul>
+    <li><strong>Bulk SMS Dashboard:</strong> Local gateway integration with Unicode Bangla support. Configurable recipient groups (All, Paid Only, Dealers, Custom CSV import).</li>
+    <li><strong>Bulk Email Engine:</strong> Resend API or SMTP relay with CAN-SPAM compliant one-click unsubscribe links and live CTR analytics.</li>
+    <li><strong>Commercial Ad Slot Engine:</strong> Managed slots across Header, Sidebar, Mid-Blog content, Footer, and Popup modals with impression/click counters.</li>
+  </ul>
+
+  <h2>7. Administrative Control & Security</h2>
+  <ul>
+    <li><strong>Comprehensive CMS:</strong> Full control over blog posts, guideline chapters, courses, and question banks.</li>
+    <li><strong>High-Volume Database Architecture:</strong> Indexed architecture ready to handle 1 Crore+ consumers and 60,000+ dealer entries.</li>
+    <li><strong>Security Infrastructure:</strong> Strict TLS encryption, bcrypt/argon2 password hashing, JWT invalidation upon session expiry, and daily automated database backups.</li>
+  </ul>
+
+  <div class="footer-note">
+    Document Prepared for STAR IT LTD. &bull; Safety & Awareness in the LPG Sector &bull; Confidential & Proprietary
+  </div>
+
+</body>
+</html>
