@@ -1,5 +1,4 @@
 // src/app/(pages)/pricing/_components/PricingHeroSection.jsx
-"use client";
 
 import { H1, P } from "@/components/ui/Typography";
 import AmbientGlow from "@/components/ui/AmbientGlow";

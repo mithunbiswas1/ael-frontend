@@ -1,5 +1,4 @@
 // src/app/(pages)/acts-and-rules/_components/ActsHeroSection.jsx
-"use client";
 
 import { Scale } from "lucide-react";
 import { H1, P } from "@/components/ui/Typography";

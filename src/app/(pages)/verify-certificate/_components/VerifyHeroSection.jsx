@@ -1,5 +1,4 @@
 // src/app/(pages)/verify-certificate/_components/VerifyHeroSection.jsx
-"use client";
 
 import { ShieldCheck } from "lucide-react";
 import { H1, P } from "@/components/ui/Typography";

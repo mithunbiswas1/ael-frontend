@@ -1,5 +1,4 @@
 // src/app/(pages)/about/_components/MissionVisionSection.jsx
-"use client";
 
 import { Target, Compass } from "lucide-react";
 import { H3 } from "@/components/ui/Typography";

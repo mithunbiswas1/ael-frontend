@@ -1,17 +1,13 @@
+// src/app/(pages)/courses/_components/CertificateVerificationSection.jsx
 import { Check } from "lucide-react";
 import { H3, H4 } from "@/components/ui/Typography";
-import Input from "@/components/ui/Input";
+import CertificateVerificationForm from "../_client/CertificateVerificationForm";
 
-export default function CertificateVerificationSection({
-  verifyId,
-  setVerifyId,
-  handleVerify,
-}) {
+export default function CertificateVerificationSection() {
   return (
     <section className="py-12 sm:py-16 bg-slate-950 text-white">
       <div className="site-container">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
-          
           {/* Left USPs (4 cols) */}
           <div className="lg:col-span-4">
             <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-blue-400 backdrop-blur-md">
@@ -81,25 +77,9 @@ export default function CertificateVerificationSection({
                 Enter Certificate ID to verify instant authenticity.
               </p>
 
-              <form onSubmit={handleVerify} className="mt-3.5 flex gap-2">
-                <Input
-                  type="text"
-                  placeholder="e.g. SAFE-2024-8849"
-                  value={verifyId}
-                  onChange={(e) => setVerifyId(e.target.value)}
-                  variant="dark"
-                  className="flex-1"
-                />
-                <button
-                  type="submit"
-                  className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"
-                >
-                  Verify
-                </button>
-              </form>
+              <CertificateVerificationForm />
             </div>
           </div>
-
         </div>
       </div>
     </section>

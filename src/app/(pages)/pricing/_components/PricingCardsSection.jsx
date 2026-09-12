@@ -1,5 +1,4 @@
 // src/app/(pages)/pricing/_components/PricingCardsSection.jsx
-"use client";
 
 import Link from "next/link";
 import { Check, X, ArrowRight, Building } from "lucide-react";

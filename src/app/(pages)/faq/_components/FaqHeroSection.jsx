@@ -1,5 +1,4 @@
 // src/app/(pages)/faq/_components/FaqHeroSection.jsx
-"use client";
 
 import { HelpCircle } from "lucide-react";
 import { H1, P } from "@/components/ui/Typography";

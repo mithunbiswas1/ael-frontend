@@ -1,5 +1,4 @@
 // src/app/(home)/_components/FeaturedTrainingSection.jsx
-"use client";
 
 import CourseCard from "@/components/shared/CourseCard";
 import { H3 } from "@/components/ui/Typography";

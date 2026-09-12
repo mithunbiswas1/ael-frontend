@@ -1,5 +1,4 @@
 // src/app/(pages)/contact/_components/ContactHeroSection.jsx
-"use client";
 
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";

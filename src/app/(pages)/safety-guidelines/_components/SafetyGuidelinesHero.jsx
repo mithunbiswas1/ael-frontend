@@ -1,5 +1,4 @@
 // src/app/(pages)/safety-guidelines/_components/SafetyGuidelinesHero.jsx
-"use client";
 
 import Image from "next/image";
 import { H1, P } from "@/components/ui/Typography";

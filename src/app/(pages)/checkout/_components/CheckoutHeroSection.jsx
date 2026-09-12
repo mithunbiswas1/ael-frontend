@@ -1,5 +1,4 @@
 // src/app/(pages)/checkout/_components/CheckoutHeroSection.jsx
-"use client";
 
 import { Lock } from "lucide-react";
 import { H1, P } from "@/components/ui/Typography";

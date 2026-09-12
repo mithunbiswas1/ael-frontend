@@ -1,5 +1,4 @@
 // src/app/(pages)/about/_components/WhoWeAreSection.jsx
-"use client";
 
 import { ShieldCheck, Users, BookOpen, Handshake } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";

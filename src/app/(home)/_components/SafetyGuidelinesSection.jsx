@@ -1,7 +1,5 @@
 // src/app/(home)/_components/SafetyGuidelinesSection.jsx 
 
-"use client";
-
 import { User, ShieldCheck, Truck, Fuel, Factory } from "lucide-react";
 import SafetyGuidelineCard from "@/components/shared/SafetyGuidelineCard";
 import SectionHeader from "@/components/ui/SectionHeader";

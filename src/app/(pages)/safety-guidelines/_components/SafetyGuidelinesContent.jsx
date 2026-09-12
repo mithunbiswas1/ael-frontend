@@ -1,23 +1,8 @@
 // src/app/(pages)/safety-guidelines/_components/SafetyGuidelinesContent.jsx
-"use client";
-
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import SharedHeroSection from "@/components/shared/SharedHeroSection";
-import StakeholderTabsSection, { STAKEHOLDER_TABS } from "./StakeholderTabsSection";
-import GuidelinesGridSection from "./GuidelinesGridSection";
+import SafetyGuidelinesInteractive from "../_client/SafetyGuidelinesInteractive";
 
 export default function SafetyGuidelinesContent() {
-  const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState("dealer");
-
-  useEffect(() => {
-    const tabFromUrl = searchParams.get("tab");
-    if (tabFromUrl && STAKEHOLDER_TABS.some((t) => t.id === tabFromUrl)) {
-      setActiveTab(tabFromUrl);
-    }
-  }, [searchParams]);
-
   return (
     <main className="min-h-screen bg-slate-50">
       <SharedHeroSection
@@ -32,8 +17,7 @@ export default function SafetyGuidelinesContent() {
         imageSrc="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop"
         imageAlt="LPG Storage Tanks and Cylinders"
       />
-      <StakeholderTabsSection activeTab={activeTab} setActiveTab={setActiveTab} />
-      <GuidelinesGridSection activeTab={activeTab} />
+      <SafetyGuidelinesInteractive />
     </main>
   );
 }

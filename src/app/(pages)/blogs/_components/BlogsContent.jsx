@@ -1,99 +1,12 @@
-"use client";
-
-import { useState } from "react";
-import { toast } from "sonner";
-import { Shield, Newspaper, Flame, Scale, Cpu, Leaf } from "lucide-react";
-import MainPageHeroSection from "@/components/shared/MainPageHeroSection";
-import BlogCategoriesSidebar from "./BlogCategoriesSidebar";
-import BlogPostsSection from "./BlogPostsSection";
-import BlogRightSidebar from "./BlogRightSidebar";
-
-export const BLOG_CATEGORIES = [
-  { id: "all", name: "All Categories", icon: Shield },
-  { id: "safety", name: "LPG Safety", icon: Shield },
-  { id: "news", name: "Industry News", icon: Newspaper },
-  { id: "tips", name: "Tips & Awareness", icon: Flame },
-  { id: "regulations", name: "Regulations", icon: Scale },
-  { id: "technology", name: "Technology", icon: Cpu },
-  { id: "environment", name: "Environment", icon: Leaf },
-];
+// src/app/(pages)/blogs/_components/BlogsContent.jsx
+import BlogsHeroSection from "./BlogsHeroSection";
+import BlogsInteractive from "../_client/BlogsInteractive";
 
 export default function BlogsContent({ blogsData }) {
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("latest");
-  const [viewType, setViewType] = useState("grid"); // "grid" | "list"
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-
-  const filteredBlogs = blogsData.filter((b) => {
-    const matchesCategory =
-      selectedCategory === "all" || b.categoryId === selectedCategory;
-    const matchesSearch =
-      b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (!newsletterEmail) {
-      toast.error("Please enter your email");
-      return;
-    }
-    toast.success("Thank you for subscribing to our blog!");
-    setNewsletterEmail("");
-  };
-
-  const popularPosts = blogsData.slice(0, 3);
-
   return (
     <main className="min-h-screen bg-slate-50">
-      {/* 1. Hero Banner */}
-      <MainPageHeroSection
-        breadcrumbItems={[
-          { label: "Home", href: "/" },
-          { label: "Blog & Insights" },
-        ]}
-        title="BLOG &"
-        accent="INSIGHTS."
-        description="Stay updated with expert perspectives, safety guidelines, regulatory announcements, and market trends across the Bangladesh LPG energy landscape."
-        imageSrc="https://images.unsplash.com/photo-1542744094-3a31f272c490?q=80&w=800&auto=format&fit=crop"
-        imageAlt="LPG Industry Insights & Engineering Seminars"
-      />
-
-      {/* 2. Main 3-Column Content Layout */}
-      <section className="py-12 sm:py-16">
-        <div className="site-container">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-            {/* Left Sidebar: Categories & View Type (3 cols) */}
-            <BlogCategoriesSidebar
-              categories={BLOG_CATEGORIES}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              viewType={viewType}
-              setViewType={setViewType}
-            />
-
-            {/* Center Content: Search & Blog Cards Grid (6 cols) */}
-            <BlogPostsSection
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              viewType={viewType}
-              filteredBlogs={filteredBlogs}
-            />
-
-            {/* Right Sidebar: Subscribe & Popular Posts (3 cols) */}
-            <BlogRightSidebar
-              newsletterEmail={newsletterEmail}
-              setNewsletterEmail={setNewsletterEmail}
-              handleSubscribe={handleSubscribe}
-              popularPosts={popularPosts}
-            />
-          </div>
-        </div>
-      </section>
+      <BlogsHeroSection />
+      <BlogsInteractive blogsData={blogsData} />
     </main>
   );
 }
