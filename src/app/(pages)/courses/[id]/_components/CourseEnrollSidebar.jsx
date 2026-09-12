@@ -41,7 +41,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
               {isFree ? "FREE" : `৳ ${course.price}`}
             </span>
             {!isFree && (
-              <span className="text-xs text-slate-400 line-through">
+              <span className="text-xs text-slate-500 font-medium line-through">
                 ৳ 1,200
               </span>
             )}
@@ -91,7 +91,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
               <span>3 Downloadable safety reference guides</span>
             </div>
             <div className="flex items-center gap-2">
-              <Award className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+              <Award className="h-3.5 w-3.5 text-emerald-700 shrink-0" />
               <span>Official verifiable certificate of completion</span>
             </div>
             <div className="flex items-center gap-2">

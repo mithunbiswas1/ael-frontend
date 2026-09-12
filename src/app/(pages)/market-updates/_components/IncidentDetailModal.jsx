@@ -43,7 +43,7 @@ export default function IncidentDetailModal({
 
           <button
             onClick={() => setActiveModalIncident(null)}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+            className="rounded-lg p-1 text-slate-500 hover:bg-slate-100 hover:text-slate-700 transition-colors"
           >
             <X className="h-5 w-5" />
           </button>
@@ -63,10 +63,10 @@ export default function IncidentDetailModal({
             <span
               className={`font-semibold ${
                 activeModalIncident.severity === "Critical"
-                  ? "text-red-600"
+                  ? "text-red-700"
                   : activeModalIncident.severity === "High"
-                  ? "text-amber-600"
-                  : "text-blue-600"
+                  ? "text-amber-800"
+                  : "text-blue-700"
               }`}
             >
               {activeModalIncident.severity}

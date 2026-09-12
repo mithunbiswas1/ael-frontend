@@ -234,11 +234,11 @@ export default function CourseCatalogInteractive() {
 
                       <div className="mt-4 space-y-1.5 border-t border-slate-100 pt-3 text-[11px] text-slate-500">
                         <div className="flex items-center gap-1.5">
-                          <User className="h-3.5 w-3.5 text-slate-400" />
+                          <User className="h-3.5 w-3.5 text-slate-500" />
                           <span>Audience: {course.audience}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <BookOpen className="h-3.5 w-3.5 text-slate-400" />
+                          <BookOpen className="h-3.5 w-3.5 text-slate-500" />
                           <span>Level: {course.level}</span>
                         </div>
                       </div>

@@ -63,7 +63,7 @@ export default function BlogRightSidebar({
                 <div className="text-xs font-bold text-slate-800 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                   {item.title}
                 </div>
-                <div className="mt-0.5 text-[10px] text-slate-400">
+                <div className="mt-0.5 text-[10px] font-medium text-slate-500">
                   {item.date}
                 </div>
               </div>

@@ -29,12 +29,12 @@ export default function BlogArticleContent({ currentPost }) {
             </span>
             <span>|</span>
             <div className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-slate-400" />
+              <Calendar className="h-3.5 w-3.5 text-slate-500" />
               <span>{currentPost.date}</span>
             </div>
             <span>|</span>
             <div className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5 text-slate-400" />
+              <Clock className="h-3.5 w-3.5 text-slate-500" />
               <span>{currentPost.readTime}</span>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function BlogArticleContent({ currentPost }) {
             <H3 className="text-sm font-black uppercase tracking-wider text-slate-900">
               SUBSCRIBER COMMENTS
             </H3>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-slate-500 font-medium">
               (Verified members only)
             </span>
           </div>

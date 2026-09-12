@@ -3,7 +3,7 @@ export default function TermsContentSection() {
     <section className="relative z-20 -mt-8 mx-auto w-full max-w-4xl px-4 pb-20">
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-10 shadow-2xs space-y-8 text-xs sm:text-sm text-slate-600 leading-relaxed">
         <div>
-          <span className="text-[11px] font-bold text-slate-400 block uppercase mb-1">
+          <span className="text-[11px] font-bold text-slate-500 block uppercase mb-1">
             Last Revised: May 2024
           </span>
           <h2 className="text-base font-bold text-slate-900">

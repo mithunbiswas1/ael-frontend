@@ -55,14 +55,14 @@ export default function CertificateVerificationSection() {
                 <div className="text-[9px] font-bold text-primary">
                   LPG Safety for Regular Consumers
                 </div>
-                <div className="mt-1 text-[8px] text-slate-400">
+                <div className="mt-1 text-[8px] text-slate-500">
                   May 2024 • ID: SAFE-2024-8849
                 </div>
               </div>
 
               <div className="mt-3 flex items-center justify-between border-t border-slate-200 pt-1.5 text-[8px] text-slate-500">
                 <span>Authorized Signature</span>
-                <span className="font-bold text-emerald-600">✓ QR Authentic</span>
+                <span className="font-bold text-emerald-800">✓ QR Authentic</span>
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@ export default function CertificateVerificationSection() {
               <H4 className="text-xs font-black uppercase tracking-wider text-white">
                 VERIFY ANY CERTIFICATE
               </H4>
-              <p className="mt-1 text-[11px] text-slate-400">
+              <p className="mt-1 text-[11px] text-slate-300">
                 Enter Certificate ID to verify instant authenticity.
               </p>
 

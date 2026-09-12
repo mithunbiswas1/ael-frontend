@@ -74,7 +74,7 @@ export default function BlogPostsSection({
                   <H4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 transition-colors group-hover:text-primary">
                     {blog.title}
                   </H4>
-                  <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-400">
+                  <div className="mt-2 flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
                     <Calendar className="h-3 w-3" />
                     <span>{blog.date}</span>
                   </div>
@@ -120,7 +120,7 @@ export default function BlogPostsSection({
                   <H4 className="text-sm font-bold text-slate-900 leading-snug transition-colors group-hover:text-primary">
                     {blog.title}
                   </H4>
-                  <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-400">
+                  <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-500 font-medium">
                     <span>{blog.date}</span>
                     <span>•</span>
                     <span>{blog.readTime}</span>

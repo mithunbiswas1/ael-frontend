@@ -141,7 +141,7 @@ export default function PricingCardsSection({ isAnnual }) {
                     )}
                   </div>
                   {isAnnual && price > 0 && (
-                    <div className="text-[10px] text-emerald-600 font-semibold mt-1">
+                    <div className="text-[10px] text-emerald-800 font-semibold mt-1">
                       Billed annually (Save 2 months free)
                     </div>
                   )}
@@ -155,14 +155,14 @@ export default function PricingCardsSection({ isAnnual }) {
 
                   {plan.features.map((feat, fIdx) => (
                     <div key={fIdx} className="flex items-start gap-2">
-                      <Check className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <Check className="h-3.5 w-3.5 text-emerald-700 shrink-0 mt-0.5" />
                       <span className="leading-snug">{feat}</span>
                     </div>
                   ))}
 
                   {plan.notIncluded.map((feat, fIdx) => (
-                    <div key={fIdx} className="flex items-start gap-2 text-slate-400">
-                      <X className="h-3.5 w-3.5 text-slate-300 shrink-0 mt-0.5" />
+                    <div key={fIdx} className="flex items-start gap-2 text-slate-500">
+                      <X className="h-3.5 w-3.5 text-slate-400 shrink-0 mt-0.5" />
                       <span className="line-through leading-snug">{feat}</span>
                     </div>
                   ))}

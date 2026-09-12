@@ -127,7 +127,7 @@ export default function StakeholderAnnouncementsSection({
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-2xs">
         <div className="border-b border-slate-100 pb-3 mb-4">
           <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-            <Globe2 className="h-3.5 w-3.5 text-emerald-600" />
+            <Globe2 className="h-3.5 w-3.5 text-emerald-700" />
             <span>GLOBAL LPG MARKET UPDATE</span>
           </h3>
           <p className="text-[10px] text-slate-500 mt-0.5">

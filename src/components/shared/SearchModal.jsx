@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect, useMemo, useRef } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   Search,
@@ -195,7 +196,12 @@ const POPULAR_TAGS = [
 
 export default function SearchModal({ isOpen, onClose }) {
   const [query, setQuery] = useState("");
+  const [mounted, setMounted] = useState(false);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Focus input when opened
   useEffect(() => {
@@ -209,11 +215,25 @@ export default function SearchModal({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
-  // Handle Body Scroll Lock
+  // Handle Body Scroll Lock & ESC Key
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    }
+    if (!isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow || "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isOpen, onClose]);
 
   // Filter search results
@@ -229,14 +249,14 @@ export default function SearchModal({ isOpen, onClose }) {
     });
   }, [query]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label="Site Search"
-      className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-6 md:pt-20 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] flex items-start justify-center p-3 sm:p-6 md:pt-20 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -427,6 +447,7 @@ export default function SearchModal({ isOpen, onClose }) {
 
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -70,11 +70,11 @@ export default function HowItWorksSection() {
             </P>
 
             <div className="mt-4 flex items-center gap-3.5">
-              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 border-emerald-500 bg-white font-black text-emerald-600 text-sm shadow-xs">
+              <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 border-emerald-500 bg-white font-black text-emerald-700 text-sm shadow-xs">
                 65%
               </div>
               <div>
-                <div className="text-[10px] uppercase font-bold text-slate-400">
+                <div className="text-[10px] uppercase font-bold text-slate-600">
                   Active Module
                 </div>
                 <div className="text-xs font-bold text-slate-800 line-clamp-1">

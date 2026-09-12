@@ -38,7 +38,7 @@ const regulatoryAgencies = [
     name: "DoE",
     title: "Department of Explosives",
     description: "National regulatory authority under Ministry of Power & Energy.",
-    badgeBg: "bg-red-50 text-red-600 border-red-200",
+    badgeBg: "bg-red-50 text-red-700 border-red-200",
     href: "https://explosives.gov.bd",
   },
   {
@@ -46,7 +46,7 @@ const regulatoryAgencies = [
     name: "Civil Defense",
     title: "Directorate General of Fire Service & Civil Defense",
     description: "Emergency fire codes, evacuation protocols and site inspections.",
-    badgeBg: "bg-amber-50 text-amber-600 border-amber-200",
+    badgeBg: "bg-amber-50 text-amber-800 border-amber-300",
     href: "http://fireservice.gov.bd",
   },
   {
@@ -54,7 +54,7 @@ const regulatoryAgencies = [
     name: "LOAB",
     title: "LPG Operators Association of Bangladesh",
     description: "Industry body representing nationwide licensed LPG operators.",
-    badgeBg: "bg-emerald-50 text-emerald-600 border-emerald-200",
+    badgeBg: "bg-emerald-50 text-emerald-800 border-emerald-200",
     href: "https://loab.com.bd",
   },
 ];
@@ -158,7 +158,7 @@ export default function GuidelinesGridSection({ activeTab }) {
               <div className="mt-4 space-y-2.5 border-t border-slate-100 pt-4">
                 {standardsList.map((std, idx) => (
                   <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-700 mt-0.5" />
                     <span>{std}</span>
                   </div>
                 ))}
@@ -225,7 +225,7 @@ export default function GuidelinesGridSection({ activeTab }) {
                         >
                           {agency.name}
                         </span>
-                        <Building2 className="h-4 w-4 text-slate-400" />
+                        <Building2 className="h-4 w-4 text-slate-500" />
                       </div>
 
                       <H4 className="mt-3 text-xs font-bold text-slate-900 leading-snug">
@@ -287,7 +287,7 @@ export default function GuidelinesGridSection({ activeTab }) {
                       <TableRow key={doc.id}>
                         <TableCell className="font-semibold text-slate-800">
                           <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 shrink-0 text-slate-400" />
+                            <FileText className="h-4 w-4 shrink-0 text-slate-500" />
                             <span>{doc.name}</span>
                           </div>
                         </TableCell>
@@ -336,7 +336,7 @@ export default function GuidelinesGridSection({ activeTab }) {
                 </TableBody>
               </Table>
 
-              <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px] text-slate-400">
+              <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px] text-slate-500 font-medium">
                 <span>Authorized by Ministry of Power, Energy &amp; Mineral Resources</span>
                 <span>Updated: May 2024</span>
               </div>

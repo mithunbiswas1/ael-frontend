@@ -92,7 +92,7 @@ export default function FaqAccordionInteractive() {
           placeholder="Search safety questions (e.g. leak test, regulator, hotline)..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          prefix={<Search className="h-4 w-4 text-slate-400" />}
+          prefix={<Search className="h-4 w-4 text-slate-500" />}
           size="md"
           className="bg-slate-50/80"
         />

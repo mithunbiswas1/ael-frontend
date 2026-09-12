@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -22,10 +23,15 @@ const SearchModal = dynamic(() => import("@/components/shared/SearchModal"), {
 
 export default function NavbarInteractive({ navLinks }) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [expandedMobileMenu, setExpandedMobileMenu] = useState(null);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close mobile drawer and modal on route change
   useEffect(() => {
@@ -34,11 +40,24 @@ export default function NavbarInteractive({ navLinks }) {
     setSearchModalOpen(false);
   }, [pathname]);
 
-  // Lock scroll when mobile menu is open
+  // Lock scroll and handle ESC key when mobile menu is open
   useEffect(() => {
-    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+    if (!mobileMenuOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = originalOverflow || "";
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [mobileMenuOpen]);
 
@@ -141,8 +160,8 @@ export default function NavbarInteractive({ navLinks }) {
       </Button>
 
       {/* 4. Mobile Slide-Over Menu Drawer */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex lg:hidden">
+      {mobileMenuOpen && mounted && createPortal(
+        <div className="fixed inset-0 z-[90] flex lg:hidden">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity"
@@ -280,7 +299,8 @@ export default function NavbarInteractive({ navLinks }) {
               </LinkButton>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 5. Global Search Modal (Loaded on demand) */}

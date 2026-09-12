@@ -96,7 +96,7 @@ export default function ActsLibraryInteractive() {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             size="sm"
-            prefix={<Search className="h-4 w-4 text-slate-400" />}
+            prefix={<Search className="h-4 w-4 text-slate-500" />}
             className="bg-slate-50/70 text-xs"
           />
         </div>
@@ -137,7 +137,7 @@ export default function ActsLibraryInteractive() {
                   <span className="rounded bg-blue-50 border border-blue-100 px-2 py-0.5 text-[10px] font-bold text-primary">
                     {act.category}
                   </span>
-                  <span className="text-[11px] text-slate-400">
+                  <span className="text-[11px] text-slate-500 font-medium">
                     {act.gazetteRef} • Enacted: {act.year}
                   </span>
                 </div>

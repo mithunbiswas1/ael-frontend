@@ -197,16 +197,16 @@ export default function Footer() {
             © {new Date().getFullYear()} Safe LPG. All Rights Reserved.
           </P>
 
-          <div className="flex items-center gap-6 text-slate-500 text-xs">
-            <Link href="/privacy" className="hover:text-slate-300 transition-colors">
+          <div className="flex items-center gap-6 text-slate-400 text-xs">
+            <Link href="/privacy" className="hover:text-slate-200 transition-colors">
               Privacy Policy
             </Link>
-            <span className="text-slate-800">•</span>
-            <Link href="/terms" className="hover:text-slate-300 transition-colors">
+            <span className="text-slate-700">•</span>
+            <Link href="/terms" className="hover:text-slate-200 transition-colors">
               Terms of Service
             </Link>
-            <span className="text-slate-800">•</span>
-            <Link href="/faq" className="hover:text-slate-300 transition-colors">
+            <span className="text-slate-700">•</span>
+            <Link href="/faq" className="hover:text-slate-200 transition-colors">
               Help Center
             </Link>
           </div>

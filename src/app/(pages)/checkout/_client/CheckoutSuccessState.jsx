@@ -13,7 +13,7 @@ export default function CheckoutSuccessState({
 }) {
   return (
     <div className="rounded-xl border border-emerald-200 bg-white p-8 shadow-lg text-center max-w-xl mx-auto">
-      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border-2 border-emerald-500">
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 border-2 border-emerald-500">
         <CheckCircle2 className="h-10 w-10" />
       </div>
       <h2 className="text-xl font-black text-slate-900">
