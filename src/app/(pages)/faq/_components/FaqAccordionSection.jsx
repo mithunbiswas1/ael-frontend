@@ -62,7 +62,7 @@ const FAQ_ITEMS = [
     category: "Certificates & LMS",
     question: "Are the training certificates issued on this portal legally recognized?",
     answer:
-      "Yes. All certificates are issued jointly under AEL safety initiatives in alignment with Department of Explosives (DoE) curriculum benchmarks and LOAB guidelines. Each certificate contains a unique digital QR verification code verifiable on /verify-certificate.",
+      "Yes. All certificates are issued jointly under Safe LPG safety initiatives in alignment with Department of Explosives (DoE) curriculum benchmarks and LOAB guidelines. Each certificate contains a unique digital QR verification code verifiable on /verify-certificate.",
   },
   {
     category: "Certificates & LMS",

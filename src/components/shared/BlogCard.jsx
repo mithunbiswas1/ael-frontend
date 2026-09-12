@@ -7,12 +7,20 @@ import { Calendar } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 
 const BLOG_BADGE_VARIANTS = {
-  Seminar: "bg-emerald-600 text-white",
-  "Safety Tips": "bg-emerald-700 text-white",
+  Seminar: "bg-blue-600 text-white",
+  seminar: "bg-blue-600 text-white",
+  "Safety Tips": "bg-emerald-600 text-white",
+  safety: "bg-emerald-600 text-white",
   Program: "bg-teal-600 text-white",
-  seminar: "bg-emerald-600 text-white",
-  safety: "bg-emerald-700 text-white",
   program: "bg-teal-600 text-white",
+  Regulations: "bg-purple-600 text-white",
+  regulations: "bg-purple-600 text-white",
+  Technology: "bg-indigo-600 text-white",
+  technology: "bg-indigo-600 text-white",
+  Environment: "bg-emerald-700 text-white",
+  environment: "bg-emerald-700 text-white",
+  "Industry News": "bg-sky-600 text-white",
+  news: "bg-sky-600 text-white",
 };
 
 export default function BlogCard({

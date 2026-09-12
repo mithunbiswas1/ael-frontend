@@ -1,7 +1,7 @@
 // src/app/(pages)/courses/_components/CoursesHeroSection.jsx
 "use client";
 
-import Link from "next/link";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { GraduationCap, Clock, HelpCircle, Award, CheckCircle2, ArrowRight } from "lucide-react";
 import { H1, H3, P } from "@/components/ui/Typography";
 import AmbientGlow from "@/components/ui/AmbientGlow";
@@ -30,12 +30,12 @@ export default function CoursesHeroSection() {
               <span>ONLINE LMS &amp; CERTIFICATION</span>
             </div>
 
-            <H1 color="white" className="leading-[1.08] tracking-tight">
+            <H1 color="white">
               <span>TRAINING &amp;</span>{" "}
               <span className="text-primary">QUIZ.</span>
             </H1>
 
-            <P className="mt-4 max-w-xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-4 max-w-xl">
               Industry-aligned LPG safety training for regular consumers, commercial dealers, and industrial operators. Learn at your own pace, take the quiz, and earn your verified certificate.
             </P>
 
@@ -101,13 +101,15 @@ export default function CoursesHeroSection() {
               </div>
 
               <div className="mt-5 pt-3 border-t border-white/10">
-                <Link
+                <LinkButton
                   href="#catalog"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-xs font-bold text-white shadow-xs transition-colors hover:bg-blue-700"
+                  variant="primary"
+                  size="default"
+                  fullWidth
                 >
                   <span>Browse Courses Below</span>
                   <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
+                </LinkButton>
               </div>
             </div>
           </div>

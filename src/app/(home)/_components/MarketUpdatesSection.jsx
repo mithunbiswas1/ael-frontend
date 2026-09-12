@@ -34,15 +34,6 @@ const marketUpdates = [
     date: "May 15, 2024",
     href: "/market-updates/3",
   },
-  {
-    id: 4,
-    category: "global",
-    badgeText: "Global Market",
-    imageUrl: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?q=80&w=600&auto=format&fit=crop",
-    title: "Global LPG Market Update – May 2024",
-    date: "May 12, 2024",
-    href: "/market-updates/4",
-  },
 ];
 
 export default function MarketUpdatesSection() {
@@ -68,7 +59,7 @@ export default function MarketUpdatesSection() {
       />
 
       {/* 4 Cards Grid */}
-      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
         {marketUpdates.map((item) => (
           <MarketUpdateCard
             key={item.id}

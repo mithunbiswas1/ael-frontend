@@ -26,12 +26,12 @@ export default function MarketUpdatesHero() {
               <span>OFFICIAL INDUSTRY REGISTRY & MARKET PULSE</span>
             </div>
 
-            <H1 color="white" className="leading-[1.08] tracking-tight">
+            <H1 color="white">
               <span>LPG MARKET</span>{" "}
               <span className="text-primary">UPDATE.</span>
             </H1>
 
-            <P className="mt-4 max-w-xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-4 max-w-xl">
               Stay informed with the latest incident reports, inquiries, stakeholder announcements,
               BERC price notifications, and global LPG market trends across Bangladesh.
             </P>

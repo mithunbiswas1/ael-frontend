@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import CheckoutContent from "./_components/CheckoutContent";
 
 export const metadata = {
-  title: "Secure Checkout | Bangladesh Bank Authorized Gateways | AEL",
+  title: "Secure Checkout | Bangladesh Bank Authorized Gateways | Safe LPG",
   description:
     "256-bit SSL encrypted checkout for LPG safety certification and compliance licenses in Bangladesh.",
 };

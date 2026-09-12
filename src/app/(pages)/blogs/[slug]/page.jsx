@@ -15,7 +15,7 @@ export async function generateMetadata({ params }) {
     blogsData.find((b) => b.slug === slug || b.id === slug) || blogsData[0];
 
   return {
-    title: `${currentPost.title} | AEL LPG Blog`,
+    title: `${currentPost.title} | Safe LPG Blog`,
     description: currentPost.description,
   };
 }

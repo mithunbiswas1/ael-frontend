@@ -46,12 +46,12 @@ export default function MetricsBar() {
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
               </div>
               <div className="min-w-0">
-                <div className="text-base sm:text-2xl font-black text-slate-900 tracking-tight">
+                <H3>
                   {item.value}
-                </div>
-                <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 truncate sm:whitespace-normal">
+                </H3>
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-700 truncate sm:whitespace-normal">
                   {item.label}
-                </div>
+                </span>
               </div>
             </div>
           );

@@ -27,12 +27,12 @@ export default function BlogsHeroSection() {
               <span>INDUSTRY INSIGHTS &amp; SAFETY ARTICLES</span>
             </div>
 
-            <H1 color="white" className="leading-[1.08] tracking-tight">
+            <H1 color="white">
               <span>BLOG &amp;</span>{" "}
               <span className="text-primary">INSIGHTS.</span>
             </H1>
 
-            <P className="mt-4 max-w-xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-4 max-w-xl">
               Stay updated with expert perspectives, safety guidelines, regulatory announcements, and market trends across the Bangladesh LPG energy landscape.
             </P>
           </div>

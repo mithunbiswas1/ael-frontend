@@ -1,7 +1,7 @@
-import Link from "next/link";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { User, BookOpen, HelpCircle, Award } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { H4 } from "@/components/ui/Typography";
+import { H4, P } from "@/components/ui/Typography";
 
 export default function HowItWorksSection() {
   return (
@@ -49,12 +49,12 @@ export default function HowItWorksSection() {
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
                     <Icon className="h-4.5 w-4.5" />
                   </div>
-                  <H4 className="mt-3 text-xs font-black uppercase tracking-wider text-slate-900">
+                  <H4 uppercase className="mt-3 text-xs font-black tracking-wider">
                     {s.step}
                   </H4>
-                  <p className="mt-1 text-[11px] text-slate-500 leading-relaxed">
+                  <P size="xs" className="mt-1">
                     {s.desc}
-                  </p>
+                  </P>
                 </div>
               );
             })}
@@ -62,12 +62,12 @@ export default function HowItWorksSection() {
 
           {/* Right Card: Your Progress (4 cols) */}
           <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-5 lg:col-span-4">
-            <H4 className="text-xs font-bold uppercase tracking-wider text-slate-700">
+            <H4 uppercase color="gray" className="text-xs font-bold tracking-wider">
               Your Learning Status
             </H4>
-            <p className="text-[11px] text-slate-500">
+            <P size="xs">
               Track your active course progress
-            </p>
+            </P>
 
             <div className="mt-4 flex items-center gap-3.5">
               <div className="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-4 border-emerald-500 bg-white font-black text-emerald-600 text-sm shadow-xs">
@@ -83,12 +83,15 @@ export default function HowItWorksSection() {
               </div>
             </div>
 
-            <Link
+            <LinkButton
               href="/login"
-              className="mt-4 block w-full rounded-lg bg-primary py-2 text-center text-xs font-bold text-white transition-colors hover:bg-blue-700 shadow-xs"
+              variant="primary"
+              size="sm"
+              fullWidth
+              className="mt-4"
             >
               Login to Resume
-            </Link>
+            </LinkButton>
           </div>
 
         </div>

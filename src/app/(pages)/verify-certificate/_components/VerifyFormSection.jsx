@@ -16,7 +16,7 @@ export const VERIFIED_CERTIFICATES = {
     grade: "Pass (92%)",
     status: "Verified & Valid",
     authorizedBy: "Engr. Mahmudul Hasan (DoE Lead Auditor)",
-    issuingAuthority: "AEL in collaboration with Department of Explosives (DoE) & LOAB",
+    issuingAuthority: "Safe LPG in collaboration with Department of Explosives (DoE) & LOAB",
   },
   "CERT-LPG-2-2024": {
     id: "CERT-LPG-2-2024",
@@ -27,7 +27,7 @@ export const VERIFIED_CERTIFICATES = {
     grade: "Distinction (96%)",
     status: "Verified & Valid",
     authorizedBy: "Sharmin Sultana (LOAB Compliance)",
-    issuingAuthority: "AEL Regulatory Training Division",
+    issuingAuthority: "Safe LPG Regulatory Training Division",
   },
   "CERT-LPG-4-2024": {
     id: "CERT-LPG-4-2024",
@@ -38,7 +38,7 @@ export const VERIFIED_CERTIFICATES = {
     grade: "Certified Safety Engineer (88%)",
     status: "Verified & Valid",
     authorizedBy: "Dr. Kazi Ariful Islam (BUET / Safety Consultant)",
-    issuingAuthority: "AEL Industrial Safety Council",
+    issuingAuthority: "Safe LPG Industrial Safety Council",
   },
 };
 
@@ -202,7 +202,7 @@ export default function VerifyFormSection({
         {/* Security / QR Notice */}
         <div className="mt-8 rounded-lg bg-slate-50 border border-slate-200/60 p-4 text-xs text-slate-500">
           <strong className="text-slate-800 block mb-1">Security Feature Note:</strong>
-          All genuine AEL Certificates carry a dynamic cryptographic QR code and unique tamper-evident serial format. To verify directly via smartphone camera, scan the QR code printed on the official certificate document.
+          All genuine Safe LPG Certificates carry a dynamic cryptographic QR code and unique tamper-evident serial format. To verify directly via smartphone camera, scan the QR code printed on the official certificate document.
         </div>
       </div>
     </section>

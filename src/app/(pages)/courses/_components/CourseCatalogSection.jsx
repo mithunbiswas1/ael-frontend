@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { Search, User, BookOpen, ArrowRight } from "lucide-react";
 import { H2, H4, P } from "@/components/ui/Typography";
 import Input from "@/components/ui/Input";
@@ -102,7 +103,7 @@ export default function CourseCatalogSection({
             <H2>
               AVAILABLE <span className="text-primary">COURSES.</span>
             </H2>
-            <P className="mt-1 text-xs sm:text-sm text-slate-500">
+            <P className="mt-1">
               Explore certified courses by stakeholder category and enhance your safety credentials.
             </P>
           </div>
@@ -235,12 +236,14 @@ export default function CourseCatalogSection({
                       </div>
 
                       <div className="mt-4">
-                        <Link
+                        <LinkButton
                           href={`/courses/${course.id}`}
-                          className="flex w-full items-center justify-center rounded-lg bg-primary py-2 text-xs font-bold text-white transition-colors hover:bg-blue-700 shadow-xs"
+                          variant="primary"
+                          size="sm"
+                          fullWidth
                         >
                           {course.isPaid ? "Buy Now" : "Enroll Free"}
-                        </Link>
+                        </LinkButton>
                       </div>
                     </div>
                   </div>

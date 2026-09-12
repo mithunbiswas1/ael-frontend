@@ -26,18 +26,6 @@ export default function SectionHeader({
       )}
     >
       <div>
-        {tag && (
-          <span
-            className={cn(
-              "mb-2 inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest backdrop-blur-md",
-              dark
-                ? "border border-blue-400/30 bg-blue-500/15 text-blue-400"
-                : "border border-blue-500/20 bg-blue-500/10 text-primary",
-            )}
-          >
-            {tag}
-          </span>
-        )}
 
         <HeadingComponent color={dark ? "white" : "default"}>
           {title}{" "}
@@ -47,7 +35,7 @@ export default function SectionHeader({
         {subtitle && (
           <P
             className={cn(
-              "mt-1 text-xs sm:text-sm leading-relaxed",
+              "mt-0.5 leading-relaxed",
               isCentered && "mx-auto max-w-xl",
               dark ? "text-slate-400" : "text-slate-500",
             )}

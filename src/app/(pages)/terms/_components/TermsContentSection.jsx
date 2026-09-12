@@ -10,7 +10,7 @@ export default function TermsContentSection() {
             1. Acceptance of Terms
           </h2>
           <p className="mt-2">
-            By accessing, browsing, or enrolling in any course provided on the AEL platform, you agree to be legally bound by these Terms of Service, the Explosives Act 1884, Gas Cylinder Rules 1991 (amended 2004), and BERC statutory notifications. If you do not agree with any provision, you must discontinue platform use immediately.
+            By accessing, browsing, or enrolling in any course provided on the Safe LPG platform, you agree to be legally bound by these Terms of Service, the Explosives Act 1884, Gas Cylinder Rules 1991 (amended 2004), and BERC statutory notifications. If you do not agree with any provision, you must discontinue platform use immediately.
           </p>
         </div>
 

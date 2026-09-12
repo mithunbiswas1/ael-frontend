@@ -1,8 +1,8 @@
 // src/lib/seo.js
 
-const SITE_URL = "https://ael.com";
+const SITE_URL = "https://safelpg.com";
 
-const SITE_NAME = "LPG Safety & Awareness";
+const SITE_NAME = "Safe LPG";
 
 export const defaultMetadata = {
   metadataBase: new URL(SITE_URL),

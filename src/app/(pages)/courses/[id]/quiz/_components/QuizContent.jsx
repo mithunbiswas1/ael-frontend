@@ -59,7 +59,7 @@ export const QUIZ_QUESTIONS = [
     id: 5,
     question: "What is the nationwide emergency hotline number in Bangladesh for urgent LPG fire or explosive hazards?",
     options: [
-      { text: "16137 (AEL National Emergency Safety Support)", isCorrect: true },
+      { text: "16137 (Safe LPG National Emergency Safety Support)", isCorrect: true },
       { text: "99999 (Private Ambulance Association)", isCorrect: false },
       { text: "100 (Postal Support)", isCorrect: false },
       { text: "105 (Railway Inquiry)", isCorrect: false },

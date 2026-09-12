@@ -102,7 +102,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
 
           {/* Verification Notice */}
           <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-3 text-center text-[11px] text-slate-500">
-            <span>Authorized Certificate issued by AEL &amp; Partner Regulatory Bodies.</span>
+            <span>Authorized Certificate issued by Safe LPG &amp; Partner Regulatory Bodies.</span>
           </div>
         </div>
       </div>

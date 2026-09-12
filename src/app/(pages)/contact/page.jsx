@@ -6,7 +6,7 @@ import ContactLocationSection from "./_components/ContactLocationSection";
 export const metadata = {
   title: "Contact Us | 24/7 Citizen & Industry LPG Support Bangladesh",
   description:
-    "Get in touch with AEL LPG safety advisory officers, training coordinators, and emergency helpline officers across Bangladesh.",
+    "Get in touch with Safe LPG safety advisory officers, training coordinators, and emergency helpline officers across Bangladesh.",
 };
 
 export default function ContactPage() {

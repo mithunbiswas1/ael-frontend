@@ -28,7 +28,7 @@ export default function CheckoutHeroSection() {
               <span>SECURE</span>{" "}
               <span className="text-primary">CHECKOUT.</span>
             </H1>
-            <P className="text-xs text-slate-400 mt-1">
+            <P size="xs" color="slate400" className="mt-1">
               256-bit SSL encrypted gateway powered by Bangladesh Bank recognized merchant channels.
             </P>
           </div>

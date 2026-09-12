@@ -45,7 +45,7 @@ export default function NewsletterSection() {
           <H3 color="white" className="text-base font-black uppercase tracking-wider">
             SUBSCRIBE TO <span className="text-primary">NEWSLETTER.</span>
           </H3>
-          <P className="mt-1 text-xs text-slate-400 leading-relaxed">
+          <P size="sm" color="slate400" className="mt-1">
             Get instant LPG safety bulletins, circulars, and emergency alerts directly to your inbox.
           </P>
         </div>
@@ -95,18 +95,6 @@ export default function NewsletterSection() {
           <ArrowRight className="h-3.5 w-3.5" />
         </button>
       </form>
-
-      <p className="mt-3 text-center text-[10px] text-gray-400">
-        By subscribing, you agree to our{" "}
-        <a href="/terms" className="underline hover:text-white">
-          Terms &amp; Conditions
-        </a>{" "}
-        and{" "}
-        <a href="/privacy" className="underline hover:text-white">
-          Privacy Policy
-        </a>
-        .
-      </p>
     </div>
   );
 }

@@ -1,16 +1,17 @@
 // src/components/shared/SafetyGuidelineCard.jsx
+
 "use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { H5, P } from "../ui/Typography";
 
 const STAKEHOLDER_THEMES = {
   consumer: "bg-emerald-600",
   dealer: "bg-blue-600",
   distributor: "bg-amber-500",
-  "auto-gas": "bg-purple-600",
-  industrial: "bg-teal-600",
+  investors: "bg-teal-600",
 };
 
 export default function SafetyGuidelineCard({
@@ -26,7 +27,7 @@ export default function SafetyGuidelineCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/90 p-4 backdrop-blur-md transition-colors duration-200 hover:border-primary/50 hover:bg-white hover:shadow-xs"
+      className="group flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white/90 p-4 backdrop-blur-md transition-colors duration-200 hover:border-primary/50 hover:bg-white"
     >
       <div>
         {/* Category Header */}
@@ -36,9 +37,9 @@ export default function SafetyGuidelineCard({
           >
             {Icon && <Icon className="h-3.5 w-3.5" strokeWidth={2.5} />}
           </div>
-          <span className="text-xs font-black uppercase tracking-wider text-slate-900">
+          <H5 className="font-bold uppercase">
             {badgeText}
-          </span>
+          </H5>
         </div>
 
         {/* Thumbnail Image */}
@@ -53,17 +54,17 @@ export default function SafetyGuidelineCard({
         </div>
 
         {/* Description */}
-        <p className="mt-2.5 text-xs leading-relaxed text-slate-500 line-clamp-2">
+        <P color="dark" className="mt-2.5 line-clamp-2">
           {description}
-        </p>
+        </P>
       </div>
 
       {/* Link action */}
       <div className="mt-3">
-        <span className="inline-flex items-center gap-1 text-xs font-bold text-primary transition-colors group-hover:text-blue-700">
+        <P className="inline-flex !text-sm items-center gap-1 font-semibold text-primary">
           <span>View Guidelines</span>
-          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-        </span>
+          <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+        </P>
       </div>
     </Link>
   );

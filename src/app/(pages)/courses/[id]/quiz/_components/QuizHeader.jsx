@@ -21,7 +21,7 @@ export default function QuizHeader({ courseId, isSubmitted, timeString }) {
             <H1 color="white" className="leading-tight text-xl sm:text-2xl md:text-3xl">
               Official LPG Safety Assessment
             </H1>
-            <P className="text-xs text-slate-400 mt-1">
+            <P size="xs" color="slate400" className="mt-1">
               Pass mark: 80% (4 of 5 correct) • Certificate auto-generated upon passing
             </P>
           </div>

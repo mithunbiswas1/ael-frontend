@@ -51,7 +51,7 @@ export default function CourseCard({
           {title}
         </H4>
 
-        <P className="mt-1 line-clamp-2 text-slate-500 text-xs">
+        <P size="xs" className="mt-1 line-clamp-2">
           {description}
         </P>
 
@@ -79,9 +79,9 @@ export default function CourseCard({
 
           <LinkButton
             href={href}
-            variant="solid"
+            variant="primary"
             size="sm"
-            className="w-full justify-center rounded-lg bg-primary py-2.5 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"
+            fullWidth
           >
             <span>Start Course</span>
             <ArrowRight className="h-3.5 w-3.5" />

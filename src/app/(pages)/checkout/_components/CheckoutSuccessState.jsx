@@ -28,7 +28,7 @@ export default function CheckoutSuccessState({
       <div className="my-6 rounded-lg border border-slate-100 bg-slate-50 p-4 text-left text-xs space-y-1.5">
         <div className="flex justify-between">
           <span className="text-slate-500">Transaction ID:</span>
-          <span className="font-mono font-bold text-slate-900">TXN-AEL-849204</span>
+          <span className="font-mono font-bold text-slate-900">TXN-SAFE-849204</span>
         </div>
         <div className="flex justify-between">
           <span className="text-slate-500">Amount Paid:</span>

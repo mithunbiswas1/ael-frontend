@@ -2,7 +2,7 @@
 import ClassroomContent from "./_components/ClassroomContent";
 
 export const metadata = {
-  title: "Online Safety Classroom Player | AEL LPG Academy",
+  title: "Online Safety Classroom Player | Safe LPG Academy",
   description:
     "Interactive high-definition LPG video safety modules, lesson notes, downloadable guides, and assessment checklists.",
 };

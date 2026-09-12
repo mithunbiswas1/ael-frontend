@@ -35,8 +35,11 @@ button {
 }
 
 @theme inline {
-  --color-primary: #2563eb;
-  --color-secondary: #0f172a;
+  --font-manrope: var(--font-manrope);
+  --color-primary: #1D4E91;
+  --color-secondary: #32824F;
+  --color-tertiary: #0B1327;
+  --color-highlight: #AD1723;
 }
 
 @keyframes fadeIn {

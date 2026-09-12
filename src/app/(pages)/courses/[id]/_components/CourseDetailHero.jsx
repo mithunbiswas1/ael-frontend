@@ -34,11 +34,11 @@ export default function CourseDetailHero({ course }) {
               </span>
             </div>
 
-            <H1 color="white" className="leading-tight">
+            <H1 color="white">
               {course.title}
             </H1>
 
-            <P className="mt-3.5 max-w-2xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-3.5 max-w-2xl">
               {course.description}
             </P>
 

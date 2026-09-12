@@ -1,55 +1,91 @@
 // src/components/ui/Button.jsx
 
+import { forwardRef } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import { cn } from "@/lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center transition-colors group",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-bold transition-all duration-200 cursor-pointer select-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        default: "text-gray-400 hover:text-brand",
-        primary: "text-brand hover:text-brand/80",
-        danger: "text-red-500 hover:text-red-600",
+        primary:
+          "bg-primary text-white hover:bg-blue-700 shadow-xs border border-transparent",
+        solid:
+          "bg-primary text-white hover:bg-blue-700 shadow-xs border border-transparent",
+        secondary:
+          "bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200 shadow-2xs",
+        outline:
+          "border border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 bg-transparent",
+        accent:
+          "bg-[#d9f943] text-slate-950 hover:bg-[#cbef32] font-black shadow-md shadow-[#d9f943]/15 border border-transparent",
+        frosted:
+          "border border-slate-700 bg-white/5 hover:bg-white/10 text-white backdrop-blur-xs",
+        ghost:
+          "text-slate-700 hover:bg-slate-100 hover:text-slate-900 bg-transparent",
+        danger:
+          "bg-red-600 text-white hover:bg-red-700 shadow-xs border border-transparent",
+        white:
+          "bg-white text-slate-900 hover:bg-slate-100 shadow-xs border border-slate-200",
+        pill:
+          "rounded-full border border-primary text-primary hover:bg-primary hover:text-white",
+        default:
+          "text-slate-600 hover:text-primary",
       },
       size: {
-        default: "h-6 w-6",
-        sm: "h-5 w-5",
-        lg: "h-8 w-8",
+        xs: "px-2.5 py-1 text-xs font-semibold",
+        sm: "px-3.5 py-1.5 text-xs font-semibold",
+        default: "px-5 py-2.5 text-xs sm:text-sm font-bold",
+        lg: "px-6 py-3 text-xs sm:text-sm font-bold",
+        xl: "px-7 py-3.5 text-sm sm:text-base font-extrabold",
+        icon: "h-9 w-9 p-0",
+      },
+      fullWidth: {
+        true: "w-full",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "primary",
       size: "default",
     },
   },
 );
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  asChild = false,
-  disabled = false,
-  icon: Icon,
-  label,
-  ...props
-}) {
+const Button = forwardRef(function Button(
+  {
+    className,
+    variant = "primary",
+    size = "default",
+    fullWidth = false,
+    asChild = false,
+    disabled = false,
+    type = "button",
+    icon: Icon,
+    label,
+    children,
+    ...props
+  },
+  ref
+) {
   const Comp = asChild ? Slot : "button";
 
   return (
     <Comp
+      ref={ref}
+      type={type}
       aria-label={label}
       disabled={disabled}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, fullWidth }), className)}
       {...props}
     >
       {Icon && (
-        <Icon className="h-full w-full transition-colors" strokeWidth={1.6} />
+        <Icon className="h-4 w-4 shrink-0 transition-colors" strokeWidth={1.8} />
       )}
+      {children}
     </Comp>
   );
-}
+});
 
+export default Button;
 export { Button, buttonVariants };

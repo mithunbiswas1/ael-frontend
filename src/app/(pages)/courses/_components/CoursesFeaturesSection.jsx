@@ -1,6 +1,6 @@
 import { PlaySquare, HelpCircle, CheckCircle2, Award, Clock } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
-import { H4 } from "@/components/ui/Typography";
+import { H4, P } from "@/components/ui/Typography";
 
 const features = [
   {
@@ -51,12 +51,12 @@ export default function CoursesFeaturesSection() {
                 <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
                   <Icon className="h-4.5 w-4.5" />
                 </div>
-                <H4 className="mt-3 text-xs font-bold text-slate-900">
+                <H4 className="mt-3 text-xs">
                   {feat.title}
                 </H4>
-                <p className="mt-1 text-[11px] text-slate-500 leading-relaxed">
+                <P size="xs" className="mt-1">
                   {feat.description}
-                </p>
+                </P>
               </div>
             );
           })}

@@ -1,4 +1,5 @@
 // src/app/(home)/_components/LatestBlogsSection.jsx
+
 "use client";
 
 import Link from "next/link";
@@ -15,17 +16,17 @@ const blogsData = [
     title: "LPG Safety Seminar Held in Dhaka",
     date: "May 18, 2024",
     readTime: "5 min read",
-    href: "/blogs/1",
+    href: "/blogs/lpg-demand-to-rise-in-bangladesh-by-2025",
   },
   {
     id: 2,
     category: "safety",
     badgeText: "Safety Tips",
-    imageUrl: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?q=80&w=600&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
     title: "10 Essential LPG Safety Tips for Everyone",
     date: "May 16, 2024",
     readTime: "4 min read",
-    href: "/blogs/2",
+    href: "/blogs/10-essential-lpg-safety-tips-for-every-home",
   },
   {
     id: 3,
@@ -35,7 +36,37 @@ const blogsData = [
     title: "Upcoming Programs and Activities",
     date: "May 14, 2024",
     readTime: "3 min read",
-    href: "/blogs/3",
+    href: "/blogs/how-to-detect-lpg-gas-leakage-quickly",
+  },
+  {
+    id: 4,
+    category: "regulations",
+    badgeText: "Regulations",
+    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop",
+    title: "New Safety Regulations Issued by Department of Explosives",
+    date: "May 12, 2024",
+    readTime: "6 min read",
+    href: "/blogs/new-lpg-safety-regulations-issued-by-doe",
+  },
+  {
+    id: 5,
+    category: "technology",
+    badgeText: "Technology",
+    imageUrl: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop",
+    title: "Smart LPG Monitoring Systems for Household Safety",
+    date: "May 10, 2024",
+    readTime: "4 min read",
+    href: "/blogs/smart-lpg-monitoring-systems-for-safety",
+  },
+  {
+    id: 6,
+    category: "environment",
+    badgeText: "Environment",
+    imageUrl: "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?q=80&w=600&auto=format&fit=crop",
+    title: "LPG: A Cleaner Energy for Bangladesh’s Greener Future",
+    date: "May 08, 2024",
+    readTime: "5 min read",
+    href: "/blogs/lpg-a-cleaner-energy-for-greener-future",
   },
 ];
 

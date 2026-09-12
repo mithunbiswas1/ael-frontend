@@ -27,14 +27,14 @@ export default function VerifyHeroSection() {
           <span>NATIONAL RECOGNIZED REGISTRY</span>
         </div>
 
-        <H1 color="white" className="leading-tight">
+        <H1 color="white">
           <span>VERIFY</span>{" "}
           <span className="text-primary">CERTIFICATE.</span>
         </H1>
 
-        <P className="mt-3 text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+        <P color="light" className="mt-3 max-w-xl mx-auto">
           Instant digital validation for all LPG Safety & Regulatory compliance certificates issued
-          under AEL, Department of Explosives (DoE), and LOAB joint programs.
+          under Safe LPG, Department of Explosives (DoE), and LOAB joint programs.
         </P>
       </div>
     </section>

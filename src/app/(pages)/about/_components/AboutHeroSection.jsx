@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { ArrowRight } from "lucide-react";
 import { H1, P } from "@/components/ui/Typography";
 import Breadcrumb from "@/components/ui/Breadcrumb";
@@ -34,30 +35,32 @@ export default function AboutHeroSection() {
             </div>
 
             {/* Dual-tone H1 */}
-            <H1 color="white" className="leading-[1.08] tracking-tight">
+            <H1 color="white">
               <span>ABOUT</span>{" "}
               <span className="text-primary">US.</span>
             </H1>
 
-            <P className="mt-4 max-w-xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-4 max-w-xl">
               Dedicated to promoting nationwide safety, building public awareness, and strengthening
               Bangladesh’s LPG sector through knowledge, technical training, and institutional collaboration.
             </P>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Link
+              <LinkButton
                 href="/courses"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-xs md:text-sm font-bold text-white shadow-xs transition-colors duration-200 hover:bg-blue-700"
+                variant="primary"
+                size="default"
               >
                 <span>Explore Training Courses</span>
                 <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
+              </LinkButton>
+              <LinkButton
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-2.5 text-xs md:text-sm font-bold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/20"
+                variant="frosted"
+                size="default"
               >
                 <span>Contact Our Team</span>
-              </Link>
+              </LinkButton>
             </div>
           </div>
 

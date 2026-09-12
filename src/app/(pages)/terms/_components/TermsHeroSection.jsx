@@ -20,12 +20,12 @@ export default function TermsHeroSection() {
           <span>TERMS & USER CONDUCT AGREEMENT</span>
         </div>
 
-        <H1 color="white" className="leading-tight">
+        <H1 color="white">
           <span>TERMS OF</span>{" "}
           <span className="text-primary">SERVICE.</span>
         </H1>
 
-        <P className="mt-3 text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+        <P color="light" className="mt-3 max-w-xl mx-auto">
           Statutory conditions governing portal access, certification issuance, educational content utilization, and subscriber obligations.
         </P>
       </div>

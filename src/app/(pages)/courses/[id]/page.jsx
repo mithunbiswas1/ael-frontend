@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
     };
 
   return {
-    title: `${course.title} | AEL LPG Safety Academy`,
+    title: `${course.title} | Safe LPG Safety Academy`,
     description: course.description,
   };
 }

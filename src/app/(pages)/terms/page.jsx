@@ -3,7 +3,7 @@ import TermsHeroSection from "./_components/TermsHeroSection";
 import TermsContentSection from "./_components/TermsContentSection";
 
 export const metadata = {
-  title: "Terms of Use | AEL LPG Safety Platform",
+  title: "Terms of Use | Safe LPG Platform",
   description: "Terms and conditions governing LMS training participation, certificate verification, and user conduct.",
 };
 

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import MarketUpdatesContent from "./_components/MarketUpdatesContent";
 
 export const metadata = {
-  title: "LPG Market Update & Incident Registry | AEL Safety Platform",
+  title: "LPG Market Update & Incident Registry | Safe LPG Platform",
   description:
     "Real-time official LPG incident registry, DoE inquiry reports, BERC circulars, and global market price trends in Bangladesh.",
 };

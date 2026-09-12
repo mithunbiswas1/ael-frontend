@@ -2,7 +2,7 @@
 import QuizContent from "./_components/QuizContent";
 
 export const metadata = {
-  title: "LPG Safety Assessment Quiz | AEL Safety Academy",
+  title: "LPG Safety Assessment Quiz | Safe LPG Safety Academy",
   description:
     "Test your LPG safety knowledge, score 80% or higher, and earn your official verified digital certificate.",
 };

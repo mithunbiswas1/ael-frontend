@@ -9,7 +9,7 @@ export const blogsData = [
     categoryId: "safety",
     date: "May 20, 2024",
     readTime: "5 min read",
-    author: "AEL Safety Team",
+    author: "Safe LPG Safety Team",
     description:
       "Simple yet crucial safety habits to ensure safe usage, leak detection, and maintenance of LPG cylinders at home.",
     imageUrl:
@@ -24,7 +24,7 @@ export const blogsData = [
     categoryId: "news",
     date: "May 18, 2024",
     readTime: "4 min read",
-    author: "AEL Analytics",
+    author: "Safe LPG Analytics",
     description:
       "Bangladesh's expanding consumer base and commercial transition are driving unprecedented national LPG demand.",
     imageUrl:

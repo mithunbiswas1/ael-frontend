@@ -5,7 +5,7 @@ import VerifyCertificateContent from "./_components/VerifyCertificateContent";
 export const metadata = {
   title: "Verify Certificate | National Recognized Registry Bangladesh",
   description:
-    "Instant digital validation for all LPG Safety & Regulatory compliance certificates issued under AEL, Department of Explosives (DoE), and LOAB joint programs.",
+    "Instant digital validation for all LPG Safety & Regulatory compliance certificates issued under Safe LPG, Department of Explosives (DoE), and LOAB joint programs.",
 };
 
 export default function VerifyCertificatePage() {

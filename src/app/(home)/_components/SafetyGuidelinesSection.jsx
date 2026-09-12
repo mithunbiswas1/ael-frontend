@@ -1,4 +1,5 @@
-// src/app/(home)/_components/SafetyGuidelinesSection.jsx
+// src/app/(home)/_components/SafetyGuidelinesSection.jsx 
+
 "use client";
 
 import { User, ShieldCheck, Truck, Fuel, Factory } from "lucide-react";
@@ -7,12 +8,12 @@ import SectionHeader from "@/components/ui/SectionHeader";
 
 const guidelinesData = [
   {
-    id: "consumer",
-    icon: User,
-    badgeText: "Consumer",
+    id: "Investors",
+    icon: Factory,
+    badgeText: "Industrial Customer",
     imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
-    description: "Safe usage tips for household customers.",
-    href: "/safety-guidelines?tab=consumer",
+    description: "Safety for industrial LPG usage.",
+    href: "/safety-guidelines?tab=industrial",
   },
   {
     id: "dealer",
@@ -31,20 +32,12 @@ const guidelinesData = [
     href: "/safety-guidelines?tab=distributor",
   },
   {
-    id: "auto-gas",
-    icon: Fuel,
-    badgeText: "Auto Gas Station",
-    imageUrl: "https://images.unsplash.com/photo-1545459720-aac8509eb02c?q=80&w=600&auto=format&fit=crop",
-    description: "Operational safety for auto gas stations.",
-    href: "/safety-guidelines?tab=auto-gas",
-  },
-  {
-    id: "industrial",
-    icon: Factory,
-    badgeText: "Industrial Customer",
+    id: "consumer",
+    icon: User,
+    badgeText: "Consumer",
     imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
-    description: "Safety for industrial LPG usage.",
-    href: "/safety-guidelines?tab=industrial",
+    description: "Safe usage tips for household customers.",
+    href: "/safety-guidelines?tab=consumer",
   },
 ];
 
@@ -55,14 +48,13 @@ export default function SafetyGuidelinesSection() {
         {/* Section Header */}
         <SectionHeader
           align="center"
-          tag="STAKEHOLDER PROTOCOLS"
           title="SAFETY"
           accent="GUIDELINES."
           subtitle="Standard operating safety procedures and regulatory compliance guidelines tailored for each stakeholder."
         />
 
         {/* 5 Columns Grid matching mockup */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {guidelinesData.map((item) => (
             <SafetyGuidelineCard
               key={item.id}

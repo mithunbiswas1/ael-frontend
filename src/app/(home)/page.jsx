@@ -1,6 +1,6 @@
-// src/app/(home)/page.jsx - updated 2026-09-10T13:29
+// src/app/(home)/page.jsx 
+
 import HeroSection from "./_components/HeroSection";
-import SafetyTickerRibbon from "./_components/SafetyTickerRibbon";
 import MetricsBar from "./_components/MetricsBar";
 import SafetyGuidelinesSection from "./_components/SafetyGuidelinesSection";
 import MarketUpdatesSection from "./_components/MarketUpdatesSection";

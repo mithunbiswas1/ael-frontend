@@ -20,12 +20,12 @@ export default function PricingHeroSection({ isAnnual, setIsAnnual }) {
           className="justify-center mb-3"
         />
 
-        <H1 color="white" className="leading-tight">
+        <H1 color="white">
           <span>FLEXIBLE SAFETY</span>{" "}
           <span className="text-primary">PLANS.</span>
         </H1>
 
-        <P className="mt-3 text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+        <P color="light" className="mt-3 max-w-xl mx-auto">
           Choose the safety, training, and regulatory compliance package tailored for your home, retail outlet, auto gas station, or manufacturing facility.
         </P>
 

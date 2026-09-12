@@ -59,7 +59,7 @@ export default function PrivacyContentSection() {
           <div className="mt-3 rounded-lg bg-slate-50 p-4 border border-slate-200/70 text-xs">
             <strong>Data Privacy & Compliance Cell</strong>
             <br />
-            AEL LPG Platform, House # 13, Road # 13, Sector # 03, Uttara, Dhaka-1230
+            Safe LPG Platform, House # 13, Road # 13, Sector # 03, Uttara, Dhaka-1230
             <br />
             Email: <span className="text-primary font-medium">privacy@lpgsafety.org.bd</span> | Phone: +880 1812-345678
           </div>

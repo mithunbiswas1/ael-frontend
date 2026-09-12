@@ -30,12 +30,12 @@ export default function ContactHeroSection() {
               <span>24/7 CITIZEN &amp; INDUSTRY SUPPORT</span>
             </div>
 
-            <H1 color="white" className="leading-[1.08] tracking-tight">
+            <H1 color="white">
               <span>CONTACT</span>{" "}
               <span className="text-primary">US.</span>
             </H1>
 
-            <P className="mt-4 max-w-xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-4 max-w-xl">
               We are here to assist with safety protocols, regulatory compliance inquiries, institutional LMS training, and technical advisory services across Bangladesh.
             </P>
 
@@ -46,7 +46,7 @@ export default function ContactHeroSection() {
               </div>
               <div className="flex items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-3.5 py-2 backdrop-blur-md">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>support@ael-bd.com</span>
+                <span>support@safelpg-bd.com</span>
               </div>
             </div>
           </div>

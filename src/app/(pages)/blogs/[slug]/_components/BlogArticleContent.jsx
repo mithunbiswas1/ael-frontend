@@ -12,7 +12,7 @@ import {
   FaLinkedinIn,
   FaWhatsapp,
 } from "react-icons/fa";
-import { H1, H3 } from "@/components/ui/Typography";
+import { H1, H3, P } from "@/components/ui/Typography";
 
 export default function BlogArticleContent({
   currentPost,
@@ -28,7 +28,7 @@ export default function BlogArticleContent({
           {currentPost.category}
         </span>
 
-        <H1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 leading-tight">
+        <H1 className="text-2xl sm:text-3xl md:text-4xl">
           {currentPost.title}
         </H1>
 
@@ -98,17 +98,17 @@ export default function BlogArticleContent({
 
       {/* Article Body Content */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 text-slate-700 shadow-xs space-y-6 text-sm leading-relaxed">
-        <p className="font-semibold text-slate-800 text-base leading-relaxed">
+        <P weight="semibold" color="dark" size="lg">
           Liquefied Petroleum Gas (LPG) is a clean, cost-efficient, and versatile fuel when handled in accordance with established regulatory protocols. However, inadvertent negligence can lead to avoidable hazard scenarios. Adhere to these certified procedures to guarantee safety in your home or commercial establishment.
-        </p>
+        </P>
 
         <div>
-          <H3 className="text-base font-black text-slate-900">
+          <H3 className="text-base">
             1. Conduct Periodic Soap Solution Leak Tests
           </H3>
-          <p className="mt-2 text-slate-600">
+          <P color="gray" className="mt-2">
             Always inspect regulator o-rings and hose connections by dabbing a mild soap-water mixture around all joints. Formation of expanding bubbles signals an active gas escape. Never use open flames or matches to detect leaks. Should a leak occur, immediately disengage the regulator valve and ensure cross-ventilation.
-          </p>
+          </P>
         </div>
 
         {/* Embedded Video Mockup with Play Button */}
@@ -136,30 +136,30 @@ export default function BlogArticleContent({
         </div>
 
         <div>
-          <H3 className="text-base font-black text-slate-900">
+          <H3 className="text-base">
             2. Ensure Constant Low-Level Kitchen Ventilation
           </H3>
-          <p className="mt-2 text-slate-600">
+          <P color="gray" className="mt-2">
             Because LPG vapors are denser than ambient air, escaped gas tends to settle along floor levels and corners rather than rising toward ceiling vents. Keep lower kitchen windows cracked and ensure baseboards allow airflow.
-          </p>
+          </P>
         </div>
 
         <div>
-          <H3 className="text-base font-black text-slate-900">
+          <H3 className="text-base">
             3. Maintain Cylinders in an Upright Vertical Position
           </H3>
-          <p className="mt-2 text-slate-600">
+          <P color="gray" className="mt-2">
             Never tilt, invert, or store LPG cylinders horizontally. Cylinders must always rest vertically on dry, even ground. Storing cylinders on their side allows liquid LPG to bypass internal safety vapor spaces and enter burners, provoking catastrophic flash fires.
-          </p>
+          </P>
         </div>
 
         <div>
-          <H3 className="text-base font-black text-slate-900">
+          <H3 className="text-base">
             4. Disengage Cylinder Regulator When Not in Use
           </H3>
-          <p className="mt-2 text-slate-600">
+          <P color="gray" className="mt-2">
             Do not rely exclusively on the stove knob. Turn off the main cylinder regulator switch every night before sleeping and prior to departing the residence.
-          </p>
+          </P>
         </div>
 
         {/* Emergency Alert Box */}
@@ -191,9 +191,9 @@ export default function BlogArticleContent({
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-500 mb-3">
             <Lock className="h-5 w-5" />
           </div>
-          <p className="text-xs text-slate-600 mb-3 font-medium">
+          <P size="xs" color="gray" weight="medium" className="mb-3">
             Please log in with your registered account to participate in the safety discussion.
-          </p>
+          </P>
           <Link
             href="/login"
             className="rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"

@@ -23,12 +23,12 @@ export default function FaqHeroSection() {
           <span>KNOWLEDGE BASE & SUPPORT DESK</span>
         </div>
 
-        <H1 color="white" className="leading-tight">
+        <H1 color="white">
           <span>FREQUENTLY ASKED</span>{" "}
           <span className="text-primary">QUESTIONS.</span>
         </H1>
 
-        <P className="mt-3 text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+        <P color="light" className="mt-3 max-w-xl mx-auto">
           Clear, authoritative guidance on LPG household handling, regulator maintenance, commercial compliance, and emergency protocols.
         </P>
       </div>

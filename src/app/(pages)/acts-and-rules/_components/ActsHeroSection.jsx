@@ -26,12 +26,12 @@ export default function ActsHeroSection() {
           <span>NATIONAL STATUTORY & REGULATORY COMPENDIUM</span>
         </div>
 
-        <H1 color="white" className="leading-tight">
+        <H1 color="white">
           <span>ACTS &</span>{" "}
           <span className="text-primary">RULES.</span>
         </H1>
 
-        <P className="mt-3 text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
+        <P color="light" className="mt-3 max-w-xl mx-auto">
           Official legal gazettes, petroleum acts, explosives regulations, and ministerial directives governing the Liquefied Petroleum Gas (LPG) sector in Bangladesh.
         </P>
       </div>

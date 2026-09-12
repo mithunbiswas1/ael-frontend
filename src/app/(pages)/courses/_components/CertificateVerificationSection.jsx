@@ -42,7 +42,7 @@ export default function CertificateVerificationSection({
             <div className="relative aspect-4/3 w-full max-w-xs rounded-lg border-2 border-amber-300/50 bg-white p-4 text-slate-900 shadow-xl">
               <div className="text-center">
                 <div className="text-[10px] font-black uppercase text-primary">
-                  AEL LPG ACADEMY
+                  SAFE LPG ACADEMY
                 </div>
                 <div className="mt-0.5 text-xs font-black text-slate-900 uppercase">
                   Certificate of Completion
@@ -60,7 +60,7 @@ export default function CertificateVerificationSection({
                   LPG Safety for Regular Consumers
                 </div>
                 <div className="mt-1 text-[8px] text-slate-400">
-                  May 2024 • ID: AEL-2024-8849
+                  May 2024 • ID: SAFE-2024-8849
                 </div>
               </div>
 
@@ -84,7 +84,7 @@ export default function CertificateVerificationSection({
               <form onSubmit={handleVerify} className="mt-3.5 flex gap-2">
                 <Input
                   type="text"
-                  placeholder="e.g. AEL-2024-8849"
+                  placeholder="e.g. SAFE-2024-8849"
                   value={verifyId}
                   onChange={(e) => setVerifyId(e.target.value)}
                   variant="dark"

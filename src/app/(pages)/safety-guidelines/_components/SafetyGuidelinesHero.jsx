@@ -29,12 +29,12 @@ export default function SafetyGuidelinesHero() {
               <span>NATIONWIDE SAFETY PROTOCOLS</span>
             </div>
 
-            <H1 color="white" className="leading-[1.08] tracking-tight">
+            <H1 color="white">
               <span>SAFETY</span>{" "}
               <span className="text-primary">GUIDELINES.</span>
             </H1>
 
-            <P className="mt-4 max-w-xl text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed">
+            <P color="light" className="mt-4 max-w-xl">
               Guidelines for safe handling, storage and use of LPG across all sectors. Compliant with
               BERC, Department of Explosives (DoE), and Fire Service regulations.
             </P>

@@ -3,7 +3,7 @@ import PrivacyHeroSection from "./_components/PrivacyHeroSection";
 import PrivacyContentSection from "./_components/PrivacyContentSection";
 
 export const metadata = {
-  title: "Privacy Policy | AEL LPG Safety Platform",
+  title: "Privacy Policy | Safe LPG Platform",
   description: "Official privacy statement, data protection principles, and learner confidentiality protocols.",
 };
 

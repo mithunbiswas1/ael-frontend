@@ -20,13 +20,13 @@ export default function PrivacyHeroSection() {
           <span>DATA INTEGRITY & USER CONFIDENTIALITY</span>
         </div>
 
-        <H1 color="white" className="leading-tight">
+        <H1 color="white">
           <span>PRIVACY</span>{" "}
           <span className="text-primary">POLICY.</span>
         </H1>
 
-        <P className="mt-3 text-slate-300 text-xs sm:text-sm max-w-xl mx-auto leading-relaxed">
-          How AEL collects, stores, and safeguards personal training records, certification credentials, and incident reports in accordance with statutory digital standards.
+        <P color="light" className="mt-3 max-w-xl mx-auto">
+          How Safe LPG collects, stores, and safeguards personal training records, certification credentials, and incident reports in accordance with statutory digital standards.
         </P>
       </div>
     </section>
