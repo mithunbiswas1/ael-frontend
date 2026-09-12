@@ -73,6 +73,7 @@ export default function LatestBlogsSection() {
     <div>
       {/* Header */}
       <SectionHeader
+        level="h3"
         tag="KNOWLEDGE BASE"
         title="LATEST BLOG"
         accent="POSTS."

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { H3, P } from "../ui/Typography";
+import { H5, P } from "../ui/Typography";
 
 const STAKEHOLDER_THEMES = {
   consumer: "bg-emerald-700",
@@ -35,9 +35,9 @@ export default function SafetyGuidelineCard({
           >
             {Icon && <Icon className="h-3.5 w-3.5" strokeWidth={2.5} />}
           </div>
-          <H3 className="text-xs sm:text-sm font-bold uppercase leading-snug text-slate-900">
+          <H5 className="font-bold uppercase">
             {badgeText}
-          </H3>
+          </H5>
         </div>
 
         {/* Thumbnail Image */}

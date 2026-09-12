@@ -1,7 +1,7 @@
 // src/app/(home)/_components/FeaturedTrainingSection.jsx
 
 import CourseCard from "@/components/shared/CourseCard";
-import { H2 } from "@/components/ui/Typography";
+import { H3 } from "@/components/ui/Typography";
 
 export default function FeaturedTrainingSection() {
   return (
@@ -10,9 +10,9 @@ export default function FeaturedTrainingSection() {
         <span className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary backdrop-blur-md">
           E-LEARNING LMS
         </span>
-        <H2 className="text-xl sm:text-2xl font-black">
+        <H3>
           FEATURED TRAINING <span className="text-primary">&amp; QUIZ.</span>
-        </H2>
+        </H3>
       </div>
 
       <CourseCard

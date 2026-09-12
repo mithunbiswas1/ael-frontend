@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
-import { H3 } from "@/components/ui/Typography";
+import { H4 } from "@/components/ui/Typography";
 
 const BLOG_BADGE_VARIANTS = {
   Seminar: "bg-blue-800 text-white",
@@ -59,9 +59,9 @@ export default function BlogCard({
 
       {/* Content */}
       <div className="flex flex-1 flex-col justify-between p-3.5">
-        <H3 className="line-clamp-2 text-sm sm:text-base font-bold transition-colors group-hover:text-primary leading-snug">
+        <H4 className="line-clamp-2 transition-colors group-hover:text-primary leading-snug">
           {title}
-        </H3>
+        </H4>
 
         <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-slate-500">
           <div className="flex items-center gap-1">

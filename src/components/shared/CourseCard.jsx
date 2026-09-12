@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Clock, BookOpen, User, ArrowRight } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
-import { H3, P } from "@/components/ui/Typography";
+import { H4, P } from "@/components/ui/Typography";
 
 export default function CourseCard({
   isBestSeller = true,
@@ -46,9 +46,9 @@ export default function CourseCard({
 
       {/* Content */}
       <div className="mt-3.5 flex flex-col">
-        <H3 className="text-sm sm:text-base font-bold transition-colors group-hover:text-primary">
+        <H4 className="transition-colors group-hover:text-primary">
           {title}
-        </H3>
+        </H4>
 
         <P size="xs" className="mt-1 line-clamp-2">
           {description}
