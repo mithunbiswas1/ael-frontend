@@ -1,7 +1,6 @@
 // src/app/(home)/_components/MetricsBar.jsx
 
 import { Users, GraduationCap, FileText, ShieldCheck } from "lucide-react";
-import { H3, P } from "@/components/ui/Typography";
 
 const metrics = [
   {
@@ -45,9 +44,9 @@ export default function MetricsBar() {
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
               </div>
               <div>
-                <H3>
+                <div className="font-manrope text-lg sm:text-xl md:text-2xl font-black tracking-tight leading-snug text-slate-900">
                   {item.value}
-                </H3>
+                </div>
                 <span className="-mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-700">
                   {item.label}
                 </span>

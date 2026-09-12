@@ -40,7 +40,6 @@ export default function MarketUpdatesSection() {
     <div className="mb-10">
       {/* Header */}
       <SectionHeader
-        level="h3"
         tag="INDUSTRY INTELLIGENCE"
         title="LPG MARKET"
         accent="UPDATES."

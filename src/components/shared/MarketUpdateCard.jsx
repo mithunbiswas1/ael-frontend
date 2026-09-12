@@ -3,17 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "lucide-react";
-import { H4 } from "@/components/ui/Typography";
+import { H3 } from "@/components/ui/Typography";
 
 const BADGE_VARIANTS = {
-  "Incident Report": "bg-red-600 text-white",
-  "BERC Message": "bg-blue-600 text-white",
-  "Stakeholder Update": "bg-emerald-600 text-white",
-  "Global Market": "bg-purple-600 text-white",
-  incident: "bg-red-600 text-white",
-  berc: "bg-blue-600 text-white",
-  stakeholder: "bg-emerald-600 text-white",
-  global: "bg-purple-600 text-white",
+  "Incident Report": "bg-red-700 text-white",
+  "BERC Message": "bg-blue-700 text-white",
+  "Stakeholder Update": "bg-emerald-800 text-white",
+  "Global Market": "bg-purple-800 text-white",
+  incident: "bg-red-700 text-white",
+  berc: "bg-blue-700 text-white",
+  stakeholder: "bg-emerald-800 text-white",
+  global: "bg-purple-800 text-white",
 };
 
 export default function MarketUpdateCard({
@@ -40,7 +40,7 @@ export default function MarketUpdateCard({
           src={imageUrl}
           alt={title}
           fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
           className="object-cover"
         />
         <span
@@ -52,9 +52,9 @@ export default function MarketUpdateCard({
 
       {/* Content */}
       <div className="flex flex-1 flex-col justify-between p-3.5">
-        <H4 className="line-clamp-2 transition-colors group-hover:text-primary leading-snug">
+        <H3 className="line-clamp-2 text-sm sm:text-base font-bold transition-colors group-hover:text-primary leading-snug">
           {title}
-        </H4>
+        </H3>
 
         <div className="mt-3 flex items-center gap-1.5 text-[11px] font-medium text-slate-500">
           <Calendar className="h-3 w-3 text-slate-400" />

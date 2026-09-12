@@ -66,7 +66,9 @@ export default function HeroSection() {
                 alt="LPG Safety Storage Plant"
                 fill
                 priority
-                sizes="(max-width: 768px) 100vw, 45vw"
+                fetchPriority="high"
+                quality={80}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 480px"
                 className="object-cover object-center"
               />
             </div>

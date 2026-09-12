@@ -3,13 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { H5, P } from "../ui/Typography";
+import { H3, P } from "../ui/Typography";
 
 const STAKEHOLDER_THEMES = {
-  consumer: "bg-emerald-600",
-  dealer: "bg-blue-600",
-  distributor: "bg-amber-500",
-  investors: "bg-teal-600",
+  consumer: "bg-emerald-700",
+  dealer: "bg-blue-700",
+  distributor: "bg-amber-700",
+  investors: "bg-teal-700",
 };
 
 export default function SafetyGuidelineCard({
@@ -35,9 +35,9 @@ export default function SafetyGuidelineCard({
           >
             {Icon && <Icon className="h-3.5 w-3.5" strokeWidth={2.5} />}
           </div>
-          <H5 className="font-bold uppercase">
+          <H3 className="text-xs sm:text-sm font-bold uppercase leading-snug text-slate-900">
             {badgeText}
-          </H5>
+          </H3>
         </div>
 
         {/* Thumbnail Image */}
@@ -46,7 +46,7 @@ export default function SafetyGuidelineCard({
             src={imageUrl}
             alt={badgeText}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
             className="object-cover"
           />
         </div>

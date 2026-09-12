@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Clock, BookOpen, User, ArrowRight } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
-import { H4, P } from "@/components/ui/Typography";
+import { H3, P } from "@/components/ui/Typography";
 
 export default function CourseCard({
   isBestSeller = true,
@@ -25,19 +25,20 @@ export default function CourseCard({
           src={imageUrl}
           alt={title}
           fill
-          sizes="(max-width: 768px) 100vw, 35vw"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
           className="object-cover"
         />
 
         {isBestSeller && (
-          <span className="absolute right-2.5 top-2.5 rounded-md bg-emerald-600 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs">
+          <span className="absolute right-2.5 top-2.5 rounded-md bg-emerald-800 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs">
             Best Seller
           </span>
         )}
 
         <span
-          className={`absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs ${isPaid ? "bg-primary" : "bg-emerald-600"
-            }`}
+          className={`absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs ${
+            isPaid ? "bg-primary" : "bg-emerald-800"
+          }`}
         >
           {isPaid ? "Paid Course" : "Free Course"}
         </span>
@@ -45,9 +46,9 @@ export default function CourseCard({
 
       {/* Content */}
       <div className="mt-3.5 flex flex-col">
-        <H4 className="transition-colors group-hover:text-primary">
+        <H3 className="text-sm sm:text-base font-bold transition-colors group-hover:text-primary">
           {title}
-        </H4>
+        </H3>
 
         <P size="xs" className="mt-1 line-clamp-2">
           {description}

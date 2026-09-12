@@ -12,9 +12,13 @@ import {
   ChevronDown,
   ArrowRight,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
-import SearchModal from "@/components/shared/SearchModal";
+
+const SearchModal = dynamic(() => import("@/components/shared/SearchModal"), {
+  ssr: false,
+});
 
 export default function NavbarInteractive({ navLinks }) {
   const pathname = usePathname();
@@ -279,11 +283,13 @@ export default function NavbarInteractive({ navLinks }) {
         </div>
       )}
 
-      {/* 5. Global Search Modal */}
-      <SearchModal
-        isOpen={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-      />
+      {/* 5. Global Search Modal (Loaded on demand) */}
+      {searchModalOpen && (
+        <SearchModal
+          isOpen={searchModalOpen}
+          onClose={() => setSearchModalOpen(false)}
+        />
+      )}
     </>
   );
 }

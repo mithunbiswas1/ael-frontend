@@ -20,7 +20,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${manrope.variable} bg-page-back antialiased`}
-        cz-shortcut-listen="true"
       >
         {children}
         <Toaster position="top-right" richColors closeButton />

@@ -1,12 +1,10 @@
 // src/components/common/footer/footer.jsx
-
-"use client";
-
+ 
 import Link from "next/link";
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 import AelLogo from "@/components/common/AelLogo";
-import { H4, P } from "@/components/ui/Typography";
+import { H3, P } from "@/components/ui/Typography";
 
 const SOCIAL_LINKS = [
   {
@@ -131,9 +129,9 @@ export default function Footer() {
           {/* Columns 2-4: Navigation link groups mapped (2 cols each = 6 cols) */}
           {FOOTER_COLUMNS.map((column) => (
             <div key={column.title} className="lg:col-span-2">
-              <H4 color="white" uppercase className="text-xs font-black tracking-wider">
+              <H3 color="white" uppercase className="text-xs font-black tracking-wider">
                 {column.title}
-              </H4>
+              </H3>
               <ul className="mt-4 space-y-2.5 text-xs">
                 {column.links.map((link) => {
                   const isExternal = link.href.startsWith("http") || link.href.startsWith("tel:") || link.href.startsWith("mailto:");
@@ -163,9 +161,9 @@ export default function Footer() {
 
           {/* Column 5: Contact Info mapped (3 cols) */}
           <div className="lg:col-span-3">
-            <H4 color="white" uppercase className="text-xs font-black tracking-wider">
+            <H3 color="white" uppercase className="text-xs font-black tracking-wider">
               CONTACT US
-            </H4>
+            </H3>
             <ul className="mt-4 space-y-3 text-xs">
               {CONTACT_ITEMS.map((item, idx) => {
                 const IconComponent = item.icon;
