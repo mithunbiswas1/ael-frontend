@@ -1,5 +1,5 @@
 // src/components/common/footer/footer.jsx
- 
+
 import Link from "next/link";
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa";
@@ -36,33 +36,24 @@ const SOCIAL_LINKS = [
 const FOOTER_COLUMNS = [
   {
     title: "QUICK LINKS",
+    colSpan: "lg:col-span-2",
     links: [
       { label: "Home", href: "/" },
       { label: "Safety Guidelines", href: "/safety-guidelines" },
       { label: "LPG Market Update", href: "/market-updates" },
       { label: "Training & Quiz", href: "/courses" },
       { label: "Blog & Insights", href: "/blogs" },
-      { label: "Contact Us", href: "/contact" },
     ],
   },
   {
-    title: "RESOURCES",
-    links: [
-      { label: "Safety Guidelines", href: "/safety-guidelines" },
-      { label: "Emergency Hotline (16137)", href: "tel:16137" },
-      { label: "Related Acts & Rules", href: "/acts-and-rules" },
-      { label: "Verify Certificate", href: "/verify-certificate" },
-      { label: "FAQ & Help Center", href: "/faq" },
-    ],
-  },
-  {
-    title: "SUPPORT",
+    title: "RESOURCES & SUPPORT",
+    colSpan: "lg:col-span-3",
     links: [
       { label: "Subscription Plans", href: "/pricing" },
       { label: "Terms & Conditions", href: "/terms" },
       { label: "Privacy Policy", href: "/privacy" },
-      { label: "Checkout & Billing", href: "/checkout" },
-      { label: "Contact Support", href: "/contact" },
+      { label: "FAQ & Help Center", href: "/faq" },
+      { label: "Contact", href: "/contact" },
     ],
   },
 ];
@@ -96,10 +87,10 @@ export default function Footer() {
       <div className="site-container py-12 lg:py-16">
 
         {/* Main Grid: Brand + Navigation Columns + Contact */}
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-12 lg:gap-8">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
 
-          {/* Column 1: Brand Info & Social Media (3.5 cols) */}
-          <div className="flex flex-col lg:col-span-3">
+          {/* Column 1: Brand Info & Social Media (4 cols) */}
+          <div className="flex flex-col lg:col-span-4">
             <AelLogo light={true} />
 
             <P size="xs" color="slate400" className="mt-4 max-w-xs">
@@ -126,13 +117,13 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Columns 2-4: Navigation link groups mapped (2 cols each = 6 cols) */}
+          {/* Columns 2-3: Navigation link groups mapped */}
           {FOOTER_COLUMNS.map((column) => (
-            <div key={column.title} className="lg:col-span-2">
-              <H4 color="white" uppercase className="text-xs font-black tracking-wider">
+            <div key={column.title} className={column.colSpan || "lg:col-span-3"}>
+              <H4 color="white" uppercase className="text-xs lg:text-sm font-black tracking-wider">
                 {column.title}
               </H4>
-              <ul className="mt-4 space-y-2.5 text-xs">
+              <ul className="mt-4 space-y-2.5 text-xs lg:text-sm">
                 {column.links.map((link) => {
                   const isExternal = link.href.startsWith("http") || link.href.startsWith("tel:") || link.href.startsWith("mailto:");
                   return (
@@ -159,12 +150,12 @@ export default function Footer() {
             </div>
           ))}
 
-          {/* Column 5: Contact Info mapped (3 cols) */}
+          {/* Column 4: Contact Info mapped (3 cols) */}
           <div className="lg:col-span-3">
-            <H4 color="white" uppercase className="text-xs font-black tracking-wider">
+            <H4 color="white" uppercase className="text-xs lg:text-sm font-black tracking-wider">
               CONTACT US
             </H4>
-            <ul className="mt-4 space-y-3 text-xs">
+            <ul className="mt-4 space-y-3 text-xs lg:text-sm">
               {CONTACT_ITEMS.map((item, idx) => {
                 const IconComponent = item.icon;
                 return (
@@ -192,12 +183,12 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar: Copyright & Subtle Utility Badges */}
-        <div className="mt-12 sm:mt-16 border-t border-slate-900/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div className="mt-12 sm:mt-16 border-t border-slate-900/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs lg:text-sm">
           <P size="xs" className="text-center sm:text-left">
             © {new Date().getFullYear()} Safe LPG. All Rights Reserved.
           </P>
 
-          <div className="flex items-center gap-6 text-slate-400 text-xs">
+          <div className="flex items-center gap-6 text-slate-400 text-xs lg:text-sm">
             <Link href="/privacy" className="hover:text-slate-200 transition-colors">
               Privacy Policy
             </Link>

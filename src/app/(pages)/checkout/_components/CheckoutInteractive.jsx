@@ -25,8 +25,8 @@ export default function CheckoutInteractive() {
   const basePrice = courseId
     ? 500
     : billingType === "yearly"
-    ? selectedPlan.priceYearly
-    : selectedPlan.priceMonthly;
+      ? selectedPlan.priceYearly
+      : selectedPlan.priceMonthly;
 
   const vatAmount = Math.round(basePrice * 0.05);
   const grandTotal = basePrice + vatAmount;

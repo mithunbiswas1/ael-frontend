@@ -1,5 +1,5 @@
 // src/app/(pages)/courses/learn/[courseId]/page.jsx
-import ClassroomContent from "./_components/ClassroomContent";
+import ClassroomContent from "./_client/ClassroomContent";
 
 export const metadata = {
   title: "Online Safety Classroom Player | Safe LPG Academy",

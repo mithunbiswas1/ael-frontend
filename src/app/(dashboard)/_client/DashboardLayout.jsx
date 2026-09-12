@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
-import Sidebar from "./_components/Sidebar";
+import Sidebar from "./Sidebar";
 
 import { FaBars } from "react-icons/fa";
 

@@ -63,19 +63,7 @@ export default function NavbarInteractive({ navLinks }) {
 
   return (
     <>
-      {/* 1. Mobile Menu Toggle Button (Visible on Mobile) */}
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        onClick={() => setMobileMenuOpen(true)}
-        className="lg:hidden text-slate-700 hover:bg-slate-100"
-        aria-label="Open navigation menu"
-      >
-        <Menu className="h-5 w-5" />
-      </Button>
-
-      {/* 2. Desktop Navigation Menu (Visible on Desktop) */}
+      {/* 1. Desktop Navigation Menu (Visible on Desktop) */}
       <div className="hidden lg:flex items-center">
         {navLinks.map((item) => {
           const isActive =
@@ -92,8 +80,8 @@ export default function NavbarInteractive({ navLinks }) {
                 onMouseEnter={() => setOpenDropdown(item.name)}
                 onMouseLeave={() => setOpenDropdown(null)}
               >
-                <button
-                  type="button"
+                <Link
+                  href={item.href}
                   className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-all ${
                     isActive
                       ? "text-primary bg-primary/5 font-bold"
@@ -106,7 +94,7 @@ export default function NavbarInteractive({ navLinks }) {
                       isOpen ? "rotate-180 text-primary" : "text-slate-400"
                     }`}
                   />
-                </button>
+                </Link>
 
                 {/* Dropdown Menu */}
                 {isOpen && (
@@ -147,17 +135,50 @@ export default function NavbarInteractive({ navLinks }) {
         })}
       </div>
 
-      {/* 3. Search Trigger Button */}
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        onClick={() => setSearchModalOpen(true)}
-        className="h-8 w-8 sm:h-9 sm:w-9 text-slate-700 hover:text-primary hover:border-primary/50"
-        aria-label="Search"
-      >
-        <Search className="h-4 w-4" />
-      </Button>
+      {/* 2. Right Actions Cluster: Search Button + Login + Subscribe + Mobile Menu Toggle */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Search Trigger Button - With Login */}
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          onClick={() => setSearchModalOpen(true)}
+          className="h-8 w-8 sm:h-9 sm:w-9 text-slate-700 hover:text-primary hover:border-primary/50"
+          aria-label="Search"
+        >
+          <Search className="h-4 w-4" />
+        </Button>
+
+        {/* Login Button */}
+        <LinkButton
+          href="/login"
+          variant="outline"
+          className="hidden sm:inline-flex text-xs py-2"
+        >
+          Login
+        </LinkButton>
+
+        {/* Subscribe Button */}
+        <LinkButton
+          href="/pricing"
+          variant="primary"
+          className="hidden sm:inline-flex text-xs shadow-xs py-2"
+        >
+          Subscribe
+        </LinkButton>
+
+        {/* Mobile Menu Toggle Button */}
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => setMobileMenuOpen(true)}
+          className="lg:hidden text-slate-700 hover:bg-slate-100"
+          aria-label="Open navigation menu"
+        >
+          <Menu className="h-5 w-5" />
+        </Button>
+      </div>
 
       {/* 4. Mobile Slide-Over Menu Drawer */}
       {mobileMenuOpen && mounted && createPortal(
@@ -224,22 +245,31 @@ export default function NavbarInteractive({ navLinks }) {
                   const isExpanded = expandedMobileMenu === item.name;
                   return (
                     <div key={item.name} className="border-b border-slate-100 pb-1">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setExpandedMobileMenu(isExpanded ? null : item.name)
-                        }
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50"
-                      >
-                        <span className={isActive ? "text-primary" : ""}>
-                          {item.name}
-                        </span>
-                        <ChevronDown
-                          className={`h-4 w-4 text-slate-400 transition-transform ${
-                            isExpanded ? "rotate-180 text-primary" : ""
+                      <div className="flex items-center justify-between rounded-lg hover:bg-slate-50">
+                        <Link
+                          href={item.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className={`flex-1 px-3 py-2 text-sm font-semibold transition-colors ${
+                            isActive ? "text-primary font-bold" : "text-slate-800"
                           }`}
-                        />
-                      </button>
+                        >
+                          {item.name}
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedMobileMenu(isExpanded ? null : item.name)
+                          }
+                          className="p-2.5 text-slate-400 hover:text-primary"
+                          aria-label={`Toggle ${item.name} sub-menu`}
+                        >
+                          <ChevronDown
+                            className={`h-4 w-4 transition-transform ${
+                              isExpanded ? "rotate-180 text-primary" : ""
+                            }`}
+                          />
+                        </button>
+                      </div>
 
                       {isExpanded && (
                         <div className="ml-3 pl-3 space-y-1 py-1">

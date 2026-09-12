@@ -1,2 +1,6 @@
 // src/app/(pages)/blog/page.jsx
-export { default } from "../blogs/page";
+import { redirect } from "next/navigation";
+
+export default function BlogPage() {
+  redirect("/blogs");
+}

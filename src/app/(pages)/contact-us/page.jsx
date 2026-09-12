@@ -1,2 +1,6 @@
 // src/app/(pages)/contact-us/page.jsx
-export { default } from "../contact/page";
+import { redirect } from "next/navigation";
+
+export default function ContactUsPage() {
+  redirect("/contact");
+}

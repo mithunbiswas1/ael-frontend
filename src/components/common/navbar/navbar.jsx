@@ -1,4 +1,5 @@
 // src/components/common/navbar/navbar.jsx
+
 import Link from "next/link";
 import Image from "next/image";
 import { Phone, Mail } from "lucide-react";
@@ -38,23 +39,10 @@ const navLinks = [
   {
     name: "Safety Guidelines",
     href: "/safety-guidelines",
-    subItems: [
-      { name: "Consumer Safety", href: "/safety-guidelines?tab=consumer" },
-      { name: "LPG Dealers", href: "/safety-guidelines?tab=dealer" },
-      { name: "Distributors", href: "/safety-guidelines?tab=distributor" },
-      { name: "Auto Gas Stations", href: "/safety-guidelines?tab=auto-gas" },
-      { name: "Industrial Plants", href: "/safety-guidelines?tab=industrial" },
-    ],
   },
   {
     name: "Market Updates",
     href: "/market-updates",
-    subItems: [
-      { name: "Incident Registry", href: "/market-updates?category=incident" },
-      { name: "BERC Price Notices", href: "/market-updates?category=berc" },
-      { name: "Stakeholder Circulars", href: "/market-updates?category=stakeholder" },
-      { name: "Global Price Indexes", href: "/market-updates?category=global" },
-    ],
   },
   {
     name: "Training & Quiz",
@@ -134,27 +122,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Interactive Navigation & Search (Client) */}
+          {/* Interactive Navigation, Search & Actions (Client) */}
           <NavbarInteractive navLinks={navLinks} />
-
-          {/* Right: Action Buttons */}
-          <div className="hidden sm:flex items-center gap-2 sm:gap-3">
-            <LinkButton
-              href="/login"
-              variant="outline"
-              className="text-xs py-2"
-            >
-              Login
-            </LinkButton>
-
-            <LinkButton
-              href="/pricing"
-              variant="primary"
-              className="text-xs shadow-xs py-2"
-            >
-              Subscribe
-            </LinkButton>
-          </div>
         </div>
       </nav>
     </header>

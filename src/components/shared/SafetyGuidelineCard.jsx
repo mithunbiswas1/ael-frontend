@@ -9,6 +9,7 @@ const STAKEHOLDER_THEMES = {
   consumer: "bg-emerald-700",
   dealer: "bg-blue-700",
   distributor: "bg-amber-700",
+  investor: "bg-teal-700",
   investors: "bg-teal-700",
 };
 
