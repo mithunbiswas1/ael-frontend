@@ -73,13 +73,6 @@ const navLinks = [
   {
     name: "Training & Quiz",
     href: "/courses",
-    subItems: [
-      { name: "Browse All Courses", href: "/courses" },
-      { name: "Verify Certificate", href: "/verify-certificate" },
-      { name: "Subscription Plans", href: "/pricing" },
-      { name: "Acts & Regulations", href: "/acts-and-rules" },
-      { name: "FAQ & Help Center", href: "/faq" },
-    ],
   },
   { name: "Blog", href: "/blogs" },
   { name: "About", href: "/about" },
@@ -140,13 +133,6 @@ export default function Navbar() {
 
           {/* Right: National Recognition & Social Icons */}
           <div className="flex items-center gap-3 text-[11px] sm:text-xs">
-            <span className="hidden md:inline-flex items-center gap-1 text-[11px] text-slate-400">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-              <span>BERC &amp; DoE Recognized Portal</span>
-            </span>
-
-            <span className="hidden md:inline text-slate-700">|</span>
-
             <div className="flex items-center gap-1.5">
               {SOCIAL_LINKS.map((item) => {
                 const Icon = item.icon;

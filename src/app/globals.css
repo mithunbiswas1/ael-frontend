@@ -36,8 +36,8 @@ button {
 
 @theme inline {
   --font-manrope: var(--font-manrope);
-  --color-primary: #1D4E91;
-  --color-secondary: #32824F;
+  --color-primary: #224C8D;
+  --color-secondary: #34824F;
   --color-tertiary: #0B1327;
   --color-highlight: #AD1723;
 }

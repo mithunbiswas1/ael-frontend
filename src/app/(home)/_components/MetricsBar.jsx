@@ -45,11 +45,11 @@ export default function MetricsBar() {
               <div className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-xs">
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
               </div>
-              <div className="min-w-0">
+              <div>
                 <H3>
                   {item.value}
                 </H3>
-                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-700 truncate sm:whitespace-normal">
+                <span className="-mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-700">
                   {item.label}
                 </span>
               </div>

@@ -9,9 +9,15 @@ import AmbientGlow from "@/components/ui/AmbientGlow";
 
 export default function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-20 pt-10 md:pb-24 md:pt-14">
+    <section className="relative overflow-hidden bg-gradient-to-br from-tertiary via-[#0c1a33] to-tertiary pb-20 pt-10 md:pb-24 md:pt-14 border-b border-primary/20">
       {/* Reusable Subtle Background Glow */}
-      <AmbientGlow />
+      <AmbientGlow color="primary" />
+
+      {/* Subtle Radial grid pattern matching brand primary */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(#1D4E91_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.08]"
+      />
 
       <div className="site-container relative z-10">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-6">
@@ -21,10 +27,10 @@ export default function HeroSection() {
             <H1 color="white">
               <span>SAFETY FIRST.</span>
               <br />
-              <span className="text-primary">AWARENESS ALWAYS.</span>
+              <span className="text-secondary">AWARENESS ALWAYS.</span>
             </H1>
 
-            <P color="light" className="mt-5 max-w-xl">
+            <P color="light" className="mt-5 max-w-xl text-slate-300">
               Promoting nationwide LPG safety awareness across Bangladesh for consumers,
               dealers, and industries — ensuring a safer today and sustainable tomorrow.
             </P>
@@ -35,7 +41,7 @@ export default function HeroSection() {
                 href="/safety-guidelines"
                 variant="primary"
                 size="lg"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto shadow-md shadow-primary/25"
               >
                 <span>Explore Safety Guidelines</span>
                 <ArrowRight className="h-4 w-4" />
@@ -45,7 +51,7 @@ export default function HeroSection() {
                 href="/courses"
                 variant="frosted"
                 size="lg"
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto hover:border-primary/50"
               >
                 <span>Start Training &amp; Quiz</span>
                 <ArrowRight className="h-4 w-4" />
@@ -55,7 +61,7 @@ export default function HeroSection() {
 
           {/* Right Visual (5 cols) */}
           <div className="relative flex items-center justify-center lg:col-span-5">
-            <div className="group relative aspect-4/3 w-full max-w-lg overflow-hidden rounded-xl border border-white/15 bg-slate-800/80 shadow-md backdrop-blur-sm">
+            <div className="group relative aspect-4/3 w-full max-w-lg overflow-hidden rounded-xl border border-white/15 bg-tertiary/80 shadow-2xl backdrop-blur-sm">
               <Image
                 src="/lpg-hero.jpg"
                 alt="LPG Safety Storage Plant"
@@ -66,7 +72,7 @@ export default function HeroSection() {
               />
 
               {/* Glassmorphic floating tag on image */}
-              <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between rounded-lg border border-white/20 bg-slate-950/70 p-3 text-white backdrop-blur-md">
+              <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between rounded-lg border border-white/15 bg-tertiary/90 p-3 text-white backdrop-blur-md shadow-lg">
                 <div>
                   <div className="mb-1 text-xs font-black tracking-wide text-white">
                     National LPG Safety Standards
