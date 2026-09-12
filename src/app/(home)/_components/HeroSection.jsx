@@ -70,18 +70,6 @@ export default function HeroSection() {
                 sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover object-center"
               />
-
-              {/* Glassmorphic floating tag on image */}
-              <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between rounded-lg border border-white/15 bg-tertiary/90 p-3 text-white backdrop-blur-md shadow-lg">
-                <div>
-                  <div className="mb-1 text-xs font-black tracking-wide text-white">
-                    National LPG Safety Standards
-                  </div>
-                  <div className="text-[10px] text-slate-300">
-                    Compliant with BERC &amp; Fire Service Regulations
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

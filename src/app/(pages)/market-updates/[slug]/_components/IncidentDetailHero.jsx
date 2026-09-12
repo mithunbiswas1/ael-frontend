@@ -13,7 +13,6 @@ export default function IncidentDetailHero({ incident }) {
 
       <div className="site-container relative z-10">
         <Breadcrumb
-          dark
           items={[
             { label: "Home", href: "/" },
             { label: "LPG Market Update", href: "/market-updates" },
@@ -32,11 +31,10 @@ export default function IncidentDetailHero({ incident }) {
 
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <span
-            className={`rounded-full px-3 py-0.5 text-xs font-bold ${
-              isResolved
+            className={`rounded-full px-3 py-0.5 text-xs font-bold ${isResolved
                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
                 : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-            }`}
+              }`}
           >
             Status: {incident.status}
           </span>

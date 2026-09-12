@@ -1,5 +1,6 @@
 // src/app/(pages)/about/page.jsx
-import AboutHeroSection from "./_components/AboutHeroSection";
+import { ArrowRight } from "lucide-react";
+import SharedHeroSection from "@/components/shared/SharedHeroSection";
 import WhoWeAreSection from "./_components/WhoWeAreSection";
 import MissionVisionSection from "./_components/MissionVisionSection";
 import ExpertTrainersSection from "./_components/ExpertTrainersSection";
@@ -14,7 +15,31 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <AboutHeroSection />
+      <SharedHeroSection
+        variant="main"
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "About Us" },
+        ]}
+        title="ABOUT"
+        accent="US."
+        description="Dedicated to promoting nationwide safety, building public awareness, and strengthening Bangladesh’s LPG sector through knowledge, technical training, and institutional collaboration."
+        buttons={[
+          {
+            label: "Explore Training Courses",
+            href: "/courses",
+            variant: "primary",
+            icon: ArrowRight,
+          },
+          {
+            label: "Contact Our Team",
+            href: "/contact",
+            variant: "frosted",
+          },
+        ]}
+        imageSrc="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop"
+        imageAlt="LPG Storage and Cylinders"
+      />
       <WhoWeAreSection />
       <MissionVisionSection />
       <ExpertTrainersSection />

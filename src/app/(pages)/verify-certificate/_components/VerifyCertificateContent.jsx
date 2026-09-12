@@ -4,7 +4,8 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import VerifyHeroSection from "./VerifyHeroSection";
+import { ShieldCheck } from "lucide-react";
+import SharedHeroSection from "@/components/shared/SharedHeroSection";
 import VerifyFormSection, { VERIFIED_CERTIFICATES } from "./VerifyFormSection";
 
 export default function VerifyCertificateContent() {
@@ -42,14 +43,29 @@ export default function VerifyCertificateContent() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <VerifyHeroSection />
-      <VerifyFormSection
-        inputCertId={inputCertId}
-        setInputCertId={setInputCertId}
-        result={result}
-        hasSearched={hasSearched}
-        performVerification={performVerification}
+      <SharedHeroSection
+        variant="others"
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "Training & Quiz", href: "/courses" },
+          { label: "Verify Certificate" },
+        ]}
+        title="VERIFY"
+        accent="CERTIFICATE."
+        description="Instant digital validation for all LPG Safety & Regulatory compliance certificates issued under Safe LPG, Department of Explosives (DoE), and LOAB joint programs."
       />
+
+      <section className="py-12 sm:py-16">
+        <div className="site-container max-w-4xl mx-auto">
+          <VerifyFormSection
+            inputCertId={inputCertId}
+            setInputCertId={setInputCertId}
+            onSearch={() => performVerification(inputCertId)}
+            result={result}
+            hasSearched={hasSearched}
+          />
+        </div>
+      </section>
     </main>
   );
 }

@@ -4,7 +4,8 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import CheckoutHeroSection from "./CheckoutHeroSection";
+import { Lock } from "lucide-react";
+import SharedHeroSection from "@/components/shared/SharedHeroSection";
 import CheckoutSuccessState from "./CheckoutSuccessState";
 import CheckoutFormSection from "./CheckoutFormSection";
 
@@ -63,7 +64,22 @@ export default function CheckoutContent() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <CheckoutHeroSection />
+      <SharedHeroSection
+        variant="between"
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "Pricing", href: "/pricing" },
+          { label: "Secure Checkout" },
+        ]}
+        title="SECURE"
+        accent="CHECKOUT."
+        description="256-bit SSL encrypted gateway powered by Bangladesh Bank recognized merchant channels."
+      >
+        <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-secondary/40 bg-secondary/15 px-3 py-1 text-xs text-secondary">
+          <Lock className="h-3.5 w-3.5" />
+          <span>Bank-Grade Encryption</span>
+        </div>
+      </SharedHeroSection>
 
       <section className="relative z-20 -mt-6 mx-auto w-full max-w-5xl px-4 pb-20">
         {paymentSuccess ? (

@@ -37,9 +37,8 @@ export default function CourseCard({
         )}
 
         <span
-          className={`absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs ${
-            isPaid ? "bg-primary" : "bg-emerald-600"
-          }`}
+          className={`absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs ${isPaid ? "bg-primary" : "bg-emerald-600"
+            }`}
         >
           {isPaid ? "Paid Course" : "Free Course"}
         </span>
@@ -73,7 +72,7 @@ export default function CourseCard({
 
         {/* Price & Action */}
         <div className="mt-3 border-t border-slate-100 pt-3">
-          <div className="mb-2.5 text-lg font-black text-emerald-600">
+          <div className="mb-2.5 text-lg font-black text-primary">
             {price}
           </div>
 

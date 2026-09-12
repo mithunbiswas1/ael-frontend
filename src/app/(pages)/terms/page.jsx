@@ -1,5 +1,6 @@
 // src/app/(pages)/terms/page.jsx
-import TermsHeroSection from "./_components/TermsHeroSection";
+import { Scale } from "lucide-react";
+import SharedHeroSection from "@/components/shared/SharedHeroSection";
 import TermsContentSection from "./_components/TermsContentSection";
 
 export const metadata = {
@@ -10,7 +11,16 @@ export const metadata = {
 export default function TermsOfUsePage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <TermsHeroSection />
+      <SharedHeroSection
+        variant="others"
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "Terms of Use" },
+        ]}
+        title="TERMS OF"
+        accent="SERVICE."
+        description="Statutory conditions governing portal access, certification issuance, educational content utilization, and subscriber obligations."
+      />
       <TermsContentSection />
     </main>
   );

@@ -33,22 +33,20 @@ export default function PricingHeroSection({ isAnnual, setIsAnnual }) {
         <div className="mt-8 inline-flex items-center gap-1.5 sm:gap-3 rounded-full border border-slate-700 bg-slate-900/80 p-1 sm:p-1.5 shadow-md max-w-full">
           <button
             onClick={() => setIsAnnual(false)}
-            className={`rounded-full px-3 sm:px-4 py-1.5 text-xs font-bold transition-all ${
-              !isAnnual
+            className={`rounded-full px-3 sm:px-4 py-1.5 text-xs font-bold transition-all ${!isAnnual
                 ? "bg-primary text-white shadow-2xs"
                 : "text-slate-400 hover:text-white"
-            }`}
+              }`}
           >
             Monthly
           </button>
 
           <button
             onClick={() => setIsAnnual(true)}
-            className={`flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-1.5 text-xs font-bold transition-all ${
-              isAnnual
+            className={`flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-1.5 text-xs font-bold transition-all ${isAnnual
                 ? "bg-primary text-white shadow-2xs"
                 : "text-slate-400 hover:text-white"
-            }`}
+              }`}
           >
             <span>Annual</span>
             <span className="rounded-full bg-emerald-500 px-1.5 sm:px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-slate-950">
