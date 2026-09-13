@@ -1,16 +1,17 @@
 // src/components/shared/SafetyGuidelineCard.jsx
 
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { H5, P } from "../ui/Typography";
 
 const STAKEHOLDER_THEMES = {
-  consumer: "bg-emerald-700",
-  dealer: "bg-blue-700",
-  distributor: "bg-amber-700",
-  investor: "bg-teal-700",
-  investors: "bg-teal-700",
+  consumer: "bg-emerald-600",
+  dealer: "bg-blue-600",
+  distributor: "bg-amber-500",
+  investors: "bg-teal-600",
 };
 
 export default function SafetyGuidelineCard({
@@ -47,7 +48,7 @@ export default function SafetyGuidelineCard({
             src={imageUrl}
             alt={badgeText}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 280px"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
             className="object-cover"
           />
         </div>

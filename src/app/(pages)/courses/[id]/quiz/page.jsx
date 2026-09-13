@@ -1,5 +1,5 @@
 // src/app/(pages)/courses/[id]/quiz/page.jsx
-import QuizContent from "./_client/QuizContent";
+import QuizContent from "./_components/QuizContent";
 
 export const metadata = {
   title: "LPG Safety Assessment Quiz | Safe LPG Safety Academy",

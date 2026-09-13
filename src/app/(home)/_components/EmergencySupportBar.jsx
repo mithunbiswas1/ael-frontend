@@ -1,5 +1,7 @@
 // src/app/(home)/_components/EmergencySupportBar.jsx
 
+"use client";
+
 import { PhoneCall, FileText } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { H2, P } from "@/components/ui/Typography";

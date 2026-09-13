@@ -1,5 +1,7 @@
 // src/app/(home)/_components/LatestBlogsSection.jsx
 
+"use client";
+
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import BlogCard from "@/components/shared/BlogCard";

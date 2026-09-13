@@ -1,6 +1,5 @@
 // src/app/(pages)/acts-and-rules/page.jsx
-import { Scale } from "lucide-react";
-import SharedHeroSection from "@/components/shared/SharedHeroSection";
+import ActsHeroSection from "./_components/ActsHeroSection";
 import ActsLibrarySection from "./_components/ActsLibrarySection";
 
 export const metadata = {
@@ -12,16 +11,7 @@ export const metadata = {
 export default function ActsAndRulesPage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <SharedHeroSection
-        variant="others"
-        breadcrumbItems={[
-          { label: "Home", href: "/" },
-          { label: "Related Acts & Rules" },
-        ]}
-        title="ACTS &"
-        accent="RULES."
-        description="Official legal gazettes, petroleum acts, explosives regulations, and ministerial directives governing the Liquefied Petroleum Gas (LPG) sector in Bangladesh."
-      />
+      <ActsHeroSection />
       <ActsLibrarySection />
     </main>
   );

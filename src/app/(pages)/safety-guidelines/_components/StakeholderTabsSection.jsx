@@ -1,13 +1,14 @@
-// src/app/(pages)/safety-guidelines/_client/StakeholderTabsSection.jsx
+// src/app/(pages)/safety-guidelines/_components/StakeholderTabsSection.jsx
 "use client";
 
-import { TrendingUp, ShieldCheck, Truck, User } from "lucide-react";
+import { ShieldCheck, Truck, Fuel, Factory, User } from "lucide-react";
 
 export const STAKEHOLDER_TABS = [
-  { id: "investor", label: "Investors", icon: TrendingUp },
-  { id: "dealer", label: "Dealer", icon: ShieldCheck },
-  { id: "distributor", label: "Distributor", icon: Truck },
-  { id: "consumer", label: "Consumer", icon: User },
+  { id: "dealer", label: "Dealers", icon: ShieldCheck },
+  { id: "distributor", label: "Distributors", icon: Truck },
+  { id: "auto-gas", label: "Auto Gas Station", icon: Fuel },
+  { id: "industrial", label: "Industrial Customers", icon: Factory },
+  { id: "consumer", label: "Regular Consumers", icon: User },
 ];
 
 export default function StakeholderTabsSection({ activeTab, setActiveTab }) {

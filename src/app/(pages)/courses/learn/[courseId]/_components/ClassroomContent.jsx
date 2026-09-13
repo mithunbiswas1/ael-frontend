@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-import ClassroomHeader from "../_components/ClassroomHeader";
-import ClassroomVideoPlayer from "../_components/ClassroomVideoPlayer";
-import ClassroomPlaylistSidebar from "../_components/ClassroomPlaylistSidebar";
+import ClassroomHeader from "./ClassroomHeader";
+import ClassroomVideoPlayer from "./ClassroomVideoPlayer";
+import ClassroomPlaylistSidebar from "./ClassroomPlaylistSidebar";
 
 export const MOCK_LESSONS = [
   {

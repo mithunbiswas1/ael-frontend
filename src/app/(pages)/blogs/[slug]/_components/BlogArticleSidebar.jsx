@@ -32,7 +32,7 @@ export default function BlogArticleSidebar({ relatedPosts }) {
                 <div className="text-xs font-bold text-slate-800 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
                   {item.title}
                 </div>
-                <div className="mt-1 text-[10px] font-medium text-slate-500">
+                <div className="mt-1 text-[10px] text-slate-400">
                   {item.date}
                 </div>
               </div>
@@ -62,7 +62,7 @@ export default function BlogArticleSidebar({ relatedPosts }) {
               className="flex items-center justify-between rounded-lg px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-primary transition-colors"
             >
               <span>{catName}</span>
-              <ChevronRight className="h-3.5 w-3.5 text-slate-500" />
+              <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
             </Link>
           ))}
         </div>

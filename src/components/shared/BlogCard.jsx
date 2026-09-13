@@ -1,4 +1,5 @@
 // src/components/shared/BlogCard.jsx
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -6,20 +7,20 @@ import { Calendar } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 
 const BLOG_BADGE_VARIANTS = {
-  Seminar: "bg-blue-800 text-white",
-  seminar: "bg-blue-800 text-white",
-  "Safety Tips": "bg-emerald-800 text-white",
-  safety: "bg-emerald-800 text-white",
-  Program: "bg-teal-800 text-white",
-  program: "bg-teal-800 text-white",
-  Regulations: "bg-purple-800 text-white",
-  regulations: "bg-purple-800 text-white",
-  Technology: "bg-indigo-800 text-white",
-  technology: "bg-indigo-800 text-white",
-  Environment: "bg-emerald-800 text-white",
-  environment: "bg-emerald-800 text-white",
-  "Industry News": "bg-sky-800 text-white",
-  news: "bg-sky-800 text-white",
+  Seminar: "bg-blue-600 text-white",
+  seminar: "bg-blue-600 text-white",
+  "Safety Tips": "bg-emerald-600 text-white",
+  safety: "bg-emerald-600 text-white",
+  Program: "bg-teal-600 text-white",
+  program: "bg-teal-600 text-white",
+  Regulations: "bg-purple-600 text-white",
+  regulations: "bg-purple-600 text-white",
+  Technology: "bg-indigo-600 text-white",
+  technology: "bg-indigo-600 text-white",
+  Environment: "bg-emerald-700 text-white",
+  environment: "bg-emerald-700 text-white",
+  "Industry News": "bg-sky-600 text-white",
+  news: "bg-sky-600 text-white",
 };
 
 export default function BlogCard({
@@ -34,7 +35,7 @@ export default function BlogCard({
   const badgeStyle =
     BLOG_BADGE_VARIANTS[category] ||
     BLOG_BADGE_VARIANTS[badgeText] ||
-    "bg-emerald-800 text-white";
+    "bg-emerald-600 text-white";
 
   return (
     <Link
@@ -47,7 +48,7 @@ export default function BlogCard({
           src={imageUrl}
           alt={title}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"
         />
         <span

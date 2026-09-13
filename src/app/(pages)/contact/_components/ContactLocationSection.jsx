@@ -1,4 +1,5 @@
 // src/app/(pages)/contact/_components/ContactLocationSection.jsx
+"use client";
 
 import { MapPin, ExternalLink } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";

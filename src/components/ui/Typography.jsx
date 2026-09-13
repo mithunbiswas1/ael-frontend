@@ -1,5 +1,7 @@
 // src/components/ui/Typography.jsx
 
+"use client";
+
 import { forwardRef } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";

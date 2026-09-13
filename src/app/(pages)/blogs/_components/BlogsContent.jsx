@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Shield, Newspaper, Flame, Scale, Cpu, Leaf } from "lucide-react";
+import BlogsHeroSection from "./BlogsHeroSection";
 import BlogCategoriesSidebar from "./BlogCategoriesSidebar";
 import BlogPostsSection from "./BlogPostsSection";
 import BlogRightSidebar from "./BlogRightSidebar";
@@ -17,7 +18,7 @@ export const BLOG_CATEGORIES = [
   { id: "environment", name: "Environment", icon: Leaf },
 ];
 
-export default function BlogsInteractive({ blogsData = [] }) {
+export default function BlogsContent({ blogsData }) {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("latest");
@@ -46,37 +47,43 @@ export default function BlogsInteractive({ blogsData = [] }) {
   const popularPosts = blogsData.slice(0, 3);
 
   return (
-    <section className="py-12 sm:py-16">
-      <div className="site-container">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Left Sidebar: Categories & View Type (3 cols) */}
-          <BlogCategoriesSidebar
-            categories={BLOG_CATEGORIES}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            viewType={viewType}
-            setViewType={setViewType}
-          />
+    <main className="min-h-screen bg-slate-50">
+      {/* 1. Hero Banner */}
+      <BlogsHeroSection />
 
-          {/* Center Content: Search & Blog Cards Grid (6 cols) */}
-          <BlogPostsSection
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            viewType={viewType}
-            filteredBlogs={filteredBlogs}
-          />
+      {/* 2. Main 3-Column Content Layout */}
+      <section className="py-12 sm:py-16">
+        <div className="site-container">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+            {/* Left Sidebar: Categories & View Type (3 cols) */}
+            <BlogCategoriesSidebar
+              categories={BLOG_CATEGORIES}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              viewType={viewType}
+              setViewType={setViewType}
+            />
 
-          {/* Right Sidebar: Subscribe & Popular Posts (3 cols) */}
-          <BlogRightSidebar
-            newsletterEmail={newsletterEmail}
-            setNewsletterEmail={setNewsletterEmail}
-            handleSubscribe={handleSubscribe}
-            popularPosts={popularPosts}
-          />
+            {/* Center Content: Search & Blog Cards Grid (6 cols) */}
+            <BlogPostsSection
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              viewType={viewType}
+              filteredBlogs={filteredBlogs}
+            />
+
+            {/* Right Sidebar: Subscribe & Popular Posts (3 cols) */}
+            <BlogRightSidebar
+              newsletterEmail={newsletterEmail}
+              setNewsletterEmail={setNewsletterEmail}
+              handleSubscribe={handleSubscribe}
+              popularPosts={popularPosts}
+            />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }

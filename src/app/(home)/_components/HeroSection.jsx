@@ -1,4 +1,5 @@
 // src/app/(home)/_components/HeroSection.jsx
+"use client";
 
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
@@ -66,11 +67,21 @@ export default function HeroSection() {
                 alt="LPG Safety Storage Plant"
                 fill
                 priority
-                fetchPriority="high"
-                quality={75}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 472px"
+                sizes="(max-width: 768px) 100vw, 45vw"
                 className="object-cover object-center"
               />
+
+              {/* Glassmorphic floating tag on image */}
+              <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-center justify-between rounded-lg border border-white/15 bg-tertiary/90 p-3 text-white backdrop-blur-md shadow-lg">
+                <div>
+                  <div className="mb-1 text-xs font-black tracking-wide text-white">
+                    National LPG Safety Standards
+                  </div>
+                  <div className="text-[10px] text-slate-300">
+                    Compliant with BERC &amp; Fire Service Regulations
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

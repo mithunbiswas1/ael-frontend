@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
-import QuizHeader from "../_components/QuizHeader";
-import QuizQuestionCard from "../_components/QuizQuestionCard";
-import QuizResultCard from "../_components/QuizResultCard";
+import QuizHeader from "./QuizHeader";
+import QuizQuestionCard from "./QuizQuestionCard";
+import QuizResultCard from "./QuizResultCard";
 
 export const QUIZ_QUESTIONS = [
   {

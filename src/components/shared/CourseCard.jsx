@@ -1,4 +1,5 @@
 // src/components/shared/CourseCard.jsx
+"use client";
 
 import Image from "next/image";
 import { Clock, BookOpen, User, ArrowRight } from "lucide-react";
@@ -25,19 +26,19 @@ export default function CourseCard({
           src={imageUrl}
           alt={title}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 360px"
+          sizes="(max-width: 768px) 100vw, 35vw"
           className="object-cover"
         />
 
         {isBestSeller && (
-          <span className="absolute right-2.5 top-2.5 rounded-md bg-emerald-800 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs">
+          <span className="absolute right-2.5 top-2.5 rounded-md bg-emerald-600 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs">
             Best Seller
           </span>
         )}
 
         <span
           className={`absolute bottom-2.5 left-2.5 rounded-md px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs ${
-            isPaid ? "bg-primary" : "bg-emerald-800"
+            isPaid ? "bg-primary" : "bg-emerald-600"
           }`}
         >
           {isPaid ? "Paid Course" : "Free Course"}
@@ -72,7 +73,7 @@ export default function CourseCard({
 
         {/* Price & Action */}
         <div className="mt-3 border-t border-slate-100 pt-3">
-          <div className="mb-2.5 text-lg font-black text-primary">
+          <div className="mb-2.5 text-lg font-black text-emerald-600">
             {price}
           </div>
 

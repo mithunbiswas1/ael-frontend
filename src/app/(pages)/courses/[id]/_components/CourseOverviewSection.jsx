@@ -18,7 +18,7 @@ export default function CourseOverviewSection({ course }) {
       {/* Box 1: What You Will Learn */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
         <h2 className="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 text-emerald-700" />
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
           <span>WHAT YOU WILL LEARN</span>
         </h2>
 
@@ -96,7 +96,7 @@ export default function CourseOverviewSection({ course }) {
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-slate-500 font-medium whitespace-nowrap">
+                      <span className="text-[11px] text-slate-400 whitespace-nowrap">
                         {lesson.duration}
                       </span>
                     </div>

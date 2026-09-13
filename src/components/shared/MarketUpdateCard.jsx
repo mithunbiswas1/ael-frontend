@@ -1,4 +1,5 @@
 // src/components/shared/MarketUpdateCard.jsx
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -6,14 +7,14 @@ import { Calendar } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 
 const BADGE_VARIANTS = {
-  "Incident Report": "bg-red-700 text-white",
-  "BERC Message": "bg-blue-700 text-white",
-  "Stakeholder Update": "bg-emerald-800 text-white",
-  "Global Market": "bg-purple-800 text-white",
-  incident: "bg-red-700 text-white",
-  berc: "bg-blue-700 text-white",
-  stakeholder: "bg-emerald-800 text-white",
-  global: "bg-purple-800 text-white",
+  "Incident Report": "bg-red-600 text-white",
+  "BERC Message": "bg-blue-600 text-white",
+  "Stakeholder Update": "bg-emerald-600 text-white",
+  "Global Market": "bg-purple-600 text-white",
+  incident: "bg-red-600 text-white",
+  berc: "bg-blue-600 text-white",
+  stakeholder: "bg-emerald-600 text-white",
+  global: "bg-purple-600 text-white",
 };
 
 export default function MarketUpdateCard({
@@ -40,7 +41,7 @@ export default function MarketUpdateCard({
           src={imageUrl}
           alt={title}
           fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           className="object-cover"
         />
         <span

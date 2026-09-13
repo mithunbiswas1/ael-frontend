@@ -1,6 +1,5 @@
 // src/app/(pages)/faq/page.jsx
-import { HelpCircle } from "lucide-react";
-import SharedHeroSection from "@/components/shared/SharedHeroSection";
+import FaqHeroSection from "./_components/FaqHeroSection";
 import FaqAccordionSection from "./_components/FaqAccordionSection";
 
 export const metadata = {
@@ -12,16 +11,7 @@ export const metadata = {
 export default function FaqPage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <SharedHeroSection
-        variant="others"
-        breadcrumbItems={[
-          { label: "Home", href: "/" },
-          { label: "FAQ & Help Center" },
-        ]}
-        title="FREQUENTLY ASKED"
-        accent="QUESTIONS."
-        description="Clear, authoritative guidance on LPG household handling, regulator maintenance, commercial compliance, and emergency protocols."
-      />
+      <FaqHeroSection />
       <FaqAccordionSection />
     </main>
   );

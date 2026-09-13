@@ -1,4 +1,5 @@
 // src/components/common/AelLogo.jsx
+"use client";
 
 import Link from "next/link";
 import Image from "next/image";

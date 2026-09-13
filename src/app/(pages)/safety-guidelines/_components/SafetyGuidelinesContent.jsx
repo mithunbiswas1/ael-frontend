@@ -1,0 +1,28 @@
+// src/app/(pages)/safety-guidelines/_components/SafetyGuidelinesContent.jsx
+"use client";
+
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import SafetyGuidelinesHero from "./SafetyGuidelinesHero";
+import StakeholderTabsSection, { STAKEHOLDER_TABS } from "./StakeholderTabsSection";
+import GuidelinesGridSection from "./GuidelinesGridSection";
+
+export default function SafetyGuidelinesContent() {
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState("dealer");
+
+  useEffect(() => {
+    const tabFromUrl = searchParams.get("tab");
+    if (tabFromUrl && STAKEHOLDER_TABS.some((t) => t.id === tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [searchParams]);
+
+  return (
+    <main className="min-h-screen bg-slate-50">
+      <SafetyGuidelinesHero />
+      <StakeholderTabsSection activeTab={activeTab} setActiveTab={setActiveTab} />
+      <GuidelinesGridSection activeTab={activeTab} />
+    </main>
+  );
+}

@@ -1,6 +1,6 @@
 // src/app/(pages)/market-updates/page.jsx
 import { Suspense } from "react";
-import MarketUpdatesContent from "./_client/MarketUpdatesContent";
+import MarketUpdatesContent from "./_components/MarketUpdatesContent";
 
 export const metadata = {
   title: "LPG Market Update & Incident Registry | Safe LPG Platform",

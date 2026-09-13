@@ -3,13 +3,23 @@ import Link from "next/link";
 import {
   Calendar,
   Clock,
+  Play,
   Lock,
 } from "lucide-react";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaWhatsapp,
+} from "react-icons/fa";
 import { H1, H3, P } from "@/components/ui/Typography";
-import BlogSocialShare from "../_client/BlogSocialShare";
-import BlogVideoPlayer from "../_client/BlogVideoPlayer";
 
-export default function BlogArticleContent({ currentPost }) {
+export default function BlogArticleContent({
+  currentPost,
+  handleShare,
+  setIsPlaying,
+  toast,
+}) {
   return (
     <article className="space-y-6 lg:col-span-8">
       {/* Header: Title & Meta & Social Share */}
@@ -29,18 +39,48 @@ export default function BlogArticleContent({ currentPost }) {
             </span>
             <span>|</span>
             <div className="flex items-center gap-1">
-              <Calendar className="h-3.5 w-3.5 text-slate-500" />
+              <Calendar className="h-3.5 w-3.5 text-slate-400" />
               <span>{currentPost.date}</span>
             </div>
             <span>|</span>
             <div className="flex items-center gap-1">
-              <Clock className="h-3.5 w-3.5 text-slate-500" />
+              <Clock className="h-3.5 w-3.5 text-slate-400" />
               <span>{currentPost.readTime}</span>
             </div>
           </div>
 
           {/* Share Icons */}
-          <BlogSocialShare title={currentPost.title} />
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-700">Share:</span>
+            <button
+              onClick={() => handleShare("Facebook")}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white shadow-2xs hover:opacity-90 transition-opacity"
+              title="Share on Facebook"
+            >
+              <FaFacebookF className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => handleShare("Twitter")}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white shadow-2xs hover:opacity-90 transition-opacity"
+              title="Share on Twitter"
+            >
+              <FaTwitter className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => handleShare("LinkedIn")}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-700 text-white shadow-2xs hover:opacity-90 transition-opacity"
+              title="Share on LinkedIn"
+            >
+              <FaLinkedinIn className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => handleShare("WhatsApp")}
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs hover:opacity-90 transition-opacity"
+              title="Share on WhatsApp"
+            >
+              <FaWhatsapp className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -79,7 +119,17 @@ export default function BlogArticleContent({ currentPost }) {
             fill
             className="object-cover opacity-80"
           />
-          <BlogVideoPlayer />
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+            <button
+              onClick={() => {
+                setIsPlaying(true);
+                toast.info("Video playback demonstration started.");
+              }}
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl transition-all hover:bg-white active:scale-95"
+            >
+              <Play className="h-6 w-6 fill-current translate-x-0.5" />
+            </button>
+          </div>
           <div className="absolute bottom-3 left-3 rounded-md bg-slate-950/80 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
             Safety Demonstration Video (3:45)
           </div>
@@ -125,7 +175,7 @@ export default function BlogArticleContent({ currentPost }) {
             <H3 className="text-sm font-black uppercase tracking-wider text-slate-900">
               SUBSCRIBER COMMENTS
             </H3>
-            <span className="text-[11px] text-slate-500 font-medium">
+            <span className="text-[11px] text-slate-400">
               (Verified members only)
             </span>
           </div>

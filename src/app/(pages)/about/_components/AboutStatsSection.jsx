@@ -1,4 +1,5 @@
 // src/app/(pages)/about/_components/AboutStatsSection.jsx
+"use client";
 
 import { Users, GraduationCap, FileText, ShieldCheck } from "lucide-react";
 

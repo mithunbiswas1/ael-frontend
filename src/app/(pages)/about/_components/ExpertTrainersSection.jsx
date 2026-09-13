@@ -1,4 +1,5 @@
 // src/app/(pages)/about/_components/ExpertTrainersSection.jsx
+"use client";
 
 import Image from "next/image";
 import { H4 } from "@/components/ui/Typography";

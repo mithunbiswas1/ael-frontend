@@ -1,4 +1,5 @@
 // src/app/(pages)/about/_components/MissionVisionSection.jsx
+"use client";
 
 import { Target, Compass } from "lucide-react";
 import { H3 } from "@/components/ui/Typography";
@@ -39,11 +40,11 @@ export default function MissionVisionSection() {
 
           {/* Vision Card */}
           <div className="flex items-start gap-4 rounded-xl border border-slate-200/80 bg-white/95 p-6 shadow-xs transition-colors duration-200 hover:border-emerald-500/50">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-100">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
               <Compass className="h-6 w-6" strokeWidth={2} />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-800">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600">
                 OUR VISION
               </span>
               <H3 className="mt-0.5 text-base sm:text-lg font-black text-slate-900">

@@ -1,24 +1,26 @@
 // src/app/(home)/_components/SafetyGuidelinesSection.jsx 
 
-import { TrendingUp, ShieldCheck, Truck, User } from "lucide-react";
+"use client";
+
+import { User, ShieldCheck, Truck, Fuel, Factory } from "lucide-react";
 import SafetyGuidelineCard from "@/components/shared/SafetyGuidelineCard";
 import SectionHeader from "@/components/ui/SectionHeader";
 
 const guidelinesData = [
   {
-    id: "investor",
-    icon: TrendingUp,
-    badgeText: "Investors",
-    imageUrl: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=600&auto=format&fit=crop",
-    description: "Safety protocols, asset protection, and compliance for LPG investors and terminal operators.",
-    href: "/safety-guidelines?tab=investor",
+    id: "Investors",
+    icon: Factory,
+    badgeText: "Industrial Customer",
+    imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
+    description: "Safety for industrial LPG usage.",
+    href: "/safety-guidelines?tab=industrial",
   },
   {
     id: "dealer",
     icon: ShieldCheck,
     badgeText: "Dealer",
     imageUrl: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=600&auto=format&fit=crop",
-    description: "Certified cylinder storage, safe retail handling, and regulatory compliance practices.",
+    description: "Safety practices for LPG dealers.",
     href: "/safety-guidelines?tab=dealer",
   },
   {
@@ -26,7 +28,7 @@ const guidelinesData = [
     icon: Truck,
     badgeText: "Distributor",
     imageUrl: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=600&auto=format&fit=crop",
-    description: "Safe logistics, road transport emergency procedures, and bulk depot management.",
+    description: "Safe distribution and transportation.",
     href: "/safety-guidelines?tab=distributor",
   },
   {
@@ -34,7 +36,7 @@ const guidelinesData = [
     icon: User,
     badgeText: "Consumer",
     imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
-    description: "Essential home kitchen safety, cylinder leak detection, and emergency shutoff guidelines.",
+    description: "Safe usage tips for household customers.",
     href: "/safety-guidelines?tab=consumer",
   },
 ];

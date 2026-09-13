@@ -1,4 +1,4 @@
-// src/app/(pages)/checkout/_client/CheckoutFormSection.jsx
+// src/app/(pages)/checkout/_components/CheckoutFormSection.jsx
 "use client";
 
 import Link from "next/link";
@@ -255,7 +255,7 @@ export default function CheckoutFormSection({
             )}
           </button>
 
-          <p className="text-[10px] text-center text-slate-500 font-medium mt-3">
+          <p className="text-[10px] text-center text-slate-400 mt-3">
             Safe & encrypted checkout. Instant digital license activation.
           </p>
         </div>

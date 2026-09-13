@@ -14,11 +14,11 @@ export default function QuizResultCard({
     <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-8 shadow-md">
       <div className="text-center pb-6 border-b border-slate-100">
         {isPassed ? (
-          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 border-2 border-emerald-500">
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 border-2 border-emerald-500">
             <CheckCircle2 className="h-10 w-10" />
           </div>
         ) : (
-          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-700 border-2 border-red-500">
+          <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-600 border-2 border-red-500">
             <XCircle className="h-10 w-10" />
           </div>
         )}
@@ -100,9 +100,9 @@ export default function QuizResultCard({
               >
                 <div className="flex items-start gap-2 font-bold text-slate-900 mb-2">
                   {isQCorrect ? (
-                    <CheckCircle2 className="h-4 w-4 text-emerald-700 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                   ) : (
-                    <XCircle className="h-4 w-4 text-red-700 shrink-0 mt-0.5" />
+                    <XCircle className="h-4 w-4 text-red-600 shrink-0 mt-0.5" />
                   )}
                   <span>
                     {idx + 1}. {q.question}

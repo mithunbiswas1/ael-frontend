@@ -1,13 +1,17 @@
-// src/app/(pages)/courses/_components/CertificateVerificationSection.jsx
 import { Check } from "lucide-react";
 import { H3, H4 } from "@/components/ui/Typography";
-import CertificateVerificationForm from "../_client/CertificateVerificationForm";
+import Input from "@/components/ui/Input";
 
-export default function CertificateVerificationSection() {
+export default function CertificateVerificationSection({
+  verifyId,
+  setVerifyId,
+  handleVerify,
+}) {
   return (
     <section className="py-12 sm:py-16 bg-slate-950 text-white">
       <div className="site-container">
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
+          
           {/* Left USPs (4 cols) */}
           <div className="lg:col-span-4">
             <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-500/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-blue-400 backdrop-blur-md">
@@ -55,14 +59,14 @@ export default function CertificateVerificationSection() {
                 <div className="text-[9px] font-bold text-primary">
                   LPG Safety for Regular Consumers
                 </div>
-                <div className="mt-1 text-[8px] text-slate-500">
+                <div className="mt-1 text-[8px] text-slate-400">
                   May 2024 • ID: SAFE-2024-8849
                 </div>
               </div>
 
               <div className="mt-3 flex items-center justify-between border-t border-slate-200 pt-1.5 text-[8px] text-slate-500">
                 <span>Authorized Signature</span>
-                <span className="font-bold text-emerald-800">✓ QR Authentic</span>
+                <span className="font-bold text-emerald-600">✓ QR Authentic</span>
               </div>
             </div>
           </div>
@@ -73,13 +77,29 @@ export default function CertificateVerificationSection() {
               <H4 className="text-xs font-black uppercase tracking-wider text-white">
                 VERIFY ANY CERTIFICATE
               </H4>
-              <p className="mt-1 text-[11px] text-slate-300">
+              <p className="mt-1 text-[11px] text-slate-400">
                 Enter Certificate ID to verify instant authenticity.
               </p>
 
-              <CertificateVerificationForm />
+              <form onSubmit={handleVerify} className="mt-3.5 flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="e.g. SAFE-2024-8849"
+                  value={verifyId}
+                  onChange={(e) => setVerifyId(e.target.value)}
+                  variant="dark"
+                  className="flex-1"
+                />
+                <button
+                  type="submit"
+                  className="rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"
+                >
+                  Verify
+                </button>
+              </form>
             </div>
           </div>
+
         </div>
       </div>
     </section>
