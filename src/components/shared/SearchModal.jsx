@@ -182,16 +182,6 @@ const SEARCH_DATABASE = [
   },
 ];
 
-const POPULAR_TAGS = [
-  { label: "Cylinder safety", href: "/safety-guidelines" },
-  { label: "Leak detection", href: "/blogs/how-to-detect-lpg-gas-leakage-quickly" },
-  { label: "Verify certificate", href: "/verify-certificate" },
-  { label: "BERC prices", href: "/market-updates" },
-  { label: "Auto Gas", href: "/safety-guidelines" },
-  { label: "Commercial kitchen", href: "/courses/1" },
-  { label: "Hotline 16137", href: "/contact" },
-];
-
 export default function SearchModal({ isOpen, onClose }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
@@ -361,14 +351,14 @@ export default function SearchModal({ isOpen, onClose }) {
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {POPULAR_TAGS.map((tag) => (
-                    <Link
-                      key={tag.label}
-                      href={tag.href}
-                      onClick={onClose}
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setQuery(tag)}
                       className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors"
                     >
-                      {tag.label}
-                    </Link>
+                      {tag}
+                    </button>
                   ))}
                 </div>
               </div>

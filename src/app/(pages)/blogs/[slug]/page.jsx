@@ -29,7 +29,7 @@ export default async function BlogSinglePage({ params }) {
 
   const relatedPosts = blogsData
     .filter((b) => b.id !== currentPost.id)
-    .slice(0, 3);
+    .slice(0, 6);
 
   return (
     <BlogSingleContent
