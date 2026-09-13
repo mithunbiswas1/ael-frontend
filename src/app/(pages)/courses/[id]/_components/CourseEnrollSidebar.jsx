@@ -29,9 +29,6 @@ export default function CourseEnrollSidebar({ course, isFree }) {
               <PlayCircle className="h-6 w-6" />
             </Link>
           </div>
-          <span className="absolute bottom-2 right-2 rounded bg-slate-900/80 px-2 py-0.5 text-[10px] font-bold text-white">
-            Preview Course
-          </span>
         </div>
 
         {/* Price & Action */}
@@ -45,9 +42,6 @@ export default function CourseEnrollSidebar({ course, isFree }) {
                 ৳ 1,200
               </span>
             )}
-            <span className="ml-auto rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold">
-              {isFree ? "100% Scholarship" : "Special 58% Off"}
-            </span>
           </div>
 
           {isFree ? (

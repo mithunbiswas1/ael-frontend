@@ -22,29 +22,6 @@ export default function IncidentDetailHero({ incident }) {
           className="mb-4"
         />
 
-        <Link
-          href="/market-updates"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-4"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          <span>Back to Market Updates</span>
-        </Link>
-
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          <span
-            className={`rounded-full px-3 py-0.5 text-xs font-bold ${
-              isResolved
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
-            }`}
-          >
-            Status: {incident.status}
-          </span>
-          <span className="rounded-full bg-slate-800 border border-slate-700 px-3 py-0.5 text-xs font-bold text-slate-300">
-            Type: {incident.type}
-          </span>
-        </div>
-
         <H1 color="white" className="leading-tight">
           {incident.category === "incident" ? (
             <>

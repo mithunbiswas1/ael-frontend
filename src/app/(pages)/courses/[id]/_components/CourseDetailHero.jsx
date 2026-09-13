@@ -21,19 +21,6 @@ export default function CourseDetailHero({ course }) {
               className="mb-4"
             />
 
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="rounded-full bg-blue-500/10 border border-blue-400/30 px-3 py-0.5 text-xs font-bold text-blue-400">
-                {course.category}
-              </span>
-              <span className="rounded-full bg-slate-800 border border-slate-700 px-3 py-0.5 text-xs font-bold text-slate-300">
-                Level: {course.level}
-              </span>
-              <span className="rounded-full bg-emerald-500/10 border border-emerald-400/30 px-3 py-0.5 text-xs font-bold text-emerald-400 flex items-center gap-1">
-                <ShieldCheck className="h-3 w-3" />
-                <span>Official Certificate Included</span>
-              </span>
-            </div>
-
             <H1 color="white">
               {course.title}
             </H1>
