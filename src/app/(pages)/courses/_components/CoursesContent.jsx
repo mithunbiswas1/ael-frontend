@@ -15,7 +15,7 @@ import AcademyBulletinsSection from "./AcademyBulletinsSection";
 export default function CoursesContent() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [audienceFilter, setAudienceFilter] = useState("all");
+  const [priceFilter, setPriceFilter] = useState("all");
   const [verifyId, setVerifyId] = useState("");
   const [newsletterEmail, setNewsletterEmail] = useState("");
 
@@ -25,10 +25,11 @@ export default function CoursesContent() {
     const matchesSearch = course.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesAudience =
-      audienceFilter === "all" ||
-      course.audience.toLowerCase() === audienceFilter.toLowerCase();
-    return matchesCategory && matchesSearch && matchesAudience;
+    const matchesPrice =
+      priceFilter === "all" ||
+      (priceFilter === "paid" && course.isPaid) ||
+      (priceFilter === "free" && !course.isPaid);
+    return matchesCategory && matchesSearch && matchesPrice;
   });
 
   const handleVerify = (e) => {
@@ -145,8 +146,8 @@ export default function CoursesContent() {
         setSelectedCategory={setSelectedCategory}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
-        audienceFilter={audienceFilter}
-        setAudienceFilter={setAudienceFilter}
+        priceFilter={priceFilter}
+        setPriceFilter={setPriceFilter}
         filteredCourses={filteredCourses}
       />
 

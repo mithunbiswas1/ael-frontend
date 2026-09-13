@@ -1,4 +1,5 @@
-import { Search, RotateCcw, Eye, Shield } from "lucide-react";
+import Link from "next/link";
+import { Search, RotateCcw, Shield } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import {
@@ -22,7 +23,6 @@ export default function IncidentRegistryTable({
   totalPages,
   paginatedIncidents,
   handleResetFilters,
-  setActiveModalIncident,
 }) {
   return (
     <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs">
@@ -151,13 +151,12 @@ export default function IncidentRegistryTable({
                     </span>
                   </TableCell>
                   <TableCell className="text-center">
-                    <button
-                      onClick={() => setActiveModalIncident(incident)}
-                      title={`View details for ${incident.id}`}
-                      className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 hover:border-primary hover:bg-blue-50 hover:text-primary transition-colors"
+                    <Link
+                      href={`/market-updates/${incident.id}`}
+                      className="inline-flex h-7 items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 hover:border-primary hover:bg-blue-50 hover:text-primary transition-colors"
                     >
-                      <Eye className="h-3.5 w-3.5" />
-                    </button>
+                      View
+                    </Link>
                   </TableCell>
                 </TableRow>
               );

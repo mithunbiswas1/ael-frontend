@@ -13,7 +13,6 @@ import {
   X,
   ChevronDown,
   ArrowRight,
-  ShieldCheck,
 } from "lucide-react";
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
@@ -54,7 +53,7 @@ const navLinks = [
     href: "/safety-guidelines",
   },
   {
-    name: "Market Updates",
+    name: "LPG Market Updates",
     href: "/market-updates",
   },
   {
@@ -157,12 +156,12 @@ export default function Navbar() {
 
             <Link href="/" className="flex items-center transition-opacity hover:opacity-95">
               <Image
-                src="/safe_lpg.png"
+                src="/safe_lpg_2.png"
                 alt="Safe LPG Logo"
                 width={170}
                 height={42}
                 priority
-                className="h-8 sm:h-9 w-auto object-contain"
+                className="h-8 sm:h-10 w-auto object-contain"
               />
             </Link>
           </div>
@@ -290,7 +289,7 @@ export default function Navbar() {
                 className="flex items-center"
               >
                 <Image
-                  src="/safe_lpg.png"
+                  src="/safe_lpg_2.png"
                   alt="Safe LPG Logo"
                   width={150}
                   height={38}

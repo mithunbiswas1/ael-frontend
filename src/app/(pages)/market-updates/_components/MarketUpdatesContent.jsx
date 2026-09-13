@@ -5,8 +5,9 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import GlobalHeroSection from "@/_components/GlobalHeroSection";
 import IncidentRegistryTable from "./IncidentRegistryTable";
-import StakeholderAnnouncementsSection from "./StakeholderAnnouncementsSection";
-import IncidentDetailModal from "./IncidentDetailModal";
+import MarketUpdatesTabsSection from "./MarketUpdatesTabsSection";
+import BercMessagesSection from "./BercMessagesSection";
+import GlobalMarketSection from "./GlobalMarketSection";
 
 export const INCIDENT_DATA = [
   {
@@ -144,83 +145,40 @@ export const INQUIRY_REPORTS = [
   },
 ];
 
-export const STAKEHOLDER_ANNOUNCEMENTS = {
-  LOAB: [
-    {
-      id: "l-1",
-      title: "LOAB Safety Campaign 2024",
-      description: "Promoting safe LPG cylinder usage & storage guidelines across 64 districts.",
-      date: "May 18, 2024",
-      tag: "Awareness Drive",
-    },
-    {
-      id: "l-2",
-      title: "Unified Cylinder Cross-Refilling Ban Resolution",
-      description: "Strict enforcement of penalties on cross-filling other operators' cylinders.",
-      date: "May 08, 2024",
-      tag: "Policy",
-    },
-    {
-      id: "l-3",
-      title: "Annual LPG Technical Summit Dhaka 2024",
-      description: "Registration opens for engineers and supply-chain logistics stakeholders.",
-      date: "Apr 29, 2024",
-      tag: "Event",
-    },
-  ],
-  DoE: [
-    {
-      id: "d-1",
-      title: "DoE Directive on LPG Import Standards",
-      description: "New quality assurance guidelines issued for propane-butane ratio verification.",
-      date: "May 15, 2024",
-      tag: "Regulatory Notice",
-    },
-    {
-      id: "d-2",
-      title: "Mandatory Auto Gas Dispenser Recalibration",
-      description: "All certified fuel stations must complete quarterly calibration by June 30.",
-      date: "May 02, 2024",
-      tag: "Compliance",
-    },
-  ],
-  "Civil Defense": [
-    {
-      id: "c-1",
-      title: "Civil Defense Nationwide Mock Drill",
-      description: "Full-scale LPG storage depot evacuation drills scheduled across port regions.",
-      date: "May 12, 2024",
-      tag: "Field Exercise",
-    },
-    {
-      id: "c-2",
-      title: "Commercial Kitchen Fire Safety Advisory",
-      description: "Mandatory installation of certified LPG gas detectors in restaurant kitchens.",
-      date: "Apr 25, 2024",
-      tag: "Safety Standard",
-    },
-  ],
-  Others: [
-    {
-      id: "o-1",
-      title: "BUET Chemical Engineering Seminar",
-      description: "Research findings on cylinder wall metallurgy under high ambient humidity.",
-      date: "May 04, 2024",
-      tag: "Research",
-    },
-    {
-      id: "o-2",
-      title: "Consumer Rights Commission Public Notice",
-      description: "Notice regarding adherence to BERC approved maximum retail price (MRP).",
-      date: "Apr 20, 2024",
-      tag: "Consumer Protection",
-    },
-  ],
-};
+export const BERC_MESSAGES = [
+  {
+    id: "BERC-2024-06",
+    slug: "BERC-2024-06",
+    title: "Monthly LPG Price Revision Circular",
+    date: "May 28, 2024",
+    tag: "Price Circular",
+    summary:
+      "Standard 12kg cylinder LPG price revised to BDT 1,363 (incl. VAT), effective 1st June 2024. Regional auto-gas quotas itemized in annex.",
+  },
+  {
+    id: "BERC-2024-05",
+    slug: "BERC-2024-05",
+    title: "Auto Gas Retail Margin Adjustment Notice",
+    date: "May 10, 2024",
+    tag: "Regulatory Notice",
+    summary:
+      "Retail margin for auto gas conversion stations adjusted nationwide to align with revised distribution cost model.",
+  },
+  {
+    id: "BERC-2024-04",
+    slug: "BERC-2024-04",
+    title: "Public Hearing on LPG Tariff Structure",
+    date: "Apr 22, 2024",
+    tag: "Public Hearing",
+    summary:
+      "BERC invites stakeholder submissions ahead of the scheduled public hearing on the proposed LPG tariff restructuring.",
+  },
+];
 
 export const GLOBAL_NEWS = [
   {
     id: "g-1",
+    slug: "GLOBAL-2024-01",
     title: "Global LPG Prices See Moderate Rise in May 2024",
     time: "2 days ago",
     source: "Saudi Aramco CP",
@@ -228,6 +186,7 @@ export const GLOBAL_NEWS = [
   },
   {
     id: "g-2",
+    slug: "GLOBAL-2024-02",
     title: "Asia LPG Demand to Grow by 12% in 2024",
     time: "4 days ago",
     source: "Argus Media",
@@ -235,6 +194,7 @@ export const GLOBAL_NEWS = [
   },
   {
     id: "g-3",
+    slug: "GLOBAL-2024-03",
     title: "US Propane Inventories Decline Unexpectedly",
     time: "1 week ago",
     source: "EIA Energy",
@@ -242,6 +202,7 @@ export const GLOBAL_NEWS = [
   },
   {
     id: "g-4",
+    slug: "GLOBAL-2024-04",
     title: "Middle East LPG Exports Boost in Q2",
     time: "2 weeks ago",
     source: "Platts S&P",
@@ -263,11 +224,8 @@ export default function MarketUpdatesContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Stakeholder Tab State
-  const [activeStakeholderTab, setActiveStakeholderTab] = useState("LOAB");
-
-  // Selected Incident for Modal Preview
-  const [activeModalIncident, setActiveModalIncident] = useState(null);
+  // Market Updates Tab State
+  const [activeTab, setActiveTab] = useState("incidents");
 
   // Filtered Incidents
   const filteredIncidents = useMemo(() => {
@@ -336,48 +294,41 @@ export default function MarketUpdatesContent() {
         }}
       />
 
-      {/* 2. Main 2-Column Content Grid */}
+      {/* 2. Tabbed Content */}
       <section className="py-10 sm:py-14">
         <div className="site-container">
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <MarketUpdatesTabsSection
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
 
-            {/* LEFT COLUMN: INCIDENT REGISTRY & INQUIRY REPORTS (8 COLS) */}
-            <div className="flex flex-col gap-8 lg:col-span-8">
-              <IncidentRegistryTable
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                selectedType={selectedType}
-                setSelectedType={setSelectedType}
-                selectedLocation={selectedLocation}
-                setSelectedLocation={setSelectedLocation}
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalPages={totalPages}
-                paginatedIncidents={paginatedIncidents}
-                handleResetFilters={handleResetFilters}
-                setActiveModalIncident={setActiveModalIncident}
-              />
-            </div>
-
-            {/* RIGHT COLUMN: ANNOUNCEMENTS & BERC & GLOBAL (4 COLS) */}
-            <StakeholderAnnouncementsSection
-              stakeholderAnnouncements={STAKEHOLDER_ANNOUNCEMENTS}
-              globalNews={GLOBAL_NEWS}
-              activeStakeholderTab={activeStakeholderTab}
-              setActiveStakeholderTab={setActiveStakeholderTab}
+          {activeTab === "incidents" && (
+            <IncidentRegistryTable
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              selectedType={selectedType}
+              setSelectedType={setSelectedType}
+              selectedLocation={selectedLocation}
+              setSelectedLocation={setSelectedLocation}
+              selectedDate={selectedDate}
+              setSelectedDate={setSelectedDate}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              totalPages={totalPages}
+              paginatedIncidents={paginatedIncidents}
+              handleResetFilters={handleResetFilters}
             />
+          )}
 
-          </div>
+          {activeTab === "berc" && (
+            <BercMessagesSection bercMessages={BERC_MESSAGES} />
+          )}
+
+          {activeTab === "global" && (
+            <GlobalMarketSection globalNews={GLOBAL_NEWS} />
+          )}
         </div>
       </section>
-
-      {/* 3. Interactive Incident Detail Modal */}
-      <IncidentDetailModal
-        activeModalIncident={activeModalIncident}
-        setActiveModalIncident={setActiveModalIncident}
-      />
     </main>
   );
 }

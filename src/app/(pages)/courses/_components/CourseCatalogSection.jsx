@@ -7,7 +7,12 @@ import { LinkButton } from "@/components/ui/LinkButton";
 import { Search, User, BookOpen, ArrowRight } from "lucide-react";
 import { H2, H4, P } from "@/components/ui/Typography";
 import Input from "@/components/ui/Input";
-import Select from "@/components/ui/Select";
+
+export const PRICE_TABS = [
+  { id: "all", label: "All" },
+  { id: "paid", label: "Paid" },
+  { id: "free", label: "Free" },
+];
 
 export const CATEGORIES = [
   { id: "all", name: "All Categories" },
@@ -87,8 +92,8 @@ export default function CourseCatalogSection({
   setSelectedCategory,
   searchQuery,
   setSearchQuery,
-  audienceFilter,
-  setAudienceFilter,
+  priceFilter,
+  setPriceFilter,
   filteredCourses,
 }) {
   return (
@@ -97,9 +102,6 @@ export default function CourseCatalogSection({
         {/* Header */}
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3.5 py-1 text-[10px] font-bold uppercase tracking-widest text-primary backdrop-blur-md">
-              E-LEARNING CATALOG
-            </span>
             <H2>
               AVAILABLE <span className="text-primary">COURSES.</span>
             </H2>
@@ -108,39 +110,35 @@ export default function CourseCatalogSection({
             </P>
           </div>
 
-          {/* Search & Dropdown Filters */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <div className="min-w-[190px]">
-              <Input
-                type="text"
-                placeholder="Search courses..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                prefix={<Search className="h-3.5 w-3.5" />}
-              />
-            </div>
-
-            <Select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              options={CATEGORIES.map((c) => ({ value: c.id, label: c.name }))}
-              className="w-36"
-            />
-
-            <Select
-              value={audienceFilter}
-              onChange={(e) => setAudienceFilter(e.target.value)}
-              options={[
-                { value: "all", label: "All Audiences" },
-                { value: "Consumers", label: "Consumers" },
-                { value: "Dealers", label: "Dealers" },
-                { value: "Station Staff", label: "Station Staff" },
-                { value: "Industrial Users", label: "Industrial Users" },
-                { value: "All Stakeholders", label: "All Stakeholders" },
-              ]}
-              className="w-36"
+          {/* Search */}
+          <div className="min-w-[190px]">
+            <Input
+              type="text"
+              placeholder="Search courses..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              prefix={<Search className="h-3.5 w-3.5" />}
             />
           </div>
+        </div>
+
+        {/* Price Tabs */}
+        <div className="mb-6 flex items-center gap-1.5 w-full sm:w-fit rounded-xl border border-slate-200/80 bg-white p-1.5 shadow-xs">
+          {PRICE_TABS.map((tab) => {
+            const isActive = priceFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setPriceFilter(tab.id)}
+                className={`flex-1 sm:flex-none rounded-lg px-4 py-2 text-xs font-bold transition-all ${isActive
+                    ? "bg-primary text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                  }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
         </div>
 
         {/* Main Grid with Left Categories Sidebar */}
@@ -156,11 +154,10 @@ export default function CourseCatalogSection({
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`w-full text-left rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                      selectedCategory === cat.id
+                    className={`w-full text-left rounded-lg px-3 py-2 text-xs font-medium transition-colors ${selectedCategory === cat.id
                         ? "bg-primary text-white font-bold shadow-xs"
                         : "text-slate-600 hover:bg-slate-100"
-                    }`}
+                      }`}
                   >
                     {cat.name}
                   </button>

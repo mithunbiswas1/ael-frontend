@@ -11,7 +11,7 @@ export default function AelLogo({ className = "", light = false, width = 160, he
       className={`inline-flex items-center transition-opacity hover:opacity-95 ${className}`}
     >
       <Image
-        src="/safe_lpg.png"
+        src="/safe_lpg_2.png"
         alt="Safe LPG Logo"
         width={width}
         height={height}

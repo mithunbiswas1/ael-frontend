@@ -46,8 +46,14 @@ export default function IncidentDetailHero({ incident }) {
         </div>
 
         <H1 color="white" className="leading-tight">
-          <span>{incident.id}:</span>{" "}
-          <span className="text-primary">{incident.type} in {incident.location}.</span>
+          {incident.category === "incident" ? (
+            <>
+              <span>{incident.id}:</span>{" "}
+              <span className="text-primary">{incident.type} in {incident.location}.</span>
+            </>
+          ) : (
+            <span className="text-primary">{incident.title}</span>
+          )}
         </H1>
       </div>
     </section>

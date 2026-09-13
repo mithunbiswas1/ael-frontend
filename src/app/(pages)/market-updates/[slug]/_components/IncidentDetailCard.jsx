@@ -2,6 +2,20 @@ import Link from "next/link";
 import { Download } from "lucide-react";
 
 export default function IncidentDetailCard({ incident }) {
+  const isIncident = incident.category === "incident";
+  const bodyLabel = isIncident ? "Investigating Body" : "Source / Authority";
+  const summaryLabel = isIncident
+    ? "Incident Summary & Initial Findings"
+    : "Summary";
+  const impactLabel = isIncident
+    ? "Casualties & Impact Assessment"
+    : "Key Figures & Impact";
+  const capaLabel = isIncident
+    ? "Corrective & Preventive Action (CAPA)"
+    : "Follow-up / Compliance Note";
+  const dossierLabel = isIncident ? "Official Inquiry Dossier" : "Official Reference";
+  const certifiedByLabel = isIncident ? "Certified by" : "Issued by";
+
   return (
     <section className="relative z-20 -mt-8 mx-auto w-full max-w-4xl px-4 pb-20">
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-2xs">
@@ -26,7 +40,7 @@ export default function IncidentDetailCard({ incident }) {
 
           <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200/60">
             <span className="text-[11px] font-bold text-slate-500 block uppercase">
-              Investigating Body
+              {bodyLabel}
             </span>
             <span className="text-xs font-bold text-slate-900 mt-1 block">
               {incident.conductedBy}
@@ -37,7 +51,7 @@ export default function IncidentDetailCard({ incident }) {
         <div className="py-6 space-y-6">
           <div>
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 mb-2">
-              Incident Summary & Initial Findings
+              {summaryLabel}
             </h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50/50 p-4 rounded-lg border border-slate-200/80">
               {incident.details}
@@ -46,7 +60,7 @@ export default function IncidentDetailCard({ incident }) {
 
           <div>
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 mb-2">
-              Casualties & Impact Assessment
+              {impactLabel}
             </h3>
             <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs font-medium text-slate-800">
               {incident.casualties}
@@ -56,7 +70,7 @@ export default function IncidentDetailCard({ incident }) {
           {incident.preventiveAction && (
             <div>
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 mb-2">
-                Corrective & Preventive Action (CAPA)
+                {capaLabel}
               </h3>
               <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 p-4 text-xs text-slate-700 leading-relaxed">
                 {incident.preventiveAction}
@@ -67,10 +81,10 @@ export default function IncidentDetailCard({ incident }) {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-lg bg-blue-50/60 border border-blue-200 p-4">
             <div>
               <span className="text-xs font-bold text-blue-900 block">
-                Official Inquiry Dossier
+                {dossierLabel}
               </span>
               <span className="text-[11px] text-blue-700">
-                Ref ID: {incident.investigationReport} (Certified by {incident.conductedBy})
+                Ref ID: {incident.investigationReport} ({certifiedByLabel} {incident.conductedBy})
               </span>
             </div>
             <a
