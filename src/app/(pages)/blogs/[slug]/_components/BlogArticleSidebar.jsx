@@ -49,12 +49,8 @@ export default function BlogArticleSidebar({ relatedPosts }) {
 
         <div className="space-y-1">
           {[
-            "LPG Safety",
-            "Industry News",
-            "Tips & Awareness",
-            "Regulations",
-            "Technology",
-            "Environment",
+            "Seminar",
+            "Programs of Association",
           ].map((catName, idx) => (
             <Link
               key={idx}

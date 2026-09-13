@@ -10,12 +10,8 @@ import BlogRightSidebar from "./BlogRightSidebar";
 
 export const BLOG_CATEGORIES = [
   { id: "all", name: "All Categories", icon: Shield },
-  { id: "safety", name: "LPG Safety", icon: Shield },
-  { id: "news", name: "Industry News", icon: Newspaper },
-  { id: "tips", name: "Tips & Awareness", icon: Flame },
-  { id: "regulations", name: "Regulations", icon: Scale },
-  { id: "technology", name: "Technology", icon: Cpu },
-  { id: "environment", name: "Environment", icon: Leaf },
+  { id: "seminar", name: "Seminar", icon: Shield },
+  { id: "programs_of_association", name: "Programs of Association", icon: Newspaper },
 ];
 
 export default function BlogsContent({ blogsData }) {
@@ -44,7 +40,7 @@ export default function BlogsContent({ blogsData }) {
     setNewsletterEmail("");
   };
 
-  const popularPosts = blogsData.slice(0, 3);
+  const popularPosts = blogsData.slice(0, 6);
 
   return (
     <main className="min-h-screen bg-slate-50">

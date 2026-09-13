@@ -341,7 +341,7 @@ export default function MarketUpdatesContent() {
       <section className="py-10 sm:py-14">
         <div className="site-container">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-            
+
             {/* LEFT COLUMN: INCIDENT REGISTRY & INQUIRY REPORTS (8 COLS) */}
             <div className="flex flex-col gap-8 lg:col-span-8">
               <IncidentRegistryTable
