@@ -3,7 +3,6 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import SafetyGuidelinesHero from "./SafetyGuidelinesHero";
 import StakeholderTabsSection, { STAKEHOLDER_TABS } from "./StakeholderTabsSection";
 import GuidelinesGridSection from "./GuidelinesGridSection";
 
@@ -20,7 +19,6 @@ export default function SafetyGuidelinesContent() {
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <SafetyGuidelinesHero />
       <StakeholderTabsSection activeTab={activeTab} setActiveTab={setActiveTab} />
       <GuidelinesGridSection activeTab={activeTab} />
     </main>

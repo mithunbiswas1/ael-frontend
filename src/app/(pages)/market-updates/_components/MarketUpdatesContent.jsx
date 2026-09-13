@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import MarketUpdatesHero from "./MarketUpdatesHero";
+import GlobalHeroSection from "@/_components/GlobalHeroSection";
 import IncidentRegistryTable from "./IncidentRegistryTable";
 import InquiryReportsTable from "./InquiryReportsTable";
 import StakeholderAnnouncementsSection from "./StakeholderAnnouncementsSection";
@@ -320,7 +320,22 @@ export default function MarketUpdatesContent() {
   return (
     <main className="min-h-screen bg-slate-50">
       {/* 1. Page Hero Banner */}
-      <MarketUpdatesHero />
+      <GlobalHeroSection
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "LPG Market Update" },
+        ]}
+        badgeText="OFFICIAL INDUSTRY REGISTRY & MARKET PULSE"
+        title="LPG MARKET"
+        accent="UPDATE."
+        description="Stay informed with the latest incident reports, inquiries, stakeholder announcements, BERC price notifications, and global LPG market trends across Bangladesh."
+        imageSrc="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop"
+        imageAlt="Industrial LPG Terminal and Storage Facility"
+        infoTag={{
+          title: "National Incident Registry",
+          subtitle: "Live Feed • Verified by DoE & LOAB",
+        }}
+      />
 
       {/* 2. Main 2-Column Content Grid */}
       <section className="py-10 sm:py-14">

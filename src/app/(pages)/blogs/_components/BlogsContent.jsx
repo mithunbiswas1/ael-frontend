@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { Shield, Newspaper, Flame, Scale, Cpu, Leaf } from "lucide-react";
-import BlogsHeroSection from "./BlogsHeroSection";
+import GlobalHeroSection from "@/_components/GlobalHeroSection";
 import BlogCategoriesSidebar from "./BlogCategoriesSidebar";
 import BlogPostsSection from "./BlogPostsSection";
 import BlogRightSidebar from "./BlogRightSidebar";
@@ -49,7 +49,22 @@ export default function BlogsContent({ blogsData }) {
   return (
     <main className="min-h-screen bg-slate-50">
       {/* 1. Hero Banner */}
-      <BlogsHeroSection />
+      <GlobalHeroSection
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "Blog & Insights" },
+        ]}
+        badgeText="INDUSTRY INSIGHTS & SAFETY ARTICLES"
+        title="BLOG &"
+        accent="INSIGHTS."
+        description="Stay updated with expert perspectives, safety guidelines, regulatory announcements, and market trends across the Bangladesh LPG energy landscape."
+        imageSrc="https://images.unsplash.com/photo-1542744094-3a31f272c490?q=80&w=800&auto=format&fit=crop"
+        imageAlt="LPG Industry Insights & Engineering Seminars"
+        infoTag={{
+          title: "Verified Technical Insights",
+          subtitle: "Authored by certified energy engineers & safety officers",
+        }}
+      />
 
       {/* 2. Main 3-Column Content Layout */}
       <section className="py-12 sm:py-16">

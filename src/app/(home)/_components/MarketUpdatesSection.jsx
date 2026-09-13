@@ -1,6 +1,4 @@
 // src/app/(home)/_components/MarketUpdatesSection.jsx
-"use client";
-
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import MarketUpdateCard from "@/components/shared/MarketUpdateCard";

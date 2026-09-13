@@ -1,5 +1,4 @@
 // src/app/(home)/_components/MetricsBar.jsx
-"use client";
 
 import { Users, GraduationCap, FileText, ShieldCheck } from "lucide-react";
 import { H3, P } from "@/components/ui/Typography";

@@ -1,5 +1,8 @@
 // src/app/(pages)/about/page.jsx
-import AboutHeroSection from "./_components/AboutHeroSection";
+
+import { ArrowRight } from "lucide-react";
+import { LinkButton } from "@/components/ui/LinkButton";
+import GlobalHeroSection from "@/_components/GlobalHeroSection";
 import WhoWeAreSection from "./_components/WhoWeAreSection";
 import MissionVisionSection from "./_components/MissionVisionSection";
 import ExpertTrainersSection from "./_components/ExpertTrainersSection";
@@ -14,7 +17,33 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-slate-50">
-      <AboutHeroSection />
+      <GlobalHeroSection
+        breadcrumbItems={[
+          { label: "Home", href: "/" },
+          { label: "About Us" },
+        ]}
+        badgeText="NATIONAL LPG SAFETY MISSION"
+        title="ABOUT"
+        accent="US."
+        description="Dedicated to promoting nationwide safety, building public awareness, and strengthening Bangladesh’s LPG sector through knowledge, technical training, and institutional collaboration."
+        buttons={
+          <>
+            <LinkButton href="/courses" variant="primary" size="default">
+              <span>Explore Training Courses</span>
+              <ArrowRight className="h-4 w-4" />
+            </LinkButton>
+            <LinkButton href="/contact" variant="frosted" size="default">
+              <span>Contact Our Team</span>
+            </LinkButton>
+          </>
+        }
+        imageSrc="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop"
+        imageAlt="LPG Storage and Cylinders"
+        infoTag={{
+          title: "Nationwide Awareness Network",
+          subtitle: "Standardizing safety across all 64 districts",
+        }}
+      />
       <WhoWeAreSection />
       <MissionVisionSection />
       <ExpertTrainersSection />

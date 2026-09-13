@@ -1,5 +1,4 @@
 // src/components/shared/CourseCard.jsx
-"use client";
 
 import Image from "next/image";
 import { Clock, BookOpen, User, ArrowRight } from "lucide-react";

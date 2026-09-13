@@ -34,11 +34,11 @@ const LoginModal = ({ isOpen, onClose, onSuccess, redirectPath }) => {
       setOtpSent(false);
       setErrors({});
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
     }
 
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 

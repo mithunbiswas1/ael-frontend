@@ -52,23 +52,10 @@ const navLinks = [
   {
     name: "Safety Guidelines",
     href: "/safety-guidelines",
-    subItems: [
-      { name: "Consumer Safety", href: "/safety-guidelines?tab=consumer" },
-      { name: "LPG Dealers", href: "/safety-guidelines?tab=dealer" },
-      { name: "Distributors", href: "/safety-guidelines?tab=distributor" },
-      { name: "Auto Gas Stations", href: "/safety-guidelines?tab=auto-gas" },
-      { name: "Industrial Plants", href: "/safety-guidelines?tab=industrial" },
-    ],
   },
   {
     name: "Market Updates",
     href: "/market-updates",
-    subItems: [
-      { name: "Incident Registry", href: "/market-updates?category=incident" },
-      { name: "BERC Price Notices", href: "/market-updates?category=berc" },
-      { name: "Stakeholder Circulars", href: "/market-updates?category=stakeholder" },
-      { name: "Global Price Indexes", href: "/market-updates?category=global" },
-    ],
   },
   {
     name: "Training & Quiz",

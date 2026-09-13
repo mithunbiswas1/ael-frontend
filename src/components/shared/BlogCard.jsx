@@ -1,6 +1,4 @@
 // src/components/shared/BlogCard.jsx
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar } from "lucide-react";

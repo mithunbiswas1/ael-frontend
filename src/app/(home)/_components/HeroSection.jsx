@@ -1,6 +1,4 @@
 // src/app/(home)/_components/HeroSection.jsx
-"use client";
-
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
