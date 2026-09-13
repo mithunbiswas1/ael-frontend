@@ -18,7 +18,7 @@ export default function WhatsAppButton({
   return (
     <aside
       aria-label="WhatsApp Contact Support"
-      className={`fixed bottom-6 right-6 z-50 flex items-center group ${className}`}
+      className={`fixed bottom-4 right-4 lg:bottom-6 lg:right-6 z-50 flex items-center group ${className}`}
     >
       {/* Tooltip on hover */}
       <span className="pointer-events-none absolute right-full mr-3 hidden rounded-xl bg-slate-900/90 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur-md transition-all duration-200 group-hover:block whitespace-nowrap border border-white/10">
@@ -32,10 +32,10 @@ export default function WhatsAppButton({
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with us on WhatsApp"
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/30 transition-all duration-300 hover:scale-110 hover:bg-[#20bd5a] hover:shadow-xl hover:shadow-[#25D366]/40 active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
+        className="relative flex h-10 w-10 md:h-14 md:w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-[#25D366]/30 transition-all duration-300 hover:scale-110 hover:bg-[#20bd5a] hover:shadow-xl hover:shadow-[#25D366]/40 active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#25D366]/30"
       >
         {/* WhatsApp Icon */}
-        <FaWhatsapp className="relative z-10 h-8 w-8 drop-shadow-sm" />
+        <FaWhatsapp className="relative z-10 h-5 w-5 md:h-8 md:w-8 drop-shadow-sm" />
       </a>
     </aside>
   );
