@@ -1,8 +1,8 @@
 // src/app/(pages)/safety-guidelines/page.jsx
 
 import { Suspense } from "react";
-import SafetyGuidelinesContent from "./_components/SafetyGuidelinesContent";
 import GlobalHeroSection from "@/_components/GlobalHeroSection";
+import SafetyGuidelinesContent from "./_components/SafetyGuidelinesContent";
 
 export const metadata = {
   title: "Safety Guidelines | Nationwide LPG Safety Protocols Bangladesh",

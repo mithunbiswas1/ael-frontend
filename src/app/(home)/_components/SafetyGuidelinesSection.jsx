@@ -6,12 +6,12 @@ import SectionHeader from "@/components/ui/SectionHeader";
 
 const guidelinesData = [
   {
-    id: "Investors",
+    id: "investors",
     icon: Factory,
     badgeText: "Investors",
     imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
     description: "Safety for industrial LPG usage.",
-    href: "/safety-guidelines?tab=industrial",
+    href: "/safety-guidelines?tab=investors",
   },
   {
     id: "dealer",
@@ -30,12 +30,12 @@ const guidelinesData = [
     href: "/safety-guidelines?tab=distributor",
   },
   {
-    id: "consumer",
+    id: "customer",
     icon: User,
-    badgeText: "Consumer",
+    badgeText: "Customer",
     imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=600&auto=format&fit=crop",
-    description: "Safe usage tips for household customers.",
-    href: "/safety-guidelines?tab=consumer",
+    description: "Safe usage tips for household Customer.",
+    href: "/safety-guidelines?tab=customer",
   },
 ];
 

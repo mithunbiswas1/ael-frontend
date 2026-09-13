@@ -1,4 +1,5 @@
 // src/app/(pages)/safety-guidelines/_components/GuidelinesGridSection.jsx
+
 "use client";
 
 import Link from "next/link";
@@ -63,7 +64,6 @@ const documentDownloads = [
   {
     id: 1,
     name: "LPG Handling & Storage Guidelines",
-    audience: "All Stakeholders",
     targetTab: "all",
     type: "PDF",
     access: "Public",
@@ -71,35 +71,31 @@ const documentDownloads = [
   },
   {
     id: 2,
-    name: "LPG Auto Gas Station Safety Manual",
-    audience: "Auto Gas Station",
-    targetTab: "auto-gas",
+    name: "Investor Safety Compliance & Industrial Plant Norms",
+    targetTab: "investors",
     type: "PDF",
     access: "Login Required",
-    fileName: "auto-gas-station-safety-manual.pdf",
+    fileName: "investor-plant-safety-manual.pdf",
   },
   {
     id: 3,
     name: "Industrial LPG Installation Code & Pipe Specs",
-    audience: "Industrial Customers",
-    targetTab: "industrial",
+    targetTab: "investors",
     type: "PDF",
     access: "Login Required",
     fileName: "industrial-lpg-installation-code.pdf",
   },
   {
     id: 4,
-    name: "LPG Cylinder Safety Tips (Household Consumer Guide)",
-    audience: "Regular Consumers",
-    targetTab: "consumer",
+    name: "LPG Cylinder Safety Tips (Customer Guide)",
+    targetTab: "customer",
     type: "PDF",
     access: "Public",
-    fileName: "consumer-lpg-safety-tips.pdf",
+    fileName: "customer-lpg-safety-tips.pdf",
   },
   {
     id: 5,
     name: "Emergency Response & Gas Leakage Protocols",
-    audience: "All Stakeholders",
     targetTab: "all",
     type: "PDF",
     access: "Login Required",
@@ -108,7 +104,6 @@ const documentDownloads = [
   {
     id: 6,
     name: "Bulk Road Tanker & Hauler Transport Standard",
-    audience: "Distributors",
     targetTab: "distributor",
     type: "PDF",
     access: "Login Required",
@@ -117,7 +112,6 @@ const documentDownloads = [
   {
     id: 7,
     name: "Dealer Warehouse Storage & Cylinder Inspection Norms",
-    audience: "Dealers",
     targetTab: "dealer",
     type: "PDF",
     access: "Public",
@@ -274,7 +268,6 @@ export default function GuidelinesGridSection({ activeTab }) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Document Name</TableHead>
-                    <TableHead>Audience</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Access</TableHead>
                     <TableHead className="text-right">Download</TableHead>
@@ -291,9 +284,6 @@ export default function GuidelinesGridSection({ activeTab }) {
                             <span>{doc.name}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-slate-500">
-                          {doc.audience}
-                        </TableCell>
                         <TableCell>
                           <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">
                             {doc.type}
@@ -301,11 +291,10 @@ export default function GuidelinesGridSection({ activeTab }) {
                         </TableCell>
                         <TableCell>
                           <span
-                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                              isPublic
-                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                                : "bg-blue-50 text-primary border border-blue-200"
-                            }`}
+                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ${isPublic
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              : "bg-blue-50 text-primary border border-blue-200"
+                              }`}
                           >
                             {doc.access}
                           </span>

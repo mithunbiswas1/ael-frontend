@@ -373,75 +373,9 @@ export default function SearchModal({ isOpen, onClose }) {
                   ))}
                 </div>
               </div>
-
-              {/* Quick Links */}
-              <div>
-                <div className="text-xs font-bold text-slate-700 mb-2.5">
-                  Recommended Quick Access
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Link
-                    href="/verify-certificate"
-                    onClick={onClose}
-                    className="flex items-center gap-2.5 rounded-xl border border-slate-100 p-2.5 hover:border-primary/40 hover:bg-blue-50/30 transition-all"
-                  >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-600">
-                      <Award className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-slate-800">Verify Certificate</div>
-                      <div className="text-[10px] text-slate-500 truncate">Check validity online</div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/courses"
-                    onClick={onClose}
-                    className="flex items-center gap-2.5 rounded-xl border border-slate-100 p-2.5 hover:border-primary/40 hover:bg-blue-50/30 transition-all"
-                  >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                      <BookOpen className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-slate-800">Browse Safety Courses</div>
-                      <div className="text-[10px] text-slate-500 truncate">LMS &amp; quizzes</div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/safety-guidelines?tab=consumer"
-                    onClick={onClose}
-                    className="flex items-center gap-2.5 rounded-xl border border-slate-100 p-2.5 hover:border-primary/40 hover:bg-blue-50/30 transition-all"
-                  >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                      <ShieldCheck className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-slate-800">Household Safety</div>
-                      <div className="text-[10px] text-slate-500 truncate">Kitchen guidelines</div>
-                    </div>
-                  </Link>
-
-                  <Link
-                    href="/market-updates?category=incident"
-                    onClick={onClose}
-                    className="flex items-center gap-2.5 rounded-xl border border-slate-100 p-2.5 hover:border-primary/40 hover:bg-blue-50/30 transition-all"
-                  >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-                      <AlertTriangle className="h-4 w-4" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs font-bold text-slate-800">Incident Reports</div>
-                      <div className="text-[10px] text-slate-500 truncate">National registry</div>
-                    </div>
-                  </Link>
-                </div>
-              </div>
             </div>
           )}
         </div>
-
-
       </div>
     </div>
   );

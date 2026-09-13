@@ -4,11 +4,10 @@
 import { ShieldCheck, Truck, Fuel, Factory, User } from "lucide-react";
 
 export const STAKEHOLDER_TABS = [
-  { id: "dealer", label: "Dealers", icon: ShieldCheck },
-  { id: "distributor", label: "Distributors", icon: Truck },
-  { id: "auto-gas", label: "Auto Gas Station", icon: Fuel },
-  { id: "industrial", label: "Industrial Customers", icon: Factory },
-  { id: "consumer", label: "Regular Consumers", icon: User },
+  { id: "investors", label: "Investors", icon: Factory },
+  { id: "dealer", label: "Dealer", icon: ShieldCheck },
+  { id: "distributor", label: "Distributor", icon: Truck },
+  { id: "customer", label: "Customer", icon: User },
 ];
 
 export default function StakeholderTabsSection({ activeTab, setActiveTab }) {
@@ -22,11 +21,10 @@ export default function StakeholderTabsSection({ activeTab, setActiveTab }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex shrink-0 sm:flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all whitespace-nowrap min-w-[130px] sm:min-w-[140px] ${
-                isActive
-                  ? "bg-primary text-white shadow-xs"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-              }`}
+              className={`flex shrink-0 sm:flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all whitespace-nowrap min-w-[130px] sm:min-w-[140px] ${isActive
+                ? "bg-primary text-white shadow-xs"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                }`}
             >
               <Icon className="h-4 w-4 shrink-0" />
               <span>{tab.label}</span>

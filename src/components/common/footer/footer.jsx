@@ -187,7 +187,6 @@ export default function Footer() {
             © {new Date().getFullYear()} Safe LPG. All Rights Reserved.
           </P>
         </div>
-
       </div>
     </footer>
   );

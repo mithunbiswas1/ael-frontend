@@ -18,7 +18,6 @@ export default function ContactPage() {
           { label: "Home", href: "/" },
           { label: "Contact Us" },
         ]}
-        badgeText="24/7 CITIZEN & INDUSTRY SUPPORT"
         title="CONTACT"
         accent="US."
         description="We are here to assist with safety protocols, regulatory compliance inquiries, institutional LMS training, and technical advisory services across Bangladesh."
@@ -36,10 +35,6 @@ export default function ContactPage() {
         }
         imageSrc="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=800&auto=format&fit=crop"
         imageAlt="Customer Support Helpdesk"
-        infoTag={{
-          title: "Dedicated Response Team",
-          subtitle: "Average response time under 15 minutes",
-        }}
       />
 
       <section className="py-12 sm:py-16">

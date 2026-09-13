@@ -8,11 +8,11 @@ import GuidelinesGridSection from "./GuidelinesGridSection";
 
 export default function SafetyGuidelinesContent() {
   const searchParams = useSearchParams();
-  const [activeTab, setActiveTab] = useState("dealer");
+  const [activeTab, setActiveTab] = useState("investors");
 
   useEffect(() => {
-    const tabFromUrl = searchParams.get("tab");
-    if (tabFromUrl && STAKEHOLDER_TABS.some((t) => t.id === tabFromUrl)) {
+    const tabFromUrl = searchParams.get("tab")?.toLowerCase();
+    if (tabFromUrl && STAKEHOLDER_TABS.some((t) => t.id.toLowerCase() === tabFromUrl)) {
       setActiveTab(tabFromUrl);
     }
   }, [searchParams]);
