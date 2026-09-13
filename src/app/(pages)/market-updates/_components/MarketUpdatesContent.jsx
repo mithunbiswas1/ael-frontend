@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import GlobalHeroSection from "@/_components/GlobalHeroSection";
 import IncidentRegistryTable from "./IncidentRegistryTable";
-import InquiryReportsTable from "./InquiryReportsTable";
 import StakeholderAnnouncementsSection from "./StakeholderAnnouncementsSection";
 import IncidentDetailModal from "./IncidentDetailModal";
 
@@ -359,13 +358,6 @@ export default function MarketUpdatesContent() {
                 paginatedIncidents={paginatedIncidents}
                 handleResetFilters={handleResetFilters}
                 setActiveModalIncident={setActiveModalIncident}
-              />
-
-              <InquiryReportsTable
-                inquiryReports={INQUIRY_REPORTS}
-                incidentData={INCIDENT_DATA}
-                setActiveModalIncident={setActiveModalIncident}
-                handleDownloadReport={handleDownloadReport}
               />
             </div>
 

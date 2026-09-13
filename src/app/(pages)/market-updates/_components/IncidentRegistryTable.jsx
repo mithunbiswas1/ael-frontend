@@ -15,8 +15,6 @@ export default function IncidentRegistryTable({
   setSearchTerm,
   selectedType,
   setSelectedType,
-  selectedLocation,
-  setSelectedLocation,
   selectedDate,
   setSelectedDate,
   currentPage,
@@ -32,7 +30,7 @@ export default function IncidentRegistryTable({
         <div>
           <h2 className="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
-            <span>INCIDENT REGISTRY</span>
+            <span>Incedentce REPORTS</span>
           </h2>
           <p className="text-[11px] text-slate-500 mt-0.5">
             Verified safety, leakage, and containment occurrences nationwide
@@ -52,7 +50,7 @@ export default function IncidentRegistryTable({
       <div className="rounded-lg border border-slate-200/70 bg-slate-50/60 p-3 mb-4">
         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-12">
           {/* Keyword Search */}
-          <div className="md:col-span-4">
+          <div className="md:col-span-5">
             <Input
               type="text"
               placeholder="Search by ID, keyword..."
@@ -68,7 +66,7 @@ export default function IncidentRegistryTable({
           </div>
 
           {/* Type Select */}
-          <div className="md:col-span-3">
+          <div className="md:col-span-4">
             <Select
               value={selectedType}
               onChange={(e) => {
@@ -87,31 +85,8 @@ export default function IncidentRegistryTable({
             />
           </div>
 
-          {/* Location Select */}
-          <div className="md:col-span-3">
-            <Select
-              value={selectedLocation}
-              onChange={(e) => {
-                setSelectedLocation(e.target.value);
-                setCurrentPage(1);
-              }}
-              size="sm"
-              className="bg-white text-xs h-9"
-              options={[
-                { label: "All Locations", value: "all" },
-                { label: "Chattogram", value: "chattogram" },
-                { label: "Dhaka", value: "dhaka" },
-                { label: "Narayanganj", value: "narayanganj" },
-                { label: "Khulna", value: "khulna" },
-                { label: "Gazipur", value: "gazipur" },
-                { label: "Bogura", value: "bogura" },
-                { label: "Barishal", value: "barishal" },
-              ]}
-            />
-          </div>
-
           {/* Search / Filter Button */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-3">
             <button
               onClick={() => setCurrentPage(1)}
               className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-primary h-9 px-3 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs"
@@ -129,7 +104,6 @@ export default function IncidentRegistryTable({
           <TableRow>
             <TableHead>Incident ID</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead>Location</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-center">View</TableHead>
@@ -138,7 +112,7 @@ export default function IncidentRegistryTable({
         <TableBody>
           {paginatedIncidents.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={6} className="py-8 text-center text-slate-500">
+              <TableCell colSpan={5} className="py-8 text-center text-slate-500">
                 No incidents found matching the selected filters.
               </TableCell>
             </TableRow>
@@ -153,30 +127,25 @@ export default function IncidentRegistryTable({
                   <TableCell className="text-slate-700 font-medium">
                     <span className="inline-flex items-center gap-1.5">
                       <span
-                        className={`h-1.5 w-1.5 rounded-full ${
-                          incident.type === "Explosion"
-                            ? "bg-red-500"
-                            : incident.type === "Fire"
+                        className={`h-1.5 w-1.5 rounded-full ${incident.type === "Explosion"
+                          ? "bg-red-500"
+                          : incident.type === "Fire"
                             ? "bg-amber-500"
                             : "bg-blue-500"
-                        }`}
+                          }`}
                       />
                       {incident.type}
                     </span>
-                  </TableCell>
-                  <TableCell className="text-slate-600">
-                    {incident.location}
                   </TableCell>
                   <TableCell className="text-slate-500 whitespace-nowrap">
                     {incident.date}
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                        isResolved
-                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                          : "bg-amber-50 text-amber-700 border border-amber-200"
-                      }`}
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${isResolved
+                        ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        : "bg-amber-50 text-amber-700 border border-amber-200"
+                        }`}
                     >
                       {incident.status}
                     </span>
@@ -220,11 +189,10 @@ export default function IncidentRegistryTable({
               <button
                 key={pageNum}
                 onClick={() => setCurrentPage(pageNum)}
-                className={`inline-flex h-8 w-8 items-center justify-center rounded-lg font-bold text-xs transition-colors ${
-                  isActive
-                    ? "bg-primary text-white shadow-2xs"
-                    : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-                }`}
+                className={`inline-flex h-8 w-8 items-center justify-center rounded-lg font-bold text-xs transition-colors ${isActive
+                  ? "bg-primary text-white shadow-2xs"
+                  : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
               >
                 {pageNum}
               </button>
