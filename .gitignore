@@ -11,6 +11,9 @@
 !.yarn/versions
 .agents/
 .agent/
+.claude/
+
+graphify-out/
 
 # testing
 /coverage

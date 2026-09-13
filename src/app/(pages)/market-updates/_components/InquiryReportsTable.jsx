@@ -19,9 +19,8 @@ export default function InquiryReportsTable({
       <div className="border-b border-slate-100 pb-4 mb-4">
         <h2 className="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
           <FileText className="h-4 w-4 text-blue-600" />
-          <span>INQUIRY REPORTS</span>
+          <span>Incedentce REPORTS</span>
           <span className="text-xs font-medium text-slate-500 lowercase">
-            (linked to incidents)
           </span>
         </h2>
         <p className="text-[11px] text-slate-500 mt-0.5">

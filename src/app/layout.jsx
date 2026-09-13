@@ -6,6 +6,7 @@ import "./globals.css";
 
 import { Toaster } from "sonner";
 import { defaultMetadata } from "@/lib/seo";
+import WhatsAppButton from "@/components/common/WhatsAppButton";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -23,8 +24,10 @@ export default function RootLayout({ children }) {
         cz-shortcut-listen="true"
       >
         {children}
+        <WhatsAppButton />
         <Toaster position="top-right" richColors closeButton />
       </body>
     </html>
   );
 }
+
