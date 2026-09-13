@@ -26,17 +26,6 @@ export default function AboutPage() {
         title="ABOUT"
         accent="US."
         description="Dedicated to promoting nationwide safety, building public awareness, and strengthening Bangladesh’s LPG sector through knowledge, technical training, and institutional collaboration."
-        buttons={
-          <>
-            <LinkButton href="/courses" variant="primary" size="default">
-              <span>Explore Training Courses</span>
-              <ArrowRight className="h-4 w-4" />
-            </LinkButton>
-            <LinkButton href="/contact" variant="frosted" size="default">
-              <span>Contact Our Team</span>
-            </LinkButton>
-          </>
-        }
         imageSrc="https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop"
         imageAlt="LPG Storage and Cylinders"
         infoTag={{
