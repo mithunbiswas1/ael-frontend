@@ -14,7 +14,6 @@ import {
   Award,
   AlertTriangle,
   Scale,
-  Sparkles,
 } from "lucide-react";
 import { H4, P } from "@/components/ui/Typography";
 
@@ -184,13 +183,13 @@ const SEARCH_DATABASE = [
 ];
 
 const POPULAR_TAGS = [
-  "Cylinder safety",
-  "Leak detection",
-  "Verify certificate",
-  "BERC prices",
-  "Auto Gas",
-  "Commercial kitchen",
-  "Hotline 16137",
+  { label: "Cylinder safety", href: "/safety-guidelines" },
+  { label: "Leak detection", href: "/blogs/how-to-detect-lpg-gas-leakage-quickly" },
+  { label: "Verify certificate", href: "/verify-certificate" },
+  { label: "BERC prices", href: "/market-updates" },
+  { label: "Auto Gas", href: "/safety-guidelines" },
+  { label: "Commercial kitchen", href: "/courses/1" },
+  { label: "Hotline 16137", href: "/contact" },
 ];
 
 export default function SearchModal({ isOpen, onClose }) {
@@ -362,14 +361,14 @@ export default function SearchModal({ isOpen, onClose }) {
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {POPULAR_TAGS.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => setQuery(tag)}
+                    <Link
+                      key={tag.label}
+                      href={tag.href}
+                      onClick={onClose}
                       className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors"
                     >
-                      {tag}
-                    </button>
+                      {tag.label}
+                    </Link>
                   ))}
                 </div>
               </div>
