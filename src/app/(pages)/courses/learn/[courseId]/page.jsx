@@ -1,5 +1,5 @@
 // src/app/(pages)/courses/learn/[courseId]/page.jsx
-import ClassroomContent from "./_components/ClassroomContent";
+import ClassroomContent from "./_view/ClassroomContent";
 
 export const metadata = {
   title: "Online Safety Classroom Player | Safe LPG Academy",
@@ -13,3 +13,5 @@ export default async function ClassroomPlayerPage({ params }) {
 
   return <ClassroomContent courseId={courseId} />;
 }
+
+

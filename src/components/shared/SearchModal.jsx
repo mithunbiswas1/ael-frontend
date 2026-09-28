@@ -16,6 +16,7 @@ import {
   Scale,
 } from "lucide-react";
 import { H4, P } from "@/components/ui/Typography";
+import { useDictionary } from "@/context/DictionaryContext";
 
 const SEARCH_DATABASE = [
   // Courses
@@ -182,6 +183,17 @@ const SEARCH_DATABASE = [
   },
 ];
 
+const POPULAR_TAGS = [
+  "Cylinder Safety",
+  "Leak Detection",
+  "Commercial LPG",
+  "Bulk Tank",
+  "BERC Price",
+  "Certificate",
+  "Auto Gas",
+  "Emergency Protocol",
+];
+
 export default function SearchModal({ isOpen, onClose }) {
   const [query, setQuery] = useState("");
   const inputRef = useRef(null);
@@ -198,15 +210,18 @@ export default function SearchModal({ isOpen, onClose }) {
     }
   }, [isOpen]);
 
-  // Handle Body Scroll Lock
+  // Handle Body and Window Scroll Lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     }
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
     };
   }, [isOpen]);
 
@@ -234,13 +249,17 @@ export default function SearchModal({ isOpen, onClose }) {
     });
   }, [query]);
 
+  const { locale, dict } = useDictionary();
+  const isBn = locale === "bn";
+  const common = dict?.common || {};
+
   if (!isOpen) return null;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Site Search"
+      aria-label={common.search || "Site Search"}
       className="fixed inset-0 z-50 flex items-start justify-center p-3 sm:p-6 md:pt-20 bg-slate-950/75 backdrop-blur-sm animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -253,7 +272,12 @@ export default function SearchModal({ isOpen, onClose }) {
           <input
             ref={inputRef}
             type="text"
-            placeholder="Search courses, safety protocols, circulars, blogs..."
+            placeholder={
+              common.searchPlaceholder ||
+              (isBn
+                ? "কোর্স, নিরাপত্তা নির্দেশিকা, সার্কুলার, ব্লগ ইত্যাদি খুঁজুন..."
+                : "Search courses, safety protocols, circulars, blogs...")
+            }
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="flex-1 bg-transparent text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none"
@@ -355,7 +379,7 @@ export default function SearchModal({ isOpen, onClose }) {
                       key={tag}
                       type="button"
                       onClick={() => setQuery(tag)}
-                      className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors"
+                      className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 hover:border-primary hover:bg-primary/5 hover:text-primary transition-colors cursor-pointer"
                     >
                       {tag}
                     </button>

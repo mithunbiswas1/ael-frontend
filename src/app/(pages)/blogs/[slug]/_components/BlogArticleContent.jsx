@@ -1,11 +1,9 @@
+// src/app/(pages)/blogs/[slug]/_components/BlogArticleContent.jsx
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Calendar,
-  Clock,
-  Play,
-  Lock,
-} from "lucide-react";
+import { Calendar, Clock, Play, Lock } from "lucide-react";
 import {
   FaFacebookF,
   FaTwitter,
@@ -13,6 +11,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 import { H1, H3, P } from "@/components/ui/Typography";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function BlogArticleContent({
   currentPost,
@@ -20,38 +19,47 @@ export default function BlogArticleContent({
   setIsPlaying,
   toast,
 }) {
+  const { locale, dict } = useDictionary();
+  const isBn = locale === "bn";
+
+  const title = isBn ? currentPost.titleBn : currentPost.title;
+  const category = isBn ? currentPost.categoryBn : currentPost.category;
+  const author = isBn ? currentPost.authorBn : currentPost.author;
+  const date = isBn ? currentPost.dateBn : currentPost.date;
+  const readTime = isBn ? currentPost.readTimeBn : currentPost.readTime;
+
   return (
     <article className="space-y-6 lg:col-span-8">
       {/* Header: Title & Meta & Social Share */}
       <div>
         <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary">
-          {currentPost.category}
+          {category}
         </span>
 
-        <H1 className="text-2xl sm:text-3xl md:text-4xl">
-          {currentPost.title}
-        </H1>
+        <H1 className="text-2xl sm:text-3xl md:text-4xl">{title}</H1>
 
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-y border-slate-200/80 py-3 text-xs text-slate-500">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="font-semibold text-slate-800">
-              By {currentPost.author}
+              {isBn ? "লেখক:" : "By"} {author}
             </span>
             <span>|</span>
             <div className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5 text-slate-400" />
-              <span>{currentPost.date}</span>
+              <span>{date}</span>
             </div>
             <span>|</span>
             <div className="flex items-center gap-1">
               <Clock className="h-3.5 w-3.5 text-slate-400" />
-              <span>{currentPost.readTime}</span>
+              <span>{readTime}</span>
             </div>
           </div>
 
           {/* Share Icons */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-700">Share:</span>
+            <span className="text-xs font-bold text-slate-700">
+              {isBn ? "শেয়ার:" : "Share:"}
+            </span>
             <button
               onClick={() => handleShare("Facebook")}
               className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white shadow-2xs hover:opacity-90 transition-opacity"
@@ -88,7 +96,7 @@ export default function BlogArticleContent({
       <div className="relative aspect-16/9 w-full overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100 shadow-xs">
         <Image
           src={currentPost.imageUrl}
-          alt={currentPost.title}
+          alt={title}
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 65vw"
@@ -99,72 +107,96 @@ export default function BlogArticleContent({
       {/* Article Body Content */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 text-slate-700 shadow-xs space-y-6 text-sm leading-relaxed">
         <P weight="semibold" color="dark" size="lg">
-          Liquefied Petroleum Gas (LPG) is a clean, cost-efficient, and versatile fuel when handled in accordance with established regulatory protocols. However, inadvertent negligence can lead to avoidable hazard scenarios. Adhere to these certified procedures to guarantee safety in your home or commercial establishment.
+          {isBn
+            ? currentPost.descriptionBn || currentPost.description
+            : currentPost.description}
         </P>
 
-        <div>
-          <H3 className="text-base">
-            1. Conduct Periodic Soap Solution Leak Tests
-          </H3>
-          <P color="gray" className="mt-2">
-            Always inspect regulator o-rings and hose connections by dabbing a mild soap-water mixture around all joints. Formation of expanding bubbles signals an active gas escape. Never use open flames or matches to detect leaks. Should a leak occur, immediately disengage the regulator valve and ensure cross-ventilation.
-          </P>
-        </div>
-
-        {/* Embedded Video Mockup with Play Button */}
-        <div className="relative aspect-16/9 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-900">
-          <Image
-            src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop"
-            alt="Video demonstration of cylinder check"
-            fill
-            className="object-cover opacity-80"
-          />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-            <button
-              onClick={() => {
-                setIsPlaying(true);
-                toast.info("Video playback demonstration started.");
-              }}
-              className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl transition-all hover:bg-white active:scale-95"
-            >
-              <Play className="h-6 w-6 fill-current translate-x-0.5" />
-            </button>
+        {currentPost.content || currentPost.contentBn ? (
+          <div className="space-y-4 whitespace-pre-line text-sm text-slate-700 leading-relaxed font-sans">
+            {isBn
+              ? currentPost.contentBn || currentPost.content
+              : currentPost.content || currentPost.contentBn}
           </div>
-          <div className="absolute bottom-3 left-3 rounded-md bg-slate-950/80 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
-            Safety Demonstration Video (3:45)
+        ) : currentPost.sections && currentPost.sections.length > 0 ? (
+          currentPost.sections.map((section, idx) => (
+            <div key={idx} className="space-y-2">
+              <H3 className="text-base font-bold text-slate-900">
+                {isBn ? section.headingBn : section.headingEn}
+              </H3>
+              <P color="gray" className="leading-relaxed">
+                {isBn ? section.bodyBn : section.bodyEn}
+              </P>
+              {idx === 0 && (
+                /* Embedded Video Mockup with Play Button after first section */
+                <div className="relative aspect-16/9 w-full overflow-hidden rounded-xl border border-slate-200 bg-slate-900 my-4">
+                  <Image
+                    src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?q=80&w=800&auto=format&fit=crop"
+                    alt="Video demonstration of cylinder check"
+                    fill
+                    className="object-cover opacity-80"
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                    <button
+                      onClick={() => {
+                        setIsPlaying(true);
+                        toast.info(
+                          isBn
+                            ? "ভিডিও প্রদর্শনী শুরু হয়েছে।"
+                            : "Video playback demonstration started."
+                        );
+                      }}
+                      className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-primary shadow-xl transition-all hover:bg-white active:scale-95"
+                    >
+                      <Play className="h-6 w-6 fill-current translate-x-0.5" />
+                    </button>
+                  </div>
+                  <div className="absolute bottom-3 left-3 rounded-md bg-slate-950/80 px-2.5 py-1 text-[11px] font-bold text-white backdrop-blur-md">
+                    {isBn
+                      ? "নিরাপত্তা প্রদর্শনী ভিডিও (৩:৪৫)"
+                      : "Safety Demonstration Video (3:45)"}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <div>
+            <H3 className="text-base">
+              {isBn
+                ? "১. নিরাপত্তা নির্দেশিকা মেনে চলুন"
+                : "1. Follow Recommended Safety Guidelines"}
+            </H3>
+            <P color="gray" className="mt-2">
+              {isBn
+                ? "সর্বদা অনুমোদিত সরঞ্জাম ও প্রত্যয়িত অপারেটরের সেবা গ্রহণ করুন।"
+                : "Always adhere to certified operating guidelines and use approved equipment."}
+            </P>
           </div>
-        </div>
-
-        <div>
-          <H3 className="text-base">
-            2. Ensure Constant Low-Level Kitchen Ventilation
-          </H3>
-          <P color="gray" className="mt-2">
-            Because LPG vapors are denser than ambient air, escaped gas tends to settle along floor levels and corners rather than rising toward ceiling vents. Keep lower kitchen windows cracked and ensure baseboards allow airflow.
-          </P>
-        </div>
-
-        <div>
-          <H3 className="text-base">
-            3. Maintain Cylinders in an Upright Vertical Position
-          </H3>
-          <P color="gray" className="mt-2">
-            Never tilt, invert, or store LPG cylinders horizontally. Cylinders must always rest vertically on dry, even ground. Storing cylinders on their side allows liquid LPG to bypass internal safety vapor spaces and enter burners, provoking catastrophic flash fires.
-          </P>
-        </div>
-
-        <div>
-          <H3 className="text-base">
-            4. Disengage Cylinder Regulator When Not in Use
-          </H3>
-          <P color="gray" className="mt-2">
-            Do not rely exclusively on the stove knob. Turn off the main cylinder regulator switch every night before sleeping and prior to departing the residence.
-          </P>
-        </div>
+        )}
 
         {/* Emergency Alert Box */}
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-xs text-red-800">
-          <span className="font-bold">⚠️ Critical Emergency Protocol:</span> If you detect distinct ethyl mercaptan odor, DO NOT operate any electrical switches, exhaust fans, or open flames. Immediately turn off the cylinder valve, evacuate all occupants to open air, and dial the 24/7 National Emergency Hotline <strong>16137</strong>.
+          <span className="font-bold">
+            {isBn
+              ? "⚠️ জরুরি নিরাপত্তা প্রোটোকল:"
+              : "⚠️ Critical Emergency Protocol:"}
+          </span>{" "}
+          {isBn ? (
+            <span>
+              গ্যাসের তীব্র গন্ধ (ইথাইল মারক্যাপটান) পেলে কোনো বৈদ্যুতিক সুইচ অন
+              বা অফ করবেন না, দিয়াশলাই জ্বালাবেন না। তাৎক্ষণিকভাবে সিলিন্ডারের
+              রেগুলেটর বন্ধ করে ঘরের সবাইকে নিয়ে খোলা বাতাসে চলে যান এবং ২৪/৭
+              জাতীয় জরুরি হেল্পলাইন <strong>১৬১৩৭</strong>-এ কল করুন।
+            </span>
+          ) : (
+            <span>
+              If you detect distinct ethyl mercaptan odor, DO NOT operate any
+              electrical switches, exhaust fans, or open flames. Immediately turn
+              off the cylinder valve, evacuate all occupants to open air, and dial
+              the 24/7 National Emergency Hotline <strong>16137</strong>.
+            </span>
+          )}
         </div>
       </div>
 
@@ -173,16 +205,18 @@ export default function BlogArticleContent({
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
           <div>
             <H3 className="text-sm font-black uppercase tracking-wider text-slate-900">
-              SUBSCRIBER COMMENTS
+              {isBn ? "গ্রাহক ও পাঠকদের মন্তব্য" : "SUBSCRIBER COMMENTS"}
             </H3>
             <span className="text-[11px] text-slate-400">
-              (Verified members only)
+              {isBn
+                ? "(শুধুমাত্র যাচাইকৃত সদস্যদের জন্য)"
+                : "(Verified members only)"}
             </span>
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-500">
-            <span>0 Comments</span>
+            <span>{isBn ? "০টি মন্তব্য" : "0 Comments"}</span>
             <span>•</span>
-            <span>Sort by: Newest</span>
+            <span>{isBn ? "সর্টিং: সর্বশেষ" : "Sort by: Newest"}</span>
           </div>
         </div>
 
@@ -192,13 +226,15 @@ export default function BlogArticleContent({
             <Lock className="h-5 w-5" />
           </div>
           <P size="xs" color="gray" weight="medium" className="mb-3">
-            Please log in with your registered account to participate in the safety discussion.
+            {isBn
+              ? "নিরাপত্তা আলোচনায় অংশ নিতে অনুগ্রহ করে আপনার অ্যাকাউন্টে লগইন করুন।"
+              : "Please log in with your registered account to participate in the safety discussion."}
           </P>
           <Link
             href="/login"
             className="rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"
           >
-            Login to Account
+            {dict?.common?.login || (isBn ? "লগইন করুন" : "Login to Account")}
           </Link>
         </div>
       </div>

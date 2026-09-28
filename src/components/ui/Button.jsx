@@ -1,8 +1,7 @@
-// src/components/ui/Button.jsx
-
 import { forwardRef } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 const buttonVariants = cva(
@@ -60,6 +59,8 @@ const Button = forwardRef(function Button(
     fullWidth = false,
     asChild = false,
     disabled = false,
+    isLoading = false,
+    loading = false,
     type = "button",
     icon: Icon,
     label,
@@ -68,6 +69,7 @@ const Button = forwardRef(function Button(
   },
   ref
 ) {
+  const isBusy = Boolean(isLoading || loading);
   const Comp = asChild ? Slot : "button";
 
   return (
@@ -75,12 +77,16 @@ const Button = forwardRef(function Button(
       ref={ref}
       type={type}
       aria-label={label}
-      disabled={disabled}
+      disabled={disabled || isBusy}
       className={cn(buttonVariants({ variant, size, fullWidth }), className)}
       {...props}
     >
-      {Icon && (
-        <Icon className="h-4 w-4 shrink-0 transition-colors" strokeWidth={1.8} />
+      {isBusy ? (
+        <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+      ) : (
+        Icon && (
+          <Icon className="h-4 w-4 shrink-0 transition-colors" strokeWidth={1.8} />
+        )
       )}
       {children}
     </Comp>

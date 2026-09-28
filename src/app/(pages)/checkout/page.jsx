@@ -1,6 +1,6 @@
 // src/app/(pages)/checkout/page.jsx
 import { Suspense } from "react";
-import CheckoutContent from "./_components/CheckoutContent";
+import CheckoutContent from "./_view/CheckoutContent";
 
 export const metadata = {
   title: "Secure Checkout | Bangladesh Bank Authorized Gateways | Safe LPG",

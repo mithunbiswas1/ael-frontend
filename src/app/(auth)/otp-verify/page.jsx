@@ -1,10 +1,17 @@
+// src/app/(auth)/otp-verify/page.jsx
+
 "use client";
 
 import { useState } from "react";
 import Input from "@/components/ui/Input";
 import Link from "next/link";
+import { toast } from "sonner";
+import { useDictionary } from "@/context/DictionaryContext";
 
 const OtpPage = () => {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
 
@@ -17,35 +24,47 @@ const OtpPage = () => {
     e.preventDefault();
 
     if (!otp) {
-      setError("OTP is required");
+      setError(isBn ? "ওটিপি প্রদান করা আবশ্যক" : "OTP is required");
       return;
     }
 
     if (otp.length !== 6) {
-      setError("OTP must be 6 digits");
+      setError(isBn ? "ওটিপি অবশ্যই ৬ সংখ্যার হতে হবে" : "OTP must be 6 digits");
       return;
     }
+
+    toast.success(
+      isBn ? "ওটিপি সফলভাবে যাচাই হয়েছে!" : "OTP successfully verified!"
+    );
   };
 
   const handleResend = () => {
-    console.log("Resend OTP clicked");
+    toast.info(
+      isBn
+        ? "নতুন ওটিপি কোড আপনার ফোনে পাঠানো হয়েছে।"
+        : "A new OTP code has been sent to your phone."
+    );
   };
 
   return (
-    <div className="p-4">
-      <div className="max-w-md mx-auto my-20 p-6 bg-gray-50 shadow border border-gray-200 rounded-sm">
-        <h2 className="text-2xl font-semibold mb-4">Enter OTP</h2>
-        <p className="text-gray-500 mb-6">
-          Enter the 6-digit OTP sent to your mobile number
+    <div className="p-4 py-16">
+      <div className="max-w-md mx-auto my-12 p-6 bg-white shadow-lg border border-slate-200 rounded-xl">
+        <h2 className="text-xl font-bold text-slate-900 mb-2">
+          {isBn ? "ওটিপি কোড লিখুন" : "Enter OTP Code"}
+        </h2>
+        <p className="text-slate-500 text-xs mb-6">
+          {isBn
+            ? "আপনার মোবাইল নম্বরে পাঠানো ৬ সংখ্যার ওটিপি কোডটি লিখুন"
+            : "Enter the 6-digit OTP sent to your registered mobile number"}
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            label="OTP"
+            label={isBn ? "ওটিপি" : "OTP"}
             name="otp"
             value={otp}
             onChange={handleChange}
-            placeholder="Enter 6-digit OTP"
+            placeholder={isBn ? "৬ সংখ্যার ওটিপি লিখুন" : "Enter 6-digit OTP"}
             error={error}
             type="text"
             maxLength={6}
@@ -53,28 +72,28 @@ const OtpPage = () => {
 
           <button
             type="submit"
-            className="w-full bg-primary text-gray-50 py-3 rounded-md font-medium hover:bg-primary-dark transition"
+            className="w-full bg-primary text-white py-3 rounded-lg text-xs font-bold hover:bg-primary/90 transition shadow-xs"
           >
-            Verify OTP →
+            {isBn ? "ওটিপি যাচাই করুন →" : "Verify OTP →"}
           </button>
         </form>
 
-        <div className="flex justify-between mt-4 text-sm text-gray-500">
+        <div className="flex justify-between mt-6 text-xs text-slate-500 border-t border-slate-100 pt-4">
           <span>
-            Didn't receive the OTP?{" "}
+            {isBn ? "কোড পাননি? " : "Didn't receive the OTP? "}
             <button
               type="button"
               onClick={handleResend}
-              className="text-primary underline"
+              className="text-primary font-bold hover:underline"
             >
-              Resend
+              {isBn ? "পুনরায় পাঠান" : "Resend"}
             </button>
           </span>
           <Link
             href="/sign-in"
-            className="text-primary underline cursor-pointer"
+            className="text-primary font-medium hover:underline cursor-pointer"
           >
-            Change Number
+            {isBn ? "নম্বর পরিবর্তন" : "Change Number"}
           </Link>
         </div>
       </div>

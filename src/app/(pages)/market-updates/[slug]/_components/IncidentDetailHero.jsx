@@ -3,9 +3,17 @@ import { ArrowLeft } from "lucide-react";
 import { H1 } from "@/components/ui/Typography";
 import AmbientGlow from "@/components/ui/AmbientGlow";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { getLocale, getDict } from "@/lib/i18n";
 
-export default function IncidentDetailHero({ incident }) {
+export default async function IncidentDetailHero({ incident }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDict()]);
+  const isBn = locale === "bn";
+  const common = dict?.common || {};
   const isResolved = incident.status === "Resolved";
+
+  const statusLabel = isResolved
+    ? isBn ? "সমাধানকৃত" : "Resolved"
+    : isBn ? "তদন্তাধীন" : incident.status;
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-16 pt-10 text-white">
@@ -15,8 +23,13 @@ export default function IncidentDetailHero({ incident }) {
         <Breadcrumb
           dark
           items={[
-            { label: "Home", href: "/" },
-            { label: "LPG Market Update", href: "/market-updates" },
+            { label: common.home || "Home", href: "/" },
+            {
+              label:
+                dict?.navbar?.navLinks?.marketUpdates ||
+                (isBn ? "এলপিজি মার্কেট আপডেট" : "LPG Market Update"),
+              href: "/market-updates",
+            },
             { label: incident.id },
           ]}
           className="mb-4"
@@ -27,7 +40,7 @@ export default function IncidentDetailHero({ incident }) {
           className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-4"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          <span>Back to Market Updates</span>
+          <span>{isBn ? "মার্কেট আপডেটে ফিরে যান" : "Back to Market Updates"}</span>
         </Link>
 
         <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -38,10 +51,12 @@ export default function IncidentDetailHero({ incident }) {
                 : "bg-amber-500/20 text-amber-300 border border-amber-500/40"
             }`}
           >
-            Status: {incident.status}
+            {isBn ? "অবস্থা: " : "Status: "}
+            {statusLabel}
           </span>
           <span className="rounded-full bg-slate-800 border border-slate-700 px-3 py-0.5 text-xs font-bold text-slate-300">
-            Type: {incident.type}
+            {isBn ? "ধরন: " : "Type: "}
+            {incident.type}
           </span>
         </div>
 
@@ -49,7 +64,9 @@ export default function IncidentDetailHero({ incident }) {
           {incident.category === "incident" ? (
             <>
               <span>{incident.id}:</span>{" "}
-              <span className="text-primary">{incident.type} in {incident.location}.</span>
+              <span className="text-primary">
+                {incident.type} {isBn ? "স্থান:" : "in"} {incident.location}.
+              </span>
             </>
           ) : (
             <span className="text-primary">{incident.title}</span>

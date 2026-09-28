@@ -2,13 +2,16 @@
 
 import Footer from "@/components/common/footer/footer";
 import Navbar from "@/components/common/navbar/navbar";
+import { getLocale, getDict } from "@/lib/i18n";
 
-export default function HomeLayout({ children }) {
+export default async function HomeLayout({ children }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDict()]);
+
   return (
     <>
-      <Navbar />
+      <Navbar dict={dict.navbar} commonDict={dict.common} locale={locale} />
       {children}
-      <Footer />
+      <Footer dict={dict.footer} commonDict={dict.common} locale={locale} />
     </>
   );
 }

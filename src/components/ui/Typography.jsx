@@ -15,6 +15,9 @@ const typographyVariants = cva("transition-colors", {
       h5: "font-manrope text-xs sm:text-sm font-bold leading-snug",
       h6: "font-manrope text-[11px] font-black uppercase tracking-wider",
       p: "font-manrope text-xs sm:text-sm md:text-base",
+      subheading: "font-manrope text-sm font-bold leading-snug",
+      caption: "font-manrope text-xs leading-relaxed",
+      lead: "font-manrope text-base sm:text-lg leading-relaxed",
       default: "",
     },
     uppercase: {
@@ -28,6 +31,8 @@ const typographyVariants = cva("transition-colors", {
       base: "text-xs sm:text-sm md:text-base leading-relaxed",
       lg: "text-sm sm:text-base md:text-lg leading-relaxed",
       xl: "text-base sm:text-lg md:text-xl leading-relaxed",
+      "2xl": "text-lg sm:text-xl md:text-2xl leading-snug",
+      "3xl": "text-xl sm:text-2xl md:text-3xl leading-snug",
     },
     weight: {
       default: "",
@@ -46,6 +51,10 @@ const typographyVariants = cva("transition-colors", {
       white: "text-white",
       gray: "text-slate-600",
       slate400: "text-slate-400",
+      slate500: "text-slate-500",
+      slate700: "text-slate-700",
+      slate800: "text-slate-800",
+      slate900: "text-slate-900",
       primary: "text-primary",
       secondary: "text-secondary",
       brand: "text-blue-500",
@@ -77,7 +86,14 @@ const Typography = forwardRef(function Typography(
   },
   ref
 ) {
-  const Comp = asChild ? Slot : as || (variant && variant !== "default" ? variant : "p");
+  const Comp = asChild
+    ? Slot
+    : as ||
+      (variant &&
+      variant !== "default" &&
+      ["h1", "h2", "h3", "h4", "h5", "h6", "p", "span"].includes(variant)
+        ? variant
+        : "p");
 
   return (
     <Comp
@@ -117,5 +133,13 @@ const P = forwardRef(function P({ color = "muted", ...props }, ref) {
   return <Typography ref={ref} variant="p" color={color} {...props} />;
 });
 
+const Subheading = forwardRef(function Subheading({ as = "h3", color = "dark", ...props }, ref) {
+  return <Typography ref={ref} as={as} variant="subheading" color={color} {...props} />;
+});
+
+const Caption = forwardRef(function Caption({ as = "p", color = "muted", ...props }, ref) {
+  return <Typography ref={ref} as={as} variant="caption" color={color} {...props} />;
+});
+
 export default Typography;
-export { Typography, typographyVariants, H1, H2, H3, H4, H5, H6, P };
+export { Typography, typographyVariants, H1, H2, H3, H4, H5, H6, P, Subheading, Caption };

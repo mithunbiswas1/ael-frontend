@@ -18,6 +18,10 @@ import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa"
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import SearchModal from "@/components/shared/SearchModal";
+import LanguageSelector from "./LanguageSelector";
+import ProfileDropdown from "./ProfileDropdown";
+import { useSelector, useDispatch } from "react-redux";
+import { setLogout } from "@/redux/slice/authSlice";
 
 const SOCIAL_LINKS = [
   {
@@ -46,31 +50,44 @@ const SOCIAL_LINKS = [
   },
 ];
 
-const navLinks = [
-  { name: "Home", href: "/" },
-  {
-    name: "Safety Guidelines",
-    href: "/safety-guidelines",
-  },
-  {
-    name: "LPG Market Updates",
-    href: "/market-updates",
-  },
-  {
-    name: "Training & Quiz",
-    href: "/courses",
-  },
-  { name: "Blog", href: "/blogs" },
-  { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
-];
-
-export default function Navbar() {
+export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [expandedMobileMenu, setExpandedMobileMenu] = useState(null);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const isUserLoggedIn = isMounted && isLoggedIn;
+
+  const roleName = (typeof user?.role === "string" ? user.role : user?.role?.name || "").toLowerCase();
+  const isAdmin = roleName === "admin" || roleName === "super_admin" || roleName === "superadmin";
+
+  const navLinks = [
+    { name: dict?.navLinks?.home || "Home", href: "/" },
+    {
+      name: dict?.navLinks?.safetyGuidelines || "Safety Guidelines",
+      href: "/safety-guidelines",
+    },
+    {
+      name: dict?.navLinks?.marketUpdates || "LPG Market Updates",
+      href: "/market-updates",
+    },
+    {
+      name: dict?.navLinks?.trainingQuiz || "Training & Quiz",
+      href: "/courses",
+    },
+    { name: dict?.navLinks?.blog || "Blog", href: "/blogs" },
+    { name: dict?.navLinks?.about || "About", href: "/about" },
+    { name: dict?.navLinks?.contact || "Contact", href: "/contact" },
+  ];
 
   // Close mobile drawer and modal on route change
   useEffect(() => {
@@ -87,6 +104,10 @@ export default function Navbar() {
     };
   }, [mobileMenuOpen]);
 
+  const hotlineLabel = commonDict?.hotlineLabel || "Hotline";
+  const hotlineNumber = commonDict?.hotlineNumber || "16137";
+  const emailText = commonDict?.email || "info@lpgsafety.org.bd";
+
   return (
     <header className="sticky top-0 z-50 w-full shadow-xs">
       {/* 1. Top Utility Header Bar */}
@@ -101,23 +122,23 @@ export default function Navbar() {
             >
               <Phone className="h-3.5 w-3.5 text-blue-400" />
               <span>
-                Hotline: <strong className="text-white font-semibold">16137</strong>
+                {hotlineLabel}: <strong className="text-white font-semibold">{hotlineNumber}</strong>
               </span>
             </LinkButton>
 
             <span className="hidden sm:inline text-slate-700">|</span>
 
             <LinkButton
-              href="mailto:info@lpgsafety.org.bd"
+              href={`mailto:${emailText}`}
               variant="ghost"
               className="hidden sm:inline-flex p-0 h-auto font-normal text-[11px] sm:text-xs text-slate-300 hover:text-white hover:bg-transparent items-center gap-1.5 active:scale-100 shadow-none border-0"
             >
               <Mail className="h-3.5 w-3.5 text-blue-400" />
-              <span>info@lpgsafety.org.bd</span>
+              <span>{emailText}</span>
             </LinkButton>
           </div>
 
-          {/* Right: National Recognition & Social Icons */}
+          {/* Right: Social Icons */}
           <div className="flex items-center gap-3 text-[11px] sm:text-xs">
             <div className="flex items-center gap-1.5">
               {SOCIAL_LINKS.map((item) => {
@@ -140,9 +161,9 @@ export default function Navbar() {
 
       {/* 2. Main Navigation Bar */}
       <nav className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
-        <div className="site-container flex h-16 sm:h-[70px] items-center justify-between gap-4">
+        <div className="w-full max-w-[1380px] mx-auto px-4 sm:px-6 flex h-16 sm:h-[70px] items-center justify-between gap-3 xl:gap-5">
           {/* Left: Mobile Toggle & Brand Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <Button
               type="button"
               variant="ghost"
@@ -154,20 +175,20 @@ export default function Navbar() {
               <Menu className="h-5 w-5" />
             </Button>
 
-            <Link href="/" className="flex items-center transition-opacity hover:opacity-95">
+            <Link href="/" className="flex items-center shrink-0 transition-opacity hover:opacity-95">
               <Image
                 src="/safe_lpg_2.png"
                 alt="Safe LPG Logo"
-                width={170}
-                height={42}
+                width={165}
+                height={40}
                 priority
-                className="h-8 sm:h-10 w-auto object-contain"
+                className="h-8 sm:h-9.5 w-auto object-contain"
               />
             </Link>
           </div>
 
           {/* Center: Desktop Navigation Menu */}
-          <div className="hidden lg:flex items-center">
+          <div className="hidden lg:flex items-center gap-1 shrink-0">
             {navLinks.map((item) => {
               const isActive =
                 item.href === "/"
@@ -185,7 +206,7 @@ export default function Navbar() {
                   >
                     <button
                       type="button"
-                      className={`flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-semibold transition-all ${isActive
+                      className={`flex items-center gap-1 rounded-md px-2.5 py-2 text-sm font-semibold tracking-tight whitespace-nowrap transition-all ${isActive
                         ? "text-primary bg-primary/5 font-bold"
                         : "text-slate-700 hover:text-primary hover:bg-slate-50"
                         }`}
@@ -224,7 +245,7 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative rounded-md px-3 py-2 text-sm font-semibold transition-all ${isActive
+                  className={`relative rounded-md px-2.5 py-2 text-sm font-semibold tracking-tight whitespace-nowrap transition-all ${isActive
                     ? "text-primary bg-primary/5 font-bold"
                     : "text-slate-700 hover:text-primary hover:bg-slate-50"
                     }`}
@@ -235,37 +256,47 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Right: Search + Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right: Language Selector + Search + Action Buttons */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Search Trigger Button */}
             <Button
               type="button"
               variant="outline"
               size="icon"
               onClick={() => setSearchModalOpen(true)}
-              className="h-8 w-8 sm:h-9 sm:w-9 text-slate-700 hover:text-primary hover:border-primary/50"
-              aria-label="Search"
+              className="h-9 w-9 text-slate-700 hover:text-primary hover:border-primary/50"
+              aria-label={dict?.search || "Search"}
             >
               <Search className="h-4 w-4" />
             </Button>
 
-            {/* Login Button */}
-            <LinkButton
-              href="/login"
-              variant="outline"
-              className="text-xs py-2"
-            >
-              Login
-            </LinkButton>
+            {/* Language Selector in Navbar */}
+            <LanguageSelector currentLocale={locale} />
 
-            {/* Subscribe Button (hidden on very small screens) */}
-            <LinkButton
-              href="/pricing"
-              variant="primary"
-              className="hidden sm:inline-flex text-xs shadow-xs py-2"
-            >
-              Subscribe
-            </LinkButton>
+            {/* Auth State: Profile Dropdown when logged in, or Login & Subscribe when logged out */}
+            {isUserLoggedIn ? (
+              <ProfileDropdown locale={locale} />
+            ) : (
+              <>
+                <LinkButton
+                  href="/login"
+                  variant="outline"
+                  size="sm"
+                  className="h-9 px-3.5 text-xs sm:text-sm font-bold"
+                >
+                  {dict?.login || commonDict?.login || "Login"}
+                </LinkButton>
+
+                <LinkButton
+                  href="/pricing"
+                  variant="primary"
+                  size="sm"
+                  className="hidden sm:inline-flex h-9 px-4 text-xs sm:text-sm font-bold shadow-xs"
+                >
+                  {dict?.subscribe || commonDict?.subscribe || "Subscribe"}
+                </LinkButton>
+              </>
+            )}
           </div>
         </div>
       </nav>
@@ -308,8 +339,16 @@ export default function Navbar() {
               </Button>
             </div>
 
+            {/* Mobile Language Switcher Row */}
+            <div className="mt-3 px-1 flex items-center justify-between bg-slate-50 p-2 rounded-lg border border-slate-200/80">
+              <span className="text-xs font-semibold text-slate-600">
+                {commonDict?.language || "Language"}:
+              </span>
+              <LanguageSelector currentLocale={locale} />
+            </div>
+
             {/* Mobile Search Quick Trigger */}
-            <div className="mt-3 px-1">
+            <div className="mt-2 px-1">
               <button
                 type="button"
                 onClick={() => {
@@ -319,7 +358,7 @@ export default function Navbar() {
                 className="w-full flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-slate-500 bg-slate-50 text-xs hover:border-primary hover:text-primary transition-colors text-left"
               >
                 <Search className="h-3.5 w-3.5 text-slate-400" />
-                <span>Search guidelines, courses...</span>
+                <span>{commonDict?.searchPlaceholder || "Search guidelines, courses..."}</span>
               </button>
             </div>
 
@@ -386,26 +425,91 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* Bottom Actions */}
+            {/* Bottom Actions: User Account Card or Login/Subscribe */}
             <div className="mt-auto pt-4 border-t border-slate-100 space-y-2">
-              <LinkButton
-                href="/login"
-                variant="outline"
-                size="sm"
-                fullWidth
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Login to Portal
-              </LinkButton>
-              <LinkButton
-                href="/pricing"
-                variant="primary"
-                size="sm"
-                fullWidth
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Subscribe Now
-              </LinkButton>
+              {isUserLoggedIn ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5 border border-slate-100">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary text-xs font-black text-white">
+                      {(user?.fullName || user?.userName || "U").slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="flex-1 overflow-hidden">
+                      <div className="text-xs font-bold text-slate-900 truncate">
+                        {user?.fullName || user?.userName || "User"}
+                      </div>
+                      <div className="text-[10px] text-slate-500 truncate">
+                        {user?.email || (isAdmin ? "Admin" : "Subscriber")}
+                      </div>
+                    </div>
+                  </div>
+
+                  {isAdmin ? (
+                    <LinkButton
+                      href="/admin"
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Admin Dashboard
+                    </LinkButton>
+                  ) : (
+                    <LinkButton
+                      href="/subscriber/courses"
+                      variant="primary"
+                      size="sm"
+                      fullWidth
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      My Enrolled Courses
+                    </LinkButton>
+                  )}
+
+                  <div className="flex items-center gap-2">
+                    <LinkButton
+                      href="/profile"
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Profile
+                    </LinkButton>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        dispatch(setLogout());
+                        setMobileMenuOpen(false);
+                      }}
+                      className="text-rose-600 hover:bg-rose-50 border-rose-200"
+                    >
+                      Logout
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <LinkButton
+                    href="/login"
+                    variant="outline"
+                    size="sm"
+                    fullWidth
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {commonDict?.loginToPortal || "Login to Portal"}
+                  </LinkButton>
+                  <LinkButton
+                    href="/pricing"
+                    variant="primary"
+                    size="sm"
+                    fullWidth
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {commonDict?.subscribeNow || "Subscribe Now"}
+                  </LinkButton>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -419,4 +523,3 @@ export default function Navbar() {
     </header>
   );
 }
-

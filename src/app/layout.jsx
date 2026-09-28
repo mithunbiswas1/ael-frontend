@@ -1,12 +1,13 @@
 // src/app/layout.jsx
 
-import { Manrope } from "next/font/google";
-
+import { Manrope, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
-
 import { Toaster } from "sonner";
 import { defaultMetadata } from "@/lib/seo";
 import WhatsAppButton from "@/components/common/WhatsAppButton";
+import { getLocale, getDict } from "@/lib/i18n";
+import { DictionaryProvider } from "@/context/DictionaryContext";
+import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -14,20 +15,32 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const hindSiliguri = Hind_Siliguri({
+  subsets: ["bengali"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-bengali",
+  display: "swap",
+});
+
 export const metadata = defaultMetadata;
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const [locale, dict] = await Promise.all([getLocale(), getDict()]);
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
-        className={`${manrope.variable} bg-page-back antialiased`}
+        className={`${manrope.variable} ${hindSiliguri.variable} bg-page-back antialiased`}
         cz-shortcut-listen="true"
       >
-        {children}
-        <WhatsAppButton />
-        <Toaster position="top-right" richColors closeButton />
+        <ReduxProvider>
+          <DictionaryProvider locale={locale} dict={dict}>
+            {children}
+            <WhatsAppButton />
+            <Toaster position="top-center" richColors closeButton />
+          </DictionaryProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
 }
-

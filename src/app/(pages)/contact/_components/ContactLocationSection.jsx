@@ -4,33 +4,50 @@
 import { MapPin, ExternalLink } from "lucide-react";
 import { FaFacebookF, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
 import { H3 } from "@/components/ui/Typography";
+import { useDictionary } from "@/context/DictionaryContext";
 
-export default function ContactLocationSection() {
+export default function ContactLocationSection({ contactInfo }) {
+  const { locale, dict } = useDictionary();
+  const isBn = locale === "bn";
+  const contact = dict?.contact || {};
+
+  const address = (isBn ? contactInfo?.officeAddressBn : contactInfo?.officeAddress) ||
+    contact.locationAddress ||
+    (isBn
+      ? "প্লট ১৪, বীর উত্তম এ কে খন্দকার সড়ক, মহাখালী বা/এ, ঢাকা-১২১২"
+      : "Plot 14, Bir Uttam AK Khandakar Road, Mohakhali C/A, Dhaka-1212");
+
+  const hours = (isBn ? contactInfo?.operatingHoursBn : contactInfo?.operatingHours) ||
+    (isBn ? "রবিবার - বৃহস্পতিবার: সকাল ৯:০০ - বিকাল ৫:০০ (জরুরি ২৪/৭)" : "Sunday - Thursday: 9:00 AM - 5:00 PM (Emergency 24/7)");
+
   return (
     <div className="space-y-6 lg:col-span-5">
       {/* Location Card */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs">
         <span className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary">
-          HEADQUARTERS
+          {isBn ? "প্রধান কার্যালয়" : "HEADQUARTERS"}
         </span>
         <H3 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-3">
-          OUR OFFICE LOCATION
+          {contact.locationTitle || (isBn ? "আমাদের অফিসের ঠিকানা" : "OUR OFFICE LOCATION")}
         </H3>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3.5">
+        <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3.5 space-y-2">
           <div className="flex items-start gap-3">
             <MapPin className="h-5 w-5 shrink-0 text-primary mt-0.5" />
             <div>
               <div className="text-xs font-bold text-slate-900 leading-snug">
-                House # 13, Road # 13, Sector # 03, Uttara, Dhaka-1230, Bangladesh
+                {address}
+              </div>
+              <div className="text-[11px] text-slate-500 mt-1">
+                {hours}
               </div>
               <a
-                href="https://maps.google.com/?q=Sector+3+Uttara+Dhaka"
+                href="https://maps.google.com/?q=Mohakhali+Dhaka"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline"
               >
-                <span>View larger interactive map</span>
+                <span>{isBn ? "গুগল ম্যাপে বড় করে দেখুন" : "View larger interactive map"}</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
             </div>
@@ -52,7 +69,7 @@ export default function ContactLocationSection() {
       {/* Follow Us Card */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs">
         <H3 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-3">
-          CONNECT ON SOCIAL CHANNELS
+          {isBn ? "সামাজিক মাধ্যমে যুক্ত হোন" : "CONNECT ON SOCIAL CHANNELS"}
         </H3>
 
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">

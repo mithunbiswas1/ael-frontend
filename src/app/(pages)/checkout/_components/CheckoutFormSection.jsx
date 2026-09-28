@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Lock, CreditCard } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Checkbox from "@/components/ui/Checkbox";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function CheckoutFormSection({
   fullName,
@@ -28,6 +29,10 @@ export default function CheckoutFormSection({
   vatAmount,
   grandTotal,
 }) {
+  const { locale, dict } = useDictionary();
+  const isBn = locale === "bn";
+  const co = dict?.checkout || {};
+
   return (
     <form onSubmit={handlePay} className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
       {/* LEFT COLUMN: Customer & Payment Method (7 cols) */}
@@ -35,14 +40,14 @@ export default function CheckoutFormSection({
         {/* Box 1: Customer Details */}
         <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
           <h2 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
-            <span>1. BILLING DETAILS</span>
+            <span>{isBn ? "১. বিলিং বিবরণ" : "1. BILLING DETAILS"}</span>
           </h2>
 
           <div className="space-y-3.5">
             <Input
-              label="Full Name / Authorized Representative"
+              label={isBn ? "পূর্ণ নাম / অনুমোদিত প্রতিনিধি" : "Full Name / Authorized Representative"}
               required
-              placeholder="e.g. Md. Rafiqul Islam"
+              placeholder={isBn ? "যেমন: মো: রফিকুল ইসলাম" : "e.g. Md. Rafiqul Islam"}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               size="sm"
@@ -50,18 +55,18 @@ export default function CheckoutFormSection({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Input
-                label="Mobile Phone (for SMS PIN & Alerts)"
+                label={isBn ? "মোবাইল ফোন (এসএমএস পিন ও অ্যালার্টের জন্য)" : "Mobile Phone (for SMS PIN & Alerts)"}
                 required
-                placeholder="e.g. 01712345678"
+                placeholder={isBn ? "যেমন: ০১৭১২৩৪৫৬৭৮" : "e.g. 01712345678"}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 size="sm"
               />
 
               <Input
-                label="Email Address"
+                label={isBn ? "ইমেইল ঠিকানা" : "Email Address"}
                 type="email"
-                placeholder="name@organization.com"
+                placeholder={isBn ? "name@organization.com" : "name@organization.com"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 size="sm"
@@ -69,8 +74,8 @@ export default function CheckoutFormSection({
             </div>
 
             <Input
-              label="Business Name / Dealership Name (Optional)"
-              placeholder="e.g. Meghna LPG Distribution Agency"
+              label={isBn ? "ব্যবসা প্রতিষ্ঠান / ডিলারশিপের নাম (ঐচ্ছিক)" : "Business Name / Dealership Name (Optional)"}
+              placeholder={isBn ? "যেমন: মেঘনা এলপিজি ডিস্ট্রিবিউশন এজেন্সি" : "e.g. Meghna LPG Distribution Agency"}
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               size="sm"
@@ -81,7 +86,7 @@ export default function CheckoutFormSection({
         {/* Box 2: Payment Methods */}
         <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
           <h2 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
-            <span>2. SELECT PAYMENT METHOD</span>
+            <span>{isBn ? "২. পেমেন্ট মাধ্যম নির্বাচন করুন" : "2. SELECT PAYMENT METHOD"}</span>
           </h2>
 
           <div className="space-y-2.5">
@@ -104,10 +109,12 @@ export default function CheckoutFormSection({
                 />
                 <div>
                   <div className="text-xs font-bold text-slate-900">
-                    bKash Direct Gateway
+                    {isBn ? "বিকাশ ডিরেক্ট গেটওয়ে" : "bKash Direct Gateway"}
                   </div>
                   <div className="text-[10px] text-slate-500">
-                    Instant verification via official bKash merchant gateway
+                    {isBn
+                      ? "অফিসিয়াল বিকাশ মার্চেন্ট গেটওয়ের মাধ্যমে তাত্ক্ষণিক যাচাই"
+                      : "Instant verification via official bKash merchant gateway"}
                   </div>
                 </div>
               </div>
@@ -135,10 +142,10 @@ export default function CheckoutFormSection({
                 />
                 <div>
                   <div className="text-xs font-bold text-slate-900">
-                    Nagad Payment
+                    {isBn ? "নগদ পেমেন্ট" : "Nagad Payment"}
                   </div>
                   <div className="text-[10px] text-slate-500">
-                    Postal division digital gateway
+                    {isBn ? "ডাক বিভাগীয় ডিজিটাল গেটওয়ে" : "Postal division digital gateway"}
                   </div>
                 </div>
               </div>
@@ -166,7 +173,7 @@ export default function CheckoutFormSection({
                 />
                 <div>
                   <div className="text-xs font-bold text-slate-900">
-                    Credit / Debit Cards
+                    {isBn ? "ক্রেডিট / ডেবিট কার্ড" : "Credit / Debit Cards"}
                   </div>
                   <div className="text-[10px] text-slate-500">
                     Visa, Mastercard, DBBL Nexus, AMEX
@@ -186,11 +193,13 @@ export default function CheckoutFormSection({
               className="mt-0.5"
             />
             <label htmlFor="termsCheck" className="text-[11px] text-slate-600 leading-snug cursor-pointer select-none">
-              I agree to the{" "}
+              {isBn ? "আমি " : "I agree to the "}
               <Link href="/terms" className="text-primary font-bold hover:underline">
-                Terms of Service
-              </Link>{" "}
-              and confirm that training will be utilized strictly in accordance with national safety guidelines.
+                {isBn ? "ব্যবহারের শর্তাবলী" : "Terms of Service"}
+              </Link>
+              {isBn
+                ? "-র সাথে সম্মত এবং নিশ্চিত করছি যে প্রশিক্ষণ জাতীয় নিরাপত্তা নির্দেশিকা অনুসারে ব্যবহৃত হবে।"
+                : " and confirm that training will be utilized strictly in accordance with national safety guidelines."}
             </label>
           </div>
         </div>
@@ -200,39 +209,44 @@ export default function CheckoutFormSection({
       <div className="lg:col-span-5 sticky top-24">
         <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-md">
           <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 border-b border-slate-100 pb-3 mb-4">
-            ORDER SUMMARY
+            {co.orderSummary || (isBn ? "অর্ডারের সারসংক্ষেপ" : "ORDER SUMMARY")}
           </h3>
 
           <div className="rounded-lg bg-slate-50 p-4 border border-slate-200/60 mb-4">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-bold text-slate-900">
-                {courseId ? "Specialized Safety Course" : selectedPlan.name}
+                {courseId ? (isBn ? "বিশেষায়িত নিরাপত্তা কোর্স" : "Specialized Safety Course") : selectedPlan.name}
               </span>
               <span className="text-xs font-bold text-primary">
                 ৳ {basePrice.toLocaleString()}
               </span>
             </div>
             <div className="text-[10px] text-slate-500">
-              Billing Cycle: {courseId ? "One-Time Access" : billingType.toUpperCase()}
+              {isBn ? "বিলিং চক্র: " : "Billing Cycle: "}
+              {courseId
+                ? isBn ? "এককালীন অ্যাক্সেস" : "One-Time Access"
+                : billingType === "yearly"
+                ? isBn ? "বার্ষিক" : "YEARLY"
+                : isBn ? "মাসিক" : "MONTHLY"}
             </div>
           </div>
 
           {/* Price Breakdown */}
           <div className="space-y-2 text-xs text-slate-600 border-b border-slate-100 pb-4 mb-4">
             <div className="flex justify-between">
-              <span>Subtotal:</span>
+              <span>{isBn ? "সাবটোটাল:" : "Subtotal:"}</span>
               <span className="font-semibold text-slate-800">
                 ৳ {basePrice.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
-              <span>Govt VAT / Regulatory Tax (5%):</span>
+              <span>{isBn ? "সরকারি ভ্যাট (৫%):" : "Govt VAT / Regulatory Tax (5%):"}</span>
               <span className="font-semibold text-slate-800">
                 ৳ {vatAmount.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between pt-2 border-t border-dashed border-slate-200 text-sm font-black text-slate-900">
-              <span>Total Amount:</span>
+              <span>{co.totalAmount || (isBn ? "সর্বমোট প্রদেয়:" : "Total Amount:")}</span>
               <span className="text-primary">
                 ৳ {grandTotal.toLocaleString()}
               </span>
@@ -246,17 +260,23 @@ export default function CheckoutFormSection({
             className="w-full flex items-center justify-center gap-2 rounded-lg bg-primary py-3 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs disabled:opacity-50"
           >
             {isProcessing ? (
-              <span>Verifying with Merchant...</span>
+              <span>{co.processing || (isBn ? "পেমেন্ট প্রক্রিয়াধীন..." : "Verifying with Merchant...")}</span>
             ) : (
               <>
                 <Lock className="h-3.5 w-3.5" />
-                <span>Pay Securely ৳ {grandTotal.toLocaleString()}</span>
+                <span>
+                  {isBn
+                    ? `নিরাপদে পরিশোধ করুন ৳ ${grandTotal.toLocaleString()}`
+                    : `Pay Securely ৳ ${grandTotal.toLocaleString()}`}
+                </span>
               </>
             )}
           </button>
 
           <p className="text-[10px] text-center text-slate-400 mt-3">
-            Safe & encrypted checkout. Instant digital license activation.
+            {isBn
+              ? "নিরাপদ ও এনক্রিপ্ট করা চেকআউট। তাত্ক্ষণিক ডিজিটাল লাইসেন্স সক্রিয়করণ।"
+              : "Safe & encrypted checkout. Instant digital license activation."}
           </p>
         </div>
       </div>

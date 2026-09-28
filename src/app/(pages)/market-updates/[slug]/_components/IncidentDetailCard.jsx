@@ -1,20 +1,30 @@
 import Link from "next/link";
 import { Download } from "lucide-react";
+import { getLocale } from "@/lib/i18n";
 
-export default function IncidentDetailCard({ incident }) {
+export default async function IncidentDetailCard({ incident }) {
+  const locale = await getLocale();
+  const isBn = locale === "bn";
+
   const isIncident = incident.category === "incident";
-  const bodyLabel = isIncident ? "Investigating Body" : "Source / Authority";
+  const bodyLabel = isIncident
+    ? isBn ? "তদন্তকারী কর্তৃপক্ষ" : "Investigating Body"
+    : isBn ? "উৎস / নিয়ন্ত্রক সংস্থা" : "Source / Authority";
   const summaryLabel = isIncident
-    ? "Incident Summary & Initial Findings"
-    : "Summary";
+    ? isBn ? "দুর্ঘটনার সারসংক্ষেপ ও প্রাথমিক অনুসন্ধান" : "Incident Summary & Initial Findings"
+    : isBn ? "সারসংক্ষেপ" : "Summary";
   const impactLabel = isIncident
-    ? "Casualties & Impact Assessment"
-    : "Key Figures & Impact";
+    ? isBn ? "হতাহত ও ক্ষয়ক্ষতির মূল্যায়ন" : "Casualties & Impact Assessment"
+    : isBn ? "মূল পরিসংখ্যান ও প্রভাব" : "Key Figures & Impact";
   const capaLabel = isIncident
-    ? "Corrective & Preventive Action (CAPA)"
-    : "Follow-up / Compliance Note";
-  const dossierLabel = isIncident ? "Official Inquiry Dossier" : "Official Reference";
-  const certifiedByLabel = isIncident ? "Certified by" : "Issued by";
+    ? isBn ? "সংশোধনমূলক ও প্রতিরোধমূলক ব্যবস্থা (CAPA)" : "Corrective & Preventive Action (CAPA)"
+    : isBn ? "পরবর্তী পদক্ষেপ ও কমপ্লায়েন্স নোট" : "Follow-up / Compliance Note";
+  const dossierLabel = isIncident
+    ? isBn ? "অফিশিয়াল তদন্ত নথি" : "Official Inquiry Dossier"
+    : isBn ? "অফিশিয়াল রেফারেন্স" : "Official Reference";
+  const certifiedByLabel = isIncident
+    ? isBn ? "প্রত্যয়নকারী:" : "Certified by"
+    : isBn ? "জারি করেছে:" : "Issued by";
 
   return (
     <section className="relative z-20 -mt-8 mx-auto w-full max-w-4xl px-4 pb-20">
@@ -22,7 +32,7 @@ export default function IncidentDetailCard({ incident }) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pb-6 border-b border-slate-100">
           <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200/60">
             <span className="text-[11px] font-bold text-slate-500 block uppercase">
-              Location
+              {isBn ? "স্থান" : "Location"}
             </span>
             <span className="text-xs font-bold text-slate-900 mt-1 block">
               {incident.specificLocation}
@@ -31,7 +41,7 @@ export default function IncidentDetailCard({ incident }) {
 
           <div className="rounded-lg bg-slate-50 p-3.5 border border-slate-200/60">
             <span className="text-[11px] font-bold text-slate-500 block uppercase">
-              Date of Incident
+              {isBn ? "ঘটনার তারিখ" : "Date of Incident"}
             </span>
             <span className="text-xs font-bold text-slate-900 mt-1 block">
               {incident.date}
@@ -84,7 +94,8 @@ export default function IncidentDetailCard({ incident }) {
                 {dossierLabel}
               </span>
               <span className="text-[11px] text-blue-700">
-                Ref ID: {incident.investigationReport} ({certifiedByLabel} {incident.conductedBy})
+                {isBn ? "রেফ আইডি: " : "Ref ID: "}
+                {incident.investigationReport} ({certifiedByLabel} {incident.conductedBy})
               </span>
             </div>
             <a
@@ -92,7 +103,7 @@ export default function IncidentDetailCard({ incident }) {
               className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs"
             >
               <Download className="h-3.5 w-3.5" />
-              <span>Download Certified PDF</span>
+              <span>{isBn ? "প্রত্যয়িত পিডিএফ ডাউনলোড" : "Download Certified PDF"}</span>
             </a>
           </div>
         </div>
@@ -102,13 +113,13 @@ export default function IncidentDetailCard({ incident }) {
             href="/market-updates"
             className="text-xs font-bold text-primary hover:underline"
           >
-            ← Back to Market Updates
+            {isBn ? "← মার্কেট আপডেটে ফিরে যান" : "← Back to Market Updates"}
           </Link>
           <Link
             href="/safety-guidelines"
             className="text-xs font-bold text-slate-600 hover:text-slate-900 hover:underline"
           >
-            View Safety Guidelines →
+            {isBn ? "নিরাপত্তা নির্দেশিকা দেখুন →" : "View Safety Guidelines →"}
           </Link>
         </div>
       </div>

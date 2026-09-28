@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   PlayCircle,
   Clock,
@@ -9,10 +10,14 @@ import {
   BookOpen,
   FileText,
   Download,
+  Award,
+  HelpCircle,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function ClassroomVideoPlayer({
+  courseId,
   currentLesson,
   currentLessonIdx,
   totalLessons,
@@ -22,47 +27,69 @@ export default function ClassroomVideoPlayer({
   handleNextLesson,
   activeTab,
   setActiveTab,
+  onTriggerQuiz,
 }) {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+
+  const title = isBn ? currentLesson.titleBn || currentLesson.title : currentLesson.title;
+  const description = isBn ? currentLesson.descriptionBn || currentLesson.description : currentLesson.description;
+  const notes = isBn ? currentLesson.notesBn || currentLesson.notes : currentLesson.notes;
+  const duration = isBn ? currentLesson.durationBn || currentLesson.duration : currentLesson.duration;
+
+  const rawVideoUrl =
+    currentLesson.videoUrl ||
+    currentLesson.video ||
+    "/sample-course-video.mp4";
+
+  const isEmbed =
+    rawVideoUrl.includes("youtube.com") ||
+    rawVideoUrl.includes("youtu.be") ||
+    rawVideoUrl.includes("vimeo.com");
+
+  const videoSrc =
+    rawVideoUrl.startsWith("/public/upload")
+      ? `http://localhost:8005${rawVideoUrl}`
+      : rawVideoUrl;
+
+  const handleCompleteCurrent = () => {
+    if (!completedLessonIds.includes(currentLesson.id)) {
+      setCompletedLessonIds((prev) => [...prev, currentLesson.id]);
+    }
+    toast.success(isBn ? "পাঠটি সম্পন্ন হয়েছে!" : "Lesson completed!");
+    if (onTriggerQuiz) {
+      onTriggerQuiz();
+    }
+  };
+
   return (
     <main className="flex flex-1 flex-col overflow-y-auto bg-slate-900">
-      {/* Video Mockup Screen */}
-      <div className="relative aspect-16/9 w-full max-h-[60vh] bg-black flex items-center justify-center border-b border-slate-800">
-        <div className="text-center p-6 max-w-lg">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/20 text-primary border border-primary/40 animate-pulse">
-            <PlayCircle className="h-10 w-10" />
-          </div>
-          <h2 className="text-sm sm:text-base font-bold text-white mb-2">
-            {currentLesson.title}
-          </h2>
-          <p className="text-xs text-slate-400 leading-relaxed mb-4">
-            Interactive safety lesson video stream (HD 1080p). Highlighting official Bangladesh DoE safety handling techniques.
-          </p>
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800 px-3 py-1 text-[11px] text-slate-300">
-            <Clock className="h-3 w-3 text-blue-400" />
-            <span>Duration: {currentLesson.duration}</span>
-          </div>
-        </div>
-
-        {/* Custom Mock Player Controls Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-gradient-to-t from-black/90 via-black/50 to-transparent p-3 text-xs text-white">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => toast.info("Video player paused / resumed")}
-              className="rounded p-1 hover:text-primary transition-colors"
-            >
-              <PlayCircle className="h-5 w-5" />
-            </button>
-            <span className="text-[11px] text-slate-300">03:24 / {currentLesson.duration}</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Volume2 className="h-4 w-4 text-slate-300" />
-            <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold text-slate-300">
-              1080p HD
-            </span>
-            <Maximize2 className="h-4 w-4 text-slate-300" />
-          </div>
-        </div>
+      {/* Real Video Player Screen */}
+      <div className="relative aspect-16/9 w-full max-h-[62vh] bg-black flex items-center justify-center border-b border-slate-800">
+        {isEmbed ? (
+          <iframe
+            src={videoSrc}
+            title={title}
+            className="w-full h-full border-0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <video
+            key={videoSrc}
+            controls
+            autoPlay={false}
+            playsInline
+            preload="metadata"
+            className="w-full h-full object-contain bg-black"
+            src={videoSrc}
+            onEnded={() => {
+              handleCompleteCurrent();
+            }}
+          >
+            Your browser does not support HTML5 video streaming.
+          </video>
+        )}
       </div>
 
       {/* Lesson Navigation & Meta Bar */}
@@ -74,17 +101,26 @@ export default function ClassroomVideoPlayer({
             className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 disabled:opacity-40 disabled:pointer-events-none transition-colors"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
-            <span>Previous Lesson</span>
+            <span>{isBn ? "পূর্ববর্তী পাঠ" : "Previous Lesson"}</span>
           </button>
 
           <button
-            onClick={handleNextLesson}
+            onClick={() => {
+              handleCompleteCurrent();
+              if (handleNextLesson && currentLessonIdx < totalLessons - 1) {
+                handleNextLesson();
+              }
+            }}
             className="flex items-center gap-1 rounded-lg bg-primary px-3.5 py-1.5 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs"
           >
             <span>
               {currentLessonIdx === totalLessons - 1
-                ? "Complete & Go to Quiz"
-                : "Complete & Next Lesson"}
+                ? isBn
+                  ? "সম্পূর্ণ করে কুইজে যান"
+                  : "Complete & Go to Quiz"
+                : isBn
+                  ? "সম্পূর্ণ করে পরবর্তী পাঠ"
+                  : "Complete & Next Lesson"}
             </span>
             <ChevronRight className="h-3.5 w-3.5" />
           </button>
@@ -92,12 +128,7 @@ export default function ClassroomVideoPlayer({
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => {
-              toast.success("Lesson marked as completed!");
-              if (!completedLessonIds.includes(currentLesson.id)) {
-                setCompletedLessonIds((prev) => [...prev, currentLesson.id]);
-              }
-            }}
+            onClick={handleCompleteCurrent}
             className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${
               completedLessonIds.includes(currentLesson.id)
                 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
@@ -107,14 +138,14 @@ export default function ClassroomVideoPlayer({
             <CheckCircle2 className="h-3.5 w-3.5" />
             <span>
               {completedLessonIds.includes(currentLesson.id)
-                ? "Completed"
-                : "Mark as Complete"}
+                ? isBn ? "সম্পন্ন হয়েছে" : "Completed"
+                : isBn ? "সম্পন্ন হিসেবে চিহ্নিত করুন" : "Mark as Complete"}
             </span>
           </button>
         </div>
       </div>
 
-      {/* Lesson Notes & Download Tabs */}
+      {/* Lesson Notes, Download & Quiz Tabs */}
       <div className="p-6">
         <div className="flex items-center gap-4 border-b border-slate-800 pb-2 mb-4 text-xs font-bold">
           <button
@@ -125,7 +156,18 @@ export default function ClassroomVideoPlayer({
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Lesson Notes &amp; Guidelines
+            {isBn ? "পাঠের নোট ও নির্দেশিকা" : "Lesson Notes & Guidelines"}
+          </button>
+          <button
+            onClick={() => setActiveTab("quiz")}
+            className={`flex items-center gap-1.5 pb-2 transition-colors ${
+              activeTab === "quiz"
+                ? "border-b-2 border-emerald-400 text-emerald-400"
+                : "text-emerald-500/80 hover:text-emerald-300"
+            }`}
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+            <span>{isBn ? "মূল্যায়ন কুইজ" : "Assessment Quiz"}</span>
           </button>
           <button
             onClick={() => setActiveTab("downloads")}
@@ -135,27 +177,60 @@ export default function ClassroomVideoPlayer({
                 : "text-slate-400 hover:text-slate-200"
             }`}
           >
-            Downloadable PDF Assets (2)
+            {isBn ? "ডাউনলোডযোগ্য পিডিএফ রিসোর্স (২)" : "Downloadable PDF Assets (2)"}
           </button>
         </div>
 
-        {activeTab === "notes" ? (
+        {activeTab === "quiz" ? (
+          <div className="max-w-2xl rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-5">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <Award className="h-6 w-6" />
+              </div>
+              <div className="flex-1">
+                <h4 className="text-sm font-bold text-white">
+                  {isBn ? "কোর্স মূল্যায়ন কুইজ" : "Course Assessment Quiz"}
+                </h4>
+                <p className="mt-1 text-xs text-slate-300 leading-relaxed">
+                  {isBn
+                    ? "এই ক্লাসের পর আপনার অর্জিত জ্ঞান যাচাই করুন। ৮০% বা তার বেশি স্কোর করলে স্বয়ংক্রিয়ভাবে কিউআর ভেরিফাইড সার্টিফিকেট অর্জন করতে পারবেন।"
+                    : "Test what you learned in this class. Pass with 80% or higher to receive an official QR-verified certificate."}
+                </p>
+                <div className="mt-4 flex items-center gap-3">
+                  <Link
+                    href={`/courses/${courseId}/quiz`}
+                    className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition-colors shadow-xs"
+                  >
+                    <span>{isBn ? "কুইজ শুরু করুন" : "Start Assessment Quiz"}</span>
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                  <button
+                    onClick={() => setActiveTab("notes")}
+                    className="text-xs text-slate-400 hover:text-slate-200"
+                  >
+                    {isBn ? "নোটে ফিরে যান" : "Back to Notes"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : activeTab === "notes" ? (
           <div className="space-y-4 max-w-3xl">
             <div>
               <h3 className="text-sm font-bold text-white mb-2">
-                {currentLesson.title}
+                {title}
               </h3>
               <p className="text-xs text-slate-300 leading-relaxed">
-                {currentLesson.description}
+                {description}
               </p>
             </div>
 
             <div className="rounded-lg border border-blue-900/60 bg-blue-950/40 p-4 text-xs text-blue-200 leading-relaxed">
               <div className="font-bold text-blue-400 mb-1 flex items-center gap-1.5">
                 <BookOpen className="h-3.5 w-3.5" />
-                <span>Key Practical Takeaway:</span>
+                <span>{isBn ? "মূল ব্যবহারিক পরামর্শ:" : "Key Practical Takeaway:"}</span>
               </div>
-              {currentLesson.notes}
+              {notes}
             </div>
           </div>
         ) : (
@@ -165,17 +240,19 @@ export default function ClassroomVideoPlayer({
                 <FileText className="h-4 w-4 text-primary" />
                 <div>
                   <div className="font-bold text-white">
-                    LPG Kitchen Inspection Checklist.pdf
+                    {isBn
+                      ? "রান্নাঘর পরিদর্শন চেকলিস্ট.pdf"
+                      : "LPG Kitchen Inspection Checklist.pdf"}
                   </div>
                   <div className="text-[10px] text-slate-400">PDF • 1.2 MB</div>
                 </div>
               </div>
               <button
-                onClick={() => toast.success("Downloading Kitchen Inspection Checklist...")}
+                onClick={() => toast.success(isBn ? "রান্নাঘর চেকলিস্ট ডাউনলোড হচ্ছে..." : "Downloading Kitchen Inspection Checklist...")}
                 className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-[11px] font-bold text-slate-300 hover:text-white"
               >
                 <Download className="h-3 w-3" />
-                <span>Download</span>
+                <span>{isBn ? "ডাউনলোড" : "Download"}</span>
               </button>
             </div>
 
@@ -184,17 +261,19 @@ export default function ClassroomVideoPlayer({
                 <FileText className="h-4 w-4 text-primary" />
                 <div>
                   <div className="font-bold text-white">
-                    Soap Solution Leak Testing Guide.pdf
+                    {isBn
+                      ? "সাবান পানি লিকেজ টেস্ট গাইড.pdf"
+                      : "Soap Solution Leak Testing Guide.pdf"}
                   </div>
                   <div className="text-[10px] text-slate-400">PDF • 850 KB</div>
                 </div>
               </div>
               <button
-                onClick={() => toast.success("Downloading Soap Solution Guide...")}
+                onClick={() => toast.success(isBn ? "সাবান দ্রবণ টেস্ট গাইড ডাউনলোড হচ্ছে..." : "Downloading Soap Solution Guide...")}
                 className="flex items-center gap-1 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-[11px] font-bold text-slate-300 hover:text-white"
               >
                 <Download className="h-3 w-3" />
-                <span>Download</span>
+                <span>{isBn ? "ডাউনলোড" : "Download"}</span>
               </button>
             </div>
           </div>

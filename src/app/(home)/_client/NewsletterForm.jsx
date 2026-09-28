@@ -1,4 +1,4 @@
-// src/app/(home)/_client_components/NewsletterForm.jsx
+// src/app/(home)/_client/NewsletterForm.jsx
 "use client";
 
 import { useState } from "react";
@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
-export default function NewsletterForm() {
+export default function NewsletterForm({ dict = {}, locale = "en" }) {
+  const isBn = locale === "bn";
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -18,13 +19,21 @@ export default function NewsletterForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
-      toast.error("Please provide both name and email address");
+      toast.error(
+        isBn
+          ? "অনুগ্রহ করে আপনার নাম ও ইমেইল ঠিকানা প্রদান করুন"
+          : "Please provide both name and email address"
+      );
       return;
     }
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      toast.success("Thank you for subscribing to our safety newsletter!");
+      toast.success(
+        isBn
+          ? "আমাদের নিরাপত্তা নিউজলেটার সাবস্ক্রাইব করার জন্য ধন্যবাদ!"
+          : "Thank you for subscribing to our safety newsletter!"
+      );
       setFormData({ name: "", phone: "", email: "" });
     }, 800);
   };
@@ -34,7 +43,7 @@ export default function NewsletterForm() {
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <Input
           type="text"
-          placeholder="Your Name"
+          placeholder={isBn ? "আপনার নাম" : "Your Name"}
           value={formData.name}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, name: e.target.value }))
@@ -44,7 +53,7 @@ export default function NewsletterForm() {
         />
         <Input
           type="tel"
-          placeholder="Phone Number"
+          placeholder={isBn ? "মোবাইল নম্বর" : "Phone Number"}
           value={formData.phone}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, phone: e.target.value }))
@@ -55,7 +64,7 @@ export default function NewsletterForm() {
 
       <Input
         type="email"
-        placeholder="Email Address"
+        placeholder={isBn ? "ইমেইল ঠিকানা" : "Email Address"}
         value={formData.email}
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, email: e.target.value }))
@@ -71,7 +80,13 @@ export default function NewsletterForm() {
         disabled={loading}
         className="text-xs"
       >
-        <span>{loading ? "Subscribing..." : "Subscribe Now"}</span>
+        <span>
+          {loading
+            ? isBn
+              ? "সাবস্ক্রাইব হচ্ছে..."
+              : "Subscribing..."
+            : dict?.button || (isBn ? "এখনই সাবস্ক্রাইব করুন" : "Subscribe Now")}
+        </span>
         <ArrowRight className="h-3.5 w-3.5" />
       </Button>
     </form>

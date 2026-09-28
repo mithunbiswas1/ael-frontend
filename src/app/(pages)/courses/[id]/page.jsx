@@ -1,23 +1,28 @@
 // src/app/(pages)/courses/[id]/page.jsx
-import { ALL_COURSES } from "../_data/coursesData";
+import { notFound } from "next/navigation";
+import { getCourses, getCourseById } from "@/next-api/getCourses";
 import CourseDetailHero from "./_components/CourseDetailHero";
 import CourseOverviewSection from "./_components/CourseOverviewSection";
 import CourseEnrollSidebar from "./_components/CourseEnrollSidebar";
 
-export function generateStaticParams() {
-  return ALL_COURSES.map((course) => ({
-    id: course.id,
+export async function generateStaticParams() {
+  const courses = await getCourses();
+  return (courses || []).map((course) => ({
+    id: String(course.courseId || course.id),
   }));
 }
 
 export async function generateMetadata({ params }) {
   const resolvedParams = await params;
   const courseId = resolvedParams.id;
-  const course =
-    ALL_COURSES.find((c) => c.id === courseId || c.slug === courseId) || {
-      title: `LPG Training Module #${courseId}`,
-      description: "Comprehensive LPG safety training course with certified verification.",
+  const course = await getCourseById(courseId);
+
+  if (!course) {
+    return {
+      title: "Course Not Found | Safe LPG Academy",
+      description: "The requested training course could not be located.",
     };
+  }
 
   return {
     title: `${course.title} | Safe LPG Safety Academy`,
@@ -29,14 +34,11 @@ export default async function CourseDetailPage({ params }) {
   const resolvedParams = await params;
   const courseId = resolvedParams.id;
 
-  const course =
-    ALL_COURSES.find((c) => c.id === courseId || c.slug === courseId) || {
-      ...ALL_COURSES[0],
-      id: courseId,
-      title: `LPG Specialized Training Course #${courseId}`,
-      description:
-        "Comprehensive safety curriculum covering LPG standards, handling, emergency protocols, and verifiable certification.",
-    };
+  const course = await getCourseById(courseId);
+
+  if (!course) {
+    notFound();
+  }
 
   const isFree = course.price === 0;
 

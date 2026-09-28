@@ -2,8 +2,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Image from "next/image";
+import { toast } from "sonner";
 import {
   FaUser,
   FaEnvelope,
@@ -15,25 +16,55 @@ import {
   FaTimes,
   FaCamera,
   FaKey,
+  FaShieldAlt,
+  FaCheckCircle,
+  FaGraduationCap,
+  FaCalendarAlt,
 } from "react-icons/fa";
+import { Eye, EyeOff, ShieldCheck, UserCheck } from "lucide-react";
+
 import {
-  getCustomerProfile,
-  updateCustomerProfile,
-  updateCustomerPassword,
-  createProfileFormData,
-} from "@/lib/profileApi";
-import { API_BASE_URL } from "@/config/base-url";
+  useGetProfileQuery,
+  useUpdateProfileMutation,
+  useUpdatePasswordMutation,
+} from "@/redux/api/userApi";
+import { updateUser } from "@/redux/slice/authSlice";
+import { baseUriBackend } from "@/config/base-url";
+import { useDictionary } from "@/context/DictionaryContext";
+import { Button } from "@/components/ui/Button";
+import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
+import { H1, H2, H3, P } from "@/components/ui/Typography";
 
 export default function ProfilePage() {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+  const dispatch = useDispatch();
+
   const { user: authUser } = useSelector((state) => state.auth);
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+
+  // RTK Query: fetch profile
+  const {
+    data: profileResponse,
+    isLoading: isFetchingProfile,
+    refetch,
+  } = useGetProfileQuery();
+
+  const [updateProfileApi, { isLoading: isUpdatingProfile }] =
+    useUpdateProfileMutation();
+  const [updatePasswordApi, { isLoading: isUpdatingPassword }] =
+    useUpdatePasswordMutation();
+
+  const profile = profileResponse?.data || authUser;
+
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+
+  // Password modal show/hide state
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -43,8 +74,8 @@ export default function ProfilePage() {
     phone: "",
     address: "",
     city: "",
-    thana: "",
     district: "",
+    state: "",
     postal_code: "",
     country: "",
     bio: "",
@@ -57,36 +88,28 @@ export default function ProfilePage() {
     confirmPassword: "",
   });
 
-  // Load profile on mount
+  // Sync profile data to form and Redux on load
   useEffect(() => {
-    loadProfile();
-  }, []);
-
-  const loadProfile = async () => {
-    try {
-      setLoading(true);
-      const response = await getCustomerProfile();
-      setProfile(response.data);
+    if (profileResponse?.data) {
+      const u = profileResponse.data;
       setFormData({
-        fullName: response.data.fullName || "",
-        userName: response.data.userName || "",
-        email: response.data.email || "",
-        phone: response.data.phone || "",
-        address: response.data.address || "",
-        city: response.data.city || "",
-        thana: response.data.thana || "",
-        district: response.data.district || "",
-        postal_code: response.data.postal_code || "",
-        country: response.data.country || "",
-        bio: response.data.bio || "",
+        fullName: u.fullName || "",
+        userName: u.userName || "",
+        email: u.email || "",
+        phone: u.phone || "",
+        address: u.address || "",
+        city: u.city || "",
+        district: u.district || "",
+        state: u.state || "",
+        postal_code: u.postal_code || "",
+        country: u.country || "",
+        bio: u.bio || "",
       });
-    } catch (err) {
-      setError(err.message || "Failed to load profile");
-      setTimeout(() => setError(null), 5000);
-    } finally {
-      setLoading(false);
+
+      // Keep Redux auth slice updated
+      dispatch(updateUser(u));
     }
-  };
+  }, [profileResponse, dispatch]);
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -97,9 +120,9 @@ export default function ProfilePage() {
     }));
   };
 
-  // Handle file selection
+  // Handle avatar file selection
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
       const reader = new FileReader();
@@ -110,373 +133,563 @@ export default function ProfilePage() {
     }
   };
 
-  // Handle profile update
+  // Handle profile update submit
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
-      let data;
+      let payload;
 
       if (selectedFile) {
-        data = createProfileFormData({
-          ...formData,
-          profilePhoto: selectedFile,
+        const fd = new FormData();
+        Object.entries(formData).forEach(([key, val]) => {
+          if (val !== undefined && val !== null) {
+            fd.append(key, val);
+          }
         });
+        fd.append("profilePhoto", selectedFile);
+        payload = fd;
       } else {
-        data = formData;
+        payload = formData;
       }
 
-      const response = await updateCustomerProfile(data);
-      setProfile(response.data);
-      setSuccess("Profile updated successfully!");
-      setIsEditing(false);
-      setSelectedFile(null);
-      setPreviewUrl(null);
-      setTimeout(() => setSuccess(null), 5000);
+      const res = await updateProfileApi(payload).unwrap();
+
+      if (res?.data) {
+        dispatch(updateUser(res.data));
+        toast.success(
+          isBn
+            ? "প্রোফাইল সফলভাবে আপডেট করা হয়েছে!"
+            : "Profile updated successfully!"
+        );
+        setIsEditing(false);
+        setSelectedFile(null);
+        setPreviewUrl(null);
+        refetch();
+      }
     } catch (err) {
-      setError(err.message || "Failed to update profile");
-      setTimeout(() => setError(null), 5000);
-    } finally {
-      setLoading(false);
+      toast.error(
+        err?.data?.message ||
+          err?.message ||
+          (isBn ? "প্রোফাইল আপডেট ব্যর্থ হয়েছে" : "Failed to update profile")
+      );
     }
   };
 
-  // Handle password update
+  // Handle password update submit
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
 
+    if (!passwordData.currentPassword) {
+      toast.error(
+        isBn ? "বর্তমান পাসওয়ার্ড প্রদান করুন" : "Current password is required"
+      );
+      return;
+    }
+
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      setError("New passwords do not match");
-      setTimeout(() => setError(null), 5000);
+      toast.error(
+        isBn ? "নতুন পাসওয়ার্ডের মিল নেই" : "New passwords do not match"
+      );
       return;
     }
 
     if (passwordData.newPassword.length < 6) {
-      setError("Password must be at least 6 characters");
-      setTimeout(() => setError(null), 5000);
+      toast.error(
+        isBn
+          ? "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে"
+          : "Password must be at least 6 characters long"
+      );
       return;
     }
 
     try {
-      setLoading(true);
-      await updateCustomerPassword({
+      const res = await updatePasswordApi({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
-      });
-      setSuccess("Password updated successfully!");
+      }).unwrap();
+
+      toast.success(
+        res?.message ||
+          (isBn
+            ? "পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!"
+            : "Password updated successfully!")
+      );
+
       setIsPasswordModalOpen(false);
       setPasswordData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
-      setTimeout(() => setSuccess(null), 5000);
     } catch (err) {
-      setError(err.message || "Failed to update password");
-      setTimeout(() => setError(null), 5000);
-    } finally {
-      setLoading(false);
+      toast.error(
+        err?.data?.message ||
+          err?.message ||
+          (isBn ? "পাসওয়ার্ড পরিবর্তন ব্যর্থ হয়েছে" : "Failed to update password")
+      );
     }
   };
 
-  if (loading && !profile) {
+  // Avatar Image Source calculation
+  const getAvatarSrc = () => {
+    if (previewUrl) return previewUrl;
+    if (profile?.image) {
+      if (profile.image.startsWith("http")) return profile.image;
+      return `${baseUriBackend}${profile.image.replace(/^\//, "")}`;
+    }
+    return null;
+  };
+
+  // Role Display format
+  const formatRole = (role) => {
+    switch (role) {
+      case "super_admin":
+        return isBn ? "সুপার অ্যাডমিন" : "Super Administrator";
+      case "admin":
+        return isBn ? "অ্যাডমিনিস্ট্রেটর" : "Administrator";
+      case "course_admin":
+        return isBn ? "কোর্স অ্যাডমিন" : "Course Administrator";
+      case "subscriber":
+        return isBn ? "সাবস্ক্রাইবার শিক্ষার্থী" : "Certified Subscriber";
+      default:
+        return isBn ? "সাধারণ ব্যবহারকারী" : "Learner Account";
+    }
+  };
+
+  if (isFetchingProfile && !profile) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-gray-400">Loading profile...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <P className="mt-4 text-xs font-semibold text-slate-500">
+            {isBn ? "প্রোফাইল লোড হচ্ছে..." : "Loading profile workspace..."}
+          </P>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          My Profile
-        </h1>
-        <div className="flex gap-3 mt-3 md:mt-0">
-          {!isEditing && (
-            <>
-              <button
-                onClick={() => setIsEditing(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
-              >
-                <FaEdit /> Edit Profile
-              </button>
-              <button
-                onClick={() => setIsPasswordModalOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <FaKey /> Change Password
-              </button>
-            </>
-          )}
-          {isEditing && (
-            <>
-              <button
-                onClick={() => {
-                  setIsEditing(false);
-                  setSelectedFile(null);
-                  setPreviewUrl(null);
-                  setFormData({
-                    fullName: profile.fullName || "",
-                    userName: profile.userName || "",
-                    email: profile.email || "",
-                    phone: profile.phone || "",
-                    address: profile.address || "",
-                    city: profile.city || "",
-                    thana: profile.thana || "",
-                    district: profile.district || "",
-                    postal_code: profile.postal_code || "",
-                    country: profile.country || "",
-                    bio: profile.bio || "",
-                  });
-                }}
-                className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                <FaTimes /> Cancel
-              </button>
-              <button
-                form="profileForm"
-                type="submit"
-                className="flex items-center gap-2 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
-              >
-                <FaSave /> Save
-              </button>
-            </>
-          )}
-        </div>
-      </div>
+    <div className="max-w-5xl mx-auto space-y-6">
+      {/* Top Action Bar */}
+      <AdminPageHeader
+        icon={FaUser}
+        title={isBn ? "ব্যবহারকারী প্রোফাইল" : "Account Profile"}
+        description={
+          isBn
+            ? "আপনার ব্যক্তিগত তথ্য, যোগাযোগ এবং নিরাপত্তা সেটিংস পরিচালনা করুন।"
+            : "Manage your personal credentials, contact details, and account security."
+        }
+        action={
+          <div className="flex items-center gap-2.5">
+            {!isEditing ? (
+              <>
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="default"
+                  onClick={() => setIsEditing(true)}
+                  className="gap-2 shadow-xs"
+                >
+                  <FaEdit className="h-3.5 w-3.5" />
+                  <span>{isBn ? "সম্পাদনা করুন" : "Edit Profile"}</span>
+                </Button>
 
-      {/* Messages */}
-      {error && (
-        <div className="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400">
-          {error}
-        </div>
-      )}
-      {success && (
-        <div className="mb-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-green-600 dark:text-green-400">
-          {success}
-        </div>
-      )}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="default"
+                  onClick={() => setIsPasswordModalOpen(true)}
+                  className="gap-2 shadow-2xs"
+                >
+                  <FaKey className="h-3.5 w-3.5 text-slate-500" />
+                  <span>{isBn ? "পাসওয়ার্ড পরিবর্তন" : "Change Password"}</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="default"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setSelectedFile(null);
+                    setPreviewUrl(null);
+                    if (profile) {
+                      setFormData({
+                        fullName: profile.fullName || "",
+                        userName: profile.userName || "",
+                        email: profile.email || "",
+                        phone: profile.phone || "",
+                        address: profile.address || "",
+                        city: profile.city || "",
+                        district: profile.district || "",
+                        state: profile.state || "",
+                        postal_code: profile.postal_code || "",
+                        country: profile.country || "",
+                        bio: profile.bio || "",
+                      });
+                    }
+                  }}
+                  className="gap-2"
+                >
+                  <FaTimes className="h-3.5 w-3.5" />
+                  <span>{isBn ? "বাতিল" : "Cancel"}</span>
+                </Button>
 
-      {/* Profile Card */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        {/* Profile Header with Avatar */}
-        <div className="relative bg-gradient-to-r from-amber-500 to-orange-500 h-32">
-          <div className="absolute -bottom-12 left-6 flex items-end gap-4">
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full border-4 border-white dark:border-gray-800 overflow-hidden bg-gray-200 dark:bg-gray-700">
-                {previewUrl ? (
-                  <Image
-                    src={previewUrl}
-                    alt="Profile preview"
-                    fill
-                    className="object-cover"
-                  />
-                ) : profile?.image ? (
-                  <Image
-                    src={profile.image}
-                    alt={profile.fullName}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300 text-3xl font-bold">
-                    {profile?.fullName?.charAt(0) || "U"}
-                  </div>
-                )}
-              </div>
-              {isEditing && (
-                <label className="absolute bottom-0 right-0 p-1.5 bg-amber-500 rounded-full cursor-pointer hover:bg-amber-600 transition-colors border-2 border-white dark:border-gray-800">
-                  <FaCamera className="w-4 h-4 text-white" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              )}
-            </div>
-            <div className="mb-2">
-              <h2 className="text-xl font-bold text-white">
-                {profile?.fullName}
-              </h2>
-              <p className="text-white/80 text-sm">@{profile?.userName}</p>
-            </div>
+                <Button
+                  form="profileForm"
+                  type="submit"
+                  variant="primary"
+                  size="default"
+                  disabled={isUpdatingProfile}
+                  className="gap-2 shadow-xs"
+                >
+                  <FaSave className="h-3.5 w-3.5" />
+                  <span>
+                    {isUpdatingProfile
+                      ? isBn
+                        ? "সংরক্ষণ হচ্ছে..."
+                        : "Saving..."
+                      : isBn
+                        ? "সংরক্ষণ করুন"
+                        : "Save Changes"}
+                  </span>
+                </Button>
+              </>
+            )}
+          </div>
+        }
+      />
+
+      {/* Main Profile Card */}
+      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm">
+        {/* Banner with Brand Gradient */}
+        <div className="relative h-36 bg-gradient-to-r from-tertiary via-primary to-tertiary p-6 text-white">
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-md">
+              <ShieldCheck className="h-3.5 w-3.5 text-secondary" />
+              <span>{formatRole(profile?.role)}</span>
+            </span>
           </div>
         </div>
 
-        {/* Profile Content */}
-        <div className="pt-16 px-6 pb-6">
+        {/* Profile Avatar & Header Summary */}
+        <div className="relative px-6 pb-6 pt-0">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 -mt-16 mb-6 pb-6 border-b border-slate-100">
+            <div className="flex items-end gap-4">
+              {/* Avatar Container */}
+              <div className="relative group">
+                <div className="relative h-24 w-24 sm:h-28 sm:w-28 overflow-hidden rounded-2xl border-4 border-white bg-slate-100 shadow-md">
+                  {getAvatarSrc() ? (
+                    <Image
+                      src={getAvatarSrc()}
+                      alt={profile?.fullName || "User Avatar"}
+                      fill
+                      className="object-cover"
+                      unoptimized={Boolean(previewUrl)}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-primary text-2xl font-black text-white">
+                      {(profile?.fullName || profile?.userName || "U")
+                        .charAt(0)
+                        .toUpperCase()}
+                    </div>
+                  )}
+                </div>
+
+                {isEditing && (
+                  <label
+                    htmlFor="avatarInput"
+                    className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-md hover:bg-primary/90 transition-all cursor-pointer border-2 border-white"
+                    title={isBn ? "ছবি পরিবর্তন করুন" : "Upload Photo"}
+                  >
+                    <FaCamera className="h-3.5 w-3.5" />
+                    <input
+                      id="avatarInput"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileChange}
+                    />
+                  </label>
+                )}
+              </div>
+
+              {/* Name & Title */}
+              <div className="mb-1">
+                <H2 className="text-xl font-black text-slate-900">
+                  {profile?.fullName || "AEL User"}
+                </H2>
+                <P className="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mt-0.5">
+                  <span>@{profile?.userName || "user"}</span>
+                  <span className="h-1 w-1 rounded-full bg-slate-300" />
+                  <span className="text-primary font-bold">{profile?.phone}</span>
+                </P>
+              </div>
+            </div>
+
+            {/* Quick Status Chips */}
+            <div className="flex flex-wrap gap-2 text-xs">
+              <div className="flex items-center gap-1.5 rounded-lg border border-slate-100 bg-slate-50/80 px-3 py-1.5 text-slate-600">
+                <FaCheckCircle className="h-3.5 w-3.5 text-emerald-500" />
+                <span className="font-semibold">
+                  {isBn ? "সক্রিয় অ্যাকাউন্ট" : "Verified Account"}
+                </span>
+              </div>
+
+              {profile?.enrolledCourses?.length > 0 && (
+                <div className="flex items-center gap-1.5 rounded-lg border border-slate-100 bg-slate-50/80 px-3 py-1.5 text-slate-600">
+                  <FaGraduationCap className="h-3.5 w-3.5 text-primary" />
+                  <span className="font-semibold">
+                    {profile.enrolledCourses.length}{" "}
+                    {isBn ? "কোর্স এনরোল্ড" : "Courses Enrolled"}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Profile Form Details */}
           <form id="profileForm" onSubmit={handleUpdateProfile}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {/* Full Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Full Name
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "পূর্ণ নাম *" : "Full Name *"}
                 </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    required
+                    placeholder={isBn ? "আপনার নাম" : "Enter your full name"}
+                    className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                      isEditing
+                        ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                        : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                    }`}
+                  />
+                </div>
               </div>
 
               {/* Username */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Username
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "ব্যবহারকারী নাম (Username) *" : "Username *"}
                 </label>
-                <input
-                  type="text"
-                  name="userName"
-                  value={formData.userName}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="userName"
+                    value={formData.userName}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    required
+                    placeholder={isBn ? "ইউজারনেম" : "username"}
+                    className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                      isEditing
+                        ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                        : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                    }`}
+                  />
+                </div>
               </div>
 
-              {/* Email */}
+              {/* Email Address */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Email
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "ইমেইল অ্যাড্রেস" : "Email Address"}
                 </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email || ""}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                />
+                <div className="relative">
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    placeholder="name@example.com"
+                    className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                      isEditing
+                        ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                        : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                    }`}
+                  />
+                </div>
               </div>
 
-              {/* Phone */}
+              {/* Phone Number */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Phone
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "মোবাইল নম্বর *" : "Mobile Phone *"}
                 </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                />
+                <div className="relative">
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    disabled={!isEditing}
+                    required
+                    placeholder="+8801XXXXXXXXX"
+                    className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                      isEditing
+                        ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                        : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                    }`}
+                  />
+                </div>
               </div>
 
-              {/* Address */}
+              {/* Street Address */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Address
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "ঠিকানা (Street Address)" : "Street Address"}
                 </label>
                 <input
                   type="text"
                   name="address"
-                  value={formData.address || ""}
+                  value={formData.address}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder={
+                    isBn
+                      ? "বাড়ি, সড়ক, এলাকা..."
+                      : "House, Street, Area..."
+                  }
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
                 />
               </div>
 
               {/* City */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  City
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "শহর" : "City"}
                 </label>
                 <input
                   type="text"
                   name="city"
-                  value={formData.city || ""}
+                  value={formData.city}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                />
-              </div>
-
-              {/* Thana */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Thana
-                </label>
-                <input
-                  type="text"
-                  name="thana"
-                  value={formData.thana || ""}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder={isBn ? "যেমন: ঢাকা" : "e.g. Dhaka"}
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
                 />
               </div>
 
               {/* District */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  District
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "জেলা" : "District"}
                 </label>
                 <input
                   type="text"
                   name="district"
-                  value={formData.district || ""}
+                  value={formData.district}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder={isBn ? "যেমন: ঢাকা" : "e.g. Dhaka"}
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
+                />
+              </div>
+
+              {/* State / Division */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "বিভাগ / স্টেট" : "State / Division"}
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleInputChange}
+                  disabled={!isEditing}
+                  placeholder={isBn ? "যেমন: ঢাকা বিভাগ" : "e.g. Dhaka Division"}
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
                 />
               </div>
 
               {/* Postal Code */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Postal Code
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "পোস্টাল কোড" : "Postal Code"}
                 </label>
                 <input
                   type="text"
                   name="postal_code"
-                  value={formData.postal_code || ""}
+                  value={formData.postal_code}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="1205"
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
                 />
               </div>
 
               {/* Country */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Country
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "দেশ" : "Country"}
                 </label>
                 <input
                   type="text"
                   name="country"
-                  value={formData.country || ""}
+                  value={formData.country || "Bangladesh"}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  placeholder="Bangladesh"
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
                 />
               </div>
 
-              {/* Bio */}
+              {/* Bio / Description */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Bio
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "সংক্ষিপ্ত পরিচিতি (Bio)" : "Personal Bio"}
                 </label>
                 <textarea
                   name="bio"
-                  value={formData.bio || ""}
+                  value={formData.bio}
                   onChange={handleInputChange}
                   disabled={!isEditing}
-                  rows="3"
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white disabled:opacity-50 disabled:cursor-not-allowed resize-none"
+                  rows={3}
+                  placeholder={
+                    isBn
+                      ? "আপনার পেশাগত বা শিক্ষাগত পরিচিতি..."
+                      : "Brief description of your background or professional role..."
+                  }
+                  className={`w-full rounded-lg border px-3.5 py-2.5 text-xs text-slate-900 transition-all resize-none ${
+                    isEditing
+                      ? "bg-white border-slate-300 focus:border-primary focus:outline-hidden"
+                      : "bg-slate-50/70 border-slate-200 text-slate-700 cursor-not-allowed"
+                  }`}
                 />
               </div>
             </div>
@@ -486,87 +699,149 @@ export default function ProfilePage() {
 
       {/* Password Change Modal */}
       {isPasswordModalOpen && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-xl max-w-md w-full p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
-                Change Password
-              </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+              <div>
+                <H3 className="text-base font-black text-slate-900">
+                  {isBn ? "পাসওয়ার্ড পরিবর্তন করুন" : "Change Password"}
+                </H3>
+                <P className="text-xs text-slate-500 mt-0.5">
+                  {isBn
+                    ? "আপনার অ্যাকাউন্টের নিরাপত্তা নিশ্চিত করতে শক্তিশালী পাসওয়ার্ড দিন।"
+                    : "Create a strong password with at least 6 characters."}
+                </P>
+              </div>
               <button
+                type="button"
                 onClick={() => setIsPasswordModalOpen(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors cursor-pointer"
               >
-                <FaTimes className="w-5 h-5 text-gray-500" />
+                <FaTimes className="h-4 w-4" />
               </button>
             </div>
-            <form onSubmit={handleUpdatePassword}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Current Password
-                  </label>
+
+            <form onSubmit={handleUpdatePassword} className="space-y-4">
+              {/* Current Password */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "বর্তমান পাসওয়ার্ড *" : "Current Password *"}
+                </label>
+                <div className="relative">
                   <input
-                    type="password"
+                    type={showCurrentPassword ? "text" : "password"}
                     value={passwordData.currentPassword}
                     onChange={(e) =>
-                      setPasswordData({
-                        ...passwordData,
+                      setPasswordData((prev) => ({
+                        ...prev,
                         currentPassword: e.target.value,
-                      })
+                      }))
                     }
                     required
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all"
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={passwordData.newPassword}
-                    onChange={(e) =>
-                      setPasswordData({
-                        ...passwordData,
-                        newPassword: e.target.value,
-                      })
-                    }
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Confirm New Password
-                  </label>
-                  <input
-                    type="password"
-                    value={passwordData.confirmPassword}
-                    onChange={(e) =>
-                      setPasswordData({
-                        ...passwordData,
-                        confirmPassword: e.target.value,
-                      })
-                    }
-                    required
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
-                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showCurrentPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
               </div>
-              <div className="flex gap-3 mt-6">
+
+              {/* New Password */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "নতুন পাসওয়ার্ড *" : "New Password *"}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? "text" : "password"}
+                    value={passwordData.newPassword}
+                    onChange={(e) =>
+                      setPasswordData((prev) => ({
+                        ...prev,
+                        newPassword: e.target.value,
+                      }))
+                    }
+                    required
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showNewPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm New Password */}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  {isBn ? "নতুন পাসওয়ার্ড নিশ্চিত করুন *" : "Confirm New Password *"}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={passwordData.confirmPassword}
+                    onChange={(e) =>
+                      setPasswordData((prev) => ({
+                        ...prev,
+                        confirmPassword: e.target.value,
+                      }))
+                    }
+                    required
+                    placeholder="••••••••"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsPasswordModalOpen(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                  className="flex-1 rounded-lg border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all cursor-pointer"
                 >
-                  Cancel
+                  {isBn ? "বাতিল" : "Cancel"}
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors disabled:opacity-50"
+                  disabled={isUpdatingPassword}
+                  className="flex-1 rounded-lg bg-primary py-2.5 text-xs font-bold text-white shadow-xs hover:bg-primary/90 transition-all disabled:opacity-60 cursor-pointer"
                 >
-                  {loading ? "Updating..." : "Update Password"}
+                  {isUpdatingPassword
+                    ? isBn
+                      ? "পরিবর্তন হচ্ছে..."
+                      : "Updating..."
+                    : isBn
+                      ? "পাসওয়ার্ড পরিবর্তন করুন"
+                      : "Update Password"}
                 </button>
               </div>
             </form>

@@ -1,5 +1,9 @@
+// src/app/(pages)/blogs/_components/BlogCategoriesSidebar.jsx
+"use client";
+
 import { LayoutGrid, List } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function BlogCategoriesSidebar({
   categories,
@@ -8,12 +12,15 @@ export default function BlogCategoriesSidebar({
   viewType,
   setViewType,
 }) {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+
   return (
     <div className="space-y-4 lg:col-span-3">
       {/* Category Filter */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs">
         <H4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-3">
-          CATEGORIES
+          {isBn ? "ক্যাটাগরি" : "CATEGORIES"}
         </H4>
         <div className="space-y-1">
           {categories.map((cat) => {
@@ -39,7 +46,7 @@ export default function BlogCategoriesSidebar({
       {/* View Type Toggle */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs">
         <H4 className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
-          VIEW LAYOUT
+          {isBn ? "ভিউ লেআউট" : "VIEW LAYOUT"}
         </H4>
         <div className="flex gap-2">
           <button
@@ -51,7 +58,7 @@ export default function BlogCategoriesSidebar({
             }`}
           >
             <LayoutGrid className="h-3.5 w-3.5" />
-            <span>Grid</span>
+            <span>{isBn ? "গ্রিড" : "Grid"}</span>
           </button>
 
           <button
@@ -63,7 +70,7 @@ export default function BlogCategoriesSidebar({
             }`}
           >
             <List className="h-3.5 w-3.5" />
-            <span>List</span>
+            <span>{isBn ? "তালিকা" : "List"}</span>
           </button>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Mail } from "lucide-react";
 import { H3, P } from "@/components/ui/Typography";
 import NewsletterForm from "../_client/NewsletterForm";
 
-export default function NewsletterSection() {
+export default function NewsletterSection({ dict = {}, locale = "en" }) {
   return (
     <div className="relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-tertiary via-[#0c1a33] to-tertiary p-5 text-white shadow-lg backdrop-blur-xl">
       {/* Subtle top glow inside newsletter card */}
@@ -17,19 +17,21 @@ export default function NewsletterSection() {
         </div>
         <div>
           <span className="mb-1 inline-flex items-center gap-1 rounded-full border border-secondary/30 bg-secondary/15 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-widest text-secondary">
-            NEWSLETTER
+            {dict?.tag || "NEWSLETTER"}
           </span>
           <H3 color="white" className="text-base font-black uppercase tracking-wider">
-            SUBSCRIBE TO <span className="text-secondary">NEWSLETTER.</span>
+            {dict?.title || "SUBSCRIBE TO"}{" "}
+            <span className="text-secondary">{dict?.accent || "NEWSLETTER."}</span>
           </H3>
           <P size="sm" className="mt-1 text-slate-300">
-            Get instant LPG safety bulletins, circulars, and emergency alerts directly to your inbox.
+            {dict?.desc ||
+              "Get instant LPG safety bulletins, circulars, and emergency alerts directly to your inbox."}
           </P>
         </div>
       </div>
 
       {/* Client Form Component */}
-      <NewsletterForm />
+      <NewsletterForm dict={dict} locale={locale} />
     </div>
   );
 }

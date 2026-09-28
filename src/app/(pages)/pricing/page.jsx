@@ -1,17 +1,33 @@
 // src/app/(pages)/pricing/page.jsx
-"use client";
+import PricingClientView from "./_components/PricingClientView";
+import { getLocale } from "@/lib/i18n";
+import { getPageContent } from "@/next-api/getPageContent";
 
-import { useState } from "react";
-import PricingHeroSection from "./_components/PricingHeroSection";
-import PricingCardsSection from "./_components/PricingCardsSection";
+export async function generateMetadata() {
+  const locale = await getLocale();
+  if (locale === "bn") {
+    return {
+      title: "সাবস্ক্রিপশন ও মূল্যতালিকা | সেইফ এলপিজি বাংলাদেশ",
+      description:
+        "ভোক্তা, রিটেল ডিলার এবং শিল্প কারখানার জন্য উপযোগী নিরাপত্তা প্রশিক্ষণ ও কমপ্লায়েন্স সাবস্ক্রিপশন প্যাকেজ।",
+    };
+  }
+  return {
+    title: "Pricing & Plans | Safe LPG Platform",
+    description:
+      "Flexible subscription tiers for individual learners, retail gas dealers, and industrial fleet operators in Bangladesh.",
+  };
+}
 
-export default function PricingPage() {
-  const [isAnnual, setIsAnnual] = useState(true);
+export default async function PricingPage() {
+  const cmsData = await getPageContent("pricing");
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <PricingHeroSection isAnnual={isAnnual} setIsAnnual={setIsAnnual} />
-      <PricingCardsSection isAnnual={isAnnual} />
+      <PricingClientView
+        banner={cmsData.banner}
+        plansConfig={cmsData.sections?.plans}
+      />
     </main>
   );
 }

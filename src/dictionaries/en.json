@@ -1,0 +1,406 @@
+{
+  "common": {
+    "brandName": "Safe LPG",
+    "hotlineLabel": "Hotline",
+    "hotlineNumber": "16137",
+    "email": "info@lpgsafety.org.bd",
+    "login": "Login",
+    "loginToPortal": "Login to Portal",
+    "subscribe": "Subscribe",
+    "subscribeNow": "Subscribe Now",
+    "search": "Search",
+    "searchPlaceholder": "Search guidelines, courses, updates...",
+    "viewAll": "View All",
+    "readMore": "Read More",
+    "currencySymbol": "৳",
+    "language": "Language",
+    "english": "English",
+    "bangla": "বাংলা",
+    "minsRead": "min read",
+    "home": "Home",
+    "download": "Download",
+    "loading": "Loading...",
+    "all": "All",
+    "filter": "Filter"
+  },
+  "navbar": {
+    "hotline": "Hotline: 16137",
+    "email": "info@lpgsafety.org.bd",
+    "navLinks": {
+      "home": "Home",
+      "safetyGuidelines": "Safety Guidelines",
+      "marketUpdates": "LPG Market Updates",
+      "trainingQuiz": "Training & Quiz",
+      "blog": "Blog",
+      "about": "About",
+      "contact": "Contact"
+    },
+    "login": "Login",
+    "subscribe": "Subscribe",
+    "search": "Search"
+  },
+  "footer": {
+    "tagline": "Promoting certified LPG safety awareness and regulatory compliance across Bangladesh for a safer today and sustainable tomorrow.",
+    "quickLinksTitle": "QUICK LINKS",
+    "quickLinks": {
+      "safetyGuidelines": "Safety Guidelines",
+      "marketUpdates": "LPG Market Update",
+      "trainingQuiz": "Training & Quiz",
+      "blogInsights": "Blog & Insights",
+      "contactSupport": "Contact Support"
+    },
+    "resourcesTitle": "RESOURCES & SUPPORT",
+    "resources": {
+      "actsRules": "Related Acts & Rules",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy",
+      "faq": "FAQ & Help Center"
+    },
+    "contactTitle": "CONTACT US",
+    "address": "House # 12, Road # 7, Dhanmondi, Dhaka-1205",
+    "phone": "+880 1712-345678",
+    "email": "info@safelpg.com",
+    "website": "www.safelpg.com",
+    "copyright": "All rights reserved. Powered by Safe LPG Bangladesh."
+  },
+  "home": {
+    "hero": {
+      "title1": "SAFETY FIRST.",
+      "title2": "AWARENESS ALWAYS.",
+      "subtitle": "Promoting nationwide LPG safety awareness across Bangladesh for consumers, dealers, and industries — ensuring a safer today and sustainable tomorrow.",
+      "btnPrimary": "Explore Safety Guidelines",
+      "btnSecondary": "Start Training & Quiz",
+      "badge": "LPG SAFETY CAMPAIGN",
+      "statUsers": "25,000+ Citizens Trained",
+      "statCertified": "100% Verified Standards"
+    },
+    "metrics": {
+      "registeredUsers": "Registered Users",
+      "safetyTrainings": "Safety Trainings",
+      "safetyResources": "Safety Resources",
+      "incidentsReported": "Incidents Reported"
+    },
+    "safetyGuidelines": {
+      "title": "SAFETY",
+      "accent": "GUIDELINES.",
+      "subtitle": "Standard operating safety procedures and regulatory compliance guidelines tailored for each stakeholder.",
+      "investors": {
+        "badge": "Investors",
+        "desc": "Safety for industrial LPG usage."
+      },
+      "dealer": {
+        "badge": "Dealer",
+        "desc": "Safety practices for LPG dealers."
+      },
+      "distributor": {
+        "badge": "Distributor",
+        "desc": "Safe distribution and transportation."
+      },
+      "customer": {
+        "badge": "Customer",
+        "desc": "Safe usage tips for household Customer."
+      }
+    },
+    "marketUpdates": {
+      "tag": "INDUSTRY INTELLIGENCE",
+      "title": "LPG MARKET",
+      "accent": "UPDATES.",
+      "subtitle": "Real-time market insights, regulatory circulars, and sector reports",
+      "viewAll": "View All",
+      "items": [
+        {
+          "badge": "Incident Report",
+          "title": "LPG Cylinder Explosion Incident in Chattogram",
+          "date": "May 20, 2024"
+        },
+        {
+          "badge": "BERC Message",
+          "title": "Important Message from BERC Regarding Safety",
+          "date": "May 18, 2024"
+        },
+        {
+          "badge": "Stakeholder Update",
+          "title": "LOAB Meeting on LPG Safety Standards",
+          "date": "May 15, 2024"
+        }
+      ]
+    },
+    "latestBlogs": {
+      "tag": "EDUCATION & ADVISORY",
+      "title": "LATEST",
+      "accent": "BLOGS.",
+      "subtitle": "Articles, safety advisories, and expert guides for LPG users in Bangladesh",
+      "viewAll": "View All"
+    },
+    "featuredTraining": {
+      "tag": "E-LEARNING LMS",
+      "title": "FEATURED TRAINING",
+      "accent": "& QUIZ.",
+      "courseTitle": "LPG Safety Awareness Complete Course",
+      "courseDesc": "Learn essential safety practices and regulations for LPG handling and usage.",
+      "duration": "3h 45m",
+      "lessons": "12 lessons",
+      "level": "Beginner",
+      "price": "৳ 500.00"
+    },
+    "newsletter": {
+      "tag": "NEWSLETTER",
+      "title": "SUBSCRIBE TO",
+      "accent": "NEWSLETTER.",
+      "desc": "Get instant LPG safety bulletins, circulars, and emergency alerts directly to your inbox.",
+      "placeholder": "Enter your email address",
+      "button": "Subscribe"
+    },
+    "emergencyBar": {
+      "title": "Prevent Costly Mistakes",
+      "subtitle": "Follow certified LPG handling protocols, ensure full regulatory compliance, and access 24/7 emergency response across Bangladesh.",
+      "callBtn": "Call Emergency Hotline (16137)",
+      "guidelinesBtn": "Explore Safety Guidelines"
+    }
+  },
+  "about": {
+    "badge": "NATIONAL LPG SAFETY MISSION",
+    "title": "ABOUT",
+    "accent": "US.",
+    "description": "Dedicated to promoting nationwide safety, building public awareness, and strengthening Bangladesh’s LPG sector through knowledge, technical training, and institutional collaboration.",
+    "whoWeAreTag": "WHO WE ARE",
+    "whoWeAreTitle": "DEDICATED TO",
+    "whoWeAreAccent": "LPG SAFETY.",
+    "whoWeAreP1": "We are a dedicated national platform working for a safer and more sustainable LPG sector in Bangladesh. We create awareness, provide up-to-date information, deliver quality training and support all stakeholders including investors, companies, dealers, distributors and consumers.",
+    "whoWeAreP2": "Through collaboration with government bodies, industry associations and safety experts, we aim to reduce operational risks, prevent incidents and build a proactive culture of safety across the entire LPG supply chain.",
+    "features": [
+      { "title": "Safety First", "desc": "We promote safety as a core value in every aspect of the LPG industry." },
+      { "title": "Awareness for All", "desc": "We spread awareness among all stakeholders to ensure a safer LPG ecosystem." },
+      { "title": "Knowledge & Training", "desc": "We provide expert training, resources and guidance to build skills and confidence." },
+      { "title": "Stronger Together", "desc": "We collaborate with industry leaders and organizations to create a safer tomorrow." }
+    ],
+    "missionTag": "CORE FOUNDATION",
+    "missionTitle": "MISSION &",
+    "missionAccent": "VISION.",
+    "missionSubtitle": "Guiding the future of clean energy handling and incident-free LPG adoption.",
+    "ourMission": "OUR MISSION",
+    "missionHead": "Mission",
+    "missionDesc": "To promote LPG safety awareness and best practices through education, training, information sharing and collaboration, ensuring the protection of lives, property and the environment across Bangladesh.",
+    "ourVision": "OUR VISION",
+    "visionHead": "Vision",
+    "visionDesc": "To be the leading platform for LPG safety and awareness in Bangladesh, contributing to a sustainable, safe and responsible energy future for all consumers and industrial users.",
+    "statsTitle": "OUR NATIONAL IMPACT",
+    "statsSubtitle": "Measurable progress toward a zero-incident LPG infrastructure in Bangladesh",
+    "stats": [
+      { "value": "64", "label": "Districts Covered" },
+      { "value": "25,000+", "label": "Trained Participants" },
+      { "value": "120+", "label": "Safety Audits Conducted" },
+      { "value": "99.8%", "label": "Compliance Index" }
+    ]
+  },
+  "actsAndRules": {
+    "badge": "NATIONAL STATUTORY & REGULATORY COMPENDIUM",
+    "title": "ACTS &",
+    "accent": "RULES.",
+    "description": "Official legal gazettes, petroleum acts, explosives regulations, and ministerial directives governing the Liquefied Petroleum Gas (LPG) sector in Bangladesh.",
+    "searchPlaceholder": "Search acts, gazettes, rules, authority...",
+    "downloadPdf": "Download PDF Gazette",
+    "viewDetails": "View Act Details",
+    "allCategories": "All Categories",
+    "categories": {
+      "explosives": "Explosives Rules",
+      "gas": "Gas Rules",
+      "berc": "BERC Regulations",
+      "fire": "Fire Codes",
+      "autogas": "Auto Gas"
+    }
+  },
+  "courses": {
+    "badge": "ONLINE LMS & CERTIFICATION",
+    "title": "TRAINING &",
+    "accent": "QUIZ.",
+    "subtitle": "Industry-aligned LPG safety training for regular consumers, commercial dealers, and industrial operators. Learn at your own pace, take the quiz, and earn your verified certificate.",
+    "expertCourses": "Expert Courses",
+    "selfPaced": "Self-Paced",
+    "dynamicQuiz": "Dynamic Quiz",
+    "verifiableCert": "Verifiable Cert",
+    "digitalAcademy": "Digital Academy",
+    "learnAnywhere": "LEARN ANYWHERE",
+    "onlineAndFree": "100% Online & Free",
+    "modulesIncluded": "4 Modules Included",
+    "bullet1": "Self-paced video modules with safety guidelines",
+    "bullet2": "Instant score grading & re-attempt option",
+    "bullet3": "Trusted by 25,000+ certified nationwide users",
+    "browseCourses": "Browse Courses Below",
+    "verifyCert": "Verify a Certificate",
+    "enrollNow": "Start Course Free"
+  },
+  "faq": {
+    "badge": "OFFICIAL KNOWLEDGE & HELP CENTER",
+    "title": "FREQUENTLY ASKED",
+    "accent": "QUESTIONS.",
+    "description": "Clear, verified answers regarding LPG domestic safety, leak detection, commercial dealer licensing, auto-gas standards, and emergency protocols in Bangladesh.",
+    "searchPlaceholder": "Search questions, procedures, regulator maintenance...",
+    "all": "All",
+    "stillHaveQuestions": "Still have questions?",
+    "contactSupportDesc": "Our safety coordinators and technical officers are ready to assist you 24/7.",
+    "callEmergency": "Call Hotline (16137)",
+    "contactPage": "Contact Support"
+  },
+  "pricing": {
+    "badge": "FLEXIBLE SAFETY PLANS",
+    "title": "FLEXIBLE SAFETY",
+    "accent": "PLANS.",
+    "description": "Choose the safety, training, and regulatory compliance package tailored for your home, retail outlet, auto gas station, or manufacturing facility.",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "save20": "Save 20%",
+    "perMonth": "/ month",
+    "perYear": "/ year",
+    "freeForever": "Free Forever",
+    "includedFeatures": "What's included:",
+    "notIncluded": "Not included:",
+    "freePlanName": "Public Visitor",
+    "freePlanTagline": "Essential awareness for everyday household users",
+    "freeCta": "Get Started Free",
+    "consumerPlanName": "Household Plus",
+    "consumerPlanTagline": "Comprehensive home kitchen protection & certification",
+    "consumerCta": "Upgrade to Plus",
+    "dealerPlanName": "Licensed Dealer",
+    "dealerPlanTagline": "Full compliance & regulatory safety for LPG retailers",
+    "dealerCta": "Get Dealer License Kit"
+  },
+  "contact": {
+    "title": "CONTACT",
+    "accent": "US.",
+    "description": "We are here to assist with safety protocols, regulatory compliance inquiries, institutional LMS training, and technical advisory services across Bangladesh.",
+    "hotline": "Hotline: 16137",
+    "email": "support@safelpg-bd.com",
+    "formTitle": "Send Us a Message",
+    "formSubtitle": "Fill out the form below and our safety officers will respond within 24 hours.",
+    "nameLabel": "Full Name",
+    "namePlaceholder": "Enter your full name",
+    "emailLabel": "Email Address",
+    "emailPlaceholder": "Enter your email address",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "+880 1XXXXXXXXX",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Safety inquiry, training, incident...",
+    "messageLabel": "Your Message",
+    "messagePlaceholder": "How can we assist you with LPG safety?",
+    "submitBtn": "Send Message",
+    "submitting": "Sending...",
+    "locationTitle": "Headquarters & Safety Advisory Center",
+    "locationAddress": "House # 12, Road # 7, Dhanmondi, Dhaka-1205, Bangladesh",
+    "officeHours": "Office Hours",
+    "officeHoursVal": "Sunday - Thursday: 9:00 AM - 6:00 PM (Emergency Hotline: 24/7)"
+  },
+  "verifyCertificate": {
+    "badge": "NATIONAL VERIFICATION REGISTRY",
+    "title": "VERIFY",
+    "accent": "CERTIFICATE.",
+    "description": "Instant digital validation for all LPG Safety & Regulatory compliance certificates issued under Safe LPG, Department of Explosives (DoE), and LOAB joint programs.",
+    "inputPlaceholder": "Enter 10-digit Certificate ID (e.g. ACZ-LPG-2024-001)",
+    "verifyBtn": "Verify Certificate",
+    "verifying": "Verifying...",
+    "howItWorksTitle": "How Verification Works",
+    "step1": "Enter the unique Certificate ID printed on the bottom right of your official certificate.",
+    "step2": "Our cryptographic ledger confirms the issuing authority, participant name, and validity date.",
+    "step3": "Download the verified digital duplicate or share the public verification link."
+  },
+  "terms": {
+    "title": "TERMS &",
+    "accent": "CONDITIONS.",
+    "subtitle": "Please read these terms carefully before accessing or using the Safe LPG platform.",
+    "lastUpdated": "Last updated: January 2025"
+  },
+  "privacy": {
+    "title": "PRIVACY",
+    "accent": "POLICY.",
+    "subtitle": "How Safe LPG protects and respects citizen and industry stakeholder information.",
+    "lastUpdated": "Last updated: January 2025"
+  },
+  "blogs": {
+    "badge": "KNOWLEDGE & RESEARCH",
+    "title": "LPG BLOG &",
+    "accent": "INSIGHTS.",
+    "subtitle": "Articles, safety advisories, and technical sector analysis for LPG users in Bangladesh.",
+    "searchPlaceholder": "Search articles by title, topic, or keyword...",
+    "readTime": "min read"
+  },
+  "marketUpdates": {
+    "badge": "OFFICIAL INDUSTRY REGISTRY & MARKET PULSE",
+    "title": "LPG MARKET",
+    "accent": "UPDATE.",
+    "subtitle": "Stay informed with the latest incident reports, inquiries, stakeholder announcements, BERC price notifications, and global LPG market trends across Bangladesh.",
+    "incidentsTab": "Incidents",
+    "bercTab": "Message from BERC",
+    "globalTab": "Global Market Update",
+    "incidentReportsTitle": "Incident Reports",
+    "incidentReportsSub": "Verified safety, leakage, and containment occurrences nationwide",
+    "resetFilters": "Reset Filters",
+    "searchPlaceholder": "Search by ID, keyword...",
+    "allTypes": "All Incident Types",
+    "leakage": "Leakage",
+    "fire": "Fire",
+    "explosion": "Explosion",
+    "transportAccident": "Transport Accident",
+    "allLocations": "All Locations",
+    "datePlaceholder": "Filter by date...",
+    "colId": "Incident ID",
+    "colType": "Type & Date",
+    "colLocation": "Location",
+    "colSeverity": "Severity",
+    "colStatus": "Status",
+    "colConducted": "Conducted By",
+    "colAction": "Action",
+    "viewDetails": "View Report",
+    "reportIncident": "Report an Incident"
+  },
+  "safetyGuidelines": {
+    "badge": "NATIONWIDE SAFETY PROTOCOLS",
+    "title": "SAFETY",
+    "accent": "GUIDELINES.",
+    "subtitle": "Guidelines for safe handling, storage and use of LPG across all sectors. Compliant with BERC, Department of Explosives (DoE), and Fire Service regulations.",
+    "mandatoryStandards": "Mandatory Operating Standards",
+    "operatingProcedures": "Standard operating procedures for all 5 stakeholder groups",
+    "globalStandardsTitle": "GLOBAL SAFETY STANDARDS",
+    "globalStandardsDesc": "We follow globally recognized practices and international safety standards to ensure LPG safety across Bangladesh.",
+    "viewAllStandards": "View All Standards",
+    "safetyTipTitle": "SAFETY TIP",
+    "safetyTipSubtitle": "Always Verify Before Usage",
+    "safetyTipText": "Inspect the cylinder seal and O-ring integrity before accepting any delivery from your local retailer.",
+    "regulatoryTitle": "REGULATORY OVERSIGHT",
+    "officialDirectives": "Official directives and technical rules issued by national compliance authorities",
+    "downloadableManuals": "OFFICIAL GUIDELINES & MANUALS",
+    "manualsSubtitle": "Download verified PDF standard operating procedures and technical manuals",
+    "docName": "Document Name",
+    "targetGroup": "Stakeholder Group",
+    "fileFormat": "Format",
+    "accessLevel": "Access",
+    "action": "Action",
+    "downloadPdf": "Download PDF",
+    "loginToDownload": "Login to Download"
+  },
+  "checkout": {
+    "badge": "SECURE TRANSACTION",
+    "title": "SECURE",
+    "accent": "CHECKOUT.",
+    "subtitle": "256-bit SSL encrypted gateway powered by Bangladesh Bank recognized merchant channels.",
+    "bankGrade": "Bank-Grade Encryption",
+    "orderSummary": "Order Summary",
+    "plan": "Selected Plan",
+    "billingCycle": "Billing Cycle",
+    "totalAmount": "Total Payable",
+    "paymentMethod": "Payment Method",
+    "payWithBkash": "Pay with bKash",
+    "payWithNagad": "Pay with Nagad",
+    "payWithCard": "Credit / Debit Card",
+    "completeOrder": "Complete Order",
+    "processing": "Processing Payment..."
+  },
+  "courses": {
+    "badge": "CERTIFIED LEARNING LMS",
+    "title": "TRAINING &",
+    "accent": "COURSES.",
+    "subtitle": "Professional certified LPG safety modules for household consumers, retail dealers, and industrial technicians.",
+    "enrollNow": "Enroll Now",
+    "free": "Free",
+    "paid": "Paid"
+  }
+}

@@ -1,34 +1,37 @@
+// src/app/(pages)/privacy/_components/PrivacyHeroSection.jsx
+
 import { Lock } from "lucide-react";
-import { H1, P } from "@/components/ui/Typography";
-import AmbientGlow from "@/components/ui/AmbientGlow";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import CenteredHeroBanner from "@/components/ui/CenteredHeroBanner";
+import { getLocale, getDict } from "@/lib/i18n";
 
-export default function PrivacyHeroSection() {
+export default async function PrivacyHeroSection() {
+  const [locale, dict] = await Promise.all([getLocale(), getDict()]);
+  const isBn = locale === "bn";
+  const common = dict?.common || {};
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-16 pt-10 text-white">
-      <AmbientGlow />
-
-      <div className="site-container relative z-10 text-center max-w-3xl mx-auto">
-        <Breadcrumb
-          dark
-          items={[{ label: "Home", href: "/" }, { label: "Privacy Policy" }]}
-          className="justify-center mb-3"
-        />
-
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-400 backdrop-blur-md">
-          <Lock className="h-3.5 w-3.5" />
-          <span>DATA INTEGRITY & USER CONFIDENTIALITY</span>
-        </div>
-
-        <H1 color="white">
-          <span>PRIVACY</span>{" "}
-          <span className="text-primary">POLICY.</span>
-        </H1>
-
-        <P color="light" className="mt-3 max-w-xl mx-auto">
-          How Safe LPG collects, stores, and safeguards personal training records, certification credentials, and incident reports in accordance with statutory digital standards.
-        </P>
-      </div>
-    </section>
+    <CenteredHeroBanner
+      breadcrumbItems={[
+        { label: common.home || (isBn ? "হোম" : "Home"), href: "/" },
+        {
+          label:
+            dict?.footer?.resources?.privacy ||
+            (isBn ? "গোপনীয়তা নীতি" : "Privacy Policy"),
+        },
+      ]}
+      badge={
+        isBn
+          ? "তথ্য নিরাপত্তা ও ব্যবহারকারীর গোপনীয়তা"
+          : "DATA INTEGRITY & USER CONFIDENTIALITY"
+      }
+      badgeIcon={<Lock className="h-3.5 w-3.5" />}
+      title={isBn ? "গোপনীয়তা" : "PRIVACY"}
+      accent={isBn ? "নীতিমালা।" : "POLICY."}
+      description={
+        isBn
+          ? "সেইফ এলপিজি কীভাবে ব্যক্তিগত প্রশিক্ষণের রেকর্ড, সার্টিফিকেট এবং দুর্ঘটনা সংক্রান্ত তথ্য নিরাপদে সংরক্ষণ ও পরিচালনা করে।"
+          : "How Safe LPG collects, stores, and safeguards personal training records, certification credentials, and incident reports in accordance with statutory digital standards."
+      }
+    />
   );
 }

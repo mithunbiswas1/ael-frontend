@@ -33,67 +33,75 @@ const SOCIAL_LINKS = [
   },
 ];
 
-const FOOTER_COLUMNS = [
-  {
-    title: "QUICK LINKS",
-    colSpan: "lg:col-span-2",
-    links: [
-      { label: "Safety Guidelines", href: "/safety-guidelines" },
-      { label: "LPG Market Update", href: "/market-updates" },
-      { label: "Training & Quiz", href: "/courses" },
-      { label: "Blog & Insights", href: "/blogs" },
-      { label: "Contact Support", href: "/contact" },
-    ],
-  },
-  {
-    title: "RESOURCES & SUPPORT",
-    colSpan: "lg:col-span-3",
-    links: [
-      { label: "Related Acts & Rules", href: "/acts-and-rules" },
-      { label: "Terms & Conditions", href: "/terms" },
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "FAQ & Help Center", href: "/faq" },
-    ],
-  },
-];
+export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
+  const quickLinksTitle = dict?.quickLinksTitle || "QUICK LINKS";
+  const resourcesTitle = dict?.resourcesTitle || "RESOURCES & SUPPORT";
+  const contactTitle = dict?.contactTitle || "CONTACT US";
+  const tagline = dict?.tagline || "Promoting certified LPG safety awareness and regulatory compliance across Bangladesh for a safer today and sustainable tomorrow.";
+  const addressText = dict?.address || "House # 12, Road # 7, Dhanmondi, Dhaka-1205";
+  const phoneText = dict?.phone || "+880 1712-345678";
+  const emailText = dict?.email || "info@safelpg.com";
+  const websiteText = dict?.website || "www.safelpg.com";
+  const copyrightText = dict?.copyright || "All rights reserved. Powered by Safe LPG Bangladesh.";
 
-const CONTACT_ITEMS = [
-  {
-    icon: MapPin,
-    text: "House # 12, Road # 7, Dhanmondi, Dhaka-1205",
-    href: null,
-  },
-  {
-    icon: Phone,
-    text: "+880 1712-345678",
-    href: "tel:+8801712345678",
-  },
-  {
-    icon: Mail,
-    text: "info@safelpg.com",
-    href: "mailto:info@safelpg.com",
-  },
-  {
-    icon: Globe,
-    text: "www.safelpg.com",
-    href: "https://www.safelpg.com",
-  },
-];
+  const footerColumns = [
+    {
+      title: quickLinksTitle,
+      colSpan: "lg:col-span-2",
+      links: [
+        { label: dict?.quickLinks?.safetyGuidelines || "Safety Guidelines", href: "/safety-guidelines" },
+        { label: dict?.quickLinks?.marketUpdates || "LPG Market Update", href: "/market-updates" },
+        { label: dict?.quickLinks?.trainingQuiz || "Training & Quiz", href: "/courses" },
+        { label: dict?.quickLinks?.blogInsights || "Blog & Insights", href: "/blogs" },
+        { label: dict?.quickLinks?.contactSupport || "Contact Support", href: "/contact" },
+      ],
+    },
+    {
+      title: resourcesTitle,
+      colSpan: "lg:col-span-3",
+      links: [
+        { label: dict?.resources?.actsRules || "Related Acts & Rules", href: "/acts-and-rules" },
+        { label: dict?.resources?.terms || "Terms & Conditions", href: "/terms" },
+        { label: dict?.resources?.privacy || "Privacy Policy", href: "/privacy" },
+        { label: dict?.resources?.faq || "FAQ & Help Center", href: "/faq" },
+      ],
+    },
+  ];
 
-export default function Footer() {
+  const contactItems = [
+    {
+      icon: MapPin,
+      text: addressText,
+      href: null,
+    },
+    {
+      icon: Phone,
+      text: phoneText,
+      href: "tel:+8801712345678",
+    },
+    {
+      icon: Mail,
+      text: emailText,
+      href: `mailto:${emailText}`,
+    },
+    {
+      icon: Globe,
+      text: websiteText,
+      href: `https://${websiteText}`,
+    },
+  ];
+
   return (
     <footer className="border-t border-slate-900 bg-gradient-to-b from-slate-950 to-[#090e1a] text-slate-400">
       <div className="site-container py-12 lg:pt-16 lg:pb-6">
-
         {/* Main Grid: Brand (4 cols) + Quick Links (2 cols) + Resources (3 cols) + Contact (3 cols) = 12 cols */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-
           {/* Column 1: Brand Info & Social Media (4 cols) */}
           <div className="flex flex-col lg:col-span-4">
             <AelLogo light={true} />
 
             <P size="xs" color="slate400" className="mt-4 max-w-sm">
-              Promoting certified LPG safety awareness and regulatory compliance across Bangladesh for a safer today and sustainable tomorrow.
+              {tagline}
             </P>
 
             {/* Social Icons mapped */}
@@ -117,14 +125,17 @@ export default function Footer() {
           </div>
 
           {/* Columns 2 & 3: Navigation link groups mapped (2 + 3 cols = 5 cols) */}
-          {FOOTER_COLUMNS.map((column) => (
+          {footerColumns.map((column) => (
             <div key={column.title} className={column.colSpan}>
               <H4 color="white" uppercase className="text-xs font-black tracking-wider">
                 {column.title}
               </H4>
               <ul className="mt-4 space-y-2.5 text-xs">
                 {column.links.map((link) => {
-                  const isExternal = link.href.startsWith("http") || link.href.startsWith("tel:") || link.href.startsWith("mailto:");
+                  const isExternal =
+                    link.href.startsWith("http") ||
+                    link.href.startsWith("tel:") ||
+                    link.href.startsWith("mailto:");
                   return (
                     <li key={link.label}>
                       {isExternal ? (
@@ -152,10 +163,10 @@ export default function Footer() {
           {/* Column 4: Contact Info mapped (3 cols) */}
           <div className="lg:col-span-3">
             <H4 color="white" uppercase className="text-xs font-black tracking-wider">
-              CONTACT US
+              {contactTitle}
             </H4>
             <ul className="mt-4 space-y-3 text-xs">
-              {CONTACT_ITEMS.map((item, idx) => {
+              {contactItems.map((item, idx) => {
                 const IconComponent = item.icon;
                 return (
                   <li key={idx} className="flex items-start gap-2.5">
@@ -164,7 +175,11 @@ export default function Footer() {
                       <a
                         href={item.href}
                         target={item.href.startsWith("http") ? "_blank" : undefined}
-                        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                        rel={
+                          item.href.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
                         className="text-slate-400 hover:text-white transition-colors duration-150"
                       >
                         {item.text}
@@ -184,7 +199,7 @@ export default function Footer() {
         {/* Bottom Bar: Copyright & Subtle Utility Badges */}
         <div className="mt-12 sm:mt-16 border-t border-slate-900/80 pt-6">
           <P size="xs" className="text-center">
-            © {new Date().getFullYear()} Safe LPG. All Rights Reserved.
+            © {new Date().getFullYear()} {copyrightText}
           </P>
         </div>
       </div>

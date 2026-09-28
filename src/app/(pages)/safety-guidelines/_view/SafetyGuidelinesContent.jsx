@@ -1,12 +1,12 @@
-// src/app/(pages)/safety-guidelines/_components/SafetyGuidelinesContent.jsx
+// src/app/(pages)/safety-guidelines/_view/SafetyGuidelinesContent.jsx
 "use client";
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import StakeholderTabsSection, { STAKEHOLDER_TABS } from "./StakeholderTabsSection";
-import GuidelinesGridSection from "./GuidelinesGridSection";
+import StakeholderTabsSection, { STAKEHOLDER_TABS } from "../_components/StakeholderTabsSection";
+import GuidelinesGridSection from "../_components/GuidelinesGridSection";
 
-export default function SafetyGuidelinesContent() {
+export default function SafetyGuidelinesContent({ sections = {} }) {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("investors");
 
@@ -20,7 +20,7 @@ export default function SafetyGuidelinesContent() {
   return (
     <main className="min-h-screen bg-slate-50">
       <StakeholderTabsSection activeTab={activeTab} setActiveTab={setActiveTab} />
-      <GuidelinesGridSection activeTab={activeTab} />
+      <GuidelinesGridSection activeTab={activeTab} sections={sections} />
     </main>
   );
 }

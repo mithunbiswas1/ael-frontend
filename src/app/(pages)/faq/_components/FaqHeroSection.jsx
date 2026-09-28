@@ -2,36 +2,40 @@
 "use client";
 
 import { HelpCircle } from "lucide-react";
-import { H1, P } from "@/components/ui/Typography";
-import AmbientGlow from "@/components/ui/AmbientGlow";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import CenteredHeroBanner from "@/components/ui/CenteredHeroBanner";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function FaqHeroSection() {
+  const { dict, locale } = useDictionary();
+  const isBn = locale === "bn";
+  const faq = dict?.faq || {};
+  const common = dict?.common || {};
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-16 pt-10 text-white">
-      <AmbientGlow />
-
-      <div className="site-container relative z-10 text-center max-w-3xl mx-auto">
-        <Breadcrumb
-          dark
-          items={[{ label: "Home", href: "/" }, { label: "FAQ & Help Center" }]}
-          className="justify-center mb-3"
-        />
-
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-400 backdrop-blur-md">
-          <HelpCircle className="h-3.5 w-3.5" />
-          <span>KNOWLEDGE BASE & SUPPORT DESK</span>
-        </div>
-
-        <H1 color="white">
-          <span>FREQUENTLY ASKED</span>{" "}
-          <span className="text-primary">QUESTIONS.</span>
-        </H1>
-
-        <P color="light" className="mt-3 max-w-xl mx-auto">
-          Clear, authoritative guidance on LPG household handling, regulator maintenance, commercial compliance, and emergency protocols.
-        </P>
-      </div>
-    </section>
+    <CenteredHeroBanner
+      breadcrumbItems={[
+        { label: common.home || (isBn ? "হোম" : "Home"), href: "/" },
+        {
+          label:
+            dict?.footer?.resources?.faq ||
+            (isBn ? "সাধারণ জিজ্ঞাসা" : "FAQ & Help Center"),
+        },
+      ]}
+      badge={
+        faq.badge ||
+        (isBn
+          ? "অফিসিয়াল তথ্য ও সহায়তা কেন্দ্র"
+          : "OFFICIAL KNOWLEDGE & HELP CENTER")
+      }
+      badgeIcon={<HelpCircle className="h-3.5 w-3.5" />}
+      title={faq.title || (isBn ? "সাধারণ" : "FREQUENTLY ASKED")}
+      accent={faq.accent || (isBn ? "জিজ্ঞাসা।" : "QUESTIONS.")}
+      description={
+        faq.description ||
+        (isBn
+          ? "বাসাবাড়িতে এলপিজি সিলিন্ডার ব্যবহার, রেগুলেটর রক্ষণাবেক্ষণ, ডিলার কমপ্লায়েন্স এবং জরুরি প্রোটোকল সম্পর্কিত নির্ভরযোগ্য পরামর্শ।"
+          : "Clear, authoritative guidance on LPG household handling, regulator maintenance, commercial compliance, and emergency protocols.")
+      }
+    />
   );
 }

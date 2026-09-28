@@ -23,6 +23,11 @@ export default function MarketUpdateCard({
   date,
   href = "/market-updates",
 }) {
+  const safeImageUrl =
+    imageUrl && typeof imageUrl === "string" && imageUrl.trim() !== ""
+      ? imageUrl
+      : "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=600&auto=format&fit=crop";
+
   const badgeStyle =
     BADGE_VARIANTS[category] ||
     BADGE_VARIANTS[badgeText] ||
@@ -36,8 +41,8 @@ export default function MarketUpdateCard({
       {/* Image container with floating badge */}
       <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">
         <Image
-          src={imageUrl}
-          alt={title}
+          src={safeImageUrl}
+          alt={title || "Market Update"}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           className="object-cover"

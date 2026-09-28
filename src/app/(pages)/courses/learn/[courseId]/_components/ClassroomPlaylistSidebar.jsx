@@ -7,6 +7,7 @@ import {
   Award,
   ChevronRight,
 } from "lucide-react";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function ClassroomPlaylistSidebar({
   sidebarOpen,
@@ -17,6 +18,9 @@ export default function ClassroomPlaylistSidebar({
   completedLessonIds,
   courseId,
 }) {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+
   return (
     <>
       {/* Mobile Drawer Backdrop */}
@@ -37,10 +41,12 @@ export default function ClassroomPlaylistSidebar({
       >
         <div className="border-b border-slate-800 p-4">
           <h2 className="text-xs font-black uppercase tracking-wider text-slate-300">
-            Course Playlist
+            {isBn ? "কোর্স প্লেলিস্ট" : "Course Playlist"}
           </h2>
           <p className="text-[10px] text-slate-500 mt-0.5">
-            {completedLessonIds.length} of {lessons.length} lessons completed
+            {isBn
+              ? `${lessons.length}টির মধ্যে ${completedLessonIds.length}টি পাঠ সম্পন্ন`
+              : `${completedLessonIds.length} of ${lessons.length} lessons completed`}
           </p>
         </div>
 
@@ -48,6 +54,8 @@ export default function ClassroomPlaylistSidebar({
           {lessons.map((lesson, idx) => {
             const isActive = idx === currentLessonIdx;
             const isCompleted = completedLessonIds.includes(lesson.id);
+            const lessonTitle = isBn ? lesson.titleBn || lesson.title : lesson.title;
+            const lessonDuration = isBn ? lesson.durationBn || lesson.duration : lesson.duration;
 
             return (
               <button
@@ -76,11 +84,11 @@ export default function ClassroomPlaylistSidebar({
 
                 <div className="flex-1">
                   <div className="font-semibold line-clamp-2 leading-snug">
-                    {lesson.title}
+                    {lessonTitle}
                   </div>
                   <div className="mt-1 flex items-center gap-2 text-[10px] text-slate-500">
                     <Clock className="h-3 w-3" />
-                    <span>{lesson.duration}</span>
+                    <span>{lessonDuration}</span>
                   </div>
                 </div>
               </button>
@@ -92,15 +100,19 @@ export default function ClassroomPlaylistSidebar({
         <div className="p-4 border-t border-slate-800 bg-slate-900/50 mt-4">
           <div className="rounded-lg border border-emerald-500/30 bg-emerald-950/30 p-3 text-center">
             <Award className="h-6 w-6 text-emerald-400 mx-auto mb-1.5" />
-            <div className="text-xs font-bold text-white">Course Assessment</div>
+            <div className="text-xs font-bold text-white">
+              {isBn ? "কোর্স মূল্যায়ন কুইজ" : "Course Assessment"}
+            </div>
             <p className="text-[10px] text-slate-400 mt-1 mb-3">
-              Score 80% or above to unlock your government recognized certificate.
+              {isBn
+                ? "সরকারি স্বীকৃত ডিজিটাল সার্টিফিকেট পেতে ৮০% বা তার বেশি স্কোর করুন।"
+                : "Score 80% or above to unlock your government recognized certificate."}
             </p>
             <Link
               href={`/courses/${courseId}/quiz`}
               className="w-full flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 py-2 text-xs font-bold text-white hover:bg-emerald-500 transition-colors"
             >
-              <span>Take Quiz Now</span>
+              <span>{isBn ? "এখনই কুইজ দিন" : "Take Quiz Now"}</span>
               <ChevronRight className="h-3.5 w-3.5" />
             </Link>
           </div>

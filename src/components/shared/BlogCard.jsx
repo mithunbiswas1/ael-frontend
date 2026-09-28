@@ -30,6 +30,11 @@ export default function BlogCard({
   readTime,
   href = "/blogs",
 }) {
+  const safeImageUrl =
+    imageUrl && typeof imageUrl === "string" && imageUrl.trim() !== ""
+      ? imageUrl
+      : "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=600&auto=format&fit=crop";
+
   const badgeStyle =
     BLOG_BADGE_VARIANTS[category] ||
     BLOG_BADGE_VARIANTS[badgeText] ||
@@ -43,8 +48,8 @@ export default function BlogCard({
       {/* Image container with floating badge */}
       <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">
         <Image
-          src={imageUrl}
-          alt={title}
+          src={safeImageUrl}
+          alt={title || "Blog Post"}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"

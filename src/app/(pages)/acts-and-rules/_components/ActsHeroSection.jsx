@@ -2,39 +2,40 @@
 "use client";
 
 import { Scale } from "lucide-react";
-import { H1, P } from "@/components/ui/Typography";
-import AmbientGlow from "@/components/ui/AmbientGlow";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import CenteredHeroBanner from "@/components/ui/CenteredHeroBanner";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function ActsHeroSection() {
+  const { dict, locale } = useDictionary();
+  const isBn = locale === "bn";
+  const acts = dict?.actsAndRules || {};
+  const common = dict?.common || {};
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-16 pt-10 text-white">
-      <AmbientGlow />
-
-      <div className="site-container relative z-10 text-center max-w-3xl mx-auto">
-        <Breadcrumb
-          dark
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Related Acts & Rules" },
-          ]}
-          className="justify-center mb-3"
-        />
-
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-400 backdrop-blur-md">
-          <Scale className="h-3.5 w-3.5" />
-          <span>NATIONAL STATUTORY & REGULATORY COMPENDIUM</span>
-        </div>
-
-        <H1 color="white">
-          <span>ACTS &</span>{" "}
-          <span className="text-primary">RULES.</span>
-        </H1>
-
-        <P color="light" className="mt-3 max-w-xl mx-auto">
-          Official legal gazettes, petroleum acts, explosives regulations, and ministerial directives governing the Liquefied Petroleum Gas (LPG) sector in Bangladesh.
-        </P>
-      </div>
-    </section>
+    <CenteredHeroBanner
+      breadcrumbItems={[
+        { label: common.home || (isBn ? "হোম" : "Home"), href: "/" },
+        {
+          label:
+            dict?.footer?.resources?.actsRules ||
+            (isBn ? "আইন ও বিধিমালা" : "Related Acts & Rules"),
+        },
+      ]}
+      badge={
+        acts.badge ||
+        (isBn
+          ? "জাতীয় সংবিধিবদ্ধ ও নিয়ন্ত্রক বিধিমালা সংকলন"
+          : "NATIONAL STATUTORY & REGULATORY COMPENDIUM")
+      }
+      badgeIcon={<Scale className="h-3.5 w-3.5" />}
+      title={acts.title || (isBn ? "আইন ও" : "ACTS &")}
+      accent={acts.accent || (isBn ? "বিধিমালা।" : "RULES.")}
+      description={
+        acts.description ||
+        (isBn
+          ? "বাংলাদেশে তরলীকৃত পেট্রোলিয়াম গ্যাস (এলপিজি) খাত পরিচালনাকারী সরকারি গেজেট, আইন, বিধিমালা এবং মন্ত্রণালয়ের নির্দেশনা।"
+          : "Official legal gazettes, petroleum acts, explosives regulations, and ministerial directives governing the Liquefied Petroleum Gas (LPG) sector in Bangladesh.")
+      }
+    />
   );
 }

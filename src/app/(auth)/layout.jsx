@@ -1,7 +1,9 @@
 // src/app/(auth)/layout.jsx
 
-import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
-
 export default function AuthLayout({ children }) {
-  return <ReduxProvider>{children}</ReduxProvider>;
+  return (
+    <div className="h-screen w-full overflow-hidden bg-slate-950">
+      {children}
+    </div>
+  );
 }

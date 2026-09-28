@@ -1,12 +1,12 @@
-// src/app/(pages)/checkout/_components/CheckoutContent.jsx
+// src/app/(pages)/checkout/_view/CheckoutContent.jsx
 "use client";
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import CheckoutHeroSection from "./CheckoutHeroSection";
-import CheckoutSuccessState from "./CheckoutSuccessState";
-import CheckoutFormSection from "./CheckoutFormSection";
+import CheckoutHeroSection from "../_components/CheckoutHeroSection";
+import CheckoutSuccessState from "../_components/CheckoutSuccessState";
+import CheckoutFormSection from "../_components/CheckoutFormSection";
 
 const PLANS = {
   free: { name: "Public Visitor", priceMonthly: 0, priceYearly: 0 },

@@ -1,36 +1,36 @@
 // src/app/(home)/_components/MetricsBar.jsx
 
 import { Users, GraduationCap, FileText, ShieldCheck } from "lucide-react";
-import { H3, P } from "@/components/ui/Typography";
+import { H3 } from "@/components/ui/Typography";
 
-const metrics = [
-  {
-    id: 1,
-    icon: Users,
-    value: "25,340+",
-    label: "Registered Users",
-  },
-  {
-    id: 2,
-    icon: GraduationCap,
-    value: "1,250+",
-    label: "Safety Trainings",
-  },
-  {
-    id: 3,
-    icon: FileText,
-    value: "820+",
-    label: "Safety Resources",
-  },
-  {
-    id: 4,
-    icon: ShieldCheck,
-    value: "120+",
-    label: "Incidents Reported",
-  },
-];
+export default function MetricsBar({ dict = {} }) {
+  const metrics = [
+    {
+      id: 1,
+      icon: Users,
+      value: "25,340+",
+      label: dict?.registeredUsers || "Registered Users",
+    },
+    {
+      id: 2,
+      icon: GraduationCap,
+      value: "1,250+",
+      label: dict?.safetyTrainings || "Safety Trainings",
+    },
+    {
+      id: 3,
+      icon: FileText,
+      value: "820+",
+      label: dict?.safetyResources || "Safety Resources",
+    },
+    {
+      id: 4,
+      icon: ShieldCheck,
+      value: "120+",
+      label: dict?.incidentsReported || "Incidents Reported",
+    },
+  ];
 
-export default function MetricsBar() {
   return (
     <div className="relative z-20 -mt-8 sm:-mt-10 mx-auto w-full max-w-6xl px-4">
       <div className="grid grid-cols-2 gap-2 sm:gap-4 rounded-xl border border-slate-200/80 bg-white/95 p-3 sm:p-6 shadow-xs backdrop-blur-xl md:grid-cols-4 md:gap-6">
@@ -45,9 +45,7 @@ export default function MetricsBar() {
                 <Icon className="h-4 w-4 sm:h-5 sm:w-5" strokeWidth={2.5} />
               </div>
               <div>
-                <H3>
-                  {item.value}
-                </H3>
+                <H3>{item.value}</H3>
                 <span className="-mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-700">
                   {item.label}
                 </span>

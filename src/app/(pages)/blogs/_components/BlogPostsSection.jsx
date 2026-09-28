@@ -1,9 +1,13 @@
+// src/app/(pages)/blogs/_components/BlogPostsSection.jsx
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Search, Calendar, ArrowRight } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function BlogPostsSection({
   searchQuery,
@@ -13,6 +17,10 @@ export default function BlogPostsSection({
   viewType,
   filteredBlogs,
 }) {
+  const { locale, dict } = useDictionary();
+  const isBn = locale === "bn";
+  const common = dict?.common || {};
+
   return (
     <div className="space-y-5 lg:col-span-6">
       {/* Search & Sort Bar */}
@@ -20,7 +28,9 @@ export default function BlogPostsSection({
         <div className="flex-1">
           <Input
             type="text"
-            placeholder="Search articles..."
+            placeholder={
+              isBn ? "প্রবন্ধ অনুসন্ধান করুন..." : "Search articles..."
+            }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             prefix={<Search className="h-3.5 w-3.5" />}
@@ -28,15 +38,24 @@ export default function BlogPostsSection({
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 whitespace-nowrap">Sort:</span>
+          <span className="text-xs text-slate-500 whitespace-nowrap">
+            {isBn ? "সর্টিং:" : "Sort:"}
+          </span>
           <Select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            options={[
-              { value: "latest", label: "Latest" },
-              { value: "popular", label: "Most Popular" },
-            ]}
-            className="w-32"
+            options={
+              isBn
+                ? [
+                    { value: "latest", label: "সর্বশেষ" },
+                    { value: "popular", label: "সবচেয়ে জনপ্রিয়" },
+                  ]
+                : [
+                    { value: "latest", label: "Latest" },
+                    { value: "popular", label: "Most Popular" },
+                  ]
+            }
+            className="w-36"
           />
         </div>
       </div>
@@ -44,7 +63,9 @@ export default function BlogPostsSection({
       {/* Cards Grid / List */}
       {filteredBlogs.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-500">
-          No articles found matching your criteria.
+          {isBn
+            ? "আপনার মানদণ্ডের সাথে মিলে এমন কোনো প্রবন্ধ পাওয়া যায়নি।"
+            : "No articles found matching your criteria."}
         </div>
       ) : viewType === "grid" ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -84,7 +105,7 @@ export default function BlogPostsSection({
                 </div>
 
                 <div className="mt-3.5 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-primary">
-                  <span>Read Full Article</span>
+                  <span>{isBn ? "সম্পূর্ণ পড়ুন" : "Read Full Article"}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </div>
@@ -131,7 +152,7 @@ export default function BlogPostsSection({
                 </div>
 
                 <div className="mt-3 flex items-center gap-1 text-xs font-bold text-primary">
-                  <span>Read Article</span>
+                  <span>{isBn ? "সম্পূর্ণ পড়ুন" : "Read Article"}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </div>
               </div>

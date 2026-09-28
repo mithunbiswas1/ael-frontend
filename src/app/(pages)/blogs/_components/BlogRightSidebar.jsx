@@ -1,17 +1,21 @@
+// src/app/(pages)/blogs/_components/BlogRightSidebar.jsx
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { H4 } from "@/components/ui/Typography";
+import { useDictionary } from "@/context/DictionaryContext";
 
-export default function BlogRightSidebar({
-  popularPosts,
-}) {
+export default function BlogRightSidebar({ popularPosts }) {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+
   return (
     <div className="space-y-4 lg:col-span-3">
-
       {/* Popular Posts */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs">
         <H4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3">
-          POPULAR POSTS
+          {isBn ? "জনপ্রিয় প্রবন্ধসমূহ" : "POPULAR POSTS"}
         </H4>
 
         <div className="space-y-3">

@@ -1,43 +1,60 @@
+// src/app/(pages)/courses/_components/CoursesFeaturesSection.jsx
+"use client";
+
 import { PlaySquare, HelpCircle, CheckCircle2, Award, Clock } from "lucide-react";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { H4, P } from "@/components/ui/Typography";
-
-const features = [
-  {
-    icon: PlaySquare,
-    title: "Video Lessons",
-    description: "High-quality video lessons with modular chapter progress tracking.",
-  },
-  {
-    icon: HelpCircle,
-    title: "Quiz Engine",
-    description: "Randomized questions dynamically curated from nationwide banks.",
-  },
-  {
-    icon: CheckCircle2,
-    title: "Instant Results",
-    description: "Immediate score breakdown and review upon quiz submission.",
-  },
-  {
-    icon: Award,
-    title: "Certificates",
-    description: "Official downloadable PDF with verifiable unique QR code.",
-  },
-  {
-    icon: Clock,
-    title: "Resume Anytime",
-    description: "Continue seamlessly across desktop, tablet, and mobile devices.",
-  },
-];
+import { useDictionary } from "@/context/DictionaryContext";
 
 export default function CoursesFeaturesSection() {
+  const { locale } = useDictionary();
+  const isBn = locale === "bn";
+
+  const features = [
+    {
+      icon: PlaySquare,
+      title: isBn ? "ভিডিও পাঠ" : "Video Lessons",
+      description: isBn
+        ? "অধ্যায়ভিত্তিক অগ্রগতি ট্র্যাকিং সহ উচ্চমানের স্পষ্ট ভিডিও লেকচার।"
+        : "High-quality video lessons with modular chapter progress tracking.",
+    },
+    {
+      icon: HelpCircle,
+      title: isBn ? "কুইজ ইঞ্জিন" : "Quiz Engine",
+      description: isBn
+        ? "জাতীয় প্রশ্নব্যাংক থেকে কিউরেটেড র‍্যান্ডমাইজড মূল্যায়ন প্রশ্ন।"
+        : "Randomized questions dynamically curated from nationwide banks.",
+    },
+    {
+      icon: CheckCircle2,
+      title: isBn ? "তাৎক্ষণিক ফলাফল" : "Instant Results",
+      description: isBn
+        ? "কুইজ জমা দেওয়ার সাথে সাথে বিস্তারিত স্কোর ও পর্যালোচনা দেখার সুযোগ।"
+        : "Immediate score breakdown and review upon quiz submission.",
+    },
+    {
+      icon: Award,
+      title: isBn ? "যাচাইযোগ্য সনদ" : "Certificates",
+      description: isBn
+        ? "অনন্য কিউআর কোডযুক্ত অফিশিয়াল ও বৈধ ডাউনলোডযোগ্য পিডিএফ সনদ।"
+        : "Official downloadable PDF with verifiable unique QR code.",
+    },
+    {
+      icon: Clock,
+      title: isBn ? "যেকোনো সময় শুরু" : "Resume Anytime",
+      description: isBn
+        ? "ডেস্কটপ, ট্যাবলেট বা মোবাইল থেকে নিরবচ্ছিন্নভাবে কোর্স চালিয়ে যান।"
+        : "Continue seamlessly across desktop, tablet, and mobile devices.",
+    },
+  ];
+
   return (
     <section className="py-12 bg-slate-100/60 border-t border-slate-200/60">
       <div className="site-container">
         <SectionHeader
-          tag="PLATFORM ADVANTAGES"
-          title="KEY"
-          accent="FEATURES."
+          tag={isBn ? "প্ল্যাটফর্মের সুবিধাসমূহ" : "PLATFORM ADVANTAGES"}
+          title={isBn ? "মূল" : "KEY"}
+          accent={isBn ? "বৈশিষ্ট্য।" : "FEATURES."}
         />
 
         <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">

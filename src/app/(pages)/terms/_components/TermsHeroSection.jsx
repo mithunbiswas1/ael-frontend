@@ -1,34 +1,33 @@
+// src/app/(pages)/terms/_components/TermsHeroSection.jsx
+
 import { Scale } from "lucide-react";
-import { H1, P } from "@/components/ui/Typography";
-import AmbientGlow from "@/components/ui/AmbientGlow";
-import Breadcrumb from "@/components/ui/Breadcrumb";
+import CenteredHeroBanner from "@/components/ui/CenteredHeroBanner";
+import { getLocale, getDict } from "@/lib/i18n";
 
-export default function TermsHeroSection() {
+export default async function TermsHeroSection() {
+  const [locale, dict] = await Promise.all([getLocale(), getDict()]);
+  const isBn = locale === "bn";
+  const common = dict?.common || {};
+
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-16 pt-10 text-white">
-      <AmbientGlow />
-
-      <div className="site-container relative z-10 text-center max-w-3xl mx-auto">
-        <Breadcrumb
-          dark
-          items={[{ label: "Home", href: "/" }, { label: "Terms of Use" }]}
-          className="justify-center mb-3"
-        />
-
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-widest text-blue-400 backdrop-blur-md">
-          <Scale className="h-3.5 w-3.5" />
-          <span>TERMS & USER CONDUCT AGREEMENT</span>
-        </div>
-
-        <H1 color="white">
-          <span>TERMS OF</span>{" "}
-          <span className="text-primary">SERVICE.</span>
-        </H1>
-
-        <P color="light" className="mt-3 max-w-xl mx-auto">
-          Statutory conditions governing portal access, certification issuance, educational content utilization, and subscriber obligations.
-        </P>
-      </div>
-    </section>
+    <CenteredHeroBanner
+      breadcrumbItems={[
+        { label: common.home || (isBn ? "হোম" : "Home"), href: "/" },
+        {
+          label:
+            dict?.footer?.resources?.terms ||
+            (isBn ? "ব্যবহারের শর্তাবলী" : "Terms of Use"),
+        },
+      ]}
+      badge={isBn ? "ব্যবহারের শর্তাবলী ও নীতিমালা" : "TERMS & USER CONDUCT AGREEMENT"}
+      badgeIcon={<Scale className="h-3.5 w-3.5" />}
+      title={isBn ? "ব্যবহারের" : "TERMS OF"}
+      accent={isBn ? "শর্তাবলী।" : "SERVICE."}
+      description={
+        isBn
+          ? "সেইফ এলপিজি প্ল্যাটফর্ম ব্যবহার, সার্টিফিকেট ইস্যু এবং শিক্ষামূলক কনটেন্ট ব্যবহারের ক্ষেত্রে প্রযোজ্য নিয়মাবলী।"
+          : "Statutory conditions governing portal access, certification issuance, educational content utilization, and subscriber obligations."
+      }
+    />
   );
 }

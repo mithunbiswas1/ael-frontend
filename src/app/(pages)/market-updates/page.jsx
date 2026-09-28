@@ -1,6 +1,7 @@
 // src/app/(pages)/market-updates/page.jsx
 import { Suspense } from "react";
-import MarketUpdatesContent from "./_components/MarketUpdatesContent";
+import MarketUpdatesContent from "./_view/MarketUpdatesContent";
+import { getPageContent } from "@/next-api/getPageContent";
 
 export const metadata = {
   title: "LPG Market Update & Incident Registry | Safe LPG Platform",
@@ -8,7 +9,9 @@ export const metadata = {
     "Real-time official LPG incident registry, DoE inquiry reports, BERC circulars, and global market price trends in Bangladesh.",
 };
 
-export default function MarketUpdatesPage() {
+export default async function MarketUpdatesPage() {
+  const cmsData = await getPageContent("market-updates");
+
   return (
     <Suspense
       fallback={
@@ -20,7 +23,10 @@ export default function MarketUpdatesPage() {
         </div>
       }
     >
-      <MarketUpdatesContent />
+      <MarketUpdatesContent
+        bannerData={cmsData.banner}
+        sections={cmsData.sections}
+      />
     </Suspense>
   );
 }

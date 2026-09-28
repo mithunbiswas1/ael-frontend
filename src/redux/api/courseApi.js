@@ -1,0 +1,99 @@
+// src/redux/api/courseApi.js
+
+import { apiSlice } from "@/redux/api-slice/api-slice";
+import { endpoints } from "@/redux/endpoints/endpoints";
+
+export const courseApi = apiSlice.injectEndpoints({
+  overrideExisting: true,
+
+  endpoints: (builder) => ({
+    // Get Courses List
+    getCourses: builder.query({
+      query: (params = {}) => {
+        const queryParams = new URLSearchParams(params).toString();
+        return {
+          url: `${endpoints.courses.publicList}?${queryParams}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Courses"],
+    }),
+
+    // Get Course By ID
+    getCourseById: builder.query({
+      query: (id) => ({
+        url: endpoints.courses.detail(id),
+        method: "GET",
+      }),
+      providesTags: ["Courses"],
+    }),
+
+    // Create Course
+    createCourse: builder.mutation({
+      query: (data) => ({
+        url: endpoints.courses.create,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Courses"],
+    }),
+
+    // Update Course
+    updateCourse: builder.mutation({
+      query: ({ id, data }) => ({
+        url: endpoints.courses.update(id),
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Courses"],
+    }),
+
+    // Delete Course
+    deleteCourse: builder.mutation({
+      query: (id) => ({
+        url: endpoints.courses.delete(id),
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Courses"],
+    }),
+
+    // Subscriber: Get enrolled/purchased courses
+    getMyLearningCourses: builder.query({
+      query: () => ({
+        url: endpoints.courses.subscriberMyLearning,
+        method: "GET",
+      }),
+      providesTags: ["Courses"],
+    }),
+
+    // Subscriber: Enroll in a course
+    enrollCourse: builder.mutation({
+      query: (courseId) => ({
+        url: endpoints.courses.subscriberEnroll,
+        method: "POST",
+        body: { courseId },
+      }),
+      invalidatesTags: ["Courses"],
+    }),
+
+    // Direct Video Upload
+    uploadCourseVideo: builder.mutation({
+      query: (formData) => ({
+        url: endpoints.courses.uploadVideo,
+        method: "POST",
+        body: formData,
+      }),
+    }),
+  }),
+});
+
+export const {
+  useGetCoursesQuery,
+  useGetCourseByIdQuery,
+  useCreateCourseMutation,
+  useUpdateCourseMutation,
+  useDeleteCourseMutation,
+  useGetMyLearningCoursesQuery,
+  useEnrollCourseMutation,
+  useUploadCourseVideoMutation,
+} = courseApi;

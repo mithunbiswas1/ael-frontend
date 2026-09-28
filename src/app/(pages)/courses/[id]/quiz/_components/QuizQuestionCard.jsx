@@ -9,23 +9,30 @@ export default function QuizQuestionCard({
   handlePrev,
   handleNext,
   handleSubmit,
+  isBn,
 }) {
+  const questionText = isBn ? currentQ.questionBn || currentQ.question : currentQ.question;
+
   return (
     <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-8 shadow-2xs">
       {/* Question Counter Progress */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6 text-xs font-bold text-slate-600">
         <span className="text-primary font-black uppercase tracking-wider">
-          Question {currentQuestionIdx + 1} of {totalQuestions}
+          {isBn
+            ? `প্রশ্ন ${currentQuestionIdx + 1} / ${totalQuestions}`
+            : `Question ${currentQuestionIdx + 1} of ${totalQuestions}`}
         </span>
         <span>
-          {Object.keys(selectedAnswers).length} answered
+          {isBn
+            ? `${Object.keys(selectedAnswers).length}টির উত্তর দেওয়া হয়েছে`
+            : `${Object.keys(selectedAnswers).length} answered`}
         </span>
       </div>
 
       {/* Question Text */}
       <div className="mb-6">
         <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-          {currentQ.question}
+          {questionText}
         </h2>
       </div>
 
@@ -33,6 +40,8 @@ export default function QuizQuestionCard({
       <div className="space-y-3 mb-8">
         {currentQ.options.map((opt, optIdx) => {
           const isSelected = selectedAnswers[currentQuestionIdx] === optIdx;
+          const optText = isBn ? opt.textBn || opt.text : opt.text;
+
           return (
             <button
               key={optIdx}
@@ -52,7 +61,7 @@ export default function QuizQuestionCard({
               >
                 {String.fromCharCode(65 + optIdx)}
               </span>
-              <span className="leading-relaxed">{opt.text}</span>
+              <span className="leading-relaxed">{optText}</span>
             </button>
           );
         })}
@@ -66,7 +75,7 @@ export default function QuizQuestionCard({
           className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 sm:px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
-          <span>Previous</span>
+          <span>{isBn ? "পূর্ববর্তী" : "Previous"}</span>
         </button>
 
         {currentQuestionIdx === totalQuestions - 1 ? (
@@ -75,14 +84,14 @@ export default function QuizQuestionCard({
             className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 sm:px-6 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shadow-xs"
           >
             <Award className="h-4 w-4" />
-            <span>Submit Quiz</span>
+            <span>{isBn ? "কুইজ জমা দিন" : "Submit Quiz"}</span>
           </button>
         ) : (
           <button
             onClick={handleNext}
             className="flex items-center gap-1 rounded-lg bg-primary px-3.5 sm:px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs"
           >
-            <span>Next</span>
+            <span>{isBn ? "পরবর্তী" : "Next"}</span>
             <ChevronRight className="h-4 w-4" />
           </button>
         )}

@@ -7,10 +7,10 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
 import Sidebar from "./_components/Sidebar";
 
 import { FaBars } from "react-icons/fa";
+import { P } from "@/components/ui/Typography";
 
 function DashboardContent({ children }) {
   const router = useRouter();
@@ -31,18 +31,17 @@ function DashboardContent({ children }) {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-amber-500 border-t-transparent" />
-
-          <p className="mt-4 text-gray-400">Loading...</p>
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <P className="mt-4 text-xs font-semibold text-slate-500">Loading workspace...</P>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       {/* Sidebar */}
       <Sidebar
         isMobileOpen={isMobileMenuOpen}
@@ -52,18 +51,18 @@ function DashboardContent({ children }) {
       {/* Main Content */}
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* Mobile Header */}
-        <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 dark:border-gray-700 dark:bg-gray-800 md:hidden">
+        <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 md:hidden">
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="rounded-lg p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="rounded-lg p-2 hover:bg-slate-100"
             aria-label="Open dashboard menu"
           >
-            <FaBars className="h-5 w-5 text-gray-600 dark:text-gray-400" />
+            <FaBars className="h-5 w-5 text-slate-600" />
           </button>
 
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-amber-500">Logo</span>
+          <Link href="/admin" className="flex items-center gap-2">
+            <span className="text-2xl font-black text-primary">AEL</span>
           </Link>
 
           {/* Spacer for alignment */}
@@ -78,9 +77,5 @@ function DashboardContent({ children }) {
 }
 
 export default function DashboardLayout({ children }) {
-  return (
-    <ReduxProvider>
-      <DashboardContent>{children}</DashboardContent>
-    </ReduxProvider>
-  );
+  return <DashboardContent>{children}</DashboardContent>;
 }
