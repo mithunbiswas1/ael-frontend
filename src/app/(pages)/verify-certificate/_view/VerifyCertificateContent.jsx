@@ -10,7 +10,7 @@ import { verifyCertificateOnline } from "@/next-api/getCertificates";
 
 export default function VerifyCertificateContent({ bannerData }) {
   const searchParams = useSearchParams();
-  const urlCertId = searchParams.get("certId") || "";
+  const urlCertId = searchParams.get("certId") || searchParams.get("id") || "";
 
   const [inputCertId, setInputCertId] = useState(urlCertId || "CERT-LPG-1-2024");
   const [result, setResult] = useState(null);

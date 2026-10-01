@@ -2,17 +2,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
-import { FaUserShield, FaSave } from "react-icons/fa";
+import { FaUserShield, FaSave, FaKey } from "react-icons/fa";
 
 const ROLE_OPTIONS = [
-  { value: "customer", label: "Customer / Learner" },
-  { value: "author", label: "Author / Instructor" },
-  { value: "admin", label: "Administrator" },
-  { value: "super_admin", label: "Super Administrator" },
+  { value: "super_admin", label: "Super Admin" },
+  { value: "admin", label: "Admin" },
+  { value: "course_admin", label: "Course Admin" },
+  { value: "editor", label: "Editor" },
+  { value: "moderator", label: "Moderator" },
+  { value: "author", label: "Author / Contributor" },
+  { value: "subscriber", label: "Subscriber" },
+  { value: "general_user", label: "General User" },
+  { value: "customer", label: "Customer" },
 ];
 
 export default function UserEditModal({
@@ -104,14 +110,12 @@ export default function UserEditModal({
           <button
             type="button"
             onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer ${
-              formData.is_active ? "bg-emerald-600" : "bg-slate-300"
-            }`}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer ${formData.is_active ? "bg-emerald-600" : "bg-slate-300"
+              }`}
           >
             <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                formData.is_active ? "translate-x-6" : "translate-x-1"
-              }`}
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.is_active ? "translate-x-6" : "translate-x-1"
+                }`}
             />
           </button>
         </div>

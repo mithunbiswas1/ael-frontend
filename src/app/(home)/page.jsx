@@ -12,6 +12,7 @@ import { getLocale, getDict } from "@/lib/i18n";
 import { getBlogs } from "@/next-api/getBlogs";
 import { getCourses } from "@/next-api/getCourses";
 import { getHomeBanner } from "@/next-api/getHomeBanner";
+import { getMarketUpdates } from "@/next-api/getMarketUpdates";
 
 export async function generateMetadata() {
   const locale = await getLocale();
@@ -30,13 +31,15 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [locale, dict, liveBlogs, liveCourses, homeBanner] = await Promise.all([
-    getLocale(),
-    getDict(),
-    getBlogs({ limit: 3 }),
-    getCourses(),
-    getHomeBanner(),
-  ]);
+  const [locale, dict, liveBlogs, liveCourses, homeBanner, liveMarketUpdates] =
+    await Promise.all([
+      getLocale(),
+      getDict(),
+      getBlogs({ limit: 3 }),
+      getCourses(),
+      getHomeBanner(),
+      getMarketUpdates({ limit: 4 }),
+    ]);
   const homeDict = dict?.home || {};
   const featuredCourse = liveCourses && liveCourses.length > 0 ? liveCourses[0] : null;
 
@@ -54,6 +57,7 @@ export default async function HomePage() {
             <div className="flex flex-col lg:col-span-8">
               <MarketUpdatesSection
                 dict={homeDict.marketUpdates}
+                liveUpdates={liveMarketUpdates}
                 locale={locale}
               />
               <LatestBlogsSection

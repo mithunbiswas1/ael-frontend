@@ -50,11 +50,8 @@ export default function AdminDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-tertiary via-primary to-tertiary rounded-2xl p-6 sm:p-8 text-white shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-gradient-to-r from-tertiary via-primary to-tertiary rounded-2xl p-6 sm:p-8 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold text-white/90 backdrop-blur-md mb-2">
-            <FaShieldAlt className="text-amber-400" /> Enterprise RBAC Portal
-          </span>
           <H1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
             Welcome, {user?.fullName || "Administrator"}
           </H1>
@@ -72,7 +69,7 @@ export default function AdminDashboardPage() {
             <Link
               key={card.title}
               href={card.href}
-              className="flex items-start gap-4 p-5 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:border-primary hover:shadow-md transition group"
+              className="flex items-start gap-4 p-5 rounded-xl bg-white border border-slate-200/90 hover:border-primary transition group"
             >
               <div className={`p-3.5 rounded-xl border ${card.color}`}>
                 <Icon className="h-6 w-6" />

@@ -1,225 +1,123 @@
 // src/app/(pages)/market-updates/[slug]/page.jsx
-import IncidentDetailHero from "./_components/IncidentDetailHero";
-import IncidentDetailCard from "./_components/IncidentDetailCard";
 
-const INCIDENTS_DATA = [
-  {
-    id: "INC-2024-125",
-    slug: "INC-2024-125",
-    category: "incident",
-    type: "Leakage",
-    location: "Chattogram",
-    specificLocation: "Patenga Depot Area, Chattogram",
-    date: "May 20, 2024",
-    status: "Resolved",
-    severity: "Medium",
-    conductedBy: "DoE (Department of Explosives)",
-    details:
-      "A localized minor valve leak was reported during manifold pressure transfer at a primary refilling bay. Prompt emergency shutoff protocols were initiated within 3 minutes. Zero casualties, area safely purged.",
-    casualties: "0 Casualties, 0 Hospitalized",
-    investigationReport: "INQ-2024-77",
-    preventiveAction:
-      "Quarterly valve stem torque testing interval reduced from 90 days to 45 days. Secondary relief line check valves installed.",
-  },
-  {
-    id: "INC-2024-124",
-    slug: "INC-2024-124",
-    category: "incident",
-    type: "Fire",
-    location: "Dhaka",
-    specificLocation: "Rampura Road Retail Point, Dhaka",
-    date: "May 19, 2024",
-    status: "Resolved",
-    severity: "High",
-    conductedBy: "Civil Defense & Fire Service",
-    details:
-      "Electrical short circuit adjacent to unauthorized retail storage caused minor flare up. Civil Defense arrived on scene within 8 minutes and extinguished the flare using dry chemical powder (DCP). Two minor burn injuries treated at hospital.",
-    casualties: "2 Minor Injuries (Treated & Discharged)",
-    investigationReport: "INQ-2024-76",
-    preventiveAction:
-      "Strict separation clearance enforced between electrical junction boxes and retail cylinder storage stacks (minimum 3 meters).",
-  },
-  {
-    id: "INC-2024-123",
-    slug: "INC-2024-123",
-    category: "incident",
-    type: "Explosion",
-    location: "Narayanganj",
-    specificLocation: "Fatullah Industrial Substation, Narayanganj",
-    date: "May 18, 2024",
-    status: "Under Investigation",
-    severity: "Critical",
-    conductedBy: "LOAB & DoE Joint Technical Probe",
-    details:
-      "Substandard imported cylinder burst under unauthorized over-pressurization. Joint probe team comprising DoE and LOAB Technical Committee is inspecting site metallurgical fragments. Preliminary report expected within 7 working days.",
-    casualties: "1 Injured (Stable in Hospital), Substantial Property Damage",
-    investigationReport: "INQ-2024-75",
-    preventiveAction:
-      "Immediate nationwide advisory issued regarding illicit cylinder batches. Hydro-testing certifications mandated before supply clearance.",
-  },
-];
+import { notFound } from "next/navigation";
+import { getMarketUpdateDetail } from "@/next-api/getMarketUpdateDetail";
+import { getMarketUpdates } from "@/next-api/getMarketUpdates";
+import MarketUpdateDetailContent from "./_view/MarketUpdateDetailContent";
+import { getLocale } from "@/lib/i18n";
 
-const BERC_DATA = [
-  {
-    id: "BERC-2024-06",
-    slug: "BERC-2024-06",
-    category: "berc",
-    title: "Monthly LPG Price Revision Circular",
-    type: "Price Circular",
-    location: "Bangladesh (Nationwide)",
-    specificLocation: "All Registered LPG Marketing Companies",
-    date: "May 28, 2024",
-    status: "Published",
-    conductedBy: "BERC (Bangladesh Energy Regulatory Commission)",
-    details:
-      "BERC has revised the standard 12kg cylinder LPG price effective from 1st June 2024. Please check the official circular for itemized pricing and regional auto-gas quotas.",
-    casualties: "BDT 1,363 per 12kg cylinder, inclusive of VAT",
-    investigationReport: "BERC/CIRC/2024/06",
-    preventiveAction:
-      "Marketing companies must update retail price displays within 3 working days of circular issuance.",
-  },
-  {
-    id: "BERC-2024-05",
-    slug: "BERC-2024-05",
-    category: "berc",
-    title: "Auto Gas Retail Margin Adjustment Notice",
-    type: "Regulatory Notice",
-    location: "Bangladesh (Nationwide)",
-    specificLocation: "All Auto Gas Conversion Stations",
-    date: "May 10, 2024",
-    status: "Published",
-    conductedBy: "BERC (Bangladesh Energy Regulatory Commission)",
-    details:
-      "Retail margin for auto gas conversion stations adjusted nationwide to align with revised distribution cost model.",
-    casualties: "Revised margin: BDT 2.10/litre",
-    investigationReport: "BERC/CIRC/2024/05",
-    preventiveAction: "Stations must file updated margin compliance within 15 days.",
-  },
-  {
-    id: "BERC-2024-04",
-    slug: "BERC-2024-04",
-    category: "berc",
-    title: "Public Hearing on LPG Tariff Structure",
-    type: "Public Hearing",
-    location: "Dhaka",
-    specificLocation: "BERC Head Office, Dhaka",
-    date: "Apr 22, 2024",
-    status: "Published",
-    conductedBy: "BERC (Bangladesh Energy Regulatory Commission)",
-    details:
-      "BERC invites stakeholder submissions ahead of the scheduled public hearing on the proposed LPG tariff restructuring.",
-    casualties: "Submission deadline: May 15, 2024",
-    investigationReport: "BERC/CIRC/2024/04",
-    preventiveAction: "Interested parties must register with BERC secretariat before the hearing date.",
-  },
-];
-
-const GLOBAL_DATA = [
-  {
-    id: "GLOBAL-2024-01",
-    slug: "GLOBAL-2024-01",
-    category: "global",
-    title: "Global LPG Prices See Moderate Rise in May 2024",
-    type: "Contract Price (CP)",
-    location: "Saudi Arabia",
-    specificLocation: "Saudi Aramco CP Reference Market",
-    date: "2 days ago",
-    status: "Published",
-    conductedBy: "Saudi Aramco CP",
-    details:
-      "May CP contract prices settled at $580/MT for Propane and $565/MT for Butane.",
-    casualties: "Propane $580/MT, Butane $565/MT",
-    investigationReport: "CP-2024-05",
-    preventiveAction: "Importers advised to hedge forward positions against continued freight volatility.",
-  },
-  {
-    id: "GLOBAL-2024-02",
-    slug: "GLOBAL-2024-02",
-    category: "global",
-    title: "Asia LPG Demand to Grow by 12% in 2024",
-    type: "Market Outlook",
-    location: "Asia Pacific",
-    specificLocation: "Regional Import Terminals",
-    date: "4 days ago",
-    status: "Published",
-    conductedBy: "Argus Media",
-    details:
-      "Expanding petrochemical demand and household clean fuel transition drive robust import growth.",
-    casualties: "Forecast growth: +12% YoY",
-    investigationReport: "ARG-2024-02",
-    preventiveAction: "Terminal operators advised to review berthing capacity for peak season.",
-  },
-  {
-    id: "GLOBAL-2024-03",
-    slug: "GLOBAL-2024-03",
-    category: "global",
-    title: "US Propane Inventories Decline Unexpectedly",
-    type: "Supply Report",
-    location: "United States",
-    specificLocation: "US Gulf Coast",
-    date: "1 week ago",
-    status: "Published",
-    conductedBy: "EIA Energy",
-    details:
-      "Heavier seasonal export volumes to Southeast Asia tightened Gulf Coast prompt balances.",
-    casualties: "Inventory draw exceeded forecast",
-    investigationReport: "EIA-2024-03",
-    preventiveAction: "Buyers advised to monitor Gulf Coast loading schedules closely.",
-  },
-  {
-    id: "GLOBAL-2024-04",
-    slug: "GLOBAL-2024-04",
-    category: "global",
-    title: "Middle East LPG Exports Boost in Q2",
-    type: "Trade Report",
-    location: "Middle East",
-    specificLocation: "UAE and Qatar Export Terminals",
-    date: "2 weeks ago",
-    status: "Published",
-    conductedBy: "Platts S&P",
-    details:
-      "Expanded terminal loading capacities in UAE and Qatar support elevated regional maritime shipments.",
-    casualties: "Export capacity up across Q2",
-    investigationReport: "PLT-2024-04",
-    preventiveAction: "Freight desks advised to reassess vessel availability for Q3 bookings.",
-  },
-];
-
-const ALL_ENTRIES = [...INCIDENTS_DATA, ...BERC_DATA, ...GLOBAL_DATA];
-
-export function generateStaticParams() {
-  return ALL_ENTRIES.map((item) => ({
+export async function generateStaticParams() {
+  const updates = await getMarketUpdates({ limit: 100 });
+  return (updates || []).map((item) => ({
     slug: item.slug,
   }));
 }
 
-export default async function IncidentDetailPage({ params }) {
+function cleanHtml(raw = "") {
+  if (!raw) return "";
+  return raw
+    .replace(/<[^>]*>?/gm, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export async function generateMetadata({ params }) {
+  const [resolvedParams, locale] = await Promise.all([params, getLocale()]);
+  const slug = resolvedParams.slug;
+  const data = await getMarketUpdateDetail(slug);
+  const article = data?.article;
+
+  if (!article) {
+    return {
+      title: "Market Update Not Found | Safe LPG Platform",
+      description: "The requested LPG regulatory circular or incident report could not be found.",
+    };
+  }
+
+  const isBn = locale === "bn";
+
+  const rawTitle = isBn
+    ? article.metaTitleBn || article.titleBn || article.metaTitle || article.titleEn
+    : article.metaTitle || article.titleEn;
+
+  const siteSuffix = isBn ? "মার্কেট আপডেট | সেইফ এলপিজি" : "Market Updates | Safe LPG Bangladesh";
+  const finalTitle = rawTitle?.includes("Safe LPG") ? rawTitle : `${rawTitle} | ${siteSuffix}`;
+
+  const rawDescription = isBn
+    ? article.metaDescriptionBn || article.summaryBn || article.metaDescription || article.summaryEn
+    : article.metaDescription || article.summaryEn;
+
+  const cleanDescription = cleanHtml(rawDescription).slice(0, 160);
+
+  const keywords = article.metaKeywords
+    ? article.metaKeywords
+    : Array.isArray(article.tags)
+    ? article.tags.join(", ")
+    : "lpg, market update, berc, cylinder safety, circular, gazette, bangladesh";
+
+  return {
+    title: finalTitle,
+    description: cleanDescription,
+    keywords,
+    openGraph: {
+      title: finalTitle,
+      description: cleanDescription,
+      url: `/market-updates/${slug}`,
+      siteName: "Safe LPG Bangladesh",
+      images: [
+        {
+          url: article.image || "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=1200",
+          width: 1200,
+          height: 630,
+          alt: finalTitle,
+        },
+      ],
+    },
+  };
+}
+
+export default async function MarketUpdateDetailPage({ params }) {
   const resolvedParams = await params;
   const slug = resolvedParams.slug;
-  const incident = ALL_ENTRIES.find(
-    (item) => item.slug.toLowerCase() === slug.toLowerCase()
-  ) || {
-    id: slug,
-    slug: slug,
-    category: "incident",
-    type: "Incident Report",
-    location: "Bangladesh",
-    specificLocation: "Regional Depot / Customer Point",
-    date: "May 2024",
-    status: "Official Record",
-    severity: "Standard",
-    conductedBy: "Regulatory Authorities",
-    details:
-      "Detailed regulatory log and forensic docket registered under National LPG Safety Registry. Verified by inspection teams.",
-    casualties: "Reported to Department of Explosives",
-    investigationReport: `INQ-${slug}`,
-    preventiveAction: "Complies with standard national safety procedures.",
-  };
+
+  const data = await getMarketUpdateDetail(slug);
+
+  if (!data?.article) {
+    // Check fallback items
+    if (slug === "chattogram-port-lpg-terminal-safety-probe-analysis") {
+      const fallbackArticle = {
+        _id: "fb-1",
+        slug,
+        titleEn: "Chattogram Port LPG Terminal Safety Probe & Incident Analysis Report",
+        titleBn: "চট্টগ্রাম বন্দর এলপিজি টার্মিনাল নিরাপত্তা তদন্ত ও দুর্ঘটনা বিশ্লেষণ প্রতিবেদন",
+        category: "incidents",
+        categoryBn: "দুর্ঘটনা ও তদন্ত প্রতিবেদন",
+        summaryEn:
+          "Comprehensive investigation into the static discharge leak and rapid valve response at Chattogram coastal terminal.",
+        summaryBn:
+          "চট্টগ্রাম উপকূলীয় টার্মিনালে স্ট্যাটিক ডিসচার্জ লিক ও জরুরি ভাল্ব নিয়ন্ত্রণ ব্যবস্থার কারিগরি তদন্ত প্রতিবেদন।",
+        contentEn: `<h3>Executive Summary</h3><p>On May 14, 2024, a localized flange pressure variance triggered automatic safety shutoff valves at the Chattogram outer anchorage unloading terminal. The Department of Explosives (DoE) joint probe committee deployed high-precision telemetry to determine the root cause.</p><h4>Key Findings</h4><ul><li>Automated shut-off activated within 1.8 seconds.</li><li>Zero vapor escape into coastal perimeter zones.</li><li>Ultrasonic flange testing mandated for all vessel offloading couplings.</li></ul>`,
+        contentBn: `<h3>সারসংক্ষেপ</h3><p>গত ১৪ মে ২০২৪ তারিখে চট্টগ্রাম বহির্নোঙর টার্মিনালে আনলোডিং চলাকালীন পাইপলাইন ফ্ল্যাঞ্জে প্রেশার বৈষম্য পরিলক্ষিত হলে স্বয়ংক্রিয় সেফটি ভাল্ব দ্রুত সক্রিয় হয়। বিস্ফোরক পরিদপ্তর (DoE) ও এনার্জি রেগুলেটরি কমিটির যৌথ তদন্ত দল সার্বিক কারিগরি পরীক্ষা সম্পন্ন করেছে।</p>`,
+        image: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop",
+        pdfUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+        pdfOriginalName: "DoE-Chattogram-Terminal-Probe-Report-2024.pdf",
+        pdfSize: 2450000,
+        authorEn: "Engr. Mahmudul Hasan (DoE Lead Auditor)",
+        authorBn: "প্রকৌশলী মাহমুদুল হাসান (বিস্ফোরক পরিদপ্তর)",
+        publishDate: new Date("2024-05-20"),
+        views: 1420,
+        tags: ["incidents", "safety-probe", "chattogram", "doe-circular"],
+      };
+      return <MarketUpdateDetailContent article={fallbackArticle} related={[]} />;
+    }
+
+    notFound();
+  }
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <IncidentDetailHero incident={incident} />
-      <IncidentDetailCard incident={incident} />
-    </main>
+    <MarketUpdateDetailContent
+      article={data.article}
+      related={data.related || []}
+    />
   );
 }

@@ -54,7 +54,7 @@ export function AdminPageHeader({
             variant={actionVariant}
             size="default"
             disabled={actionDisabled}
-            className="shadow-sm gap-2"
+            className="gap-2"
           >
             {ActionIcon && <ActionIcon className="h-3.5 w-3.5" />}
             <span>{actionLabel}</span>

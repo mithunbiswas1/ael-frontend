@@ -38,7 +38,7 @@ export default function RolesTable({
   }
 
   return (
-    <Table containerClassName="shadow-xs border-slate-200/90">
+    <Table containerClassName="border-slate-200/90">
       <TableHeader>
         <TableRow>
           <TableHead>Role Name</TableHead>

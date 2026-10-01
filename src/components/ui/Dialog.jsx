@@ -31,7 +31,6 @@ export const Dialog = forwardRef(function Dialog(
     closeOnEscape = true,
     showCloseButton = true,
     title,
-    description,
     headerRight,
   },
   ref
@@ -117,9 +116,6 @@ export const Dialog = forwardRef(function Dialog(
                 <H4 className="text-base sm:text-lg font-bold text-slate-900">
                   {title}
                 </H4>
-              )}
-              {description && (
-                <P className="text-xs text-slate-500 mt-0.5">{description}</P>
               )}
             </div>
 

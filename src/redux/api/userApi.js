@@ -50,6 +50,12 @@ export const userApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Users", "Profile"],
     }),
 
+    // Admin: Get single user by ID with full details & permissions
+    getUserByIdAdmin: builder.query({
+      query: (userId) => `user/admin-user/${userId}`,
+      providesTags: (result, error, userId) => [{ type: "Users", id: userId }],
+    }),
+
     // Admin: Delete user
     deleteUserByAdmin: builder.mutation({
       query: (userId) => ({
@@ -66,6 +72,7 @@ export const {
   useUpdateProfileMutation,
   useUpdatePasswordMutation,
   useGetUsersQuery,
+  useGetUserByIdAdminQuery,
   useUpdateUserByAdminMutation,
   useDeleteUserByAdminMutation,
 } = userApi;

@@ -11,6 +11,7 @@ export default function CheckoutSuccessState({
   phone,
   grandTotal,
   paymentMethod,
+  transactionId,
 }) {
   const { locale } = useDictionary();
   const isBn = locale === "bn";
@@ -27,8 +28,8 @@ export default function CheckoutSuccessState({
         {isBn ? "ধন্যবাদ, " : "Thank you, "}
         <strong>{fullName}</strong>
         {isBn
-          ? `। আপনার ${selectedPlan.name} সাবস্ক্রিপশন সক্রিয় করা হয়েছে। ইনভয়েস এবং অ্যাক্টিভেশন পিন `
-          : `. Your subscription to ${selectedPlan.name} is now officially active. An invoice and activation PIN have been sent to `}
+          ? `। আপনার ${selectedPlan?.name || "সার্টিফিকেশন"} সাবস্ক্রিপশন সক্রিয় করা হয়েছে। ইনভয়েস এবং অ্যাক্টিভেশন পিন `
+          : `. Your subscription to ${selectedPlan?.name || "Certification"} is now officially active. An invoice and activation PIN have been sent to `}
         <strong>{phone}</strong>
         {isBn ? " নম্বরে পাঠানো হয়েছে।" : "."}
       </p>
@@ -36,7 +37,9 @@ export default function CheckoutSuccessState({
       <div className="my-6 rounded-lg border border-slate-100 bg-slate-50 p-4 text-left text-xs space-y-1.5">
         <div className="flex justify-between">
           <span className="text-slate-500">{isBn ? "ট্রানজ্যাকশন আইডি:" : "Transaction ID:"}</span>
-          <span className="font-mono font-bold text-slate-900">TXN-SAFE-849204</span>
+          <span className="font-mono font-bold text-slate-900">
+            {transactionId || "TXN-SSL-172750-101"}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-slate-500">{isBn ? "পরিশোধিত অর্থ:" : "Amount Paid:"}</span>

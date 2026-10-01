@@ -1,9 +1,10 @@
 // src/app/(dashboard)/admin/courses/_components/CourseFormModal.jsx
 "use client";
 
+import Image from "next/image";
 import { useState, useRef } from "react";
 import { toast } from "sonner";
-import { FaVideo, FaUpload, FaCheckCircle, FaPlay } from "react-icons/fa";
+import { FaVideo, FaUpload, FaCheckCircle, FaPlay, FaTrash } from "react-icons/fa";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -11,6 +12,8 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { P } from "@/components/ui/Typography";
 import { useUploadCourseVideoMutation } from "@/redux/api/courseApi";
+import { useUploadPageImageMutation } from "@/redux/api/pageApi";
+import DragDropUploadZone from "@/app/(dashboard)/_components/DragDropUploadZone";
 
 const CATEGORY_OPTIONS = [
   { value: "Consumer Safety", label: "Consumer Safety (ভোক্তা নিরাপত্তা)" },
@@ -37,6 +40,33 @@ export default function CourseFormModal({
   const fileInputRef = useRef(null);
   const [uploadVideo, { isLoading: isUploadingVideo }] =
     useUploadCourseVideoMutation();
+  const [uploadImage, { isLoading: isUploadingImage }] =
+    useUploadPageImageMutation();
+
+  const handleImageUpload = async (files) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please drop a valid image file (PNG, JPG, JPEG, WEBP).");
+      return;
+    }
+    const uploadData = new FormData();
+    uploadData.append("images", file);
+    try {
+      const response = await uploadImage(uploadData).unwrap();
+      const uploadedItem = Array.isArray(response?.data)
+        ? response.data[0]
+        : response?.data;
+      const uploadedImage =
+        uploadedItem?.image || uploadedItem?.url || (typeof uploadedItem === "string" ? uploadedItem : null);
+      if (uploadedImage) {
+        setFormData((prev) => ({ ...prev, imageUrl: uploadedImage }));
+        toast.success("Course banner image uploaded successfully!");
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to upload course image.");
+    }
+  };
 
   const handleVideoFileChange = async (e) => {
     const file = e.target.files?.[0];
@@ -251,14 +281,57 @@ export default function CourseFormModal({
               />
             </div>
 
-            <Input
-              label="Banner Image URL"
-              placeholder="https://images.unsplash.com/..."
-              value={formData.imageUrl}
-              onChange={(e) =>
-                setFormData({ ...formData, imageUrl: e.target.value })
-              }
-            />
+            {/* Drag & Drop Course Banner Image */}
+            <div className="space-y-3">
+              <label className="block text-xs font-bold text-slate-700">
+                Course Banner Image (Drag & Drop) / কোর্স ব্যানার *
+              </label>
+
+              {formData.imageUrl ? (
+                <div className="flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                  <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-white">
+                    <Image
+                      src={formData.imageUrl}
+                      alt="Course Banner Preview"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-bold text-slate-800 truncate">
+                      {formData.imageUrl.split("/").pop() || "Uploaded Course Banner"}
+                    </p>
+                    <p className="text-[11px] text-emerald-600 font-medium mt-0.5">
+                      ✓ Image ready for LMS catalog
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="xs"
+                    onClick={() => setFormData({ ...formData, imageUrl: "" })}
+                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                    title="Remove banner"
+                  >
+                    <FaTrash className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              ) : null}
+
+              <DragDropUploadZone
+                onFilesSelected={handleImageUpload}
+                isUploading={isUploadingImage}
+                multiple={false}
+                title={
+                  <>
+                    Drag & drop course banner here, or <span className="text-primary underline">browse</span>
+                  </>
+                }
+                subtitle="Upload LMS course thumbnail (PNG, JPG, JPEG, WEBP). Recommended: 1280x720 (16:9)."
+                uploadingText="Uploading course banner..."
+              />
+            </div>
 
             <label className="flex items-center gap-2 cursor-pointer pt-1">
               <input
@@ -350,7 +423,7 @@ export default function CourseFormModal({
 
               {/* Right Column: Live Video Player Preview */}
               <div className="md:col-span-5">
-                <div className="rounded-xl border border-slate-200 overflow-hidden bg-slate-900 shadow-sm">
+                <div className="rounded-xl border border-slate-200 overflow-hidden bg-slate-900">
                   <div className="px-3 py-1.5 bg-slate-950 text-[11px] font-bold text-slate-300 flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
                       <FaPlay className="h-2.5 w-2.5 text-primary" />

@@ -104,7 +104,7 @@ export default function WhoWeAreEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("en")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "en"
-                    ? "bg-primary text-white shadow-xs"
+                    ?"bg-primary text-white"
                     : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -115,7 +115,7 @@ export default function WhoWeAreEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("bn")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "bn"
-                    ? "bg-primary text-white shadow-xs"
+                    ?"bg-primary text-white"
                     : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -126,7 +126,7 @@ export default function WhoWeAreEditorTab({
         </div>
 
         {/* Live Storefront Component Preview Container */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 sm:p-10 shadow-xs">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 sm:p-10">
           {!hasContent ? (
             <div className="py-12 text-center text-slate-400">
               <p className="text-sm font-medium">No Who We Are content configured yet.</p>
@@ -168,9 +168,9 @@ export default function WhoWeAreEditorTab({
                   return (
                     <div
                       key={idx}
-                      className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 shadow-xs transition-colors duration-200"
+                      className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-5 transition-colors duration-200"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20 shadow-xs">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary border border-primary/20">
                         <Icon className="h-5 w-5" strokeWidth={2.2} />
                       </div>
                       {title && (
@@ -195,7 +195,7 @@ export default function WhoWeAreEditorTab({
       {/* 2. Form Configuration */}
       <div className="space-y-6">
         {/* Step 1: Section Header & Lead Narrative */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
               1
@@ -286,7 +286,7 @@ export default function WhoWeAreEditorTab({
         </div>
 
         {/* Step 2: Feature Cards */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">

@@ -122,7 +122,7 @@ export default function AdminCoursesPage() {
               href="/admin/courses"
               variant="primary"
               size="sm"
-              className="gap-2 shadow-xs shrink-0"
+              className="gap-2 shrink-0"
             >
               <span>Open Course Manager</span>
               <FaExternalLinkAlt className="h-3 w-3" />

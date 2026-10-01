@@ -289,7 +289,7 @@ export default function ProfilePage() {
                   variant="primary"
                   size="default"
                   onClick={() => setIsEditing(true)}
-                  className="gap-2 shadow-xs"
+                  className="gap-2"
                 >
                   <FaEdit className="h-3.5 w-3.5" />
                   <span>{isBn ? "সম্পাদনা করুন" : "Edit Profile"}</span>
@@ -300,7 +300,7 @@ export default function ProfilePage() {
                   variant="outline"
                   size="default"
                   onClick={() => setIsPasswordModalOpen(true)}
-                  className="gap-2 shadow-2xs"
+                  className="gap-2"
                 >
                   <FaKey className="h-3.5 w-3.5 text-slate-500" />
                   <span>{isBn ? "পাসওয়ার্ড পরিবর্তন" : "Change Password"}</span>
@@ -344,7 +344,7 @@ export default function ProfilePage() {
                   variant="primary"
                   size="default"
                   disabled={isUpdatingProfile}
-                  className="gap-2 shadow-xs"
+                  className="gap-2"
                 >
                   <FaSave className="h-3.5 w-3.5" />
                   <span>
@@ -364,7 +364,7 @@ export default function ProfilePage() {
       />
 
       {/* Main Profile Card */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white">
         {/* Banner with Brand Gradient */}
         <div className="relative h-36 bg-gradient-to-r from-tertiary via-primary to-tertiary p-6 text-white">
           <div className="absolute top-4 right-4 flex items-center gap-2">
@@ -381,7 +381,7 @@ export default function ProfilePage() {
             <div className="flex items-end gap-4">
               {/* Avatar Container */}
               <div className="relative group">
-                <div className="relative h-24 w-24 sm:h-28 sm:w-28 overflow-hidden rounded-2xl border-4 border-white bg-slate-100 shadow-md">
+                <div className="relative h-24 w-24 sm:h-28 sm:w-28 overflow-hidden rounded-2xl border-4 border-white bg-slate-100">
                   {getAvatarSrc() ? (
                     <Image
                       src={getAvatarSrc()}
@@ -402,7 +402,7 @@ export default function ProfilePage() {
                 {isEditing && (
                   <label
                     htmlFor="avatarInput"
-                    className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-md hover:bg-primary/90 transition-all cursor-pointer border-2 border-white"
+                    className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white hover:bg-primary/90 transition-all cursor-pointer border-2 border-white"
                     title={isBn ? "ছবি পরিবর্তন করুন" : "Upload Photo"}
                   >
                     <FaCamera className="h-3.5 w-3.5" />
@@ -700,7 +700,7 @@ export default function ProfilePage() {
       {/* Password Change Modal */}
       {isPasswordModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
               <div>
                 <H3 className="text-base font-black text-slate-900">
@@ -739,7 +739,7 @@ export default function ProfilePage() {
                     }
                     required
                     placeholder="••••••••"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-hidden transition-all"
                   />
                   <button
                     type="button"
@@ -772,7 +772,7 @@ export default function ProfilePage() {
                     }
                     required
                     placeholder="••••••••"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-hidden transition-all"
                   />
                   <button
                     type="button"
@@ -805,7 +805,7 @@ export default function ProfilePage() {
                     }
                     required
                     placeholder="••••••••"
-                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all"
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-hidden transition-all"
                   />
                   <button
                     type="button"
@@ -833,7 +833,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={isUpdatingPassword}
-                  className="flex-1 rounded-lg bg-primary py-2.5 text-xs font-bold text-white shadow-xs hover:bg-primary/90 transition-all disabled:opacity-60 cursor-pointer"
+                  className="flex-1 rounded-lg bg-primary py-2.5 text-xs font-bold text-white hover:bg-primary/90 transition-all disabled:opacity-60 cursor-pointer"
                 >
                   {isUpdatingPassword
                     ? isBn

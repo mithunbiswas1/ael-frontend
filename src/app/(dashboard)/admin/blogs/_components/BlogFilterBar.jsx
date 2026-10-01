@@ -5,20 +5,40 @@ import { FaNewspaper } from "react-icons/fa";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Select } from "@/components/ui/Select";
+import { useGetBlogCategoriesQuery } from "@/redux/api/blogApi";
 
 export default function BlogFilterBar({
   searchTerm,
   onSearchChange,
   selectedCategory,
   onCategoryChange,
-  categories,
+  categories = [],
+  onOpenCreate,
   onOpenCreateModal,
 }) {
+  const handleCreate = onOpenCreate || onOpenCreateModal;
+  const { data: catResponse } = useGetBlogCategoriesQuery();
+  const fetched = catResponse?.data || [];
+
+  const merged = [...(categories || [])];
+  if (Array.isArray(fetched)) {
+    fetched.forEach((fc) => {
+      if (!merged.some((m) => (m.id || m.slug) === fc.slug)) {
+        merged.push({
+          id: fc.slug,
+          slug: fc.slug,
+          labelEn: fc.nameEn,
+          labelBn: fc.nameBn,
+        });
+      }
+    });
+  }
+
   const categoryOptions = [
     { value: "all", label: "All Categories / সকল ক্যাটাগরি" },
-    ...categories.map((c) => ({
-      value: c.id,
-      label: `${c.labelEn} (${c.labelBn})`,
+    ...merged.map((c) => ({
+      value: c.slug || c.id,
+      label: `${c.labelEn || c.nameEn} (${c.labelBn || c.nameBn})`,
     })),
   ];
 
@@ -30,11 +50,11 @@ export default function BlogFilterBar({
         title="Blog & Article Management"
         description="Publish bilingual articles, technical advisories, and industry updates."
         actionLabel="Write New Article"
-        onActionClick={onOpenCreateModal}
+        onActionClick={handleCreate}
       />
 
       {/* Search and Category Filter */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80 shadow-2xs">
+      <div className="flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-xl border border-slate-200/80">
         <div className="w-full sm:w-72">
           <SearchInput
             placeholder="Search by title, author, or keyword..."

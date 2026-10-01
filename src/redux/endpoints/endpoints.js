@@ -48,9 +48,22 @@ export const endpoints = {
   blogs: {
     publicList: "blogs",
     adminList: "blogs/admin/all",
+    categories: "blogs/categories",
+    getById: (id) => `blogs/${id}`,
     create: "blogs",
     update: (id) => `blogs/${id}`,
     delete: (id) => `blogs/${id}`,
+  },
+
+  // Market Updates API (Like Blogs)
+  marketUpdates: {
+    publicList: "market-updates",
+    getBySlug: (slug) => `market-updates/detail/${slug}`,
+    adminList: "market-updates/admin/all",
+    getById: (id) => `market-updates/${id}`,
+    create: "market-updates",
+    update: (id) => `market-updates/${id}`,
+    delete: (id) => `market-updates/${id}`,
   },
 
   // Roles & Permissions API
@@ -72,6 +85,8 @@ export const endpoints = {
     subscriberMyLearning: "courses/subscriber/my-learning",
     subscriberEnroll: "courses/subscriber/enroll",
     uploadVideo: "courses/upload-video",
+    uploadImage: "courses/upload-image",
+    updateProgress: (id) => `courses/${id}/progress`,
   },
 
   // Quizzes API
@@ -103,6 +118,43 @@ export const endpoints = {
     get: "home-banner",
     update: "home-banner",
     uploadSlides: "home-banner/upload-slides",
+  },
+
+  // Archives API
+  archives: {
+    publicList: "archives",
+    detail: (id) => `archives/${id}`,
+    trackDownload: (id) => `archives/${id}/download`,
+    adminList: "archives/admin/all",
+    create: "archives",
+    update: (id) => `archives/${id}`,
+    delete: (id) => `archives/${id}`,
+  },
+
+  // Campaigns (SMS & Email) API
+  campaigns: {
+    list: "campaigns",
+    stats: "campaigns/stats",
+    create: "campaigns",
+    delete: (id) => `campaigns/${id}`,
+  },
+
+  // Subscriptions & Payment Gateway API
+  subscriptions: {
+    plans: "subscriptions/plans",
+    checkout: "subscriptions/checkout",
+    adminList: "subscriptions/admin/all",
+    refund: (id) => `subscriptions/admin/${id}/refund`,
+  },
+
+  // Directory (Large Database) API
+  directory: {
+    list: "directory",
+    stats: "directory/stats",
+    create: "directory",
+    update: (id) => `directory/${id}`,
+    delete: (id) => `directory/${id}`,
+    bulkImport: "directory/bulk-import",
   },
 };
 

@@ -19,24 +19,52 @@ export const blogApi = apiSlice.injectEndpoints({
       providesTags: ["Blogs"],
     }),
 
+    // Get Single Blog (by ID or Slug)
+    getBlogById: builder.query({
+      query: (id) => ({
+        url: endpoints.blogs.getById(id),
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Blogs", id }],
+    }),
+
     // Create Blog
     createBlog: builder.mutation({
-      query: (formData) => ({
+      query: (body) => ({
         url: endpoints.blogs.create,
         method: "POST",
-        body: formData,
+        body,
       }),
       invalidatesTags: ["Blogs"],
     }),
 
     // Update Blog
     updateBlog: builder.mutation({
-      query: ({ id, formData }) => ({
+      query: ({ id, formData, data }) => ({
         url: endpoints.blogs.update(id),
         method: "PATCH",
-        body: formData,
+        body: data || formData,
       }),
       invalidatesTags: ["Blogs"],
+    }),
+
+    // Get Blog Categories List
+    getBlogCategories: builder.query({
+      query: () => ({
+        url: endpoints.blogs.categories,
+        method: "GET",
+      }),
+      providesTags: ["BlogCategories"],
+    }),
+
+    // Create Blog Category
+    createBlogCategory: builder.mutation({
+      query: (body) => ({
+        url: endpoints.blogs.categories,
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["BlogCategories"],
     }),
 
     // Delete Blog
@@ -52,6 +80,9 @@ export const blogApi = apiSlice.injectEndpoints({
 
 export const {
   useGetAdminBlogsQuery,
+  useGetBlogByIdQuery,
+  useGetBlogCategoriesQuery,
+  useCreateBlogCategoryMutation,
   useCreateBlogMutation,
   useUpdateBlogMutation,
   useDeleteBlogMutation,

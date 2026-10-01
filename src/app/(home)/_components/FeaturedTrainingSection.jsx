@@ -8,12 +8,12 @@ export default function FeaturedTrainingSection({ dict = {}, liveCourse = null, 
 
   const isBn = locale === "bn";
   const course = liveCourse;
-  const courseId = course.courseId;
+  const courseSlug = course.slug || course.courseId || course._id;
 
   return (
     <div className="mb-6">
       <div className="mb-4">
-        <span className="mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-primary backdrop-blur-md">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
           {dict?.tag || "E-LEARNING LMS"}
         </span>
         <H3>
@@ -23,6 +23,8 @@ export default function FeaturedTrainingSection({ dict = {}, liveCourse = null, 
       </div>
 
       <CourseCard
+        courseId={course.courseId}
+        slug={courseSlug}
         isBestSeller={true}
         isPaid={course.price > 0}
         imageUrl={course.imageUrl}
@@ -32,7 +34,7 @@ export default function FeaturedTrainingSection({ dict = {}, liveCourse = null, 
         lessonsCount={course.totalLessons}
         level={isBn ? course.levelBn : course.level}
         price={`৳ ${course.price}`}
-        href={`/courses/${courseId}`}
+        href={`/courses/${courseSlug}`}
       />
     </div>
   );

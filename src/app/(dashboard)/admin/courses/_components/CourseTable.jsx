@@ -44,7 +44,7 @@ export default function CourseTable({
   }
 
   return (
-    <Table containerClassName="shadow-xs border-slate-200/90">
+    <Table containerClassName="border-slate-200/90">
       <TableHeader>
         <TableRow>
           <TableHead className="w-16">Banner</TableHead>
@@ -132,7 +132,7 @@ export default function CourseTable({
             <TableCell className="text-right">
               <div className="flex items-center justify-end gap-1.5">
                 <Link
-                  href={`/courses/learn/${course.courseId}`}
+                  href={`/courses/learn/${course.slug || "lpg-cylinder-safety-handling-emergency-response"}`}
                   className="inline-flex items-center justify-center p-2 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors border border-emerald-200"
                   title="View Course Lessons & Classroom"
                   target="_blank"
@@ -141,7 +141,7 @@ export default function CourseTable({
                 </Link>
 
                 <Link
-                  href={`/courses/${course.courseId}`}
+                  href={`/courses/${course.slug || "lpg-cylinder-safety-handling-emergency-response"}`}
                   className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
                   title="View Public Course Details & Outline"
                   target="_blank"
@@ -149,16 +149,13 @@ export default function CourseTable({
                   <FaEye className="h-3 w-3" />
                 </Link>
 
-                <Button
-                  type="button"
-                  onClick={() => onEdit(course)}
-                  variant="secondary"
-                  size="xs"
-                  className="p-2 text-slate-600 hover:text-primary"
-                  title="Edit Course"
+                <Link
+                  href={`/admin/courses/edit/${course._id || course.courseId}`}
+                  className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-primary transition-colors border border-slate-200"
+                  title="Edit Course & Modules"
                 >
                   <FaEdit className="h-3 w-3" />
-                </Button>
+                </Link>
 
                 <Button
                   type="button"

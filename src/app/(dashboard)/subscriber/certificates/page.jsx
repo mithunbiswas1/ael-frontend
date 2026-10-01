@@ -46,11 +46,11 @@ export default function SubscriberCertificatesPage() {
         {MOCK_CERTIFICATES.map((cert) => (
           <div
             key={cert.certificateId}
-            className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm"
+            className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white"
           >
             <div className="flex flex-col lg:flex-row lg:items-center justify-between p-6 gap-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-white shadow-md">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary text-white">
                   <FaAward className="h-7 w-7" />
                 </div>
 
@@ -93,7 +93,7 @@ export default function SubscriberCertificatesPage() {
                   target="_blank"
                   variant="primary"
                   size="default"
-                  className="gap-2 shadow-xs"
+                  className="gap-2"
                 >
                   <FaExternalLinkAlt className="h-3.5 w-3.5" />
                   <span>Verify Online Registry</span>

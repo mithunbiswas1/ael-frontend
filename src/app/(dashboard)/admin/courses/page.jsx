@@ -2,117 +2,50 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   useGetCoursesQuery,
-  useCreateCourseMutation,
-  useUpdateCourseMutation,
   useDeleteCourseMutation,
 } from "@/redux/api/courseApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import CourseFilterBar from "./_components/CourseFilterBar";
 import CourseTable from "./_components/CourseTable";
-import CourseFormModal from "./_components/CourseFormModal";
-
-const INITIAL_FORM = {
-  courseId: "",
-  title: "",
-  titleBn: "",
-  slug: "",
-  description: "",
-  descriptionBn: "",
-  category: "Consumer Safety",
-  categoryBn: "ভোক্তা নিরাপত্তা",
-  badge: "FREE",
-  badgeColor: "bg-amber-500",
-  audience: "Consumers & Homemakers",
-  audienceBn: "ভোক্তা ও গৃহিণী",
-  level: "Beginner",
-  levelBn: "প্রাথমিক",
-  duration: "1h 30m",
-  durationBn: "১ ঘণ্টা ৩০ মিনিট",
-  price: 0,
-  imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop",
-  videoUrl: "/sample-course-video.mp4",
-  isPublished: true,
-};
 
 export default function AdminCoursesPage() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
   const { data: coursesData, isLoading, refetch } = useGetCoursesQuery({
     search: searchTerm,
   });
 
-  const [createCourse, { isLoading: isCreating }] = useCreateCourseMutation();
-  const [updateCourse, { isLoading: isUpdating }] = useUpdateCourseMutation();
   const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCourseId, setEditingCourseId] = useState(null);
-  const [formData, setFormData] = useState(INITIAL_FORM);
 
   const courses = coursesData?.data || [];
 
-  const handleOpenCreateModal = () => {
-    setEditingCourseId(null);
-    setFormData(INITIAL_FORM);
-    setIsModalOpen(true);
+  const handleOpenCreate = () => {
+    router.push("/admin/courses/add");
   };
 
-  const handleOpenEditModal = (course) => {
-    setEditingCourseId(course._id);
-    setFormData({
-      courseId: course.courseId || "",
-      title: course.title || "",
-      titleBn: course.titleBn || "",
-      slug: course.slug || "",
-      description: course.description || "",
-      descriptionBn: course.descriptionBn || "",
-      category: course.category || "Consumer Safety",
-      categoryBn: course.categoryBn || "ভোক্তা নিরাপত্তা",
-      badge: course.badge || "FREE",
-      badgeColor: course.badgeColor || "bg-amber-500",
-      audience: course.audience || "Consumers & Homemakers",
-      audienceBn: course.audienceBn || "ভোক্তা ও গৃহিণী",
-      level: course.level || "Beginner",
-      levelBn: course.levelBn || "প্রাথমিক",
-      duration: course.duration || "1h 30m",
-      durationBn: course.durationBn || "১ ঘণ্টা ৩০ মিনিট",
-      price: course.price || 0,
-      imageUrl: course.imageUrl || "",
-      videoUrl: course.videoUrl || "/sample-course-video.mp4",
-      isPublished: course.isPublished !== undefined ? course.isPublished : true,
-    });
-    setIsModalOpen(true);
+  const handleEdit = (course) => {
+    router.push(`/admin/courses/edit/${course._id || course.courseId}`);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.title || !formData.titleBn) {
-      toast.error("Please provide both English and Bengali course titles");
-      return;
-    }
+  const handleDeleteClick = (id) => {
+    const course = courses.find((c) => (c._id || c.courseId) === id);
+    setDeleteTarget(course || { _id: id, titleEn: "Selected Course" });
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget) return;
+    const targetId = deleteTarget._id || deleteTarget.courseId;
     try {
-      if (editingCourseId) {
-        await updateCourse({ id: editingCourseId, data: formData }).unwrap();
-        toast.success("Course updated successfully!");
-      } else {
-        await createCourse(formData).unwrap();
-        toast.success("New course created successfully!");
-      }
-      setIsModalOpen(false);
-      refetch();
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to save course");
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this course?")) return;
-    try {
-      await deleteCourse(id).unwrap();
+      await deleteCourse(targetId).unwrap();
       toast.success("Course deleted successfully");
+      setDeleteTarget(null);
       refetch();
     } catch (err) {
       toast.error(err?.data?.message || "Failed to delete course");
@@ -125,24 +58,26 @@ export default function AdminCoursesPage() {
         <CourseFilterBar
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
-          onOpenCreateModal={handleOpenCreateModal}
+          onOpenCreateModal={handleOpenCreate}
         />
 
         <CourseTable
           courses={courses}
           isLoading={isLoading}
-          onEdit={handleOpenEditModal}
-          onDelete={handleDelete}
+          onEdit={handleEdit}
+          onDelete={handleDeleteClick}
         />
 
-        <CourseFormModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          formData={formData}
-          setFormData={setFormData}
-          onSubmit={handleSubmit}
-          isSaving={isCreating || isUpdating}
-          isEditing={!!editingCourseId}
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={Boolean(deleteTarget)}
+          onClose={() => setDeleteTarget(null)}
+          onConfirm={handleConfirmDelete}
+          isLoading={isDeleting}
+          title="Delete Course"
+          description="Are you sure you want to delete this course? All associated lessons, modules, and enrollments will be permanently affected."
+          itemTitle={deleteTarget?.titleEn || deleteTarget?.titleBn || deleteTarget?.title || ""}
+          confirmText="Delete Course"
         />
       </div>
     </PermissionGuard>

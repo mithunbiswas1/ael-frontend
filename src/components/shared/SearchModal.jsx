@@ -22,30 +22,12 @@ const SEARCH_DATABASE = [
   // Courses
   {
     id: "c-1",
-    title: "Commercial LPG Cylinder Handling & Storage",
-    description: "Certified safety protocols for commercial kitchen operators and restaurant staff.",
+    title: "Comprehensive LPG Cylinder Safety, Handling & Emergency Response",
+    description: "Certified safety protocols, cylinder inspection, pressure regulator handling, and emergency response.",
     category: "Course",
     categoryColor: "bg-blue-600 text-white",
     icon: BookOpen,
-    href: "/courses/1",
-  },
-  {
-    id: "c-2",
-    title: "Industrial LPG Storage & Bulk Tank Installation",
-    description: "Engineering standards, valve maintenance, and bulk refilling safety.",
-    category: "Course",
-    categoryColor: "bg-blue-600 text-white",
-    icon: BookOpen,
-    href: "/courses/2",
-  },
-  {
-    id: "c-4",
-    title: "Household LPG Safety & Kitchen Hazard Prevention",
-    description: "Essential home safety, soap-water leak testing, and child protection procedures.",
-    category: "Course",
-    categoryColor: "bg-blue-600 text-white",
-    icon: BookOpen,
-    href: "/courses/4",
+    href: "/courses/lpg-cylinder-safety-handling-emergency-response",
   },
 
   // Safety Guidelines

@@ -19,6 +19,7 @@ import AuthModal from "@/components/shared/AuthModal";
 export default function CourseCard({
   courseId = "1",
   id,
+  slug,
   isBestSeller = true,
   isPaid = true,
   imageUrl,
@@ -39,7 +40,8 @@ export default function CourseCard({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const cid = courseId || id || "1";
-  const detailsHref = href || `/courses/${cid}`;
+  const courseSlug = slug || cid;
+  const detailsHref = href || `/courses/${courseSlug}`;
 
   const isEnrolled = user?.enrolledCourses?.some(
     (e) => e.courseId === cid || e.courseId === String(cid)
@@ -97,7 +99,7 @@ export default function CourseCard({
       <div className="group overflow-hidden rounded-xl border border-slate-200/80 bg-white/90 p-4 backdrop-blur-md transition-all duration-200 hover:border-primary/50 hover:bg-white hover:shadow-xs flex flex-col justify-between">
         <div>
           {/* Thumbnail with floating badges */}
-          <div className="relative aspect-16/10 w-full overflow-hidden rounded-lg bg-slate-100">
+          <Link href={detailsHref} className="block relative aspect-16/10 w-full overflow-hidden rounded-lg bg-slate-100">
             <Image
               src={
                 imageUrl ||
@@ -122,13 +124,15 @@ export default function CourseCard({
             >
               {isPaid ? "Paid Course" : "Free Course"}
             </span>
-          </div>
+          </Link>
 
           {/* Content */}
           <div className="mt-3.5 flex flex-col">
-            <H4 className="transition-colors group-hover:text-primary line-clamp-1">
-              {title}
-            </H4>
+            <Link href={detailsHref}>
+              <H4 className="transition-colors group-hover:text-primary line-clamp-1">
+                {title}
+              </H4>
+            </Link>
 
             <P size="xs" className="mt-1 line-clamp-2">
               {description}

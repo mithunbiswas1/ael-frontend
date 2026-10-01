@@ -126,7 +126,7 @@ export default function HomeHeroEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLocale("en")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLocale === "en"
-                  ? "bg-primary text-white shadow-xs"
+                  ?"bg-primary text-white"
                   : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -137,7 +137,7 @@ export default function HomeHeroEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLocale("bn")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLocale === "bn"
-                  ? "bg-primary text-white shadow-xs"
+                  ?"bg-primary text-white"
                   : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -147,7 +147,7 @@ export default function HomeHeroEditorTab({
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-primary/20 shadow-2xl pointer-events-auto">
+        <div className="overflow-hidden rounded-2xl border border-primary/20 pointer-events-auto">
           <HeroSection locale={previewLocale} banner={banner} />
         </div>
       </div>
@@ -155,7 +155,7 @@ export default function HomeHeroEditorTab({
       {/* 2. Configuration Form Sections */}
       <div className="space-y-6">
         {/* Section 1: Hero Headlines */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
               1
@@ -216,7 +216,7 @@ export default function HomeHeroEditorTab({
         </div>
 
         {/* Section 2: Call-to-Action Buttons */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
               2
@@ -278,7 +278,7 @@ export default function HomeHeroEditorTab({
         </div>
 
         {/* Section 3: Right Side Carousel Media (Drag & Drop Multiple Images - No Links) */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
@@ -352,7 +352,7 @@ export default function HomeHeroEditorTab({
 
                       <div
                         onClick={() => setActiveSlidePreview(idx)}
-                        className="relative aspect-4/3 h-16 w-24 overflow-hidden rounded-lg bg-slate-100 border border-slate-200 cursor-pointer shadow-2xs group"
+                        className="relative aspect-4/3 h-16 w-24 overflow-hidden rounded-lg bg-slate-100 border border-slate-200 cursor-pointer group"
                         title="Click to preview this slide"
                       >
                         <Image
@@ -360,11 +360,11 @@ export default function HomeHeroEditorTab({
                           alt={slide.alt || "Slide image"}
                           fill
                           unoptimized
-                          className="object-cover group-hover:scale-105 transition-transform"
+                          className="object-cover transition-transform"
                         />
                         {activeSlidePreview === idx && (
                           <div className="absolute inset-0 bg-primary/20 border-2 border-primary rounded-lg flex items-center justify-center">
-                            <CheckCircle className="h-4 w-4 text-white drop-shadow" />
+                            <CheckCircle className="h-4 w-4 text-white drop-" />
                           </div>
                         )}
                       </div>

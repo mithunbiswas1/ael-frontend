@@ -8,6 +8,7 @@ import WhatsAppButton from "@/components/common/WhatsAppButton";
 import { getLocale, getDict } from "@/lib/i18n";
 import { DictionaryProvider } from "@/context/DictionaryContext";
 import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
+import AdSlot from "@/components/shared/AdSlot";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -36,6 +37,7 @@ export default async function RootLayout({ children }) {
         <ReduxProvider>
           <DictionaryProvider locale={locale} dict={dict}>
             {children}
+            <AdSlot slot="popup_ad" />
             <WhatsAppButton />
             <Toaster position="top-center" richColors closeButton />
           </DictionaryProvider>

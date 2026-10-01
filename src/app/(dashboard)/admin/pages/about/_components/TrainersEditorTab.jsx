@@ -136,7 +136,7 @@ export default function TrainersEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("en")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "en"
-                    ? "bg-primary text-white shadow-xs"
+                    ?"bg-primary text-white"
                     : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -147,7 +147,7 @@ export default function TrainersEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("bn")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "bn"
-                    ? "bg-primary text-white shadow-xs"
+                    ?"bg-primary text-white"
                     : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -158,7 +158,7 @@ export default function TrainersEditorTab({
         </div>
 
         {/* Live Storefront Component Preview Container */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-100/70 p-6 sm:p-10 shadow-xs">
+        <div className="rounded-2xl border border-slate-200 bg-slate-100/70 p-6 sm:p-10">
           {!hasContent ? (
             <div className="py-12 text-center text-slate-400">
               <p className="text-sm font-medium">No trainer profiles configured yet.</p>
@@ -186,7 +186,7 @@ export default function TrainersEditorTab({
                     return (
                       <div
                         key={idx}
-                        className="flex flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs transition-colors duration-200"
+                        className="flex flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white transition-colors duration-200"
                       >
                         <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
                           {imageSrc ? (
@@ -234,7 +234,7 @@ export default function TrainersEditorTab({
       {/* 2. Form Configuration */}
       <div className="space-y-6">
         {/* Step 1: Section Header */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
               1
@@ -293,7 +293,7 @@ export default function TrainersEditorTab({
         </div>
 
         {/* Step 2: Trainers Cards Management */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-5">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">

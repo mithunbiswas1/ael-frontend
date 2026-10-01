@@ -11,6 +11,7 @@ import {
 } from "@/redux/api/certificateApi";
 import { useGetCoursesQuery } from "@/redux/api/courseApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import CertificateFilterBar from "./_components/CertificateFilterBar";
 import CertificateTable from "./_components/CertificateTable";
 import CertificateFormModal from "./_components/CertificateFormModal";
@@ -42,6 +43,7 @@ export default function AdminCertificatesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCertId, setEditingCertId] = useState(null);
   const [formData, setFormData] = useState(INITIAL_FORM);
+  const [deleteCertTarget, setDeleteCertTarget] = useState(null);
 
   const certificates = certsData?.data || [];
   const courses = coursesData?.data || [];
@@ -70,15 +72,16 @@ export default function AdminCertificatesPage() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteCert = async (cert) => {
-    const confirmDelete = window.confirm(
-      `Are you sure you want to revoke and delete certificate "${cert.certificateId}" for ${cert.studentName}?`
-    );
-    if (!confirmDelete) return;
+  const handleDeleteCert = (cert) => {
+    setDeleteCertTarget(cert);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!deleteCertTarget?._id) return;
     try {
-      await deleteCert(cert._id).unwrap();
+      await deleteCert(deleteCertTarget._id).unwrap();
       toast.success("Certificate revoked and deleted successfully!");
+      setDeleteCertTarget(null);
       refetch();
     } catch (err) {
       toast.error(err?.data?.message || "Failed to delete certificate");
@@ -131,6 +134,22 @@ export default function AdminCertificatesPage() {
           setFormData={setFormData}
           isEditing={Boolean(editingCertId)}
           courses={courses}
+        />
+
+        {/* Delete Confirmation Modal */}
+        <DeleteConfirmationModal
+          isOpen={Boolean(deleteCertTarget)}
+          onClose={() => setDeleteCertTarget(null)}
+          onConfirm={handleConfirmDelete}
+          isLoading={isDeleting}
+          title="Revoke & Delete Certificate"
+          description="Are you sure you want to revoke and delete this official certificate? The verification QR code will immediately be invalidated."
+          itemTitle={
+            deleteCertTarget
+              ? `${deleteCertTarget.certificateId} (${deleteCertTarget.studentName})`
+              : ""
+          }
+          confirmText="Revoke & Delete"
         />
       </div>
     </PermissionGuard>

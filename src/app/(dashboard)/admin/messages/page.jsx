@@ -24,6 +24,7 @@ import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { Input } from "@/components/ui/Input";
 import { H3, H4, P } from "@/components/ui/Typography";
 import { Dialog, DialogBody, DialogFooter } from "@/components/ui/Dialog";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import {
   useGetContactMessagesQuery,
   useUpdateContactMessageStatusMutation,
@@ -34,6 +35,7 @@ export default function AdminMessagesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: messagesData, isLoading, refetch } = useGetContactMessagesQuery({
     status: statusFilter,
@@ -60,12 +62,17 @@ export default function AdminMessagesPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this message?")) return;
+  const handleDelete = (msg) => {
+    setDeleteTarget(msg);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deleteTarget?._id) return;
     try {
-      await deleteMessage(id).unwrap();
+      await deleteMessage(deleteTarget._id).unwrap();
       toast.success("Message deleted successfully");
-      if (selectedMessage?._id === id) setSelectedMessage(null);
+      if (selectedMessage?._id === deleteTarget._id) setSelectedMessage(null);
+      setDeleteTarget(null);
       refetch();
     } catch (err) {
       toast.error(err?.data?.message || "Failed to delete message");
@@ -90,7 +97,7 @@ export default function AdminMessagesPage() {
       />
 
       {/* Filters Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200">
         <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
           {["all", "unread", "read", "replied"].map((st) => (
             <Button
@@ -131,7 +138,7 @@ export default function AdminMessagesPage() {
           </P>
         </div>
       ) : (
-        <Table containerClassName="shadow-xs border-slate-200/90 bg-white">
+        <Table containerClassName="border-slate-200/90 bg-white">
           <TableHeader>
             <TableRow>
               <TableHead>Sender & Contact</TableHead>
@@ -223,7 +230,7 @@ export default function AdminMessagesPage() {
                       type="button"
                       variant="danger"
                       size="xs"
-                      onClick={() => handleDelete(msg._id)}
+                      onClick={() => handleDelete(msg)}
                       className="p-1.5"
                       title="Delete Message"
                     >
@@ -309,6 +316,22 @@ export default function AdminMessagesPage() {
           </DialogFooter>
         </Dialog>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        isLoading={isDeleting}
+        title="Delete Contact Message"
+        description="Are you sure you want to permanently delete this contact submission and inquiry record?"
+        itemTitle={
+          deleteTarget
+            ? `${deleteTarget.name} - ${deleteTarget.subject || "Message"}`
+            : ""
+        }
+        confirmText="Delete Message"
+      />
     </div>
   );
 }

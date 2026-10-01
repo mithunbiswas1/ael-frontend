@@ -15,12 +15,13 @@ import { H3, P } from "@/components/ui/Typography";
 
 export default function SubscriberCourseCard({ course }) {
   const cid = course.courseId || course.id;
+  const courseSlug = course.slug || cid;
   const progress = course.enrollment?.progressPercent || 0;
   const isCompleted = progress >= 100;
 
   return (
-    <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs transition-shadow hover:shadow-md">
-      <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">
+    <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white">
+      <Link href={`/courses/learn/${courseSlug}`} className="block relative aspect-16/10 w-full overflow-hidden bg-slate-100">
         <Image
           src={
             course.imageUrl ||
@@ -41,13 +42,15 @@ export default function SubscriberCourseCard({ course }) {
             </span>
           )}
         </div>
-      </div>
+      </Link>
 
       <div className="flex flex-1 flex-col justify-between p-4 sm:p-5">
         <div>
-          <H3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2">
-            {course.title}
-          </H3>
+          <Link href={`/courses/learn/${courseSlug}`}>
+            <H3 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 hover:text-primary transition-colors">
+              {course.title}
+            </H3>
+          </Link>
           <P className="mt-1 text-xs text-slate-500 line-clamp-2 leading-relaxed">
             {course.description}
           </P>
@@ -73,11 +76,11 @@ export default function SubscriberCourseCard({ course }) {
           {/* Action Buttons */}
           <div className="flex flex-col gap-2">
             <LinkButton
-              href={`/courses/learn/${cid}`}
+              href={`/courses/learn/${courseSlug}`}
               variant="primary"
               size="sm"
               fullWidth
-              className="gap-2 shadow-xs"
+              className="gap-2"
             >
               <FaPlayCircle className="h-4 w-4" />
               <span>
@@ -89,7 +92,7 @@ export default function SubscriberCourseCard({ course }) {
 
             <div className="flex items-center gap-2">
               <LinkButton
-                href={`/courses/${cid}/quiz`}
+                href={`/courses/${courseSlug}/quiz`}
                 variant="outline"
                 size="sm"
                 className="flex-1 gap-1.5 text-slate-700"

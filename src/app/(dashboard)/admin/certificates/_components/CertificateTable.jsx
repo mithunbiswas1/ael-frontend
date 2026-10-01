@@ -41,7 +41,7 @@ export default function CertificateTable({
   }
 
   return (
-    <Table containerClassName="shadow-xs border-slate-200/90">
+    <Table containerClassName="border-slate-200/90">
       <TableHeader>
         <TableRow>
           <TableHead className="w-44">Certificate ID</TableHead>

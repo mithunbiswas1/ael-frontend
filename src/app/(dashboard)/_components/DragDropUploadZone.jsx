@@ -79,7 +79,7 @@ export default function DragDropUploadZone({
         disabled || isUploading
           ? "cursor-not-allowed opacity-75 border-slate-200 bg-slate-50/50"
           : isDragging
-          ? "border-primary bg-primary/5 scale-[1.01] cursor-pointer"
+          ? "border-primary bg-primary/5 cursor-pointer"
           : "border-slate-300 hover:border-primary hover:bg-slate-50/50 cursor-pointer",
         className
       )}
@@ -101,7 +101,7 @@ export default function DragDropUploadZone({
         </div>
       ) : (
         <>
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary group-hover:scale-110 transition-transform">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
             <Icon className="h-6 w-6" />
           </div>
 

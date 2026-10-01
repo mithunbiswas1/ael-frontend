@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
  */
 export default function PermissionGuard({
   module,
+  page,
   action = "view",
   children,
   fallback = null,
@@ -30,15 +31,19 @@ export default function PermissionGuard({
   // 1. Super Admin master override
   if (
     user?.role === "super_admin" ||
-    user?.role === "admin" ||
     permData?.data?.isSuperAdmin
   ) {
     return <>{children}</>;
   }
 
-  // 2. Evaluate module and action
+  // 2. Evaluate module, page and action
   const permissions = permData?.data?.permissions || [];
-  const modulePerm = permissions.find((p) => p.module === module);
+  const modulePerm = permissions.find((p) => {
+    if (page && p.page === page) return true;
+    if (module && p.module === module) return true;
+    if (module && p.page === module) return true;
+    return false;
+  });
 
   const hasAccess = modulePerm?.actions?.includes(action);
 

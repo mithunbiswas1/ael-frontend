@@ -84,6 +84,25 @@ export const courseApi = apiSlice.injectEndpoints({
         body: formData,
       }),
     }),
+
+    // Direct Image Upload
+    uploadCourseImage: builder.mutation({
+      query: (formData) => ({
+        url: endpoints.courses.uploadImage,
+        method: "POST",
+        body: formData,
+      }),
+    }),
+
+    // Subscriber: Update Course Progress (10s interval heartbeat)
+    updateCourseProgress: builder.mutation({
+      query: ({ courseId, data }) => ({
+        url: endpoints.courses.updateProgress(courseId),
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Courses"],
+    }),
   }),
 });
 
@@ -96,4 +115,6 @@ export const {
   useGetMyLearningCoursesQuery,
   useEnrollCourseMutation,
   useUploadCourseVideoMutation,
+  useUploadCourseImageMutation,
+  useUpdateCourseProgressMutation,
 } = courseApi;

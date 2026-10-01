@@ -1,13 +1,14 @@
 // src/app/(pages)/market-updates/_components/MarketUpdatesTabsSection.jsx
 "use client";
 
-import { Shield, BellRing, Globe2 } from "lucide-react";
+import { LayoutGrid, Shield, BellRing, Globe2 } from "lucide-react";
 import { useDictionary } from "@/context/DictionaryContext";
 
 export const MARKET_UPDATE_TABS = [
-  { id: "incidents", label: "Incidents", labelBn: "দুর্ঘটনা রেজিস্ট্রি", icon: Shield },
-  { id: "berc", label: "Message from BERC", labelBn: "বিইআরসি বার্তা", icon: BellRing },
-  { id: "global", label: "Global Market Update", labelBn: "বৈশ্বিক মার্কেট আপডেট", icon: Globe2 },
+  { id: "all", label: "All Updates", labelBn: "সকল আপডেট", icon: LayoutGrid },
+  { id: "incidents", label: "Incidents & Reports", labelBn: "দুর্ঘটনা ও তদন্ত প্রতিবেদন", icon: Shield },
+  { id: "berc", label: "Message from BERC", labelBn: "বিইআরসি বার্তা ও মূল্য সার্কুলার", icon: BellRing },
+  { id: "global", label: "Global Market Update", labelBn: "বৈশ্বিক মার্কেট আপডেট ও ট্রেন্ড", icon: Globe2 },
 ];
 
 export default function MarketUpdatesTabsSection({ activeTab, setActiveTab }) {
@@ -21,7 +22,11 @@ export default function MarketUpdatesTabsSection({ activeTab, setActiveTab }) {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
         const label =
-          tab.id === "incidents"
+          tab.id === "all"
+            ? isBn
+              ? "সকল আপডেট"
+              : "All Updates"
+            : tab.id === "incidents"
             ? mu.incidentsTab || (isBn ? tab.labelBn : tab.label)
             : tab.id === "berc"
             ? mu.bercTab || (isBn ? tab.labelBn : tab.label)
@@ -31,7 +36,7 @@ export default function MarketUpdatesTabsSection({ activeTab, setActiveTab }) {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex shrink-0 sm:flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all whitespace-nowrap min-w-[130px] sm:min-w-[140px] ${
+            className={`flex shrink-0 sm:flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2 text-xs font-bold transition-all whitespace-nowrap min-w-[120px] sm:min-w-[130px] ${
               isActive
                 ? "bg-primary text-white shadow-xs"
                 : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"

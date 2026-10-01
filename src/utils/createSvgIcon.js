@@ -1,3 +1,4 @@
+// src/utils/createSvgIcon.js
 import React from "react";
 
 /**
@@ -8,15 +9,6 @@ import React from "react";
  * @param {string} pathData - SVG path d attribute
  * @param {object} options - Configuration options
  * @returns {React.ForwardRefComponent} Icon component
- * 
- * Usage:
- * import { createSvgIcon } from '@/icons/createSvgIcon';
- * 
- * export const CheckCircle = createSvgIcon(
- *   'CheckCircle',
- *   'M0 11.75C0 5.26065...',
- *   { viewBox: '0 0 24 24' }
- * );
  */
 export const createSvgIcon = (iconName, pathData, options = {}) => {
   const {
@@ -39,29 +31,37 @@ export const createSvgIcon = (iconName, pathData, options = {}) => {
       },
       ref
     ) => {
-      return (
-        <svg
-          ref={ref}
-          width={size}
-          height={size}
-          viewBox={viewBox}
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          role="img"
-          aria-label={title}
-          className={className}
-          style={style}
-          {...svgProps}
-        >
-          {title && <title>{title}</title>}
-          <path
-            fillRule={fillRule}
-            clipRule={clipRule}
-            d={pathData}
-            fill={color}
-            {...pathProps}
-          />
-        </svg>
+      const children = [];
+      if (title) {
+        children.push(React.createElement("title", { key: "title" }, title));
+      }
+      children.push(
+        React.createElement("path", {
+          key: "path",
+          fillRule,
+          clipRule,
+          d: pathData,
+          fill: color,
+          ...pathProps,
+        })
+      );
+
+      return React.createElement(
+        "svg",
+        {
+          ref,
+          width: size,
+          height: size,
+          viewBox,
+          fill: "none",
+          xmlns: "http://www.w3.org/2000/svg",
+          role: "img",
+          "aria-label": title,
+          className,
+          style,
+          ...svgProps,
+        },
+        ...children
       );
     }
   );
@@ -69,3 +69,5 @@ export const createSvgIcon = (iconName, pathData, options = {}) => {
   Component.displayName = `${iconName}Icon`;
   return Component;
 };
+
+export default createSvgIcon;

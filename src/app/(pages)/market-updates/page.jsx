@@ -1,7 +1,7 @@
-// src/app/(pages)/market-updates/page.jsx
 import { Suspense } from "react";
 import MarketUpdatesContent from "./_view/MarketUpdatesContent";
 import { getPageContent } from "@/next-api/getPageContent";
+import { getMarketUpdates } from "@/next-api/getMarketUpdates";
 
 export const metadata = {
   title: "LPG Market Update & Incident Registry | Safe LPG Platform",
@@ -10,7 +10,10 @@ export const metadata = {
 };
 
 export default async function MarketUpdatesPage() {
-  const cmsData = await getPageContent("market-updates");
+  const [cmsData, initialUpdates] = await Promise.all([
+    getPageContent("market-updates"),
+    getMarketUpdates({ limit: 50 }),
+  ]);
 
   return (
     <Suspense
@@ -26,6 +29,7 @@ export default async function MarketUpdatesPage() {
       <MarketUpdatesContent
         bannerData={cmsData.banner}
         sections={cmsData.sections}
+        initialUpdates={initialUpdates}
       />
     </Suspense>
   );

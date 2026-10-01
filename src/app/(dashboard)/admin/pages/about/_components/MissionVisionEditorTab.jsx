@@ -65,7 +65,7 @@ export default function MissionVisionEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("en")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "en"
-                    ? "bg-primary text-white shadow-xs"
+                    ?"bg-primary text-white"
                     : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -76,7 +76,7 @@ export default function MissionVisionEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("bn")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "bn"
-                    ? "bg-primary text-white shadow-xs"
+                    ?"bg-primary text-white"
                     : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -87,7 +87,7 @@ export default function MissionVisionEditorTab({
         </div>
 
         {/* Live Storefront Preview Container */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 sm:p-10 shadow-xs">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-6 sm:p-10">
           {!hasContent ? (
             <div className="py-12 text-center text-slate-400">
               <p className="text-sm font-medium">No Mission & Vision content configured yet.</p>
@@ -109,7 +109,7 @@ export default function MissionVisionEditorTab({
                 <div className={`grid grid-cols-1 gap-5 ${hasMission && hasVision ? "md:grid-cols-2" : "max-w-xl mx-auto"} ${hasHeader ? "mt-8" : ""}`}>
                   {/* Mission Card Preview */}
                   {hasMission && (
-                    <div className="flex items-start gap-4 rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs transition-colors duration-200">
+                    <div className="flex items-start gap-4 rounded-xl border border-slate-200/80 bg-white p-6 transition-colors duration-200">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-primary border border-blue-100">
                         <Target className="h-6 w-6" strokeWidth={2} />
                       </div>
@@ -135,7 +135,7 @@ export default function MissionVisionEditorTab({
 
                   {/* Vision Card Preview */}
                   {hasVision && (
-                    <div className="flex items-start gap-4 rounded-xl border border-slate-200/80 bg-white p-6 shadow-xs transition-colors duration-200">
+                    <div className="flex items-start gap-4 rounded-xl border border-slate-200/80 bg-white p-6 transition-colors duration-200">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
                         <Compass className="h-6 w-6" strokeWidth={2} />
                       </div>
@@ -168,7 +168,7 @@ export default function MissionVisionEditorTab({
       {/* 2. Form Configuration */}
       <div className="space-y-6">
         {/* Step 1: Section Header */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
               1
@@ -242,7 +242,7 @@ export default function MissionVisionEditorTab({
         </div>
 
         {/* Step 2: Mission Card */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-primary font-bold text-xs">
               2
@@ -304,7 +304,7 @@ export default function MissionVisionEditorTab({
         </div>
 
         {/* Step 3: Vision Card */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 font-bold text-xs">
               3

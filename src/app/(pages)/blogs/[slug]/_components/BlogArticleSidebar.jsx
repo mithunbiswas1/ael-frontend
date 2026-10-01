@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronRight, ArrowLeft } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 import { useDictionary } from "@/context/DictionaryContext";
+import AdSlot from "@/components/shared/AdSlot";
 
 export default function BlogArticleSidebar({ relatedPosts }) {
   const { locale } = useDictionary();
@@ -56,6 +57,9 @@ export default function BlogArticleSidebar({ relatedPosts }) {
           })}
         </div>
       </div>
+
+      {/* Commercial Sidebar Ad Slot */}
+      <AdSlot slot="sidebar_ad" />
 
       {/* Categories */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs">

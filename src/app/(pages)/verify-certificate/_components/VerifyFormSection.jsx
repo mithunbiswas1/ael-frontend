@@ -102,76 +102,111 @@ export default function VerifyFormSection({
         </div>
 
         {/* Verification Result Card */}
+        {/* Verification Result Card */}
         {hasSearched && (
           <div className="mt-6 border-t border-slate-100 pt-6">
             {result ? (
-              <div className="rounded-xl border border-emerald-500/30 bg-emerald-50/40 p-5 animate-in fade-in duration-200">
-                <div className="flex items-center justify-between gap-3 border-b border-emerald-200 pb-3">
-                  <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    <span>{isBn ? "প্রত্যয়িত ও বৈধ সার্টিফিকেট" : "VERIFIED & VALID CERTIFICATE"}</span>
+              <div className="rounded-2xl border-2 border-emerald-500/40 bg-gradient-to-b from-emerald-50/50 to-white p-6 shadow-lg animate-in fade-in duration-200">
+                {/* Header Badge */}
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-200/80 pb-4">
+                  <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                    <span>{isBn ? "সরকারি স্বীকৃতিপ্রাপ্ত ও বৈধ সার্টিফিকেট" : "VERIFIED & VALID CERTIFICATE"}</span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold bg-white border border-emerald-200 px-2 py-0.5 rounded text-emerald-900">
+                  <span className="text-xs font-mono font-bold bg-white border border-emerald-300 px-3 py-1 rounded-md text-emerald-900 shadow-2xs">
                     {result.id}
                   </span>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-bold">
-                      {isBn ? "অংশগ্রহণকারীর নাম:" : "Issued To:"}
-                    </span>
-                    <strong className="text-slate-900">
-                      {isBn ? result.studentNameBn || result.studentName : result.studentName}
-                    </strong>
+                {/* Certificate Content + QR Code */}
+                <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                  <div className="md:col-span-2 space-y-3.5 text-xs">
+                    <div>
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">
+                        {isBn ? "অংশগ্রহণকারীর নাম:" : "Issued To:"}
+                      </span>
+                      <strong className="text-slate-900 text-base font-bold">
+                        {isBn ? result.studentNameBn || result.studentName : result.studentName}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">
+                        {isBn ? "কোর্সের নাম:" : "Course Title:"}
+                      </span>
+                      <strong className="text-slate-900 text-sm font-semibold">
+                        {isBn ? result.courseTitleBn || result.courseTitle : result.courseTitle}
+                      </strong>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 pt-1">
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">
+                          {isBn ? "ইস্যুর তারিখ:" : "Date of Issue:"}
+                        </span>
+                        <span className="text-slate-700 font-medium">
+                          {isBn ? result.issueDateBn || result.issueDate : result.issueDate}
+                        </span>
+                      </div>
+
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">
+                          {isBn ? "বৈধতার মেয়াদ:" : "Validity Status:"}
+                        </span>
+                        <span className="text-emerald-700 font-bold">
+                          {isBn ? result.validTillBn || result.validTill : result.validTill}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="pt-1">
+                      <span className="text-slate-400 block text-[10px] uppercase font-bold tracking-wider">
+                        {isBn ? "অনুমোদনকারী কর্তৃপক্ষ:" : "Issuing Authority:"}
+                      </span>
+                      <span className="text-slate-600 text-[11px] leading-relaxed">
+                        {result.issuingAuthority || result.authorizedBy}
+                      </span>
+                    </div>
                   </div>
 
-                  <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-bold">
-                      {isBn ? "কোর্সের নাম:" : "Course Title:"}
+                  {/* Dynamic QR Code */}
+                  <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs text-center">
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent(
+                        typeof window !== "undefined"
+                          ? `${window.location.origin}/verify-certificate?id=${result.id}`
+                          : `http://localhost:3000/verify-certificate?id=${result.id}`
+                      )}`}
+                      alt="Certificate Verification QR Code"
+                      className="h-28 w-28 rounded-lg border border-slate-100 object-contain"
+                      loading="lazy"
+                    />
+                    <span className="mt-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                      {isBn ? "যাচাইকরণ কিউআর" : "Scan to Verify"}
                     </span>
-                    <strong className="text-slate-900">
-                      {isBn ? result.courseTitleBn || result.courseTitle : result.courseTitle}
-                    </strong>
-                  </div>
-
-                  <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-bold">
-                      {isBn ? "ইস্যুর তারিখ:" : "Date of Issue:"}
-                    </span>
-                    <span className="text-slate-700 font-medium">
-                      {isBn ? result.issueDateBn || result.issueDate : result.issueDate}
-                    </span>
-                  </div>
-
-                  <div>
-                    <span className="text-slate-500 block text-[10px] uppercase font-bold">
-                      {isBn ? "বৈধতার মেয়াদ:" : "Validity Status:"}
-                    </span>
-                    <span className="text-emerald-700 font-bold">
-                      {isBn ? result.validTillBn || result.validTill : result.validTill}
+                    <span className="text-[9px] text-slate-400 font-mono">
+                      {result.id}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-emerald-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                  <span className="text-[10px] text-slate-500 leading-tight">
-                    {isBn ? "কর্তৃপক্ষ:" : "Authorized by:"}{" "}
+                {/* Footer Actions */}
+                <div className="mt-6 pt-4 border-t border-emerald-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                  <span className="text-[11px] text-slate-500">
+                    {isBn ? "স্বাক্ষর:" : "Authorized Signature:"}{" "}
                     <strong className="text-slate-700">{result.authorizedBy}</strong>
                   </span>
 
                   <button
-                    onClick={() =>
-                      toast.success(
-                        isBn
-                          ? "সার্টিফিকেটের অনুলিপি ডাউনলোড হচ্ছে..."
-                          : "Official duplicate certificate PDF generated for download."
-                      )
-                    }
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+                    onClick={() => {
+                      if (typeof window !== "undefined") {
+                        window.print();
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 text-xs font-bold shadow-xs transition-colors"
                   >
                     <Download className="h-3.5 w-3.5" />
-                    <span>{isBn ? "সার্টিফিকেট ডাউনলোড" : "Download PDF Copy"}</span>
+                    <span>{isBn ? "সার্টিফিকেট প্রিন্ট / PDF ডাউনলোড" : "Print / Download PDF"}</span>
                   </button>
                 </div>
               </div>

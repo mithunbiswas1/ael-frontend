@@ -12,6 +12,8 @@ import {
 } from "react-icons/fa";
 import { H1, H3, P } from "@/components/ui/Typography";
 import { useDictionary } from "@/context/DictionaryContext";
+import CommentSection from "@/components/shared/CommentSection";
+import AdSlot from "@/components/shared/AdSlot";
 
 export default function BlogArticleContent({
   currentPost,
@@ -106,19 +108,49 @@ export default function BlogArticleContent({
 
       {/* Article Body Content */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 text-slate-700 shadow-xs space-y-6 text-sm leading-relaxed">
-        <P weight="semibold" color="dark" size="lg">
-          {isBn
+        {(() => {
+          const rawDesc = isBn
             ? currentPost.descriptionBn || currentPost.description
-            : currentPost.description}
-        </P>
+            : currentPost.description;
+          if (!rawDesc) return null;
+          const isHtml = /<[a-z][\s\S]*>/i.test(rawDesc);
+          if (isHtml) {
+            return (
+              <div
+                className="rich-text-output text-slate-800 leading-relaxed text-sm sm:text-base space-y-3 [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/40 [&>blockquote]:pl-4 [&>blockquote]:italic [&>h2]:text-lg [&>h2]:font-bold [&>h3]:text-base [&>h3]:font-bold [&>a]:text-primary [&>a]:underline"
+                dangerouslySetInnerHTML={{ __html: rawDesc }}
+              />
+            );
+          }
+          return (
+            <P weight="semibold" color="dark" size="lg">
+              {rawDesc}
+            </P>
+          );
+        })()}
 
-        {currentPost.content || currentPost.contentBn ? (
-          <div className="space-y-4 whitespace-pre-line text-sm text-slate-700 leading-relaxed font-sans">
-            {isBn
-              ? currentPost.contentBn || currentPost.content
-              : currentPost.content || currentPost.contentBn}
-          </div>
-        ) : currentPost.sections && currentPost.sections.length > 0 ? (
+        {(() => {
+          const rawContent = isBn
+            ? currentPost.contentBn || currentPost.content
+            : currentPost.content || currentPost.contentBn;
+          if (!rawContent) return null;
+          const isHtml = /<[a-z][\s\S]*>/i.test(rawContent);
+          if (isHtml) {
+            return (
+              <div
+                className="rich-text-output text-slate-700 leading-relaxed text-sm space-y-3 [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/40 [&>blockquote]:pl-4 [&>blockquote]:italic [&>h2]:text-lg [&>h2]:font-bold [&>h3]:text-base [&>h3]:font-bold [&>a]:text-primary [&>a]:underline"
+                dangerouslySetInnerHTML={{ __html: rawContent }}
+              />
+            );
+          }
+          return (
+            <div className="space-y-4 whitespace-pre-line text-sm text-slate-700 leading-relaxed font-sans">
+              {rawContent}
+            </div>
+          );
+        })()}
+
+        {currentPost.sections && currentPost.sections.length > 0 ? (
           currentPost.sections.map((section, idx) => (
             <div key={idx} className="space-y-2">
               <H3 className="text-base font-bold text-slate-900">
@@ -200,44 +232,16 @@ export default function BlogArticleContent({
         </div>
       </div>
 
-      {/* Subscriber Comments Section */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
-          <div>
-            <H3 className="text-sm font-black uppercase tracking-wider text-slate-900">
-              {isBn ? "গ্রাহক ও পাঠকদের মন্তব্য" : "SUBSCRIBER COMMENTS"}
-            </H3>
-            <span className="text-[11px] text-slate-400">
-              {isBn
-                ? "(শুধুমাত্র যাচাইকৃত সদস্যদের জন্য)"
-                : "(Verified members only)"}
-            </span>
-          </div>
-          <div className="flex items-center gap-3 text-xs text-slate-500">
-            <span>{isBn ? "০টি মন্তব্য" : "0 Comments"}</span>
-            <span>•</span>
-            <span>{isBn ? "সর্টিং: সর্বশেষ" : "Sort by: Newest"}</span>
-          </div>
-        </div>
+      {/* Commercial Mid-Content Ad Slot */}
+      <AdSlot slot="mid_content" />
 
-        {/* Login Prompt Box */}
-        <div className="mt-6 flex flex-col items-center justify-center rounded-lg border border-slate-200/80 bg-slate-50/60 p-6 sm:p-8 text-center">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-500 mb-3">
-            <Lock className="h-5 w-5" />
-          </div>
-          <P size="xs" color="gray" weight="medium" className="mb-3">
-            {isBn
-              ? "নিরাপত্তা আলোচনায় অংশ নিতে অনুগ্রহ করে আপনার অ্যাকাউন্টে লগইন করুন।"
-              : "Please log in with your registered account to participate in the safety discussion."}
-          </P>
-          <Link
-            href="/login"
-            className="rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-blue-700 transition-colors shadow-xs"
-          >
-            {dict?.common?.login || (isBn ? "লগইন করুন" : "Login to Account")}
-          </Link>
-        </div>
-      </div>
+      {/* Live Subscriber Comments Section */}
+      <CommentSection
+        targetId={currentPost.slug || String(currentPost.id)}
+        targetType="blog"
+        targetTitle={isBn ? currentPost.titleBn || currentPost.title : currentPost.title}
+        locale={locale}
+      />
     </article>
   );
 }

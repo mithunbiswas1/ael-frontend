@@ -34,7 +34,7 @@ export default function SubscriberDashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-tertiary via-primary to-tertiary p-6 sm:p-8 text-white shadow-xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-tertiary via-primary to-tertiary p-6 sm:p-8 text-white">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
@@ -54,7 +54,7 @@ export default function SubscriberDashboardPage() {
               href="/subscriber/courses"
               variant="solid"
               size="default"
-              className="gap-2 shadow-lg bg-secondary hover:bg-secondary/90 text-white border-transparent font-bold"
+              className="gap-2 bg-secondary hover:bg-secondary/90 text-white border-transparent font-bold"
             >
               <FaGraduationCap className="h-4 w-4" />
               <span>My Enrolled Courses</span>
@@ -77,7 +77,7 @@ export default function SubscriberDashboardPage() {
 
       {/* Metric Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Enrolled Courses
@@ -92,7 +92,7 @@ export default function SubscriberDashboardPage() {
           <P className="mt-1 text-xs text-slate-400">Active learning subscriptions</P>
         </div>
 
-        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Completed Courses
@@ -107,7 +107,7 @@ export default function SubscriberDashboardPage() {
           <P className="mt-1 text-xs text-slate-400">100% syllabus finished</P>
         </div>
 
-        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Certificates Earned
@@ -120,7 +120,7 @@ export default function SubscriberDashboardPage() {
           <P className="mt-1 text-xs text-slate-400">Verified by DoE & LOAB</P>
         </div>
 
-        <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs">
+        <div className="rounded-xl border border-slate-200/80 bg-white p-5">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
               Hours Learned
@@ -136,7 +136,7 @@ export default function SubscriberDashboardPage() {
 
       {/* Continue Learning Spotlight */}
       {activeCourse && (
-        <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200/80 bg-white p-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
               <div className="relative h-20 w-32 shrink-0 overflow-hidden rounded-xl bg-slate-100 hidden sm:block">
@@ -178,10 +178,10 @@ export default function SubscriberDashboardPage() {
 
             <div className="flex shrink-0 items-center gap-3">
               <LinkButton
-                href={`/courses/learn/${activeCourse.courseId}`}
+                href={`/courses/learn/${activeCourse.slug || "lpg-cylinder-safety-handling-emergency-response"}`}
                 variant="primary"
                 size="default"
-                className="gap-2 shadow-sm"
+                className="gap-2"
               >
                 <FaPlayCircle className="h-4 w-4" />
                 <span>Resume Classroom Player</span>
@@ -221,18 +221,18 @@ export default function SubscriberDashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {courses.map((course) => {
               const progress = course.enrollment?.progressPercent || 0;
-              const cid = course.courseId;
+              const courseSlug = course.slug || "lpg-cylinder-safety-handling-emergency-response";
               return (
                 <div
-                  key={cid}
-                  className="group flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs transition-shadow hover:shadow-md"
+                  key={courseSlug}
+                  className="group flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white"
                 >
                   <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">
                     <Image
                       src={course.imageUrl}
                       alt={course.title}
                       fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="object-cover transition-transform duration-300"
                     />
                     <span className="absolute left-2.5 top-2.5 rounded bg-slate-950/80 px-2 py-0.5 text-[9px] font-bold text-white">
                       {course.category || "Safety Training"}
@@ -267,7 +267,7 @@ export default function SubscriberDashboardPage() {
 
                       <div className="flex items-center gap-2">
                         <LinkButton
-                          href={`/courses/learn/${cid}`}
+                          href={`/courses/learn/${courseSlug}`}
                           variant="secondary"
                           size="xs"
                           fullWidth
@@ -277,7 +277,7 @@ export default function SubscriberDashboardPage() {
                           <span>Watch Lessons</span>
                         </LinkButton>
                         <LinkButton
-                          href={`/courses/${cid}/quiz`}
+                          href={`/courses/${courseSlug}/quiz`}
                           variant="outline"
                           size="xs"
                           className="px-3"

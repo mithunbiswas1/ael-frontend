@@ -63,7 +63,7 @@ export default function PageConfigShell({
             size="sm"
             onClick={onSave}
             disabled={isSaving}
-            className="gap-2 shadow-xs font-bold"
+            className="gap-2 font-bold"
           >
             {isSaving ? (
               <>
@@ -93,7 +93,7 @@ export default function PageConfigShell({
                 variant={isActive ? "primary" : "secondary"}
                 size="sm"
                 onClick={() => onTabChange(tab.id)}
-                className={`gap-2 whitespace-nowrap text-xs font-bold transition-all ${isActive ? "shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                className={`gap-2 whitespace-nowrap text-xs font-bold transition-all ${isActive ?"" :"text-slate-600 hover:text-slate-900"
                   }`}
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}

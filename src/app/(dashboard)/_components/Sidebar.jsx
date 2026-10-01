@@ -32,6 +32,13 @@ import {
   FaLock,
   FaFileContract,
   FaShieldAlt,
+  FaComments,
+  FaBullhorn,
+  FaArchive,
+  FaSms,
+  FaEnvelopeOpenText,
+  FaCreditCard,
+  FaDatabase,
   FaSignOutAlt,
 } from "react-icons/fa";
 
@@ -40,7 +47,7 @@ const ALL_ADMIN_NAV_ITEMS = [
     name: "Admin Dashboard",
     href: "/admin",
     icon: FaTachometerAlt,
-    module: null,
+    module: "analytics",
   },
   {
     name: "Blogs",
@@ -49,28 +56,28 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "blogs",
   },
   {
+    name: "Comments",
+    href: "/admin/comments",
+    icon: FaComments,
+    module: "comments",
+  },
+  {
+    name: "Market Updates",
+    href: "/admin/market-updates",
+    icon: FaChartLine,
+    module: "market-updates",
+  },
+  {
     name: "Courses",
     href: "/admin/courses",
     icon: FaGraduationCap,
     module: "courses",
   },
   {
-    name: "Quizzes",
-    href: "/admin/quizzes",
-    icon: FaQuestionCircle,
-    module: "quizzes",
-  },
-  {
     name: "Certificates",
     href: "/admin/certificates",
     icon: FaAward,
     module: "certificates",
-  },
-  {
-    name: "Roles & Access",
-    href: "/admin/roles",
-    icon: FaUserShield,
-    module: "roles",
   },
   {
     name: "Users",
@@ -82,7 +89,43 @@ const ALL_ADMIN_NAV_ITEMS = [
     name: "Messages",
     href: "/admin/messages",
     icon: FaEnvelope,
-    module: null,
+    module: "messages",
+  },
+  {
+    name: "Advertisements",
+    href: "/admin/advertisements",
+    icon: FaBullhorn,
+    module: "advertisements",
+  },
+  {
+    name: "Archives",
+    href: "/admin/archive",
+    icon: FaArchive,
+    module: "archive",
+  },
+  {
+    name: "Bulk SMS",
+    href: "/admin/sms",
+    icon: FaSms,
+    module: "sms",
+  },
+  {
+    name: "Email Campaigns",
+    href: "/admin/email",
+    icon: FaEnvelopeOpenText,
+    module: "email",
+  },
+  {
+    name: "Subscriptions",
+    href: "/admin/subscriptions",
+    icon: FaCreditCard,
+    module: "subscriptions",
+  },
+  {
+    name: "Large Database",
+    href: "/admin/database",
+    icon: FaDatabase,
+    module: "database",
   },
   {
     name: "Subscriber View",
@@ -103,56 +146,67 @@ const PAGES_NAV_ITEMS = [
     name: "Home",
     href: "/admin/pages/home",
     icon: FaHome,
+    module: "pages_home",
   },
   {
     name: "About Us",
     href: "/admin/pages/about",
     icon: FaInfoCircle,
+    module: "pages_about",
   },
   {
     name: "Blog",
     href: "/admin/pages/blogs",
     icon: FaNewspaper,
+    module: "pages_blogs",
   },
   {
     name: "Contact Us",
     href: "/admin/pages/contact",
     icon: FaEnvelope,
+    module: "pages_contact",
   },
   {
     name: "Safety Guidelines",
     href: "/admin/pages/safety-guidelines",
     icon: FaShieldAlt,
+    module: "pages_safety",
   },
   {
     name: "LPG Market Updates",
     href: "/admin/pages/market-updates",
     icon: FaChartLine,
+    module: "pages_market",
   },
   {
     name: "Training & Quiz",
     href: "/admin/pages/courses",
     icon: FaGraduationCap,
+    module: "pages_courses",
   },
   {
     name: "Related Acts & Rules",
     href: "/admin/pages/acts-and-rules",
     icon: FaBalanceScale,
+    module: "pages_acts",
   },
   {
     name: "Terms & Conditions",
     href: "/admin/pages/terms",
     icon: FaFileContract,
+    module: "pages_terms",
   },
   {
     name: "Privacy Policy",
     href: "/admin/pages/privacy",
     icon: FaLock,
+    module: "pages_privacy",
   },
   {
     name: "FAQ & Help Center",
     href: "/admin/pages/faq",
     icon: FaQuestionCircle,
+    module: "pages_faq",
   },
 ];
 
@@ -196,7 +250,6 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
 
   const isSuperAdmin =
     user?.role === "super_admin" ||
-    user?.role === "admin" ||
     permData?.data?.isSuperAdmin;
 
   const permissions = permData?.data?.permissions || [];
@@ -204,14 +257,27 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
   const isSubscriberOnly =
     user?.role === "subscriber" || user?.role === "general_user";
 
+  const hasPageAccess = (item) => {
+    if (isSuperAdmin) return true;
+    if (item.href === "/profile" || item.href === "/subscriber") return true;
+    if (item.href === "/admin") {
+      return permissions.some((p) => p.actions?.includes("view"));
+    }
+    const perm = permissions.find(
+      (p) =>
+        (p.page && p.page === item.href) ||
+        (item.module && p.module === item.module)
+    );
+    return perm ? perm.actions?.includes("view") : false;
+  };
+
   const visibleNavItems = isSubscriberOnly
     ? SUBSCRIBER_NAV_ITEMS
-    : ALL_ADMIN_NAV_ITEMS.filter((item) => {
-      if (!item.module) return true;
-      if (isSuperAdmin) return true;
-      const mod = permissions.find((p) => p.module === item.module);
-      return mod && mod.actions.includes("view");
-    });
+    : ALL_ADMIN_NAV_ITEMS.filter((item) => hasPageAccess(item));
+
+  const visiblePagesNavItems = isSubscriberOnly
+    ? []
+    : PAGES_NAV_ITEMS.filter((item) => hasPageAccess(item));
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -228,6 +294,7 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
     onMobileClose,
     user,
     visibleNavItems,
+    visiblePagesNavItems,
     pathname,
     openSubmenu,
     toggleSubmenu,
@@ -269,6 +336,7 @@ function SidebarContent({
   onMobileClose,
   user,
   visibleNavItems,
+  visiblePagesNavItems = PAGES_NAV_ITEMS,
   pathname,
   openSubmenu,
   toggleSubmenu,
@@ -410,7 +478,7 @@ function SidebarContent({
                   scroll={false}
                   onClick={onMobileClose}
                   className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${isActive
-                    ? "bg-primary text-white shadow-xs"
+                    ? "bg-primary text-white"
                     : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                     } ${isCollapsed ? "justify-center" : ""}`}
                 >
@@ -426,7 +494,7 @@ function SidebarContent({
         </ul>
 
         {/* PAGES SECTION (Admin Only) */}
-        {!isSubscriberOnly && (
+        {!isSubscriberOnly && visiblePagesNavItems.length > 0 && (
           <div className="pt-2 border-t border-slate-200">
             {!isCollapsed && (
               <div className="px-3 pb-2 text-[10px] font-black uppercase tracking-wider text-slate-400">
@@ -434,7 +502,7 @@ function SidebarContent({
               </div>
             )}
             <ul className="space-y-1">
-              {PAGES_NAV_ITEMS.map((item) => {
+              {visiblePagesNavItems.map((item) => {
                 const Icon = item.icon;
 
                 // Submenu item (Blogs, Contact)
@@ -507,7 +575,7 @@ function SidebarContent({
                       scroll={false}
                       onClick={onMobileClose}
                       className={`flex items-center gap-3 px-3 py-2 rounded-lg text-xs font-semibold transition-all duration-150 ${isActive
-                        ? "bg-primary text-white shadow-xs font-bold"
+                        ? "bg-primary text-white font-bold"
                         : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                         } ${isCollapsed ? "justify-center" : ""}`}
                     >
@@ -530,7 +598,7 @@ function SidebarContent({
         <button
           type="button"
           onClick={handleLogout}
-          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:text-white bg-rose-50/70 hover:bg-rose-600 border border-rose-200/60 hover:border-rose-600 transition-all duration-200 shadow-2xs group cursor-pointer ${
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:text-white bg-rose-50/70 hover:bg-rose-600 border border-rose-200/60 hover:border-rose-600 transition-all duration-200 group cursor-pointer ${
             isCollapsed ? "justify-center px-2" : ""
           }`}
           title="Logout"

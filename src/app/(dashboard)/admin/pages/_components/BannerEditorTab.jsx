@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Trash2, Sparkles, Image as ImageIcon } from "lucide-react";
+import { Trash2, Image as ImageIcon } from "lucide-react";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
@@ -96,7 +96,7 @@ export default function BannerEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("en")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "en"
-                  ? "bg-primary text-white shadow-xs"
+                  ?"bg-primary text-white"
                   : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -107,7 +107,7 @@ export default function BannerEditorTab({
                 variant="unstyled"
                 onClick={() => setPreviewLang("bn")}
                 className={`px-3 py-1 text-xs rounded-md font-semibold transition-all cursor-pointer ${previewLang === "bn"
-                  ? "bg-primary text-white shadow-xs"
+                  ?"bg-primary text-white"
                   : "text-slate-600 hover:text-slate-900"
                   }`}
               >
@@ -118,7 +118,7 @@ export default function BannerEditorTab({
         </div>
 
         {/* Live Banner Container Matching Public Storefront Theme */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-tertiary via-[#0c1a33] to-tertiary p-6 sm:p-10 border border-primary/20 shadow-2xl">
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-tertiary via-[#0c1a33] to-tertiary p-6 sm:p-10 border border-primary/20">
           <AmbientGlow color="primary" />
           <div
             aria-hidden="true"
@@ -158,7 +158,7 @@ export default function BannerEditorTab({
               </div>
 
               <div className="relative flex items-center justify-center lg:col-span-5">
-                <div className="group relative aspect-4/3 w-full max-w-sm overflow-hidden rounded-2xl border border-white/15 bg-tertiary/80 shadow-2xl backdrop-blur-sm">
+                <div className="group relative aspect-4/3 w-full max-w-sm overflow-hidden rounded-2xl border border-white/15 bg-tertiary/80 backdrop-blur-sm">
                   {activeBanner.imageSrc ? (
                     <>
                       <Image
@@ -187,7 +187,7 @@ export default function BannerEditorTab({
       {/* 2. Configuration Form Sections */}
       <div className="space-y-6">
         {/* Section 1: Hero Headlines & Subtitle Content */}
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-4">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
               1
@@ -247,7 +247,7 @@ export default function BannerEditorTab({
 
         {/* Section 2: Right Side Visual Media (Only for Visual Split Banners) */}
         {!isCentered && (
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs space-y-5">
+          <div className="rounded-xl border border-slate-200 bg-white p-5 space-y-5">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary font-bold text-xs">
@@ -282,7 +282,7 @@ export default function BannerEditorTab({
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-xl border border-slate-200 bg-white p-3.5 hover:border-slate-300 transition-colors">
                   {/* Thumbnail */}
-                  <div className="relative aspect-4/3 h-16 w-24 overflow-hidden rounded-lg bg-slate-100 border border-slate-200 shrink-0 shadow-2xs">
+                  <div className="relative aspect-4/3 h-16 w-24 overflow-hidden rounded-lg bg-slate-100 border border-slate-200 shrink-0">
                     <Image
                       src={activeBanner.imageSrc}
                       alt={activeBanner.imageAlt || "Banner image"}

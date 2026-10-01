@@ -2,6 +2,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { FaEdit, FaTrash, FaEye, FaGlobeAmericas } from "react-icons/fa";
 import {
   Table,
@@ -43,7 +44,7 @@ export default function BlogTable({
   }
 
   return (
-    <Table containerClassName="shadow-xs border-slate-200/90">
+    <Table containerClassName="border-slate-200/90">
       <TableHeader>
         <TableRow>
           <TableHead className="w-16">Thumbnail</TableHead>
@@ -79,7 +80,7 @@ export default function BlogTable({
                 <div className="text-[11px] text-slate-500 line-clamp-1 font-serif">
                   {blog.titleBn}
                 </div>
-                <div className="flex items-center gap-2 pt-0.5">
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
                   <span className="font-mono text-[10px] text-slate-400">
                     /{blog.slug}
                   </span>
@@ -87,6 +88,15 @@ export default function BlogTable({
                   <span className="text-[10px] text-slate-400">
                     {blog.readTimeEn || "5 min read"}
                   </span>
+                  {blog.metaTitle || blog.metaDescription ? (
+                    <span className="inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[9px] font-bold text-emerald-700 border border-emerald-200">
+                      SEO Ready
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 rounded bg-amber-50 px-1.5 py-0.5 text-[9px] font-medium text-amber-700 border border-amber-200">
+                      Default SEO
+                    </span>
+                  )}
                 </div>
               </div>
             </TableCell>
@@ -120,16 +130,22 @@ export default function BlogTable({
 
             <TableCell className="text-right">
               <div className="flex items-center justify-end gap-1.5">
-                <Button
-                  type="button"
-                  onClick={() => onEdit(blog)}
-                  variant="secondary"
-                  size="xs"
-                  className="p-2 text-slate-600 hover:text-primary"
+                <Link
+                  href={`/blogs/${blog.slug}`}
+                  target="_blank"
+                  className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors border border-slate-200"
+                  title="View Public Article"
+                >
+                  <FaEye className="h-3 w-3" />
+                </Link>
+
+                <Link
+                  href={`/admin/blogs/edit/${blog._id}`}
+                  className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-primary transition-colors border border-slate-200"
                   title="Edit Article"
                 >
                   <FaEdit className="h-3 w-3" />
-                </Button>
+                </Link>
 
                 <Button
                   type="button"
