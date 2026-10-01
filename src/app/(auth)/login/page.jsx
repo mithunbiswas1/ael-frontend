@@ -85,16 +85,16 @@ export default function LoginPage() {
           resetForm();
 
           const userRole = result.data.user?.role;
-          if (
+          if (userRole === "instructor") {
+            router.push("/admin/courses");
+          } else if (
             userRole === "super_admin" ||
             userRole === "admin" ||
             userRole === "course_admin"
           ) {
             router.push("/admin");
-          } else if (userRole === "subscriber") {
-            router.push("/subscriber");
           } else {
-            router.push("/");
+            router.push("/user-dashboard");
           }
         }
       } catch (err) {
@@ -113,15 +113,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative h-screen w-full flex items-center justify-center bg-slate-950 p-4 sm:p-6 overflow-hidden">
-      {/* Subtle ambient luxury backdrop glow - strictly clipped */}
+    <div className="relative h-screen w-full flex items-center justify-center bg-gray-100 p-4 sm:p-6 overflow-hidden">
+      {/* Subtle ambient backdrop glow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-blue-600/10 blur-3xl" />
+        <div className="absolute -top-40 -left-40 h-96 w-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-blue-600/5 blur-3xl" />
       </div>
 
       <div className="relative z-10 w-full max-w-4xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl shadow-black/60 backdrop-blur-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60">
           {/* Left: Branding & Benefits Panel */}
           <div className="hidden lg:flex lg:col-span-5 flex-col justify-between bg-gradient-to-br from-primary via-primary/95 to-slate-900 p-8 text-white">
             <div className="space-y-4">
@@ -150,14 +150,14 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Right: Login Form Panel (Registration-Style Content Padding) */}
-          <div className="lg:col-span-7 p-5 sm:p-6 lg:py-7 lg:px-8 flex flex-col justify-center">
+          {/* Right: Login Form Panel */}
+          <div className="lg:col-span-7 p-5 sm:p-6 lg:py-7 lg:px-8 flex flex-col justify-center bg-white">
             {/* Header */}
             <div className="mb-5">
-              <h2 className="text-xl font-black text-white">
+              <h2 className="text-xl font-black text-slate-900">
                 {isBn ? "অ্যাকাউন্টে লগইন করুন" : "Sign In to Your Account"}
               </h2>
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-500">
                 {isBn
                   ? "আপনার মোবাইল নম্বর অথবা ইমেইল ঠিকানা দিয়ে লগইন করুন।"
                   : "Choose phone or email authentication to continue."}
@@ -165,14 +165,14 @@ export default function LoginPage() {
             </div>
 
             {/* 2 Tabs: Phone Login (Default) and Email Login */}
-            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-950/70 border border-slate-800 mb-5">
+            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200 mb-5">
               <button
                 type="button"
                 onClick={() => handleTabChange("phone")}
                 className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   activeTab === "phone"
                     ? "bg-primary text-white shadow-xs"
-                    : "text-slate-400 hover:text-slate-200"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 <Smartphone className="h-3.5 w-3.5" />
@@ -185,7 +185,7 @@ export default function LoginPage() {
                 className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   activeTab === "email"
                     ? "bg-primary text-white shadow-xs"
-                    : "text-slate-400 hover:text-slate-200"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 <Mail className="h-3.5 w-3.5" />
@@ -198,11 +198,11 @@ export default function LoginPage() {
               {/* Phone Tab Input */}
               {activeTab === "phone" ? (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     {isBn ? "মোবাইল নম্বর *" : "Phone Number *"}
                   </label>
                   <div className="flex">
-                    <span className="inline-flex items-center px-3.5 rounded-l-lg border border-r-0 border-slate-700/80 bg-slate-800 text-slate-400 text-xs font-mono font-medium select-none">
+                    <span className="inline-flex items-center px-3.5 rounded-l-lg border border-r-0 border-slate-300 bg-slate-100 text-slate-700 text-xs font-mono font-medium select-none">
                       +88
                     </span>
                     <input
@@ -212,15 +212,15 @@ export default function LoginPage() {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       placeholder={isBn ? "০১XXXXXXXXX" : "01XXXXXXXXX"}
-                      className={`flex-1 rounded-r-lg border bg-slate-800/80 px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
+                      className={`flex-1 rounded-r-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
                         formik.touched.phone && formik.errors.phone
                           ? "border-rose-500"
-                          : "border-slate-700/80"
+                          : "border-slate-300"
                       }`}
                     />
                   </div>
                   {formik.touched.phone && formik.errors.phone && (
-                    <p className="mt-1 text-[11px] font-medium text-rose-400">
+                    <p className="mt-1 text-[11px] font-medium text-rose-500">
                       {formik.errors.phone}
                     </p>
                   )}
@@ -228,7 +228,7 @@ export default function LoginPage() {
               ) : (
                 /* Email Tab Input */
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
                     {isBn ? "ইমেইল অ্যাড্রেস *" : "Email Address *"}
                   </label>
                   <div className="relative">
@@ -239,15 +239,15 @@ export default function LoginPage() {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       placeholder="name@example.com"
-                      className={`w-full rounded-lg border bg-slate-800/80 px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
+                      className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
                         formik.touched.email && formik.errors.email
                           ? "border-rose-500"
-                          : "border-slate-700/80"
+                          : "border-slate-300"
                       }`}
                     />
                   </div>
                   {formik.touched.email && formik.errors.email && (
-                    <p className="mt-1 text-[11px] font-medium text-rose-400">
+                    <p className="mt-1 text-[11px] font-medium text-rose-500">
                       {formik.errors.email}
                     </p>
                   )}
@@ -257,7 +257,7 @@ export default function LoginPage() {
               {/* Password Input */}
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-xs font-semibold text-slate-300">
+                  <label className="block text-xs font-semibold text-slate-700">
                     {isBn ? "পাসওয়ার্ড *" : "Password *"}
                   </label>
                 </div>
@@ -269,16 +269,16 @@ export default function LoginPage() {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     placeholder="••••••••"
-                    className={`w-full rounded-lg border bg-slate-800/80 px-3.5 py-2.5 pr-10 text-xs text-white placeholder:text-slate-500 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
                       formik.touched.password && formik.errors.password
                         ? "border-rose-500"
-                        : "border-slate-700/80"
+                        : "border-slate-300"
                     }`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="h-4 w-4" />
@@ -288,7 +288,7 @@ export default function LoginPage() {
                   </button>
                 </div>
                 {formik.touched.password && formik.errors.password && (
-                  <p className="mt-1 text-[11px] font-medium text-rose-400">
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
                     {formik.errors.password}
                   </p>
                 )}
@@ -314,12 +314,12 @@ export default function LoginPage() {
             </form>
 
             {/* Registration Link */}
-            <div className="mt-6 pt-4 border-t border-slate-800 text-center">
-              <p className="text-xs text-slate-400">
+            <div className="mt-6 pt-4 border-t border-slate-200 text-center">
+              <p className="text-xs text-slate-500">
                 {isBn ? "এখনও কোনো অ্যাকাউন্ট নেই? " : "Don't have an account? "}
                 <Link
                   href="/registration"
-                  className="font-bold text-primary hover:text-blue-400 hover:underline transition-colors ml-1"
+                  className="font-bold text-primary hover:underline transition-colors ml-1"
                 >
                   {isBn ? "এখানে নিবন্ধন করুন" : "Register here"}
                 </Link>

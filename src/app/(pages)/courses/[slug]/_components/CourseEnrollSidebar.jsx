@@ -22,6 +22,7 @@ import { useEnrollCourseMutation } from "@/redux/api/courseApi";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import AuthModal from "@/components/shared/AuthModal";
+import CheckoutModal from "@/components/shared/CheckoutModal";
 
 export default function CourseEnrollSidebar({ course, isFree }) {
   const router = useRouter();
@@ -31,29 +32,46 @@ export default function CourseEnrollSidebar({ course, isFree }) {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [enrollCourse, { isLoading: isEnrolling }] = useEnrollCourseMutation();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   const cid = course.courseId || course.id;
   const targetSlug = course.slug || cid;
   const title = isBn ? course.titleBn || course.title : course.title;
-  const duration = isBn ? course.durationBn || course.duration : course.duration;
-
-  const isEnrolled = user?.enrolledCourses?.some(
-    (e) => e.courseId === cid || e.courseId === String(cid)
+  const duration = isBn
+    ? course.durationBn || course.duration || "১ ঘণ্টা ৪৫ মিনিট"
+    : course.duration || "1h 45m";
+  const isSubscribed = Boolean(
+    user?.role === "subscriber" ||
+    (user?.subscription?.status === "active" &&
+      user?.subscription?.planKey !== "course_single" &&
+      (!user?.subscription?.expiresAt ||
+        new Date(user.subscription.expiresAt) > new Date())) ||
+    ["super_admin", "admin", "instructor", "course_admin", "editor"].includes(user?.role)
   );
 
+  const isEnrolled = user?.enrolledCourses?.some(
+    (e) =>
+      e.courseId === cid ||
+      e.courseId === String(cid) ||
+      e.courseId === course.slug ||
+      (course._id && e.courseId === String(course._id))
+  );
+
+  const hasAccess = isEnrolled || isSubscribed;
+
   const handleEnrollClick = async () => {
+    if (hasAccess) {
+      router.push(`/courses/learn/${targetSlug}`);
+      return;
+    }
+
     if (!isLoggedIn) {
       setIsAuthModalOpen(true);
       return;
     }
 
-    if (isEnrolled) {
-      router.push(`/courses/learn/${targetSlug}`);
-      return;
-    }
-
     if (!isFree) {
-      router.push(`/checkout?courseId=${cid}`);
+      setIsCheckoutModalOpen(true);
       return;
     }
 
@@ -75,7 +93,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
 
   const handleAuthSuccess = () => {
     if (!isFree) {
-      router.push(`/checkout?courseId=${cid}`);
+      setIsCheckoutModalOpen(true);
     } else {
       enrollCourse(cid)
         .unwrap()
@@ -128,36 +146,40 @@ export default function CourseEnrollSidebar({ course, isFree }) {
           <div className="p-5">
             <div className="flex items-baseline gap-2 mb-4">
               <span className="text-2xl font-black text-slate-900">
-                {isFree ? (isBn ? "ফ্রি" : "FREE") : `৳ ${course.price}`}
+                {isSubscribed ? (isBn ? "উন্মুক্ত" : "UNLOCKED") : isFree ? (isBn ? "ফ্রি" : "FREE") : `৳ ${course.price}`}
               </span>
-              {!isFree && (
+              {!isFree && !isSubscribed && (
                 <span className="text-xs text-slate-400 line-through">
                   ৳ ১,২০০
                 </span>
               )}
               <span className="ml-auto rounded bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold">
-                {isFree
+                {isSubscribed
                   ? isBn
-                    ? "১০০% স্কলারশিপ"
-                    : "100% Free"
-                  : isBn
-                    ? "বিশেষ ৫৮% ছাড়"
-                    : "58% Off"}
+                    ? "সাবস্ক্রিপশনে অন্তর্ভুক্ত"
+                    : "Included with Subscription"
+                  : isFree
+                    ? isBn
+                      ? "১০০% স্কলারশিপ"
+                      : "100% Free"
+                    : isBn
+                      ? "বিশেষ ৫৮% ছাড়"
+                      : "58% Off"}
               </span>
             </div>
 
             {/* Main Action Button */}
-            {isEnrolled ? (
+            {hasAccess ? (
               <LinkButton
                 href={`/courses/learn/${targetSlug}`}
-                variant="secondary"
+                variant="primary"
                 size="lg"
                 fullWidth
-                className="gap-2 bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 font-bold"
+                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs"
               >
-                <CheckCircle className="h-4 w-4 text-emerald-600" />
+                <PlayCircle className="h-5 w-5 text-white" />
                 <span>
-                  {isBn ? "এনরোল্ড আছেন (ক্লাসরুমে যান)" : "Enrolled (Open Classroom)"}
+                  {isBn ? "কোর্সটি দেখুন ও প্লে করুন" : "View & Play Now"}
                 </span>
               </LinkButton>
             ) : (
@@ -177,8 +199,8 @@ export default function CourseEnrollSidebar({ course, isFree }) {
                         ? "বিনামূল্যে ক্লাসরুমে যান"
                         : "Enroll for Free"
                       : isBn
-                        ? `এখনই সম্পূর্ণ ভর্তি হন (৳ ${course.price})`
-                        : `Enroll in Full Course (৳ ${course.price})`}
+                        ? `এখনই ভর্তি হন (৳ ${course.price})`
+                        : `Enroll Now (৳ ${course.price})`}
                   </span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -258,6 +280,17 @@ export default function CourseEnrollSidebar({ course, isFree }) {
           </div>
         </div>
       </div>
+
+      {/* Checkout Modal for Direct Purchase */}
+      <CheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+        course={course}
+        onSuccess={() => {
+          setIsCheckoutModalOpen(false);
+          router.push(`/courses/learn/${targetSlug}`);
+        }}
+      />
 
       {/* Auth Modal for Unauthenticated Users */}
       <AuthModal

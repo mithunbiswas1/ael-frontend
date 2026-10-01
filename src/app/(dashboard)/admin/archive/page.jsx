@@ -210,28 +210,24 @@ export default function AdminArchivePage() {
       {/* 2. Filter & Search Controls */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white p-4">
         <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
-          <button
+          <Button
+            type="button"
+            variant={selectedCategory === "all" ? "primary" : "secondary"}
+            size="xs"
             onClick={() => setSelectedCategory("all")}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-              selectedCategory === "all"
-                ? "bg-primary text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
           >
             All Categories
-          </button>
+          </Button>
           {CATEGORY_OPTIONS.map((cat) => (
-            <button
+            <Button
               key={cat.value}
+              type="button"
+              variant={selectedCategory === cat.value ? "primary" : "secondary"}
+              size="xs"
               onClick={() => setSelectedCategory(cat.value)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                selectedCategory === cat.value
-                  ? "bg-primary text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
             >
               {cat.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -321,20 +317,22 @@ export default function AdminArchivePage() {
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1.5">
-                      <button
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleOpenEditModal(item)}
-                        className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-primary transition-colors"
                         title="Edit"
-                      >
-                        <Edit2 className="h-3.5 w-3.5" />
-                      </button>
-                      <button
+                        icon={Edit2}
+                      />
+                      <Button
+                        type="button"
+                        variant="danger-ghost"
+                        size="icon-sm"
                         onClick={() => handleDelete(item)}
-                        className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 transition-colors"
                         title="Delete"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                        icon={Trash2}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

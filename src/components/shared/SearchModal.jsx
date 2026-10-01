@@ -307,7 +307,7 @@ export default function SearchModal({ isOpen, onClose }) {
                         key={item.id}
                         href={item.href}
                         onClick={onClose}
-                        className="group flex items-start gap-3.5 rounded-xl border border-slate-100 p-3 transition-all duration-150 hover:border-primary/40 hover:bg-blue-50/40 hover:shadow-xs"
+                        className="group flex items-start gap-3.5 rounded-xl border border-slate-100 p-3 transition-colors duration-150 hover:border-primary/40 hover:bg-blue-50/40"
                       >
                         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition-colors group-hover:bg-primary group-hover:text-white mt-0.5">
                           <IconComponent className="h-4.5 w-4.5" />

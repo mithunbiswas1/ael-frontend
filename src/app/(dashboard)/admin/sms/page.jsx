@@ -475,13 +475,14 @@ export default function AdminSmsPage() {
                   </TableCell>
 
                   <TableCell className="text-right">
-                    <button
+                    <Button
+                      type="button"
+                      variant="danger-ghost"
+                      size="icon-sm"
                       onClick={() => handleDelete(item)}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors"
                       title="Delete log"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+                      icon={Trash2}
+                    />
                   </TableCell>
                 </TableRow>
               ))

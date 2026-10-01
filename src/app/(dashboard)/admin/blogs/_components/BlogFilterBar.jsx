@@ -48,7 +48,6 @@ export default function BlogFilterBar({
       <AdminPageHeader
         icon={FaNewspaper}
         title="Blog & Article Management"
-        description="Publish bilingual articles, technical advisories, and industry updates."
         actionLabel="Write New Article"
         onActionClick={handleCreate}
       />

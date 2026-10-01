@@ -22,6 +22,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import RichTextEditor from "@/components/ui/RichTextEditor";
@@ -73,6 +74,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
     readTimeBn: "৫ মিনিট পাঠ",
     tags: "lpg, safety, regulations",
     isPublished: true,
+    accessType: "free",
     metaTitle: "",
     metaTitleBn: "",
     metaDescription: "",
@@ -103,6 +105,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
           ? initialData.tags.join(", ")
           : (initialData.tags || "lpg, safety"),
         isPublished: initialData.isPublished !== undefined ? initialData.isPublished : true,
+        accessType: initialData.accessType || "free",
         metaTitle: initialData.metaTitle || "",
         metaTitleBn: initialData.metaTitleBn || "",
         metaDescription: initialData.metaDescription || "",
@@ -295,25 +298,17 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
         </div>
 
         <div className="flex items-center gap-2.5">
-          <Link
-            href="/admin/blogs"
-            className="inline-flex items-center px-4 py-2 text-xs font-semibold rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors"
-          >
+          <LinkButton href="/admin/blogs" variant="white" size="sm">
             Cancel
-          </Link>
+          </LinkButton>
           <Button
             type="submit"
-            disabled={isSaving}
+            isLoading={isSaving}
             variant="primary"
             size="sm"
-            className="gap-2 font-bold px-5"
+            icon={Save}
           >
-            {isSaving ? (
-              <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-            ) : (
-              <Save className="h-3.5 w-3.5" />
-            )}
-            <span>{isEdit ? "Save Changes" : "Publish Article"}</span>
+            {isEdit ? "Save Changes" : "Publish Article"}
           </Button>
         </div>
       </div>
@@ -356,29 +351,26 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
                 <label className="block text-xs font-bold text-slate-700">
                   URL Slug *
                 </label>
-                <button
+                <Button
                   type="button"
+                  variant="link"
+                  size="xs"
                   onClick={handleGenerateSlug}
-                  className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-semibold"
                 >
-                  <span>Generate from Title</span>
-                </button>
+                  Generate from Title
+                </Button>
               </div>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 font-mono">
-                  /blogs/
-                </span>
-                <input
-                  type="text"
-                  required
-                  placeholder="lpg-safety-compliance-standards"
-                  value={formData.slug}
-                  onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
-                  }
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-18 pr-3 text-xs font-mono font-medium text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-hidden"
-                />
-              </div>
+              <Input
+                required
+                size="sm"
+                placeholder="lpg-safety-compliance-standards"
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData({ ...formData, slug: e.target.value })
+                }
+                prefix={<span className="font-mono text-xs text-slate-400">/blogs/</span>}
+                className="font-mono pl-16"
+              />
             </div>
           </div>
 
@@ -610,20 +602,65 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
                 <label className="block text-xs font-bold text-slate-700">
                   Article Category *
                 </label>
-                <button
+                <Button
                   type="button"
+                  variant="link"
+                  size="xs"
                   onClick={() => setIsCategoryModalOpen(true)}
-                  className="inline-flex items-center gap-1 text-[11px] font-bold text-primary hover:underline cursor-pointer"
+                  icon={Plus}
                 >
-                  <Plus className="h-3 w-3" />
-                  <span>Add Category</span>
-                </button>
+                  Add Category
+                </Button>
               </div>
               <Select
                 value={formData.category}
                 onChange={handleCategoryChange}
                 options={categoryOptions}
               />
+            </div>
+
+            {/* Access Type: Free vs Paid */}
+            <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              <label className="block text-xs font-bold text-slate-800">
+                Content Access Type / অ্যাক্সেস ধরন *
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, accessType: "free" })}
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    formData.accessType === "free"
+                      ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-500/20"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
+                  }`}
+                >
+                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                    <span>Free (উন্মুক্ত)</span>
+                    {formData.accessType === "free" && (
+                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Open to all public visitors</p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, accessType: "paid" })}
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                    formData.accessType === "paid"
+                      ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
+                  }`}
+                >
+                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                    <span>Paid (সাবস্ক্রাইবার)</span>
+                    {formData.accessType === "paid" && (
+                      <span className="h-2 w-2 rounded-full bg-amber-500" />
+                    )}
+                  </div>
+                  <p className="text-[10px] text-slate-500 mt-0.5">Subscribers & Admins only</p>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -643,14 +680,16 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
                     unoptimized
                     className="object-cover"
                   />
-                  <button
+                  <Button
                     type="button"
+                    variant="danger"
+                    size="icon-xs"
+                    shape="circle"
                     onClick={() => setFormData({ ...formData, image: "" })}
-                    className="absolute top-2 right-2 h-7 w-7 rounded-lg bg-red-600 text-white flex items-center justify-center hover:bg-red-700 shadow-md transition-colors"
+                    className="absolute top-2 right-2 shadow-md"
                     title="Remove image"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
+                    icon={Trash2}
+                  />
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-emerald-600 font-medium">
                   <CheckCircle2 className="h-3.5 w-3.5" />

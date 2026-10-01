@@ -4,7 +4,6 @@ import { Manrope, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { defaultMetadata } from "@/lib/seo";
-import WhatsAppButton from "@/components/common/WhatsAppButton";
 import { getLocale, getDict } from "@/lib/i18n";
 import { DictionaryProvider } from "@/context/DictionaryContext";
 import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
@@ -38,7 +37,6 @@ export default async function RootLayout({ children }) {
           <DictionaryProvider locale={locale} dict={dict}>
             {children}
             <AdSlot slot="popup_ad" />
-            <WhatsAppButton />
             <Toaster position="top-center" richColors closeButton />
           </DictionaryProvider>
         </ReduxProvider>

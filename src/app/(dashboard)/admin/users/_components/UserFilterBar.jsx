@@ -10,13 +10,9 @@ const ROLE_OPTIONS = [
   { value: "ALL", label: "All Roles (সকল রোল)" },
   { value: "super_admin", label: "Super Admin" },
   { value: "admin", label: "Admin" },
-  { value: "course_admin", label: "Course Admin" },
-  { value: "editor", label: "Editor" },
-  { value: "moderator", label: "Moderator" },
-  { value: "author", label: "Author / Contributor" },
+  { value: "instructor", label: "Instructor" },
   { value: "subscriber", label: "Subscriber" },
-  { value: "general_user", label: "General User" },
-  { value: "customer", label: "Customer" },
+  { value: "user", label: "User" },
 ];
 
 export default function UserFilterBar({

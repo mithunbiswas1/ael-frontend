@@ -444,25 +444,47 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
                   </div>
 
                   {isAdmin ? (
-                    <LinkButton
-                      href="/admin"
-                      variant="primary"
-                      size="sm"
-                      fullWidth
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Admin Dashboard
-                    </LinkButton>
+                    <div className="grid grid-cols-2 gap-2">
+                      <LinkButton
+                        href="/admin"
+                        variant="primary"
+                        size="sm"
+                        fullWidth
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Admin Panel
+                      </LinkButton>
+                      <LinkButton
+                        href="/user-dashboard/courses"
+                        variant="outline"
+                        size="sm"
+                        fullWidth
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        My Courses
+                      </LinkButton>
+                    </div>
                   ) : (
-                    <LinkButton
-                      href="/subscriber/courses"
-                      variant="primary"
-                      size="sm"
-                      fullWidth
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      My Enrolled Courses
-                    </LinkButton>
+                    <div className="grid grid-cols-2 gap-2">
+                      <LinkButton
+                        href="/user-dashboard"
+                        variant="primary"
+                        size="sm"
+                        fullWidth
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </LinkButton>
+                      <LinkButton
+                        href="/user-dashboard/courses"
+                        variant="outline"
+                        size="sm"
+                        fullWidth
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        My Courses
+                      </LinkButton>
+                    </div>
                   )}
 
                   <div className="flex items-center gap-2">

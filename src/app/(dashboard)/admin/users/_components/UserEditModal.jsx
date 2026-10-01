@@ -7,18 +7,15 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
+import { Switch } from "@/components/ui/Switch";
 import { FaUserShield, FaSave, FaKey } from "react-icons/fa";
 
 const ROLE_OPTIONS = [
   { value: "super_admin", label: "Super Admin" },
   { value: "admin", label: "Admin" },
-  { value: "course_admin", label: "Course Admin" },
-  { value: "editor", label: "Editor" },
-  { value: "moderator", label: "Moderator" },
-  { value: "author", label: "Author / Contributor" },
+  { value: "instructor", label: "Instructor" },
   { value: "subscriber", label: "Subscriber" },
-  { value: "general_user", label: "General User" },
-  { value: "customer", label: "Customer" },
+  { value: "user", label: "User" },
 ];
 
 export default function UserEditModal({
@@ -30,7 +27,7 @@ export default function UserEditModal({
 }) {
   const [formData, setFormData] = useState({
     fullName: "",
-    role: "customer",
+    role: "user",
     is_active: true,
     email: "",
     phone: "",
@@ -40,7 +37,7 @@ export default function UserEditModal({
     if (user) {
       setFormData({
         fullName: user.fullName || "",
-        role: user.role || "customer",
+        role: user.role || "user",
         is_active: user.is_active !== false,
         email: user.email || "",
         phone: user.phone || "",
@@ -90,6 +87,27 @@ export default function UserEditModal({
           />
         </div>
 
+        {/* Subscription Info Card */}
+        <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold text-slate-800">Subscription Status</span>
+            {user.subscription?.status === "active" ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 border border-emerald-200">
+                ● Active ({user.subscription.planName || user.subscription.planKey || "Subscriber"})
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                No Active Plan (Free)
+              </span>
+            )}
+          </div>
+          {user.subscription?.status === "active" && user.subscription?.expiresAt && (
+            <p className="text-[11px] text-slate-500">
+              Valid until: {new Date(user.subscription.expiresAt).toLocaleDateString()}
+            </p>
+          )}
+        </div>
+
         {/* Role Selection */}
         <Select
           label="Assigned System Role"
@@ -99,6 +117,21 @@ export default function UserEditModal({
           required
         />
 
+        {formData.role === "admin" && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between gap-3 text-xs">
+            <span className="text-emerald-900 font-medium">
+              Admin role selected: Granular page control can be assigned.
+            </span>
+            <Link
+              href={`/admin/users/${user._id}`}
+              className="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline shrink-0"
+              onClick={onClose}
+            >
+              Configure Pages →
+            </Link>
+          </div>
+        )}
+
         {/* Active Account Status Toggle */}
         <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3.5">
           <div>
@@ -107,17 +140,12 @@ export default function UserEditModal({
               When inactive, the user cannot log in or perform actions.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setFormData({ ...formData, is_active: !formData.is_active })}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer ${formData.is_active ? "bg-emerald-600" : "bg-slate-300"
-              }`}
-          >
-            <span
-              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.is_active ? "translate-x-6" : "translate-x-1"
-                }`}
-            />
-          </button>
+          <Switch
+            checked={Boolean(formData.is_active)}
+            onCheckedChange={(val) =>
+              setFormData({ ...formData, is_active: val })
+            }
+          />
         </div>
 
         {/* Modal Actions */}
@@ -134,11 +162,10 @@ export default function UserEditModal({
             type="submit"
             variant="primary"
             size="sm"
-            disabled={isUpdating}
-            className="gap-2"
+            isLoading={isUpdating}
+            icon={FaSave}
           >
-            <FaSave className="h-3.5 w-3.5" />
-            <span>{isUpdating ? "Saving..." : "Save Changes"}</span>
+            Save Changes
           </Button>
         </div>
       </form>

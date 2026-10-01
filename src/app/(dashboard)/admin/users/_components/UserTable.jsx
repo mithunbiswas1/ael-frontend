@@ -13,18 +13,17 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { H4, P } from "@/components/ui/Typography";
 
 const ROLE_BADGES = {
   super_admin: "bg-purple-100 text-purple-800 border-purple-200",
   admin: "bg-blue-100 text-blue-800 border-blue-200",
+  instructor: "bg-indigo-100 text-indigo-800 border-indigo-200",
   course_admin: "bg-indigo-100 text-indigo-800 border-indigo-200",
-  editor: "bg-teal-100 text-teal-800 border-teal-200",
-  moderator: "bg-cyan-100 text-cyan-800 border-cyan-200",
-  author: "bg-amber-100 text-amber-800 border-amber-200",
   subscriber: "bg-emerald-100 text-emerald-800 border-emerald-200",
+  user: "bg-slate-100 text-slate-700 border-slate-200",
   general_user: "bg-slate-100 text-slate-700 border-slate-200",
-  customer: "bg-slate-100 text-slate-700 border-slate-200",
 };
 
 export default function UserTable({
@@ -131,6 +130,11 @@ export default function UserTable({
                   <FaUserShield className="h-3 w-3" />
                   {user.role}
                 </span>
+                {user.subscription?.status === "active" && (
+                  <span className="block text-[10px] text-emerald-700 font-semibold mt-0.5">
+                    ★ {user.subscription.planName || user.subscription.planKey}
+                  </span>
+                )}
               </TableCell>
 
               {/* Status */}
@@ -156,30 +160,29 @@ export default function UserTable({
               {/* Actions */}
               <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-1.5">
-                  <Link
+                  <LinkButton
                     href={`/admin/users/${user._id}`}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold text-primary bg-primary/10 hover:bg-primary hover:text-white transition-colors"
+                    variant="primary-soft"
+                    size="xs"
+                    icon={FaKey}
                     title="Manage Permissions & Role"
                   >
-                    <FaKey className="h-3 w-3" />
-                    <span>Permissions</span>
-                  </Link>
+                    Permissions
+                  </LinkButton>
                   <Button
                     type="button"
                     variant="ghost"
-                    size="xs"
+                    size="icon-sm"
                     onClick={() => onEdit(user)}
-                    className="h-8 w-8 p-0 text-slate-500 hover:text-primary hover:bg-primary/5"
                     title="Quick Edit"
                   >
                     <FaEdit className="h-3.5 w-3.5" />
                   </Button>
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="xs"
+                    variant="danger-ghost"
+                    size="icon-sm"
                     onClick={() => onDelete(user)}
-                    className="h-8 w-8 p-0 text-slate-400 hover:text-red-600 hover:bg-red-50"
                     title="Delete User"
                   >
                     <FaTrash className="h-3.5 w-3.5" />

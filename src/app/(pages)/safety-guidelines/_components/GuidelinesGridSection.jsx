@@ -44,11 +44,26 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
           ? `"${docTitle}" ডাউনলোড করতে অনুগ্রহ করে লগইন করুন।`
           : `"${docTitle}" requires authentication. Please log in to download.`
       );
-    } else {
+      return;
+    }
+
+    const downloadTarget = doc.pdfUrl || (doc.fileName ? `/public/upload/${doc.fileName}` : null);
+    if (downloadTarget) {
+      const fullUrl = downloadTarget.startsWith("http")
+        ? downloadTarget
+        : `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") || "http://localhost:8005"}${downloadTarget}`;
+
+      window.open(fullUrl, "_blank", "noopener,noreferrer");
       toast.success(
         isBn
-          ? `ডাউনলোড শুরু হচ্ছে: ${docTitle} (PDF)`
-          : `Starting download: ${docTitle} (PDF)`
+          ? `ডাউনলোড ওপেন হচ্ছে: ${docTitle} (PDF)`
+          : `Opening download: ${docTitle} (PDF)`
+      );
+    } else {
+      toast.info(
+        isBn
+          ? `এই দলিলের পিডিএফ ফাইল শীঘ্রই আপলোড করা হবে।`
+          : `PDF file for this document will be uploaded soon.`
       );
     }
   };
@@ -56,6 +71,11 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
   const filteredDocs = dynamicDocs.filter(
     (doc) => doc.targetTab === "all" || doc.targetTab === activeTab
   );
+
+  const filteredAgencies = dynamicAgencies.filter(
+    (agency) => !agency.targetTab || agency.targetTab === "all" || agency.targetTab === activeTab
+  );
+  const displayedAgencies = filteredAgencies.length > 0 ? filteredAgencies : dynamicAgencies;
 
   const activeTabObj = STAKEHOLDER_TABS.find((t) => t.id === activeTab);
   const activeTabLabel = isBn
@@ -149,43 +169,65 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
               />
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {dynamicAgencies.map((agency) => (
-                  <div
-                    key={agency.id}
-                    className="group flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs transition-colors duration-200 hover:border-primary/50"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`rounded-lg border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${agency.badgeBg}`}
-                        >
-                          {agency.name}
-                        </span>
-                        <Building2 className="h-4 w-4 text-slate-400" />
+                {displayedAgencies.map((agency) => {
+                  const hasCircularPdf = agency.pdfUrl || agency.fileName;
+                  return (
+                    <div
+                      key={agency.id}
+                      className="group flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs transition-colors duration-200 hover:border-primary/50"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`rounded-lg border px-2.5 py-1 text-xs font-black uppercase tracking-wider ${agency.badgeBg || "bg-blue-50 text-blue-700 border-blue-200"}`}
+                          >
+                            {agency.name}
+                          </span>
+                          <Building2 className="h-4 w-4 text-slate-400" />
+                        </div>
+
+                        <H4 className="mt-3 text-xs font-bold text-slate-900 leading-snug">
+                          {isBn ? agency.titleBn : agency.titleEn}
+                        </H4>
+
+                        <p className="mt-1 text-[11px] leading-relaxed text-slate-500 line-clamp-2">
+                          {isBn ? agency.descBn : agency.descEn}
+                        </p>
                       </div>
 
-                      <H4 className="mt-3 text-xs font-bold text-slate-900 leading-snug">
-                        {isBn ? agency.titleBn : agency.titleEn}
-                      </H4>
+                      <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                        <a
+                          href={agency.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+                        >
+                          <span>{isBn ? "ওয়েবসাইট দেখুন" : "View Documents"}</span>
+                          <ExternalLink className="h-3 w-3" />
+                        </a>
 
-                      <p className="mt-1 text-[11px] leading-relaxed text-slate-500 line-clamp-2">
-                        {isBn ? agency.descBn : agency.descEn}
-                      </p>
+                        {hasCircularPdf && (
+                          <button
+                            onClick={() =>
+                              handleDownload({
+                                nameEn: `${agency.name} Circular / Notification`,
+                                nameBn: `${agency.name} সরকারি সার্কুলার / প্রজ্ঞাপন`,
+                                access: "Public",
+                                pdfUrl: agency.pdfUrl,
+                                fileName: agency.fileName,
+                              })
+                            }
+                            className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline"
+                            title={isBn ? "গেজেট / সার্কুলার পিডিএফ ডাউনলোড" : "Download Official Gazette / Circular PDF"}
+                          >
+                            <Download className="h-3 w-3" />
+                            <span>{isBn ? "গেজেট PDF" : "Gazette PDF"}</span>
+                          </button>
+                        )}
+                      </div>
                     </div>
-
-                    <div className="mt-4 pt-3 border-t border-slate-100">
-                      <a
-                        href={agency.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
-                      >
-                        <span>{isBn ? "ওয়েবসাইট দেখুন" : "View Documents"}</span>
-                        <ExternalLink className="h-3 w-3" />
-                      </a>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 

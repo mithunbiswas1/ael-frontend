@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { Lock, CreditCard } from "lucide-react";
 import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 import Checkbox from "@/components/ui/Checkbox";
 import { useDictionary } from "@/context/DictionaryContext";
 
@@ -26,8 +27,8 @@ export default function CheckoutFormSection({
   selectedPlan,
   billingType,
   basePrice,
-  vatAmount,
   grandTotal,
+  isPrefilled = false,
 }) {
   const { locale, dict } = useDictionary();
   const isBn = locale === "bn";
@@ -39,9 +40,16 @@ export default function CheckoutFormSection({
       <div className="space-y-6 lg:col-span-7">
         {/* Box 1: Customer Details */}
         <div className="rounded-xl border border-slate-200/80 bg-white p-4 sm:p-6 shadow-2xs">
-          <h2 className="text-sm font-black uppercase tracking-wider text-slate-900 mb-4 flex items-center gap-2">
-            <span>{isBn ? "১. বিলিং বিবরণ" : "1. BILLING DETAILS"}</span>
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-4">
+            <h2 className="text-sm font-black uppercase tracking-wider text-slate-900 flex items-center gap-2">
+              <span>{isBn ? "১. বিলিং বিবরণ" : "1. BILLING DETAILS"}</span>
+            </h2>
+            {isPrefilled && (
+              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/80 w-fit">
+                {isBn ? "✓ প্রোফাইল থেকে পূরণ করা (পরিবর্তনযোগ্য)" : "✓ Filled from profile (editable)"}
+              </span>
+            )}
+          </div>
 
           <div className="space-y-3.5">
             <Input
@@ -239,12 +247,6 @@ export default function CheckoutFormSection({
                 ৳ {basePrice.toLocaleString()}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span>{isBn ? "সরকারি ভ্যাট (৫%):" : "Govt VAT / Regulatory Tax (5%):"}</span>
-              <span className="font-semibold text-slate-800">
-                ৳ {vatAmount.toLocaleString()}
-              </span>
-            </div>
             <div className="flex justify-between pt-2 border-t border-dashed border-slate-200 text-sm font-black text-slate-900">
               <span>{co.totalAmount || (isBn ? "সর্বমোট প্রদেয়:" : "Total Amount:")}</span>
               <span className="text-primary">
@@ -254,24 +256,24 @@ export default function CheckoutFormSection({
           </div>
 
           {/* Submit Pay Button */}
-          <button
+          <Button
             type="submit"
-            disabled={isProcessing}
-            className="w-full flex items-center justify-center gap-2 rounded-lg bg-primary py-3 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs disabled:opacity-50"
+            isLoading={isProcessing}
+            fullWidth
+            size="lg"
+            variant="primary"
+            icon={Lock}
           >
             {isProcessing ? (
               <span>{co.processing || (isBn ? "পেমেন্ট প্রক্রিয়াধীন..." : "Verifying with Merchant...")}</span>
             ) : (
-              <>
-                <Lock className="h-3.5 w-3.5" />
-                <span>
-                  {isBn
-                    ? `নিরাপদে পরিশোধ করুন ৳ ${grandTotal.toLocaleString()}`
-                    : `Pay Securely ৳ ${grandTotal.toLocaleString()}`}
-                </span>
-              </>
+              <span>
+                {isBn
+                  ? `নিরাপদে পরিশোধ করুন ৳ ${grandTotal.toLocaleString()}`
+                  : `Pay Securely ৳ ${grandTotal.toLocaleString()}`}
+              </span>
             )}
-          </button>
+          </Button>
 
           <p className="text-[10px] text-center text-slate-400 mt-3">
             {isBn

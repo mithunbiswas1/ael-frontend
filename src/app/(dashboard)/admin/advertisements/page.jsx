@@ -29,6 +29,7 @@ import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import Input from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
+import { Switch } from "@/components/ui/Switch";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { H4, P } from "@/components/ui/Typography";
 import {
@@ -484,19 +485,12 @@ export default function AdminAdvertisementsPage() {
                 When enabled, active ads within scheduled dates will be served automatically.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none cursor-pointer ${
-                formData.isActive ? "bg-emerald-600" : "bg-slate-300"
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  formData.isActive ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
+            <Switch
+              checked={Boolean(formData.isActive)}
+              onCheckedChange={(val) =>
+                setFormData({ ...formData, isActive: val })
+              }
+            />
           </div>
 
           <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-2.5">

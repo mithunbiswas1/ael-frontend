@@ -21,6 +21,8 @@ const ROUTE_PERMISSION_MAP = [
   { prefix: "/admin/users", module: "users" },
   { prefix: "/admin/messages", module: "messages" },
   { prefix: "/admin/comments", module: "comments" },
+  { prefix: "/admin/safety-guidelines", module: "safety_guidelines" },
+  { prefix: "/admin/regulatory-agencies", module: "safety_guidelines" },
   { prefix: "/admin/advertisements", module: "advertisements" },
   { prefix: "/admin/archive", module: "archive" },
   { prefix: "/admin/sms", module: "sms" },
@@ -70,9 +72,16 @@ function DashboardContent({ children }) {
   // Determine if current pathname requires access check
   let isAccessDenied = false;
 
+  const isStaff = [
+    "super_admin",
+    "admin",
+    "instructor",
+    "course_admin",
+  ].includes(user?.role);
+
   if (isLoggedIn && !isSuperAdmin && pathname.startsWith("/admin")) {
-    // Plain subscribers or general users cannot access any administrative routes
-    if (user?.role === "subscriber" || user?.role === "general_user") {
+    // Non-staff users cannot access any administrative routes
+    if (!isStaff) {
       isAccessDenied = true;
     } else if (pathname === "/admin") {
       // Main dashboard: allowed if user has analytics or at least one admin view action

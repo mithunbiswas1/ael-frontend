@@ -9,16 +9,26 @@ export const metadata = {
     "Interactive LPG safety training modules, certified quizzes, and verified digital certificates for consumers, dealers, and industrial operators.",
 };
 
-export default async function CoursesPage() {
+export default async function CoursesPage({ searchParams }) {
+  const resolvedSearchParams = await searchParams;
+  const initialPriceType =
+    resolvedSearchParams?.priceType ||
+    resolvedSearchParams?.filter ||
+    resolvedSearchParams?.price ||
+    "all";
+  const initialSearch = resolvedSearchParams?.search || "";
+
   const [courses, cmsData] = await Promise.all([
-    getCourses(),
+    getCourses({ priceType: initialPriceType, search: initialSearch }),
     getPageContent("courses"),
   ]);
 
   return (
     <CoursesContent
       initialCourses={courses}
-      bannerData={cmsData.banner}
+      initialPriceFilter={initialPriceType}
+      initialSearch={initialSearch}
+      bannerData={cmsData?.banner || null}
     />
   );
 }

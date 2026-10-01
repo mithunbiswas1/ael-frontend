@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
-  useGetCoursesQuery,
+  useGetAdminCoursesQuery,
   useDeleteCourseMutation,
 } from "@/redux/api/courseApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
@@ -16,10 +16,12 @@ import CourseTable from "./_components/CourseTable";
 export default function AdminCoursesPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [priceFilter, setPriceFilter] = useState("all");
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: coursesData, isLoading, refetch } = useGetCoursesQuery({
+  const { data: coursesData, isLoading, refetch } = useGetAdminCoursesQuery({
     search: searchTerm,
+    priceType: priceFilter === "all" ? undefined : priceFilter,
   });
 
   const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
@@ -58,6 +60,8 @@ export default function AdminCoursesPage() {
         <CourseFilterBar
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
+          priceFilter={priceFilter}
+          onPriceFilterChange={setPriceFilter}
           onOpenCreateModal={handleOpenCreate}
         />
 

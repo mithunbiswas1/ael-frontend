@@ -15,7 +15,7 @@ const Table = React.forwardRef(({ className, containerClassName, ...props }, ref
     <table
       ref={ref}
       data-slot="table"
-      className={cn("w-full caption-bottom text-left text-xs", className)}
+      className={cn("w-full caption-bottom text-left text-xs whitespace-nowrap", className)}
       {...props}
     />
   </div>
@@ -27,7 +27,7 @@ const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     data-slot="table-header"
     className={cn(
-      "border-b border-slate-200 bg-slate-100/80 font-bold uppercase tracking-wider text-slate-700",
+      "border-b border-slate-200 bg-slate-100/80 font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap",
       className
     )}
     {...props}
@@ -39,7 +39,7 @@ const TableBody = React.forwardRef(({ className, ...props }, ref) => (
   <tbody
     ref={ref}
     data-slot="table-body"
-    className={cn("divide-y divide-slate-100 bg-white", className)}
+    className={cn("divide-y divide-slate-100 bg-white whitespace-nowrap", className)}
     {...props}
   />
 ));
@@ -50,7 +50,7 @@ const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     data-slot="table-footer"
     className={cn(
-      "border-t border-slate-200 bg-slate-50 font-medium text-slate-600",
+      "border-t border-slate-200 bg-slate-50 font-medium text-slate-600 whitespace-nowrap",
       className
     )}
     {...props}
@@ -63,7 +63,7 @@ const TableRow = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     data-slot="table-row"
     className={cn(
-      "transition-colors hover:bg-slate-50/80 data-[state=selected]:bg-slate-100",
+      "transition-colors hover:bg-slate-50/80 data-[state=selected]:bg-slate-100 whitespace-nowrap",
       className
     )}
     {...props}
@@ -88,7 +88,7 @@ const TableCell = React.forwardRef(({ className, ...props }, ref) => (
   <td
     ref={ref}
     data-slot="table-cell"
-    className={cn("px-4 py-3 align-middle", className)}
+    className={cn("px-4 py-3 align-middle whitespace-nowrap", className)}
     {...props}
   />
 ));

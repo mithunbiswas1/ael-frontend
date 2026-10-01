@@ -56,7 +56,7 @@ export default function MarketUpdateCard({
     return (
       <Link
         href={href}
-        className="group flex flex-col sm:flex-row overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-colors duration-200 hover:border-primary/50 hover:shadow-md"
+        className="group flex flex-col sm:flex-row overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-colors duration-200 hover:border-primary/50"
       >
         {/* Left Thumbnail (Desktop) / Top (Mobile) */}
         <div className="relative w-full sm:w-64 md:w-72 shrink-0 aspect-16/10 sm:aspect-auto overflow-hidden bg-slate-100">
@@ -130,7 +130,7 @@ export default function MarketUpdateCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-colors duration-200 hover:border-primary/50 hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-colors duration-200 hover:border-primary/50"
     >
       {/* Image container with floating badges */}
       <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">

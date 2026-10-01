@@ -38,7 +38,10 @@ import {
   FaSms,
   FaEnvelopeOpenText,
   FaCreditCard,
+  FaReceipt,
   FaDatabase,
+  FaFilePdf,
+  FaBuilding,
   FaSignOutAlt,
 } from "react-icons/fa";
 
@@ -56,21 +59,33 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "blogs",
   },
   {
-    name: "Comments",
-    href: "/admin/comments",
-    icon: FaComments,
-    module: "comments",
-  },
-  {
     name: "Market Updates",
     href: "/admin/market-updates",
     icon: FaChartLine,
     module: "market-updates",
   },
   {
+    name: "Comments",
+    href: "/admin/comments",
+    icon: FaComments,
+    module: "comments",
+  },
+  {
+    name: "Safety Guidelines",
+    href: "/admin/safety-guidelines",
+    icon: FaFilePdf,
+    module: "safety_guidelines",
+  },
+  {
     name: "Courses",
     href: "/admin/courses",
     icon: FaGraduationCap,
+    module: "courses",
+  },
+  {
+    name: "Course Enrollments",
+    href: "/admin/courses/enrollments",
+    icon: FaReceipt,
     module: "courses",
   },
   {
@@ -126,12 +141,6 @@ const ALL_ADMIN_NAV_ITEMS = [
     href: "/admin/database",
     icon: FaDatabase,
     module: "database",
-  },
-  {
-    name: "Subscriber View",
-    href: "/subscriber",
-    icon: FaGraduationCap,
-    module: null,
   },
   {
     name: "Profile",
@@ -212,24 +221,24 @@ const PAGES_NAV_ITEMS = [
 
 const SUBSCRIBER_NAV_ITEMS = [
   {
-    name: "Learner Hub",
-    href: "/subscriber",
+    name: "Dashboard",
+    href: "/user-dashboard",
     icon: FaTachometerAlt,
   },
   {
-    name: "My Courses",
-    href: "/subscriber/courses",
+    name: "Enrolled Courses",
+    href: "/user-dashboard/courses",
     icon: FaGraduationCap,
   },
   {
-    name: "My Certificates",
-    href: "/subscriber/certificates",
-    icon: FaAward,
+    name: "Subscription",
+    href: "/user-dashboard/subscription",
+    icon: FaCreditCard,
   },
   {
-    name: "Course Catalog",
-    href: "/courses",
-    icon: FaBookOpen,
+    name: "My Certificates",
+    href: "/user-dashboard/certificates",
+    icon: FaAward,
   },
   {
     name: "Profile",
@@ -254,12 +263,29 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
 
   const permissions = permData?.data?.permissions || [];
 
-  const isSubscriberOnly =
-    user?.role === "subscriber" || user?.role === "general_user";
+  const isStaff = [
+    "super_admin",
+    "admin",
+    "instructor",
+    "course_admin",
+  ].includes(user?.role);
+
+  const isSubscriberOnly = !isStaff;
 
   const hasPageAccess = (item) => {
+    // Under no circumstances should user-dashboard routes be shown to admin or staff in admin navigation
+    if (
+      item.href?.startsWith("/user-dashboard") ||
+      item.href?.startsWith("/subscriber") ||
+      item.href?.startsWith("/user/")
+    ) {
+      return false;
+    }
     if (isSuperAdmin) return true;
-    if (item.href === "/profile" || item.href === "/subscriber") return true;
+    if (user?.role === "admin" && (!permissions || permissions.length === 0)) return true;
+    if (item.href === "/profile") {
+      return true;
+    }
     if (item.href === "/admin") {
       return permissions.some((p) => p.actions?.includes("view"));
     }
@@ -271,11 +297,31 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
     return perm ? perm.actions?.includes("view") : false;
   };
 
+  const isInstructor = user?.role === "instructor";
+
+  // Dedicated Instructor navigation: default Courses and Course Enrollments
+  const INSTRUCTOR_NAV_ITEMS = [
+    {
+      name: "Courses",
+      href: "/admin/courses",
+      icon: FaGraduationCap,
+      module: "courses",
+    },
+    {
+      name: "Course Enrollments",
+      href: "/admin/courses/enrollments",
+      icon: FaReceipt,
+      module: "courses",
+    },
+  ];
+
   const visibleNavItems = isSubscriberOnly
     ? SUBSCRIBER_NAV_ITEMS
+    : isInstructor
+    ? INSTRUCTOR_NAV_ITEMS
     : ALL_ADMIN_NAV_ITEMS.filter((item) => hasPageAccess(item));
 
-  const visiblePagesNavItems = isSubscriberOnly
+  const visiblePagesNavItems = isSubscriberOnly || isInstructor
     ? []
     : PAGES_NAV_ITEMS.filter((item) => hasPageAccess(item));
 
@@ -395,7 +441,7 @@ function SidebarContent({
       <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
         {!isCollapsed && (
           <Link
-            href={isSubscriberOnly ? "/subscriber" : "/admin"}
+            href={isSubscriberOnly ? "/user-dashboard" : "/admin"}
             scroll={false}
             className="flex items-center gap-2"
           >
@@ -457,7 +503,7 @@ function SidebarContent({
             <P className="text-xs font-bold text-slate-900 truncate">
               {user?.fullName || "Authenticated User"}
             </P>
-            <P className="text-[11px] text-primary font-semibold capitalize truncate">
+            <P className="!text-[11px]">
               {user?.role?.replace("_", " ") || "Member"}
             </P>
           </div>
@@ -598,9 +644,8 @@ function SidebarContent({
         <button
           type="button"
           onClick={handleLogout}
-          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:text-white bg-rose-50/70 hover:bg-rose-600 border border-rose-200/60 hover:border-rose-600 transition-all duration-200 group cursor-pointer ${
-            isCollapsed ? "justify-center px-2" : ""
-          }`}
+          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:text-white bg-rose-50/70 hover:bg-rose-600 border border-rose-200/60 hover:border-rose-600 transition-all duration-200 group cursor-pointer ${isCollapsed ? "justify-center px-2" : ""
+            }`}
           title="Logout"
         >
           <FaSignOutAlt className="w-4 h-4 flex-shrink-0 text-rose-500 group-hover:text-white transition-colors" />

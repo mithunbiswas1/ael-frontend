@@ -43,7 +43,7 @@ export default function BlogCard({
   return (
     <Link
       href={href}
-      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white/90 backdrop-blur-md transition-all duration-200 hover:border-primary/50 hover:bg-white hover:shadow-xs"
+      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white/90 backdrop-blur-md transition-colors duration-200 hover:border-primary/50 hover:bg-white"
     >
       {/* Image container with floating badge */}
       <div className="relative aspect-16/10 w-full overflow-hidden bg-slate-100">

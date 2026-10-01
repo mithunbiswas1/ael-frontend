@@ -78,6 +78,8 @@ export const endpoints = {
   // Courses API
   courses: {
     publicList: "courses",
+    adminList: "courses/admin-list",
+    enrollments: "courses/instructor/enrollments",
     detail: (id) => `courses/${id}`,
     create: "courses",
     update: (id) => `courses/${id}`,
@@ -86,6 +88,7 @@ export const endpoints = {
     subscriberEnroll: "courses/subscriber/enroll",
     uploadVideo: "courses/upload-video",
     uploadImage: "courses/upload-image",
+    uploadPdf: "courses/upload-pdf",
     updateProgress: (id) => `courses/${id}/progress`,
   },
 
@@ -143,6 +146,11 @@ export const endpoints = {
   subscriptions: {
     plans: "subscriptions/plans",
     checkout: "subscriptions/checkout",
+    my: "subscriptions/my",
+    adminPlans: "subscriptions/admin/plans",
+    adminPlanDetail: (id) => `subscriptions/admin/plans/${id}`,
+    assign: "subscriptions/admin/assign",
+    revoke: (userId) => `subscriptions/admin/revoke/${userId}`,
     adminList: "subscriptions/admin/all",
     refund: (id) => `subscriptions/admin/${id}/refund`,
   },

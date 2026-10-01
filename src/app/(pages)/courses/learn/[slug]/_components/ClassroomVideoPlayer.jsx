@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/Button";
 
 export default function ClassroomVideoPlayer({
   courseId,
+  course,
   currentLesson,
   currentLessonIdx,
   totalLessons,
@@ -246,6 +247,63 @@ export default function ClassroomVideoPlayer({
           </div>
         ) : (
           <div className="space-y-3">
+            {/* 1. Official Course PDF Study Guide if uploaded */}
+            {course?.pdfUrl && (
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 text-xs">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900">
+                      {course.pdfOriginalName || (isBn ? `${course.titleBn || course.title} - স্টাডি গাইড.pdf` : `${course.title} - Study Guide.pdf`)}
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">
+                      {course.pdfSize ? `${course.pdfSize} • ` : ""}Official Course PDF Guide
+                    </div>
+                  </div>
+                </div>
+                <a
+                  href={course.pdfUrl.startsWith("/") ? `http://localhost:8005${course.pdfUrl}` : course.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5 text-primary" />
+                  <span>{isBn ? "ডাউনলোড" : "Download"}</span>
+                </a>
+              </div>
+            )}
+
+            {/* 2. Specific Lesson PDF Handout if uploaded */}
+            {currentLesson?.pdfUrl && (
+              <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 text-xs">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900">
+                      {currentLesson.pdfOriginalName || (isBn ? `${currentLesson.titleBn || currentLesson.title} - হ্যান্ডআউট.pdf` : `${currentLesson.title} - Lesson Handout.pdf`)}
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-0.5">Lesson Resource Handout</div>
+                  </div>
+                </div>
+                <a
+                  href={currentLesson.pdfUrl.startsWith("/") ? `http://localhost:8005${currentLesson.pdfUrl}` : currentLesson.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download
+                  className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5 text-primary" />
+                  <span>{isBn ? "ডাউনলোড" : "Download"}</span>
+                </a>
+              </div>
+            )}
+
+            {/* Standard Safety Checklist & Guide */}
             <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-white p-4 text-xs">
               <div className="flex items-center gap-3">
                 <FileText className="h-5 w-5 text-primary shrink-0" />

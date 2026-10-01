@@ -7,16 +7,59 @@ export const courseApi = apiSlice.injectEndpoints({
   overrideExisting: true,
 
   endpoints: (builder) => ({
-    // Get Courses List
+    // Get Courses List (Public)
     getCourses: builder.query({
       query: (params = {}) => {
-        const queryParams = new URLSearchParams(params).toString();
+        const cleanParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (
+            value !== undefined &&
+            value !== null &&
+            value !== "" &&
+            value !== "all"
+          ) {
+            cleanParams.append(key, value);
+          }
+        });
+        const qs = cleanParams.toString();
         return {
-          url: `${endpoints.courses.publicList}?${queryParams}`,
+          url: qs ? `${endpoints.courses.publicList}?${qs}` : endpoints.courses.publicList,
           method: "GET",
         };
       },
       providesTags: ["Courses"],
+    }),
+
+    // Get Admin Courses List (Instructor gets only their own, Admin gets all)
+    getAdminCourses: builder.query({
+      query: (params = {}) => {
+        const cleanParams = new URLSearchParams();
+        Object.entries(params || {}).forEach(([key, value]) => {
+          if (
+            value !== undefined &&
+            value !== null &&
+            value !== "" &&
+            value !== "all"
+          ) {
+            cleanParams.append(key, value);
+          }
+        });
+        const qs = cleanParams.toString();
+        return {
+          url: qs ? `${endpoints.courses.adminList}?${qs}` : endpoints.courses.adminList,
+          method: "GET",
+        };
+      },
+      providesTags: ["Courses"],
+    }),
+
+    // Get Course Enrollments & Sales History
+    getCourseEnrollments: builder.query({
+      query: () => ({
+        url: endpoints.courses.enrollments,
+        method: "GET",
+      }),
+      providesTags: ["Courses", "Orders"],
     }),
 
     // Get Course By ID
@@ -94,6 +137,15 @@ export const courseApi = apiSlice.injectEndpoints({
       }),
     }),
 
+    // Direct PDF Upload for Course Resource / Study Guide
+    uploadCoursePdf: builder.mutation({
+      query: (formData) => ({
+        url: endpoints.courses.uploadPdf,
+        method: "POST",
+        body: formData,
+      }),
+    }),
+
     // Subscriber: Update Course Progress (10s interval heartbeat)
     updateCourseProgress: builder.mutation({
       query: ({ courseId, data }) => ({
@@ -108,6 +160,8 @@ export const courseApi = apiSlice.injectEndpoints({
 
 export const {
   useGetCoursesQuery,
+  useGetAdminCoursesQuery,
+  useGetCourseEnrollmentsQuery,
   useGetCourseByIdQuery,
   useCreateCourseMutation,
   useUpdateCourseMutation,
@@ -116,5 +170,6 @@ export const {
   useEnrollCourseMutation,
   useUploadCourseVideoMutation,
   useUploadCourseImageMutation,
+  useUploadCoursePdfMutation,
   useUpdateCourseProgressMutation,
 } = courseApi;

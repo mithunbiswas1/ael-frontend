@@ -124,7 +124,7 @@ export default function ActsLibrarySection({ gazettes = [] }) {
               return (
                 <div
                   key={act.id}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 sm:p-5 transition-all hover:bg-white hover:border-primary/40 hover:shadow-2xs"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-slate-50/50 p-4 sm:p-5 transition-all hover:bg-white hover:border-primary/40"
                 >
                   <div className="space-y-1 max-w-2xl">
                     <div className="flex flex-wrap items-center gap-2">

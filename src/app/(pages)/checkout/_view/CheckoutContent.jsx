@@ -1,13 +1,15 @@
 // src/app/(pages)/checkout/_view/CheckoutContent.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import CheckoutHeroSection from "../_components/CheckoutHeroSection";
 import CheckoutSuccessState from "../_components/CheckoutSuccessState";
 import CheckoutFormSection from "../_components/CheckoutFormSection";
 import { useInitiateCheckoutMutation } from "@/redux/api/subscriptionApi";
+import { useGetProfileQuery } from "@/redux/api/userApi";
 
 const PLANS = {
   free: { name: "Public Visitor", priceMonthly: 0, priceYearly: 0 },
@@ -31,17 +33,53 @@ export default function CheckoutContent() {
     ? selectedPlan.priceYearly
     : selectedPlan.priceMonthly;
 
-  const vatAmount = Math.round(basePrice * 0.05);
-  const grandTotal = basePrice + vatAmount;
+  const grandTotal = basePrice;
+
+  // Retrieve logged-in profile details
+  const { user: authUser, isLoggedIn } = useSelector((state) => state.auth);
+  const { data: profileResponse } = useGetProfileQuery(undefined, {
+    skip: !isLoggedIn && !authUser,
+  });
+
+  const profile = profileResponse?.data || authUser;
 
   const [paymentMethod, setPaymentMethod] = useState("bkash");
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [companyName, setCompanyName] = useState("");
+  const [fullName, setFullName] = useState(authUser?.fullName || "");
+  const [phone, setPhone] = useState(authUser?.phone || "");
+  const [email, setEmail] = useState(authUser?.email || "");
+  const [companyName, setCompanyName] = useState(
+    authUser?.companyName || authUser?.businessName || authUser?.organization || ""
+  );
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [activeTxnId, setActiveTxnId] = useState("");
+
+  // Sync profile details if fields are empty, while keeping them completely editable
+  useEffect(() => {
+    if (!profile) return;
+
+    if (profile.fullName) {
+      setFullName((prev) => (prev ? prev : profile.fullName));
+    }
+    if (profile.phone) {
+      setPhone((prev) => (prev ? prev : profile.phone));
+    }
+    if (profile.email) {
+      setEmail((prev) => (prev ? prev : profile.email));
+    }
+    const org =
+      profile.companyName ||
+      profile.businessName ||
+      profile.organization ||
+      "";
+    if (org) {
+      setCompanyName((prev) => (prev ? prev : org));
+    }
+  }, [profile]);
+
+  const isPrefilled = Boolean(
+    profile && (profile.fullName || profile.phone || profile.email)
+  );
 
   const [initiateCheckout, { isLoading: isProcessing }] = useInitiateCheckoutMutation();
 
@@ -115,8 +153,8 @@ export default function CheckoutContent() {
             selectedPlan={selectedPlan}
             billingType={billingType}
             basePrice={basePrice}
-            vatAmount={vatAmount}
             grandTotal={grandTotal}
+            isPrefilled={isPrefilled}
           />
         )}
       </section>

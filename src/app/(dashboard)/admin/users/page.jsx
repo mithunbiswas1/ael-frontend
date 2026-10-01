@@ -10,6 +10,7 @@ import {
 } from "@/redux/api/userApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import { Button } from "@/components/ui/Button";
 import UserFilterBar from "./_components/UserFilterBar";
 import UserTable from "./_components/UserTable";
 import UserEditModal from "./_components/UserEditModal";
@@ -112,13 +113,15 @@ export default function AdminUsersPage() {
             <p className="text-xs text-rose-600 mt-1">
               {error?.data?.message || error?.error || "Please verify that you are logged in with an active administrator session."}
             </p>
-            <button
+            <Button
               type="button"
+              variant="danger-soft"
+              size="xs"
               onClick={() => refetch()}
-              className="mt-3 px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-rose-700 border border-rose-300 hover:bg-rose-100 cursor-pointer"
+              className="mt-3"
             >
               Retry Loading
-            </button>
+            </Button>
           </div>
         )}
 

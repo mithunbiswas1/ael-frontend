@@ -68,6 +68,7 @@ export const apiSlice = createApi({
     "Ads",
     "AdminAds",
     "Subscriptions",
+    "SubscriptionPlans",
     "Directory",
     "Campaigns",
     "Archives",

@@ -53,7 +53,7 @@ export default function CheckoutSuccessState({
 
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Link
-          href="/subscriber/courses"
+          href="/user-dashboard/courses"
           className="rounded-lg bg-amber-500 px-5 py-2.5 text-xs font-bold text-slate-950 hover:bg-amber-400 transition-colors shadow-xs"
         >
           {isBn ? "আমার সাবস্ক্রিপশন ও ক্লাসরুমে যান" : "Go to My Classroom"}

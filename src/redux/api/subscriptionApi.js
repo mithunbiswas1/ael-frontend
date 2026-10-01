@@ -23,7 +23,16 @@ export const subscriptionApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Subscriptions", "Courses"],
+      invalidatesTags: ["Subscriptions", "Courses", "Profile"],
+    }),
+
+    // Get My Subscription (Current active package & remaining days)
+    getMySubscription: builder.query({
+      query: () => ({
+        url: endpoints.subscriptions.my,
+        method: "GET",
+      }),
+      providesTags: ["Subscriptions", "Profile"],
     }),
 
     // Admin: Get all transactions
@@ -36,6 +45,72 @@ export const subscriptionApi = apiSlice.injectEndpoints({
         };
       },
       providesTags: ["Subscriptions"],
+    }),
+
+    // Admin: Get all plans
+    getAdminSubscriptionPlans: builder.query({
+      query: () => ({
+        url: endpoints.subscriptions.adminPlans,
+        method: "GET",
+      }),
+      providesTags: ["SubscriptionPlans"],
+    }),
+
+    // Admin: Get single plan by ID
+    getSubscriptionPlanById: builder.query({
+      query: (id) => ({
+        url: endpoints.subscriptions.adminPlanDetail(id),
+        method: "GET",
+      }),
+      providesTags: ["SubscriptionPlans"],
+    }),
+
+    // Admin: Create subscription plan
+    createSubscriptionPlan: builder.mutation({
+      query: (data) => ({
+        url: endpoints.subscriptions.adminPlans,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["SubscriptionPlans", "Subscriptions"],
+    }),
+
+    // Admin: Update subscription plan
+    updateSubscriptionPlan: builder.mutation({
+      query: ({ id, ...data }) => ({
+        url: endpoints.subscriptions.adminPlanDetail(id),
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["SubscriptionPlans", "Subscriptions"],
+    }),
+
+    // Admin: Delete subscription plan
+    deleteSubscriptionPlan: builder.mutation({
+      query: (id) => ({
+        url: endpoints.subscriptions.adminPlanDetail(id),
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SubscriptionPlans", "Subscriptions"],
+    }),
+
+    // Admin: Assign subscription to user
+    assignUserSubscription: builder.mutation({
+      query: (data) => ({
+        url: endpoints.subscriptions.assign,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Subscriptions", "Users"],
+    }),
+
+    // Admin: Revoke subscription from user
+    revokeUserSubscription: builder.mutation({
+      query: (userId) => ({
+        url: endpoints.subscriptions.revoke(userId),
+        method: "POST",
+      }),
+      invalidatesTags: ["Subscriptions", "Users"],
     }),
 
     // Admin: Refund transaction
@@ -52,6 +127,14 @@ export const subscriptionApi = apiSlice.injectEndpoints({
 export const {
   useGetSubscriptionPlansQuery,
   useInitiateCheckoutMutation,
+  useGetMySubscriptionQuery,
   useGetAdminSubscriptionsQuery,
+  useGetAdminSubscriptionPlansQuery,
+  useGetSubscriptionPlanByIdQuery,
+  useCreateSubscriptionPlanMutation,
+  useUpdateSubscriptionPlanMutation,
+  useDeleteSubscriptionPlanMutation,
+  useAssignUserSubscriptionMutation,
+  useRevokeUserSubscriptionMutation,
   useRefundSubscriptionMutation,
 } = subscriptionApi;

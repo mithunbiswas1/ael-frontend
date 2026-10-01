@@ -13,11 +13,16 @@ import {
   ExternalLink,
   Download,
   Share2,
+  Lock,
+  Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import { FaFilePdf } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { useDictionary } from "@/context/DictionaryContext";
 import CommentSection from "@/components/shared/CommentSection";
 import AdSlot from "@/components/shared/AdSlot";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { toast } from "sonner";
 
 export default function MarketUpdateDetailContent({
@@ -27,7 +32,18 @@ export default function MarketUpdateDetailContent({
   const { locale } = useDictionary();
   const isBn = locale === "bn";
 
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
   if (!article) return null;
+
+  const isSubscribed = Boolean(
+    user?.role === "subscriber" ||
+    (user?.subscription?.status === "active" && (!user?.subscription?.expiresAt || new Date(user.subscription.expiresAt) > new Date())) ||
+    ["super_admin", "admin", "instructor", "course_admin", "editor"].includes(user?.role)
+  );
+
+  const isPaid = article.accessType === "paid";
+  const isLocked = isPaid && !isSubscribed;
 
   const title = isBn
     ? article.titleBn || article.titleEn
@@ -102,6 +118,22 @@ export default function MarketUpdateDetailContent({
           <div className="lg:col-span-8">
             {/* Header Area */}
             <header className="mb-6 space-y-4">
+              {isPaid && (
+                <div className="mb-1">
+                  {isSubscribed ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
+                      <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>{isBn ? "আপনার সাবস্ক্রিপশনের মাধ্যমে উন্মুক্ত" : "Unlocked with your Subscription"}</span>
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 shadow-2xs">
+                      <Lock className="h-3.5 w-3.5 text-amber-600" />
+                      <span>{isBn ? "প্রিমিয়াম সাবস্ক্রাইবার ডসিয়ার" : "Exclusive Subscriber Report"}</span>
+                    </span>
+                  )}
+                </div>
+              )}
+
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 leading-tight">
                 {title}
               </h1>
@@ -177,24 +209,38 @@ export default function MarketUpdateDetailContent({
                   </div>
 
                   <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
-                    <a
-                      href={article.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-rose-700 transition-colors"
-                    >
-                      <ExternalLink className="h-3.5 w-3.5" />
-                      <span>{isBn ? "পিডিএফ দেখুন" : "View PDF"}</span>
-                    </a>
+                    {isLocked ? (
+                      <LinkButton
+                        href="/pricing"
+                        variant="primary"
+                        size="md"
+                        className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white gap-2 font-bold shadow-xs text-xs"
+                      >
+                        <Lock className="h-3.5 w-3.5" />
+                        <span>{isBn ? "পিডিএফ আনলক করতে সাবস্ক্রাইব করুন" : "Subscribe to Download PDF"}</span>
+                      </LinkButton>
+                    ) : (
+                      <>
+                        <a
+                          href={article.pdfUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-rose-600 px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-rose-700 transition-colors"
+                        >
+                          <ExternalLink className="h-3.5 w-3.5" />
+                          <span>{isBn ? "পিডিএফ দেখুন" : "View PDF"}</span>
+                        </a>
 
-                    <a
-                      href={article.pdfUrl}
-                      download={article.pdfOriginalName || "circular.pdf"}
-                      className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-rose-300 bg-white px-4 py-2.5 text-xs font-bold text-rose-700 shadow-2xs hover:bg-rose-50 transition-colors"
-                    >
-                      <Download className="h-3.5 w-3.5" />
-                      <span>{isBn ? "ডাউনলোড" : "Download"}</span>
-                    </a>
+                        <a
+                          href={article.pdfUrl}
+                          download={article.pdfOriginalName || "circular.pdf"}
+                          className="inline-flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-rose-300 bg-white px-4 py-2.5 text-xs font-bold text-rose-700 shadow-2xs hover:bg-rose-50 transition-colors"
+                        >
+                          <Download className="h-3.5 w-3.5" />
+                          <span>{isBn ? "ডাউনলোড" : "Download"}</span>
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -210,8 +256,74 @@ export default function MarketUpdateDetailContent({
               </div>
             )}
 
-            {/* Detailed Rich Text Content */}
-            {content ? (
+            {/* Detailed Rich Text Content or Locked Gate */}
+            {isLocked ? (
+              <div className="relative mb-12">
+                {/* Teaser Preview with Blur Fade */}
+                {content && (
+                  <div className="relative max-h-36 overflow-hidden select-none pointer-events-none opacity-40">
+                    <div
+                      className="prose prose-slate max-w-none text-slate-800 text-sm leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: content }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white" />
+                  </div>
+                )}
+
+                {/* Luxury Locked Gating Card */}
+                <div className="relative rounded-2xl border-2 border-amber-200/90 bg-linear-to-b from-amber-50/70 via-white to-amber-50/30 p-6 sm:p-8 text-center shadow-lg mt-4">
+                  <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 shadow-inner ring-8 ring-amber-500/5 mb-4">
+                    <Lock className="h-7 w-7 text-amber-600" />
+                  </div>
+
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900 mb-2">
+                    {isBn
+                      ? "এই প্রতিবেদনটি শুধুমাত্র সাবস্ক্রাইবারদের জন্য উন্মুক্ত"
+                      : "Subscriber-Exclusive Technical Intelligence"}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto leading-relaxed mb-6">
+                    {isBn
+                      ? "সম্পূর্ণ তদন্ত প্রতিবেদন, বিশ্লেষণ ও অফিশিয়াল প্রজ্ঞাপন পিডিএফ ডাউনলোড করতে আমাদের সাবস্ক্রিপশন প্যাকেজে যুক্ত হন।"
+                      : "Unlock complete incident dossiers, statutory BERC circulars, high-resolution official PDF downloads, and technical compliance tools."}
+                  </p>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+                    <LinkButton
+                      href="/pricing"
+                      variant="primary"
+                      size="lg"
+                      className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold gap-2 shadow-md"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      <span>{isBn ? "সাবস্ক্রিপশন প্ল্যান দেখুন" : "Explore Subscription Plans"}</span>
+                    </LinkButton>
+
+                    {!isLoggedIn && (
+                      <LinkButton
+                        href={`/sign-in?redirect=/market-updates/${article.slug || article._id}`}
+                        variant="outline"
+                        size="lg"
+                        className="w-full sm:w-auto text-slate-700 border-slate-300 font-semibold"
+                      >
+                        <span>{isBn ? "ইতিমধ্যে একাউন্ট আছে? লগইন করুন" : "Already a member? Sign In"}</span>
+                      </LinkButton>
+                    )}
+                  </div>
+
+                  <div className="mt-5 flex items-center justify-center gap-4 text-[11px] text-slate-500 font-medium">
+                    <span className="flex items-center gap-1">
+                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                      {isBn ? "তাত্ক্ষণিক অ্যাক্সেস" : "Instant Activation"}
+                    </span>
+                    <span>•</span>
+                    <span>bKash / Cards Supported</span>
+                    <span>•</span>
+                    <span>{isBn ? "যে কোনো সময় বাতিলযোগ্য" : "Cancel Anytime"}</span>
+                  </div>
+                </div>
+              </div>
+            ) : content ? (
               <div
                 className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 mb-10 prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl"
                 dangerouslySetInnerHTML={{ __html: content }}

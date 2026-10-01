@@ -90,3 +90,12 @@ button {
     transform: translateX(0);
   }
 }
+
+/* Ensure no content wraps inside admin tables */
+[data-slot="table"],
+[data-slot="table"] th,
+[data-slot="table"] td,
+[data-slot="table"] th *,
+[data-slot="table"] td * {
+  white-space: nowrap !important;
+}

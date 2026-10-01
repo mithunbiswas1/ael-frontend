@@ -230,7 +230,7 @@ export default function ArchivePage() {
               return (
                 <div
                   key={item._id}
-                  className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs hover:shadow-xs transition-shadow"
+                  className="rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition-colors"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div className="space-y-2 flex-1">

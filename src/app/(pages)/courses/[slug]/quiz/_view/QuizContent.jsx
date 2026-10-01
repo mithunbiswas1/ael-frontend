@@ -41,7 +41,7 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
       )
     : null;
 
-  const isAdmin = ["super_admin", "admin", "course_admin", "manager"].includes(user?.role);
+  const isAdmin = ["super_admin", "admin", "instructor", "course_admin", "manager"].includes(user?.role);
   const progressPercent = enrolledItem?.enrollment?.progressPercent ?? (isAdmin ? 100 : 0);
   const isEligibleForQuiz = isAdmin || progressPercent >= 100;
 

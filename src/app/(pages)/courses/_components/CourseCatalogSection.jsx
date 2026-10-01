@@ -16,6 +16,7 @@ import {
   CheckCircle,
   Clock,
   Layers,
+  PlayCircle,
 } from "lucide-react";
 
 import { H2, H4, P } from "@/components/ui/Typography";
@@ -25,6 +26,7 @@ import { LinkButton } from "@/components/ui/LinkButton";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useEnrollCourseMutation } from "@/redux/api/courseApi";
 import AuthModal from "@/components/shared/AuthModal";
+import CheckoutModal from "@/components/shared/CheckoutModal";
 
 export const PRICE_TABS = [
   { id: "all", label: "All Courses", labelBn: "সকল কোর্স" },
@@ -38,6 +40,7 @@ export default function CourseCatalogSection({
   priceFilter,
   setPriceFilter,
   filteredCourses = [],
+  isLoading = false,
 }) {
   const router = useRouter();
   const { locale } = useDictionary();
@@ -48,19 +51,42 @@ export default function CourseCatalogSection({
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [pendingCourse, setPendingCourse] = useState(null);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [checkoutCourse, setCheckoutCourse] = useState(null);
 
-  // Check if course is already enrolled
-  const isAlreadyEnrolled = (courseId) => {
+  const isSubscribed = Boolean(
+    user?.role === "subscriber" ||
+    (user?.subscription?.status === "active" &&
+      user?.subscription?.planKey !== "course_single" &&
+      (!user?.subscription?.expiresAt ||
+        new Date(user.subscription.expiresAt) > new Date())) ||
+    ["super_admin", "admin", "instructor", "course_admin", "editor"].includes(user?.role)
+  );
+
+  // Check if user has access to course
+  const hasCourseAccess = (course) => {
+    if (isSubscribed) return true;
+    const cid = course.courseId || course.id;
     if (!user?.enrolledCourses) return false;
     return user.enrolledCourses.some(
-      (e) => e.courseId === courseId || e.courseId === String(courseId)
+      (e) =>
+        e.courseId === cid ||
+        e.courseId === String(cid) ||
+        e.courseId === course.slug ||
+        (course._id && e.courseId === String(course._id))
     );
   };
 
   // Handle Enrollment
   const handleEnrollClick = async (course) => {
     const cid = course.courseId || course.id;
+    const courseSlug = course.slug || cid;
     const isPaid = course.price > 0;
+
+    if (hasCourseAccess(course)) {
+      router.push(`/courses/learn/${courseSlug}`);
+      return;
+    }
 
     if (!isLoggedIn) {
       setPendingCourse(course);
@@ -68,20 +94,9 @@ export default function CourseCatalogSection({
       return;
     }
 
-    const courseSlug = course.slug || cid;
-
-    if (isAlreadyEnrolled(cid)) {
-      toast.info(
-        isBn
-          ? "আপনি ইতিমধ্যে এই কোর্সে যুক্ত আছেন। ক্লাসরুমে নিয়ে যাওয়া হচ্ছে..."
-          : "You are already enrolled. Navigating to classroom..."
-      );
-      router.push(`/courses/learn/${courseSlug}`);
-      return;
-    }
-
     if (isPaid) {
-      router.push(`/checkout?courseId=${cid}`);
+      setCheckoutCourse(course);
+      setIsCheckoutModalOpen(true);
       return;
     }
 
@@ -103,7 +118,8 @@ export default function CourseCatalogSection({
     const cid = pendingCourse.courseId || pendingCourse.id;
     const courseSlug = pendingCourse.slug || cid;
     if (pendingCourse.price > 0) {
-      router.push(`/checkout?courseId=${cid}`);
+      setCheckoutCourse(pendingCourse);
+      setIsCheckoutModalOpen(true);
     } else {
       enrollCourse(cid)
         .unwrap()
@@ -197,7 +213,23 @@ export default function CourseCatalogSection({
         </div>
 
         {/* Full-Width Courses Grid */}
-        {filteredCourses.length === 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((n) => (
+              <div
+                key={n}
+                className="animate-pulse rounded-xl border border-slate-200 bg-white p-4 space-y-4"
+              >
+                <div className="aspect-16/10 w-full rounded-lg bg-slate-200" />
+                <div className="h-4 bg-slate-200 rounded-md w-1/3" />
+                <div className="h-5 bg-slate-200 rounded-md w-3/4" />
+                <div className="h-3 bg-slate-100 rounded-md w-full" />
+                <div className="h-3 bg-slate-100 rounded-md w-2/3" />
+                <div className="h-8 bg-slate-100 rounded-lg mt-4" />
+              </div>
+            ))}
+          </div>
+        ) : filteredCourses.length === 0 ? (
           <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-500">
             <BookOpen className="h-10 w-10 text-slate-300 mx-auto mb-3" />
             <p className="text-sm font-bold text-slate-800">
@@ -229,7 +261,7 @@ export default function CourseCatalogSection({
               const courseDuration = isBn ? course.durationBn || course.duration : course.duration;
               const courseLevel = isBn ? course.levelBn || course.level : course.level;
               const isPaid = course.price > 0;
-              const isEnrolled = isAlreadyEnrolled(course.courseId || course.id);
+              const hasAccess = hasCourseAccess(course);
 
               const moduleCount = course.curriculum?.length || 1;
               const hasFreeModule =
@@ -320,14 +352,14 @@ export default function CourseCatalogSection({
                         <span>{isBn ? "বিস্তারিত" : "Outline"}</span>
                       </Link>
 
-                      {/* Enroll Button */}
-                      {isEnrolled ? (
+                      {/* Enroll / Play Button */}
+                      {hasAccess ? (
                         <Link
                           href={`/courses/learn/${courseSlug}`}
-                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2 text-xs font-bold hover:bg-emerald-100 transition-colors"
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 text-xs font-bold transition-colors shadow-xs"
                         >
-                          <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
-                          <span>{isBn ? "ক্লাসরুম" : "Classroom"}</span>
+                          <PlayCircle className="h-3.5 w-3.5" />
+                          <span>{isBn ? "দেখুন ও প্লে করুন" : "View & Play"}</span>
                         </Link>
                       ) : (
                         <Button
@@ -354,6 +386,23 @@ export default function CourseCatalogSection({
           </div>
         )}
       </div>
+
+      {/* Checkout Modal */}
+      <CheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => {
+          setIsCheckoutModalOpen(false);
+          setCheckoutCourse(null);
+        }}
+        course={checkoutCourse}
+        onSuccess={() => {
+          setIsCheckoutModalOpen(false);
+          if (checkoutCourse) {
+            const courseSlug = checkoutCourse.slug || checkoutCourse.courseId || checkoutCourse.id;
+            router.push(`/courses/learn/${courseSlug}`);
+          }
+        }}
+      />
 
       {/* Global Auth Modal */}
       <AuthModal

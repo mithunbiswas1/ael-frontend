@@ -28,6 +28,7 @@ import {
 } from "@/redux/api/courseApi";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
+import CheckoutModal from "@/components/shared/CheckoutModal";
 
 export default function ClassroomContent({ courseSlug }) {
   const router = useRouter();
@@ -35,6 +36,7 @@ export default function ClassroomContent({ courseSlug }) {
   const isBn = locale === "bn";
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
   const { data: courseData, isLoading, error } = useGetCourseByIdQuery(courseSlug);
   const course = courseData?.data;
@@ -115,11 +117,15 @@ export default function ClassroomContent({ courseSlug }) {
     if (!course?.price || course?.price === 0) return true;
 
     // Admin & manager roles have preview access to all courses
-    const adminRoles = ["super_admin", "admin", "course_admin", "manager"];
+    const adminRoles = ["super_admin", "admin", "instructor", "course_admin", "manager"];
     if (adminRoles.includes(user?.role)) return true;
 
-    // Subscriber role has access
-    if (user?.role === "subscriber") return true;
+    // Active subscriber has access to all courses while subscription is valid
+    const isSubActive =
+      user?.subscription?.status === "active" &&
+      user?.subscription?.planKey !== "course_single" &&
+      (!user?.subscription?.expiresAt || new Date(user.subscription.expiresAt) > new Date());
+    if (isSubActive) return true;
 
     // Check my learning courses
     const myCourses = Array.isArray(learningData?.data) ? learningData.data : [];
@@ -370,15 +376,19 @@ export default function ClassroomContent({ courseSlug }) {
           </p>
 
           <div className="space-y-3">
-            <Link
-              href={`/checkout?courseId=${canonicalCourseId}`}
-              className="flex items-center justify-center gap-2 w-full rounded-lg bg-primary hover:bg-primary/90 px-4 py-2.5 text-xs font-bold text-white transition-colors"
+            <Button
+              type="button"
+              variant="primary"
+              size="md"
+              fullWidth
+              onClick={() => setIsCheckoutModalOpen(true)}
+              className="gap-2 font-bold"
             >
               <ArrowRight className="h-4 w-4" />
               <span>
                 {isBn ? `কোর্সে ভর্তি হন (৳ ${course?.price})` : `Enroll Now (৳ ${course?.price})`}
               </span>
-            </Link>
+            </Button>
 
             <Link
               href={`/courses/${canonicalSlug}`}
@@ -389,6 +399,14 @@ export default function ClassroomContent({ courseSlug }) {
             </Link>
           </div>
         </div>
+
+        {/* Checkout Modal */}
+        <CheckoutModal
+          isOpen={isCheckoutModalOpen}
+          onClose={() => setIsCheckoutModalOpen(false)}
+          course={course}
+          onSuccess={() => setIsCheckoutModalOpen(false)}
+        />
       </div>
     );
   }
@@ -498,12 +516,13 @@ export default function ClassroomContent({ courseSlug }) {
                 : "You are currently viewing the Free Module 1."}
             </span>
           </div>
-          <Link
-            href={`/checkout?courseId=${canonicalCourseId}`}
-            className="font-bold text-emerald-900 underline hover:text-emerald-700 ml-2 shrink-0"
+          <button
+            type="button"
+            onClick={() => setIsCheckoutModalOpen(true)}
+            className="font-bold text-emerald-900 underline hover:text-emerald-700 ml-2 shrink-0 cursor-pointer"
           >
             {isBn ? `সম্পূর্ণ কোর্স আনলক করুন (৳ ${course?.price})` : `Unlock All Modules (৳ ${course?.price})`} →
-          </Link>
+          </button>
         </div>
       )}
 
@@ -511,6 +530,7 @@ export default function ClassroomContent({ courseSlug }) {
       <div className="flex flex-1 overflow-hidden">
         <ClassroomVideoPlayer
           courseId={canonicalCourseId}
+          course={course}
           currentLesson={currentLesson}
           currentLessonIdx={currentLessonIdx}
           totalLessons={lessons.length}
@@ -632,13 +652,19 @@ export default function ClassroomContent({ courseSlug }) {
                 <ArrowRight className="h-3.5 w-3.5" />
               </Button>
             ) : (
-              <Link
-                href={`/checkout?courseId=${canonicalCourseId}`}
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors w-full sm:w-auto"
+              <Button
+                type="button"
+                variant="primary"
+                size="sm"
+                onClick={() => {
+                  setShowGatingDialog(false);
+                  setIsCheckoutModalOpen(true);
+                }}
+                className="gap-2 font-bold w-full sm:w-auto"
               >
                 <span>{isBn ? `কোর্সে ভর্তি হন (৳ ${course?.price})` : `Enroll (৳ ${course?.price})`}</span>
                 <ArrowRight className="h-4 w-4" />
-              </Link>
+              </Button>
             )}
           </div>
         </div>
@@ -655,6 +681,14 @@ export default function ClassroomContent({ courseSlug }) {
           onProceedToNextModule={handleProceedToNextModule}
         />
       )}
+
+      {/* Checkout Modal */}
+      <CheckoutModal
+        isOpen={isCheckoutModalOpen}
+        onClose={() => setIsCheckoutModalOpen(false)}
+        course={course}
+        onSuccess={() => setIsCheckoutModalOpen(false)}
+      />
     </div>
   );
 }

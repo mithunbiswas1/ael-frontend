@@ -41,34 +41,22 @@ export default function PricingHeroSection({ banner, isAnnual, setIsAnnual }) {
           {description}
         </P>
 
-        {/* Billing Cycle Toggle */}
-        <div className="mt-8 inline-flex items-center gap-1.5 sm:gap-3 rounded-full border border-slate-700 bg-slate-900/80 p-1 sm:p-1.5 shadow-md max-w-full">
-          <Button
-            variant="unstyled"
-            onClick={() => setIsAnnual(false)}
-            className={`rounded-full px-3 sm:px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-              !isAnnual
-                ? "bg-primary text-white shadow-2xs"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            {pricing.monthly || "Monthly"}
-          </Button>
+        {/* Trust Highlight Badges */}
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs font-semibold text-slate-300">
+          <div className="flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900/90 px-3.5 py-1.5 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{isBn ? "তাত্ক্ষণিক সাবস্ক্রিপশন অ্যাক্টিভেশন" : "Instant Activation via bKash / Cards"}</span>
+          </div>
 
-          <Button
-            variant="unstyled"
-            onClick={() => setIsAnnual(true)}
-            className={`flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-              isAnnual
-                ? "bg-primary text-white shadow-2xs"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            <span>{pricing.annual || "Annual"}</span>
-            <span className="rounded-full bg-emerald-500 px-1.5 sm:px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-slate-950">
-              {pricing.save20 || "Save 20%"}
-            </span>
-          </Button>
+          <div className="flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900/90 px-3.5 py-1.5 backdrop-blur-md">
+            <span>🎓</span>
+            <span>{isBn ? "সকল পেইড কোর্সে উন্মুক্ত প্রবেশ" : "All Premium Courses Included"}</span>
+          </div>
+
+          <div className="flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900/90 px-3.5 py-1.5 backdrop-blur-md">
+            <span>📜</span>
+            <span>{isBn ? "যাচাইযোগ্য ডিজিটাল সনদ" : "Verifiable QR-Coded Certificates"}</span>
+          </div>
         </div>
       </div>
     </section>

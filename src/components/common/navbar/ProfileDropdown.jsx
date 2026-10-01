@@ -99,26 +99,37 @@ export default function ProfileDropdown({ locale = "en" }) {
             </div>
           </div>
 
-          {/* Role-Based Primary Action */}
-          {isAdmin ? (
+          {/* Admin Dashboard */}
+          {isAdmin && (
             <Link
               href="/admin"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-primary transition-colors"
             >
               <LayoutDashboard className="h-4 w-4 text-slate-400" />
-              <span>{isBn ? "ড্যাশবোর্ড" : "Dashboard"}</span>
-            </Link>
-          ) : (
-            <Link
-              href="/subscriber/courses"
-              onClick={() => setIsOpen(false)}
-              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-primary transition-colors"
-            >
-              <GraduationCap className="h-4 w-4 text-slate-400" />
-              <span>{isBn ? "আমার কোর্সসমূহ" : "My Courses"}</span>
+              <span>{isBn ? "অ্যাডমিন ড্যাশবোর্ড" : "Admin Dashboard"}</span>
             </Link>
           )}
+
+          {/* Learner Dashboard */}
+          <Link
+            href="/user-dashboard"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-primary transition-colors"
+          >
+            <LayoutDashboard className="h-4 w-4 text-slate-400" />
+            <span>{isBn ? "লার্নার ড্যাশবোর্ড" : "Learner Dashboard"}</span>
+          </Link>
+
+          {/* Enrolled Courses */}
+          <Link
+            href="/user-dashboard/courses"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-primary transition-colors"
+          >
+            <GraduationCap className="h-4 w-4 text-slate-400" />
+            <span>{isBn ? "এনরোল্ড কোর্সসমূহ" : "Enrolled Courses"}</span>
+          </Link>
 
           {/* Profile */}
           <Link

@@ -29,8 +29,14 @@ import {
   useUpdateCourseMutation,
   useUploadCourseImageMutation,
   useUploadCourseVideoMutation,
+  useUploadCoursePdfMutation,
 } from "@/redux/api/courseApi";
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
+import { Badge } from "@/components/ui/Badge";
+import { Input } from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
+import { Checkbox } from "@/components/ui/Checkbox";
 
 export default function CourseBuilderForm({ initialData = null, isEdit = false }) {
   const router = useRouter();
@@ -39,6 +45,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
   const [updateCourse, { isLoading: isUpdating }] = useUpdateCourseMutation();
   const [uploadImage, { isLoading: isUploadingImage }] = useUploadCourseImageMutation();
   const [uploadVideo, { isLoading: isUploadingVideo }] = useUploadCourseVideoMutation();
+  const [uploadPdf, { isLoading: isUploadingPdf }] = useUploadCoursePdfMutation();
 
   const isSaving = isCreating || isUpdating;
 
@@ -48,9 +55,11 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
   // Expanded modules state: set of module indices
   const [expandedModules, setExpandedModules] = useState(() => new Set([0]));
 
-  // Individual video upload trackers
+  // Individual video & pdf upload trackers
   const [uploadingLessonKey, setUploadingLessonKey] = useState(null); // `${modIdx}_${lessonIdx}`
+  const [uploadingLessonPdfKey, setUploadingLessonPdfKey] = useState(null); // `${modIdx}_${lessonIdx}`
   const [isUploadingPromoVideo, setIsUploadingPromoVideo] = useState(false);
+  const [isUploadingCoursePdf, setIsUploadingCoursePdf] = useState(false);
 
   // Active question tab per module: { [modIdx]: questionIdx }
   const [activeQuestionTabs, setActiveQuestionTabs] = useState({});
@@ -78,6 +87,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         price: initialData.price || 0,
         imageUrl: initialData.imageUrl || "",
         videoUrl: initialData.videoUrl || "/sample-course-video.mp4",
+        pdfUrl: initialData.pdfUrl || "",
+        pdfOriginalName: initialData.pdfOriginalName || "",
+        pdfSize: initialData.pdfSize || "",
         isPublished: initialData.isPublished !== undefined ? initialData.isPublished : true,
         instructor: {
           name: initialData.instructor?.name || "Engr. Mahmudul Hasan",
@@ -100,6 +112,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                 duration: l.duration || "10 mins",
                 durationBn: l.durationBn || "১০ মিনিট",
                 videoUrl: l.videoUrl || "",
+                pdfUrl: l.pdfUrl || "",
+                pdfOriginalName: l.pdfOriginalName || "",
                 freePreview: l.freePreview || false,
                 notes: l.notes || "",
                 notesBn: l.notesBn || "",
@@ -111,6 +125,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                   duration: "10 mins",
                   durationBn: "১০ মিনিট",
                   videoUrl: "",
+                  pdfUrl: "",
+                  pdfOriginalName: "",
                   freePreview: false,
                   notes: "",
                   notesBn: "",
@@ -181,6 +197,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
       price: 0,
       imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop",
       videoUrl: "/sample-course-video.mp4",
+      pdfUrl: "",
+      pdfOriginalName: "",
+      pdfSize: "",
       isPublished: true,
       instructor: {
         name: "Engr. Mahmudul Hasan",
@@ -203,6 +222,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
               duration: "10 mins",
               durationBn: "১০ মিনিট",
               videoUrl: "/sample-course-video.mp4",
+              pdfUrl: "",
+              pdfOriginalName: "",
               freePreview: true,
               notes: "",
               notesBn: "",
@@ -297,6 +318,62 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
     }
   };
 
+  // Direct Course PDF Guide / Study Material Upload Handler
+  const handleCoursePdfUpload = async (file) => {
+    if (!file) return;
+    setIsUploadingCoursePdf(true);
+
+    const body = new FormData();
+    body.append("pdf", file);
+
+    try {
+      const res = await uploadPdf(body).unwrap();
+      const pdfUrl = res?.data?.pdfUrl;
+      if (pdfUrl) {
+        setFormData((prev) => ({
+          ...prev,
+          pdfUrl,
+          pdfOriginalName: res?.data?.originalName || file.name,
+          pdfSize: res?.data?.size ? `${(res.data.size / (1024 * 1024)).toFixed(2)} MB` : "PDF Document",
+        }));
+        toast.success("Course study guide PDF uploaded successfully!");
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to upload course PDF");
+    } finally {
+      setIsUploadingCoursePdf(false);
+    }
+  };
+
+  // Direct Lesson PDF Handout Upload Handler
+  const handleLessonPdfUpload = async (file, modIdx, lessonIdx) => {
+    if (!file) return;
+    const key = `${modIdx}_${lessonIdx}`;
+    setUploadingLessonPdfKey(key);
+
+    const body = new FormData();
+    body.append("pdf", file);
+
+    try {
+      const res = await uploadPdf(body).unwrap();
+      const pdfUrl = res?.data?.pdfUrl;
+      if (pdfUrl) {
+        updateLesson(modIdx, lessonIdx, "pdfUrl", pdfUrl);
+        updateLesson(
+          modIdx,
+          lessonIdx,
+          "pdfOriginalName",
+          res?.data?.originalName || file.name
+        );
+        toast.success("Lesson PDF handout uploaded successfully!");
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || "Failed to upload lesson PDF");
+    } finally {
+      setUploadingLessonPdfKey(null);
+    }
+  };
+
   // Curriculum State Modifiers
   const addModule = () => {
     const newIdx = formData.curriculum.length;
@@ -369,6 +446,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         duration: "10 mins",
         durationBn: "১০ মিনিট",
         videoUrl: "",
+        pdfUrl: "",
+        pdfOriginalName: "",
         freePreview: curriculum[modIdx].isFree || false,
         notes: "",
         notesBn: "",
@@ -565,65 +644,55 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         </div>
 
         <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-          <Link
-            href="/admin/courses"
-            className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors"
-          >
+          <LinkButton href="/admin/courses" variant="white" size="sm">
             Cancel
-          </Link>
+          </LinkButton>
           <Button
             type="submit"
             variant="primary"
             size="sm"
             isLoading={isSaving}
-            className="gap-2 font-bold px-5"
+            icon={Save}
           >
-            <Save className="h-4 w-4" />
-            <span>{isEdit ? "Update Course" : "Save & Publish Course"}</span>
+            {isEdit ? "Update Course" : "Save & Publish Course"}
           </Button>
         </div>
       </div>
 
       {/* Tabs Navigation */}
       <div className="flex items-center gap-2 border-b border-slate-200 pb-px">
-        <button
+        <Button
           type="button"
+          variant={activeTab === "modules" ? "tab-active" : "tab"}
+          size="sm"
           onClick={() => setActiveTab("modules")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-t-xl transition-colors border-t border-x ${activeTab === "modules"
-              ? "bg-white text-primary border-slate-200 border-b-transparent shadow-xs"
-              : "bg-slate-50 text-slate-600 border-transparent hover:bg-slate-100"
-            }`}
+          icon={Layers}
         >
-          <Layers className="h-4 w-4" />
           <span>Curriculum Modules & Quizzes</span>
-          <span className="ml-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-black">
+          <Badge variant="pill-primary" size="xs">
             {formData.curriculum.length}
-          </span>
-        </button>
+          </Badge>
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant={activeTab === "info" ? "tab-active" : "tab"}
+          size="sm"
           onClick={() => setActiveTab("info")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-t-xl transition-colors border-t border-x ${activeTab === "info"
-              ? "bg-white text-primary border-slate-200 border-b-transparent shadow-xs"
-              : "bg-slate-50 text-slate-600 border-transparent hover:bg-slate-100"
-            }`}
+          icon={BookOpen}
         >
-          <BookOpen className="h-4 w-4" />
-          <span>Course Details & Pricing</span>
-        </button>
+          Course Details & Pricing
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant={activeTab === "instructor" ? "tab-active" : "tab"}
+          size="sm"
           onClick={() => setActiveTab("instructor")}
-          className={`flex items-center gap-2 px-4 py-2.5 text-xs font-bold rounded-t-xl transition-colors border-t border-x ${activeTab === "instructor"
-              ? "bg-white text-primary border-slate-200 border-b-transparent shadow-xs"
-              : "bg-slate-50 text-slate-600 border-transparent hover:bg-slate-100"
-            }`}
+          icon={UserCheck}
         >
-          <UserCheck className="h-4 w-4" />
-          <span>Instructor & Media</span>
-        </button>
+          Instructor & Media
+        </Button>
       </div>
 
       {/* TAB 1: CURRICULUM MODULES & QUIZZES */}
@@ -634,9 +703,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
             <div>
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <span>Course Modules & Video Structure</span>
-                <span className="rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold px-2 py-0.5">
+                <Badge variant="success" size="xs">
                   Multi-Module Enabled
-                </span>
+                </Badge>
               </h2>
             </div>
 
@@ -650,10 +719,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                 variant="primary"
                 size="sm"
                 onClick={addModule}
-                className="gap-1.5 font-bold"
+                icon={Plus}
               >
-                <Plus className="h-4 w-4" />
-                <span>Add Module</span>
+                Add Module
               </Button>
             </div>
           </div>
@@ -676,35 +744,35 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                   {/* Module Header Bar */}
                   <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100">
                     <div className="flex items-center gap-3 flex-1">
-                      <button
+                      <Button
                         type="button"
+                        variant="subtle"
+                        size="icon-sm"
                         onClick={() => toggleModule(modIdx)}
-                        className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
                       >
                         {isExpanded ? (
                           <ChevronUp className="h-4 w-4" />
                         ) : (
                           <ChevronDown className="h-4 w-4" />
                         )}
-                      </button>
+                      </Button>
 
                       <div className="flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-mono text-xs font-black text-slate-500 uppercase bg-slate-100 px-2 py-0.5 rounded">
+                          <Badge variant="mono" size="xs">
                             Module {modIdx + 1}
-                          </span>
+                          </Badge>
                           <span className="font-bold text-slate-900 text-sm">
                             {module.moduleTitle || `Module ${modIdx + 1}`}
                           </span>
                           {module.isFree ? (
-                            <span className="rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-black px-2.5 py-0.5 flex items-center gap-1">
-                              <Check className="h-3 w-3 text-emerald-600" />
+                            <Badge variant="pill-success" size="xs" icon={Check}>
                               FREE MODULE FOR REGISTERED USERS
-                            </span>
+                            </Badge>
                           ) : (
-                            <span className="rounded-full bg-slate-100 text-slate-600 text-[10px] font-semibold px-2 py-0.5">
+                            <Badge variant="pill-neutral" size="xs">
                               Enrolled Only
-                            </span>
+                            </Badge>
                           )}
                         </div>
                         <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-0.5">
@@ -724,13 +792,12 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                     <div className="flex items-center gap-2 self-end sm:self-center">
                       {/* Free Module Toggle Button */}
                       <label className="flex items-center gap-2 cursor-pointer bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
-                        <input
-                          type="checkbox"
-                          checked={module.isFree || false}
-                          onChange={(e) =>
-                            updateModuleField(modIdx, "isFree", e.target.checked)
+                        <Checkbox
+                          checked={Boolean(module.isFree)}
+                          onCheckedChange={(checked) =>
+                            updateModuleField(modIdx, "isFree", checked)
                           }
-                          className="h-4 w-4 rounded text-emerald-600 focus:ring-emerald-500"
+                          variant="success"
                         />
                         <span className="font-semibold text-slate-700 text-[11px]">
                           Free Preview Module
@@ -739,10 +806,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
                       <Button
                         type="button"
-                        variant="danger"
-                        size="xs"
+                        variant="danger-soft"
+                        size="icon-sm"
                         onClick={() => removeModule(modIdx)}
-                        className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-600 hover:text-white border-rose-200"
                         title="Delete Module"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -755,35 +821,24 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                     <div className="p-4 sm:p-5 space-y-6 bg-slate-50/50">
                       {/* Module Titles */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
-                        <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">
-                            Module Title *
-                          </label>
-                          <input
-                            type="text"
-                            value={module.moduleTitle}
-                            onChange={(e) =>
-                              updateModuleField(modIdx, "moduleTitle", e.target.value)
-                            }
-                            placeholder="e.g. Module 1: LPG Cylinder Fire Safety Essentials"
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden"
-                            required
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-xs font-bold text-slate-700 mb-1">
-                            মডিউল টাইটেল
-                          </label>
-                          <input
-                            type="text"
-                            value={module.moduleTitleBn || ""}
-                            onChange={(e) =>
-                              updateModuleField(modIdx, "moduleTitleBn", e.target.value)
-                            }
-                            placeholder="যেমন: মডিউল ১: এলপিজি সিলিন্ডার অগ্নিনিরাপত্তা নির্দেশিকা"
-                            className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden font-serif"
-                          />
-                        </div>
+                        <Input
+                          label="Module Title"
+                          required
+                          value={module.moduleTitle}
+                          onChange={(e) =>
+                            updateModuleField(modIdx, "moduleTitle", e.target.value)
+                          }
+                          placeholder="e.g. Module 1: LPG Cylinder Fire Safety Essentials"
+                        />
+                        <Input
+                          label="মডিউল টাইটেল"
+                          value={module.moduleTitleBn || ""}
+                          onChange={(e) =>
+                            updateModuleField(modIdx, "moduleTitleBn", e.target.value)
+                          }
+                          placeholder="যেমন: মডিউল ১: এলপিজি সিলিন্ডার অগ্নিনিরাপত্তা নির্দেশিকা"
+                          className="font-serif"
+                        />
                       </div>
 
                       {/* SECTION: Video Lessons in this Module */}
@@ -798,10 +853,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                             variant="secondary"
                             size="xs"
                             onClick={() => addLesson(modIdx)}
-                            className="gap-1.5 font-bold"
+                            icon={Plus}
                           >
-                            <Plus className="h-3.5 w-3.5" />
-                            <span>Add Video Lesson</span>
+                            Add Video Lesson
                           </Button>
                         </div>
 
@@ -816,27 +870,25 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                               </span>
                               <div className="flex items-center gap-2">
                                 <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
-                                  <input
-                                    type="checkbox"
-                                    checked={lesson.freePreview || module.isFree || false}
-                                    onChange={(e) =>
+                                  <Checkbox
+                                    checked={Boolean(lesson.freePreview || module.isFree)}
+                                    onCheckedChange={(checked) =>
                                       updateLesson(
                                         modIdx,
                                         lIdx,
                                         "freePreview",
-                                        e.target.checked
+                                        checked
                                       )
                                     }
-                                    className="h-3.5 w-3.5 text-primary rounded"
                                   />
                                   <span>Free Preview</span>
                                 </label>
                                 <Button
                                   type="button"
-                                  variant="danger"
-                                  size="xs"
+                                  variant="danger-soft"
+                                  size="icon-xs"
                                   onClick={() => removeLesson(modIdx, lIdx)}
-                                  className="p-1 text-rose-500 hover:text-white hover:bg-rose-600"
+                                  title="Remove Lesson"
                                 >
                                   <Trash2 className="h-3 w-3" />
                                 </Button>
@@ -845,62 +897,53 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                               <div className="sm:col-span-2">
-                                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                                  Lesson Title *
-                                </label>
-                                <input
-                                  type="text"
+                                <Input
+                                  label="Lesson Title"
+                                  required
+                                  size="sm"
                                   value={lesson.title}
                                   onChange={(e) =>
                                     updateLesson(modIdx, lIdx, "title", e.target.value)
                                   }
                                   placeholder="e.g. Lesson 1: Inspection & Leak Testing"
-                                  className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
                                 />
                               </div>
                               <div>
-                                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                                  Duration
-                                </label>
-                                <input
-                                  type="text"
+                                <Input
+                                  label="Duration"
+                                  size="sm"
                                   value={lesson.duration}
                                   onChange={(e) =>
                                     updateLesson(modIdx, lIdx, "duration", e.target.value)
                                   }
                                   placeholder="e.g. 15 mins"
-                                  className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
                                 />
                               </div>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                               <div className="sm:col-span-2">
-                                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                                  পাঠের শিরোনাম
-                                </label>
-                                <input
-                                  type="text"
+                                <Input
+                                  label="পাঠের শিরোনাম"
+                                  size="sm"
                                   value={lesson.titleBn || ""}
                                   onChange={(e) =>
                                     updateLesson(modIdx, lIdx, "titleBn", e.target.value)
                                   }
                                   placeholder="যেমন: পাঠ ১: সিলিন্ডার নিরীক্ষণ ও লিকেজ টেস্ট"
-                                  className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden font-serif"
+                                  className="font-serif"
                                 />
                               </div>
                               <div>
-                                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                                  সময়কাল
-                                </label>
-                                <input
-                                  type="text"
+                                <Input
+                                  label="সময়কাল"
+                                  size="sm"
                                   value={lesson.durationBn || ""}
                                   onChange={(e) =>
                                     updateLesson(modIdx, lIdx, "durationBn", e.target.value)
                                   }
                                   placeholder="যেমন: ১৫ মিনিট"
-                                  className="w-full rounded-lg border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden font-serif"
+                                  className="font-serif"
                                 />
                               </div>
                             </div>
@@ -913,9 +956,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                   <span>Lesson Video File (Direct Video Upload) *</span>
                                 </label>
                                 {lesson.videoUrl && (
-                                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                  <Badge variant="success" size="xs">
                                     ✓ Video Uploaded
-                                  </span>
+                                  </Badge>
                                 )}
                               </div>
 
@@ -942,13 +985,14 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                         }}
                                       />
                                     </label>
-                                    <button
+                                    <Button
                                       type="button"
+                                      variant="danger-ghost"
+                                      size="xs"
                                       onClick={() => updateLesson(modIdx, lIdx, "videoUrl", "")}
-                                      className="text-xs text-rose-600 hover:text-rose-800 hover:underline px-2 py-1"
                                     >
                                       Remove
-                                    </button>
+                                    </Button>
                                   </div>
                                 </div>
                               ) : (
@@ -994,7 +1038,78 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                 </div>
                               )}
                             </div>
-                          </div>
+
+                            {/* Optional Lesson PDF Handout / Reading File */}
+                              <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                                    <FileText className="h-3.5 w-3.5 text-primary" />
+                                    <span>Lesson PDF Handout / Notes (Optional)</span>
+                                  </label>
+                                  {lesson.pdfUrl && (
+                                    <Badge variant="success" size="xs">
+                                      ✓ PDF Attached
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {lesson.pdfUrl ? (
+                                  <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <FileText className="h-4 w-4 text-rose-600 shrink-0" />
+                                      <span className="text-xs font-semibold text-slate-800 truncate">
+                                        {lesson.pdfOriginalName || "Lesson-Handout.pdf"}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                      <a
+                                        href={lesson.pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-600 text-xs"
+                                        title="Preview PDF"
+                                      >
+                                        <Eye className="h-3.5 w-3.5" />
+                                      </a>
+                                      <Button
+                                        type="button"
+                                        variant="danger-ghost"
+                                        size="xs"
+                                        onClick={() => {
+                                          updateLesson(modIdx, lIdx, "pdfUrl", "");
+                                          updateLesson(modIdx, lIdx, "pdfOriginalName", "");
+                                        }}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="bg-white p-2 rounded-lg border border-dashed border-slate-300 text-center">
+                                    {uploadingLessonPdfKey === `${modIdx}_${lIdx}` ? (
+                                      <div className="py-1 text-xs text-primary font-semibold flex items-center justify-center gap-2">
+                                        <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                        <span>Uploading PDF handout...</span>
+                                      </div>
+                                    ) : (
+                                      <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-primary font-medium py-1 px-2">
+                                        <Upload className="h-3.5 w-3.5 text-slate-400" />
+                                        <span>Upload lesson PDF document (e.g. slides, notes)</span>
+                                        <input
+                                          type="file"
+                                          accept=".pdf,application/pdf"
+                                          className="hidden"
+                                          onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) handleLessonPdfUpload(file, modIdx, lIdx);
+                                          }}
+                                        />
+                                      </label>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                         ))}
                       </div>
 
@@ -1016,86 +1131,70 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                             variant="secondary"
                             size="xs"
                             onClick={() => addQuestionToQuiz(modIdx)}
-                            className="gap-1.5 font-bold"
+                            icon={Plus}
                           >
-                            <Plus className="h-3.5 w-3.5" />
-                            <span>Add Question</span>
+                            Add Question
                           </Button>
                         </div>
 
                         {/* Quiz Metadata (Duration, Passing Score, Titles) */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Quiz Title *
-                            </label>
-                            <input
-                              type="text"
-                              value={module.quiz?.title || ""}
-                              onChange={(e) => {
-                                const quiz = { ...(module.quiz || {}), title: e.target.value };
-                                updateModuleField(modIdx, "quiz", quiz);
-                              }}
-                              placeholder={`Module ${modIdx + 1} Assessment Quiz`}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
-                            />
-                          </div>
+                          <Input
+                            label="Quiz Title"
+                            required
+                            size="sm"
+                            value={module.quiz?.title || ""}
+                            onChange={(e) => {
+                              const quiz = { ...(module.quiz || {}), title: e.target.value };
+                              updateModuleField(modIdx, "quiz", quiz);
+                            }}
+                            placeholder={`Module ${modIdx + 1} Assessment Quiz`}
+                          />
 
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              কুইজের শিরোনাম *
-                            </label>
-                            <input
-                              type="text"
-                              value={module.quiz?.titleBn || ""}
-                              onChange={(e) => {
-                                const quiz = { ...(module.quiz || {}), titleBn: e.target.value };
-                                updateModuleField(modIdx, "quiz", quiz);
-                              }}
-                              placeholder={`মডিউল ${modIdx + 1} মূল্যায়ন কুইজ`}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden font-serif"
-                            />
-                          </div>
+                          <Input
+                            label="কুইজের শিরোনাম"
+                            required
+                            size="sm"
+                            value={module.quiz?.titleBn || ""}
+                            onChange={(e) => {
+                              const quiz = { ...(module.quiz || {}), titleBn: e.target.value };
+                              updateModuleField(modIdx, "quiz", quiz);
+                            }}
+                            placeholder={`মডিউল ${modIdx + 1} মূল্যায়ন কুইজ`}
+                            className="font-serif"
+                          />
 
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Duration (Minutes)
-                            </label>
-                            <input
-                              type="number"
-                              min="1"
-                              max="180"
-                              value={module.quiz?.durationMinutes || 10}
-                              onChange={(e) => {
-                                const quiz = {
-                                  ...(module.quiz || {}),
-                                  durationMinutes: Number(e.target.value) || 10,
-                                };
-                                updateModuleField(modIdx, "quiz", quiz);
-                              }}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
-                            />
-                          </div>
+                          <Input
+                            type="number"
+                            label="Duration (Minutes)"
+                            size="sm"
+                            min="1"
+                            max="180"
+                            value={module.quiz?.durationMinutes || 10}
+                            onChange={(e) => {
+                              const quiz = {
+                                ...(module.quiz || {}),
+                                durationMinutes: Number(e.target.value) || 10,
+                              };
+                              updateModuleField(modIdx, "quiz", quiz);
+                            }}
+                          />
 
-                          <div>
-                            <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                              Pass Percentage (%)
-                            </label>
-                            <input
-                              type="number"
-                              min="10"
-                              max="100"
-                              value={module.quiz?.passingScore || 80}
-                              onChange={(e) => {
-                                const quiz = {
-                                  ...(module.quiz || {}),
-                                  passingScore: Number(e.target.value) || 80,
-                                };
-                                updateModuleField(modIdx, "quiz", quiz);
-                              }}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
-                            />
-                          </div>
+                          <Input
+                            type="number"
+                            label="Pass Percentage (%)"
+                            size="sm"
+                            min="10"
+                            max="100"
+                            value={module.quiz?.passingScore || 80}
+                            onChange={(e) => {
+                              const quiz = {
+                                ...(module.quiz || {}),
+                                passingScore: Number(e.target.value) || 80,
+                              };
+                              updateModuleField(modIdx, "quiz", quiz);
+                            }}
+                          />
                         </div>
 
                         {/* Questions Manager with Tab Bar */}
@@ -1113,10 +1212,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                               variant="secondary"
                               size="sm"
                               onClick={() => addQuestionToQuiz(modIdx)}
-                              className="gap-1.5 font-bold"
+                              icon={Plus}
                             >
-                              <Plus className="h-3.5 w-3.5" />
-                              <span>Add First Question</span>
+                              Add First Question
                             </Button>
                           </div>
                         ) : (
@@ -1127,34 +1225,34 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                 const activeQ = activeQuestionTabs[modIdx] || 0;
                                 const isCurrent = activeQ === qIdx;
                                 return (
-                                  <button
+                                  <Button
                                     key={qIdx}
                                     type="button"
+                                    variant={isCurrent ? "primary" : "secondary"}
+                                    size="xs"
                                     onClick={() =>
                                       setActiveQuestionTabs((prev) => ({
                                         ...prev,
                                         [modIdx]: qIdx,
                                       }))
                                     }
-                                    className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-bold transition-all ${isCurrent
-                                        ? "bg-primary text-white shadow-xs"
-                                        : "bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200"
-                                      }`}
+                                    className="shrink-0 font-bold"
                                   >
                                     Q{qIdx + 1}
-                                  </button>
+                                  </Button>
                                 );
                               })}
 
-                              <button
+                              <Button
                                 type="button"
+                                variant="outline-primary"
+                                size="xs"
                                 onClick={() => addQuestionToQuiz(modIdx)}
-                                className="shrink-0 flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 border border-primary/20 transition-all"
+                                icon={Plus}
                                 title="Add another question"
                               >
-                                <Plus className="h-3.5 w-3.5" />
-                                <span>Add Question</span>
-                              </button>
+                                Add Question
+                              </Button>
                             </div>
 
                             {/* Active Question Editor */}
@@ -1171,52 +1269,44 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                   {/* Question Header */}
                                   <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
                                     <div className="flex items-center gap-2">
-                                      <span className="font-mono text-xs font-black text-primary bg-primary/10 px-2 py-0.5 rounded">
+                                      <Badge variant="mono-primary" size="xs">
                                         Question {activeQ + 1} of {quizQuestionsCount}
-                                      </span>
+                                      </Badge>
                                     </div>
                                     <Button
                                       type="button"
-                                      variant="danger"
+                                      variant="danger-soft"
                                       size="xs"
                                       onClick={() => removeQuestionFromQuiz(modIdx, activeQ)}
-                                      className="p-1.5 text-rose-600 bg-rose-50 hover:bg-rose-600 hover:text-white border-rose-200 gap-1 text-[11px]"
+                                      icon={Trash2}
                                     >
-                                      <Trash2 className="h-3.5 w-3.5" />
-                                      <span>Delete Question</span>
+                                      Delete Question
                                     </Button>
                                   </div>
 
                                   {/* Question Statements (EN & BN) */}
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <div>
-                                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                                        Question Statement *
-                                      </label>
-                                      <textarea
-                                        rows={2}
-                                        value={q.question || ""}
-                                        onChange={(e) =>
-                                          updateQuizQuestion(modIdx, activeQ, "question", e.target.value)
-                                        }
-                                        placeholder="Enter question in English..."
-                                        className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden resize-none"
-                                      />
-                                    </div>
-                                    <div>
-                                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
-                                        প্রশ্ন *
-                                      </label>
-                                      <textarea
-                                        rows={2}
-                                        value={q.questionBn || ""}
-                                        onChange={(e) =>
-                                          updateQuizQuestion(modIdx, activeQ, "questionBn", e.target.value)
-                                        }
-                                        placeholder="বাংলায় প্রশ্ন লিখুন..."
-                                        className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden resize-none font-serif"
-                                      />
-                                    </div>
+                                    <Textarea
+                                      label="Question Statement"
+                                      required
+                                      rows={2}
+                                      value={q.question || ""}
+                                      onChange={(e) =>
+                                        updateQuizQuestion(modIdx, activeQ, "question", e.target.value)
+                                      }
+                                      placeholder="Enter question in English..."
+                                    />
+                                    <Textarea
+                                      label="প্রশ্ন"
+                                      required
+                                      rows={2}
+                                      value={q.questionBn || ""}
+                                      onChange={(e) =>
+                                        updateQuizQuestion(modIdx, activeQ, "questionBn", e.target.value)
+                                      }
+                                      placeholder="বাংলায় প্রশ্ন লিখুন..."
+                                      className="font-serif"
+                                    />
                                   </div>
 
                                   {/* 4 Options & Correct Answer Selector */}
@@ -1236,23 +1326,21 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                                 : "border-slate-200 bg-white"
                                               }`}
                                           >
-                                            <button
+                                            <Button
                                               type="button"
+                                              variant={isCorrect ? "success-circle" : "subtle-circle"}
+                                              size="icon-circle-sm"
                                               onClick={() =>
                                                 updateQuizQuestion(modIdx, activeQ, "correctAnswer", optIdx)
                                               }
-                                              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all ${isCorrect
-                                                  ? "border-emerald-600 bg-emerald-600 text-white shadow-xs"
-                                                  : "border-slate-300 bg-slate-100 text-slate-400 hover:border-emerald-400 hover:text-emerald-600"
-                                                }`}
                                               title={isCorrect ? "Correct answer selected" : "Click to mark as correct answer"}
                                             >
                                               <Check className="h-3.5 w-3.5" />
-                                            </button>
+                                            </Button>
 
                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
-                                              <input
-                                                type="text"
+                                              <Input
+                                                size="sm"
                                                 placeholder={`Option ${optIdx + 1}`}
                                                 value={q.options?.[optIdx] || ""}
                                                 onChange={(e) =>
@@ -1264,10 +1352,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                                     e.target.value
                                                   )
                                                 }
-                                                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden"
                                               />
-                                              <input
-                                                type="text"
+                                              <Input
+                                                size="sm"
                                                 placeholder={`অপশন ${optIdx + 1}`}
                                                 value={q.optionsBn?.[optIdx] || ""}
                                                 onChange={(e) =>
@@ -1279,7 +1366,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                                     e.target.value
                                                   )
                                                 }
-                                                className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden font-serif"
+                                                className="font-serif"
                                               />
                                             </div>
                                           </div>
@@ -1290,34 +1377,25 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
                                   {/* Explanation / Solution Note */}
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-slate-200/80">
-                                    <div>
-                                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                                        Explanation Note
-                                      </label>
-                                      <textarea
-                                        rows={2}
-                                        value={q.explanation || ""}
-                                        onChange={(e) =>
-                                          updateQuizQuestion(modIdx, activeQ, "explanation", e.target.value)
-                                        }
-                                        placeholder="Explain why this option is correct..."
-                                        className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden resize-none"
-                                      />
-                                    </div>
-                                    <div>
-                                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                                        উত্তরের ব্যাখ্যা
-                                      </label>
-                                      <textarea
-                                        rows={2}
-                                        value={q.explanationBn || ""}
-                                        onChange={(e) =>
-                                          updateQuizQuestion(modIdx, activeQ, "explanationBn", e.target.value)
-                                        }
-                                        placeholder="সঠিক উত্তরের কারণ বা ব্যাখ্যা লিখুন..."
-                                        className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden resize-none font-serif"
-                                      />
-                                    </div>
+                                    <Textarea
+                                      label="Explanation Note"
+                                      rows={2}
+                                      value={q.explanation || ""}
+                                      onChange={(e) =>
+                                        updateQuizQuestion(modIdx, activeQ, "explanation", e.target.value)
+                                      }
+                                      placeholder="Explain why this option is correct..."
+                                    />
+                                    <Textarea
+                                      label="উত্তরের ব্যাখ্যা"
+                                      rows={2}
+                                      value={q.explanationBn || ""}
+                                      onChange={(e) =>
+                                        updateQuizQuestion(modIdx, activeQ, "explanationBn", e.target.value)
+                                      }
+                                      placeholder="সঠিক উত্তরের কারণ বা ব্যাখ্যা লিখুন..."
+                                      className="font-serif"
+                                    />
                                   </div>
                                 </div>
                               );
@@ -1335,13 +1413,13 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
           <div className="flex justify-center pt-2">
             <Button
               type="button"
-              variant="secondary"
-              size="sm"
+              variant="outline-muted"
+              size="default"
+              shape="rounded"
               onClick={addModule}
-              className="gap-2 font-bold px-6 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50"
+              icon={Plus}
             >
-              <Plus className="h-4 w-4" />
-              <span>Add Another Module</span>
+              Add Another Module
             </Button>
           </div>
         </div>
@@ -1355,32 +1433,21 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Course Title *
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                placeholder="e.g. Master Industrial Fire & Gas Safety Compliance"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                কোর্সের শিরোনাম *
-              </label>
-              <input
-                type="text"
-                value={formData.titleBn}
-                onChange={(e) => setFormData({ ...formData, titleBn: e.target.value })}
-                placeholder="যেমন: শিল্প কলকারখানা ও গৃহস্থালির অগ্নিনিরাপত্তা"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden font-serif"
-                required
-              />
-            </div>
+            <Input
+              label="Course Title"
+              required
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder="e.g. Master Industrial Fire & Gas Safety Compliance"
+            />
+            <Input
+              label="কোর্সের শিরোনাম"
+              required
+              value={formData.titleBn}
+              onChange={(e) => setFormData({ ...formData, titleBn: e.target.value })}
+              placeholder="যেমন: শিল্প কলকারখানা ও গৃহস্থালির অগ্নিনিরাপত্তা"
+              className="font-serif"
+            />
           </div>
 
           {/* Pricing & Free Preview Policy */}
@@ -1395,14 +1462,14 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <input
+                <Input
                   type="number"
                   min="0"
+                  label="Course Price (BDT ৳)"
                   value={formData.price}
                   onChange={(e) =>
                     setFormData({ ...formData, price: Math.max(0, Number(e.target.value) || 0) })
                   }
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 focus:border-primary focus:outline-hidden"
                   placeholder="0 for 100% Free, or enter amount (e.g. 1500)"
                 />
                 <p className="text-[11px] text-slate-500 mt-1">
@@ -1451,55 +1518,40 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Estimated Duration
-              </label>
-              <input
-                type="text"
+              <Input
+                label="Estimated Duration"
                 value={formData.duration}
                 onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                 placeholder="e.g. 2h 45m"
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden"
               />
             </div>
           </div>
 
           {/* Descriptions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Description
-              </label>
-              <textarea
-                rows={4}
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="Comprehensive safety training covering official guidelines..."
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden resize-none"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                কোর্সের বিবরণ
-              </label>
-              <textarea
-                rows={4}
-                value={formData.descriptionBn}
-                onChange={(e) => setFormData({ ...formData, descriptionBn: e.target.value })}
-                placeholder="বাংলাদেশ স্ট্যান্ডার্ড অনুযায়ী সম্পূর্ণ নিরাপত্তা প্রশিক্ষণ..."
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden resize-none font-serif"
-              />
-            </div>
+            <Textarea
+              label="Description"
+              rows={4}
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              placeholder="Comprehensive safety training covering official guidelines..."
+            />
+            <Textarea
+              label="কোর্সের বিবরণ"
+              rows={4}
+              value={formData.descriptionBn}
+              onChange={(e) => setFormData({ ...formData, descriptionBn: e.target.value })}
+              placeholder="বাংলাদেশ স্ট্যান্ডার্ড অনুযায়ী সম্পূর্ণ নিরাপত্তা প্রশিক্ষণ..."
+              className="font-serif"
+            />
           </div>
 
           {/* Publishing Switch */}
           <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <input
-              type="checkbox"
+            <Checkbox
               id="isPublished"
-              checked={formData.isPublished}
-              onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
-              className="h-4 w-4 rounded text-primary focus:ring-primary cursor-pointer"
+              checked={Boolean(formData.isPublished)}
+              onCheckedChange={(checked) => setFormData({ ...formData, isPublished: checked })}
             />
             <label htmlFor="isPublished" className="text-xs font-bold text-slate-800 cursor-pointer">
               Publish Course immediately to public catalog
@@ -1577,9 +1629,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                 Course Overview / Promo Video
               </label>
               {formData.videoUrl && (
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <Badge variant="success" size="xs">
                   ✓ Video Uploaded
-                </span>
+                </Badge>
               )}
             </div>
 
@@ -1607,13 +1659,14 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                       disabled={isUploadingPromoVideo}
                     />
                   </label>
-                  <button
+                  <Button
                     type="button"
+                    variant="danger-ghost"
+                    size="xs"
                     onClick={() => setFormData({ ...formData, videoUrl: "" })}
-                    className="text-xs text-rose-600 hover:text-rose-800 hover:underline px-2 py-1"
                   >
                     Remove Video
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
@@ -1660,79 +1713,175 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
             )}
           </div>
 
+          {/* Course PDF Guide / Study Material (Direct Upload) */}
+          <div className="space-y-2 pt-4 border-t border-slate-100">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                <FileText className="h-4 w-4 text-primary" />
+                <span>Course Study Material / Guide (PDF Upload)</span>
+              </label>
+              {formData.pdfUrl && (
+                <Badge variant="success" size="xs">
+                  ✓ PDF Uploaded
+                </Badge>
+              )}
+            </div>
+
+            {formData.pdfUrl ? (
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="h-10 w-10 rounded-lg bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+                    <FileText className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-slate-900 truncate">
+                      {formData.pdfOriginalName || "Course-Study-Guide.pdf"}
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      {formData.pdfSize || "PDF Document"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <a
+                    href={formData.pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-300 transition-colors"
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>View</span>
+                  </a>
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer border border-slate-300 transition-colors">
+                    <Upload className="h-3.5 w-3.5" />
+                    <span>Change PDF</span>
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleCoursePdfUpload(file);
+                      }}
+                      disabled={isUploadingCoursePdf}
+                    />
+                  </label>
+                  <Button
+                    type="button"
+                    variant="danger-ghost"
+                    size="xs"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        pdfUrl: "",
+                        pdfOriginalName: "",
+                        pdfSize: "",
+                      }))
+                    }
+                  >
+                    Remove
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files?.[0];
+                  if (file) handleCoursePdfUpload(file);
+                }}
+                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${
+                  isUploadingCoursePdf
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-300 bg-slate-50 hover:border-primary/60 hover:bg-slate-100/50"
+                }`}
+              >
+                {isUploadingCoursePdf ? (
+                  <div className="py-2 space-y-2">
+                    <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                    <p className="text-xs font-semibold text-primary">
+                      Uploading course PDF document... Please wait
+                    </p>
+                  </div>
+                ) : (
+                  <label className="cursor-pointer block space-y-1.5">
+                    <div className="mx-auto h-9 w-9 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-600 mb-1">
+                      <FileText className="h-4 w-4" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-800">
+                      Upload Course PDF Guide / Standard Operating Manual
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      Drag and drop PDF document or click to browse (up to 10MB)
+                    </p>
+                    <input
+                      type="file"
+                      accept=".pdf,application/pdf"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleCoursePdfUpload(file);
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+            )}
+          </div>
+
           {/* Instructor Details */}
           <div className="pt-4 border-t border-slate-100 space-y-4">
             <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
               Instructor Profile
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  Instructor Name
-                </label>
-                <input
-                  type="text"
-                  value={formData.instructor.name}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      instructor: { ...formData.instructor, name: e.target.value },
-                    })
-                  }
-                  className="w-full rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  প্রশিক্ষকের নাম
-                </label>
-                <input
-                  type="text"
-                  value={formData.instructor.nameBn}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      instructor: { ...formData.instructor, nameBn: e.target.value },
-                    })
-                  }
-                  className="w-full rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden font-serif"
-                />
-              </div>
+              <Input
+                label="Instructor Name"
+                value={formData.instructor.name}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    instructor: { ...formData.instructor, name: e.target.value },
+                  })
+                }
+              />
+              <Input
+                label="প্রশিক্ষকের নাম"
+                value={formData.instructor.nameBn}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    instructor: { ...formData.instructor, nameBn: e.target.value },
+                  })
+                }
+                className="font-serif"
+              />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  Role / Designation
-                </label>
-                <input
-                  type="text"
-                  value={formData.instructor.role}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      instructor: { ...formData.instructor, role: e.target.value },
-                    })
-                  }
-                  className="w-full rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden"
-                />
-              </div>
-              <div>
-                <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                  পদবী / ভূমিকা
-                </label>
-                <input
-                  type="text"
-                  value={formData.instructor.roleBn}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      instructor: { ...formData.instructor, roleBn: e.target.value },
-                    })
-                  }
-                  className="w-full rounded-xl border border-slate-200 px-3 py-1.5 text-xs focus:border-primary focus:outline-hidden font-serif"
-                />
-              </div>
+              <Input
+                label="Role / Designation"
+                value={formData.instructor.role}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    instructor: { ...formData.instructor, role: e.target.value },
+                  })
+                }
+              />
+              <Input
+                label="পদবী / ভূমিকা"
+                value={formData.instructor.roleBn}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    instructor: { ...formData.instructor, roleBn: e.target.value },
+                  })
+                }
+                className="font-serif"
+              />
             </div>
           </div>
         </div>

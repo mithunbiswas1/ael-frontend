@@ -2,13 +2,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { toast } from "sonner";
-import { FaImage, FaAward, FaBuilding, FaFilePdf } from "react-icons/fa";
+import { FaImage, FaAward, FaFilePdf, FaBuilding, FaArrowRight } from "react-icons/fa";
 import PageConfigShell from "../_components/PageConfigShell";
 import BannerEditorTab from "../_components/BannerEditorTab";
 import StandardsEditorTab from "./_components/StandardsEditorTab";
-import AgenciesEditorTab from "./_components/AgenciesEditorTab";
-import DocumentsEditorTab from "./_components/DocumentsEditorTab";
 import {
   useGetPageByKeyQuery,
   useUpdatePageByKeyMutation,
@@ -35,8 +34,6 @@ export default function AdminSafetyGuidelinesPage() {
     },
     sections: {
       standardsList: [],
-      regulatoryAgencies: [],
-      documentDownloads: [],
     },
   });
 
@@ -59,8 +56,6 @@ export default function AdminSafetyGuidelinesPage() {
         },
         sections: {
           standardsList: pageData.data.sections?.standardsList || [],
-          regulatoryAgencies: pageData.data.sections?.regulatoryAgencies || [],
-          documentDownloads: pageData.data.sections?.documentDownloads || [],
           ...(pageData.data.sections || {}),
         },
       }));
@@ -73,7 +68,7 @@ export default function AdminSafetyGuidelinesPage() {
         pageKey: "safety-guidelines",
         data: formData,
       }).unwrap();
-      toast.success("Safety guidelines configuration updated successfully!");
+      toast.success("Hero banner and standards list updated successfully!");
     } catch (err) {
       toast.error(err?.data?.message || "Failed to update safety guidelines");
     }
@@ -82,15 +77,13 @@ export default function AdminSafetyGuidelinesPage() {
   const tabs = [
     { id: "banner", label: "Hero Banner", icon: FaImage },
     { id: "standards", label: "Standards List", icon: FaAward },
-    { id: "agencies", label: "Regulatory Agencies", icon: FaBuilding },
-    { id: "documents", label: "Downloadable Documents", icon: FaFilePdf },
   ];
 
   return (
     <PageConfigShell
       pageKey="safety-guidelines"
       title="Safety Guidelines Configuration"
-      subtitle="Manage hero banner, regulatory standards (ISO/EN/NFPA), enforcing agencies, and downloadable guidelines."
+      subtitle="Manage hero banner and international regulatory standards (ISO / EN / NFPA) displayed on the public safety guidelines page."
       previewUrl="/safety-guidelines"
       tabs={tabs}
       activeTab={activeTab}
@@ -98,6 +91,32 @@ export default function AdminSafetyGuidelinesPage() {
       onSave={handleSave}
       isSaving={isSaving || isLoading}
     >
+      {/* Quick Navigation notice for dedicated Top-level Module */}
+      <div className="mb-6">
+        <Link
+          href="/admin/safety-guidelines"
+          className="group p-4 rounded-xl border border-slate-200 bg-white hover:border-primary hover:shadow-xs transition-all flex items-center justify-between"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="h-11 w-11 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+              <FaFilePdf className="h-5 w-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-bold text-slate-800 group-hover:text-primary transition-colors flex items-center gap-2">
+                <span>Manage Safety Guidelines & Regulatory Authorities</span>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-50 text-primary border border-blue-200">
+                  Unified Module
+                </span>
+              </h4>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Manage manuals, circulars, stakeholder documents (Investors, Dealer, Distributor, Customer), and authorities with PDF attachments.
+              </p>
+            </div>
+          </div>
+          <FaArrowRight className="h-4 w-4 text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+        </Link>
+      </div>
+
       {activeTab === "banner" && (
         <BannerEditorTab
           banner={formData.banner}
@@ -116,30 +135,6 @@ export default function AdminSafetyGuidelinesPage() {
             setFormData((prev) => ({
               ...prev,
               sections: { ...prev.sections, standardsList: newList },
-            }))
-          }
-        />
-      )}
-
-      {activeTab === "agencies" && (
-        <AgenciesEditorTab
-          agencies={formData.sections?.regulatoryAgencies}
-          onChange={(newList) =>
-            setFormData((prev) => ({
-              ...prev,
-              sections: { ...prev.sections, regulatoryAgencies: newList },
-            }))
-          }
-        />
-      )}
-
-      {activeTab === "documents" && (
-        <DocumentsEditorTab
-          documents={formData.sections?.documentDownloads}
-          onChange={(newList) =>
-            setFormData((prev) => ({
-              ...prev,
-              sections: { ...prev.sections, documentDownloads: newList },
             }))
           }
         />

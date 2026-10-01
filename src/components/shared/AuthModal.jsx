@@ -102,8 +102,11 @@ export default function AuthModal({
             ? `স্বাগতম ${res.data.user?.fullName || "ব্যবহারকারী"}!`
             : `Welcome back ${res.data.user?.fullName || "User"}!`
         );
-        onClose?.();
-        if (onSuccess) onSuccess(res.data.user);
+        if (onSuccess) {
+          onSuccess(res.data.user);
+        } else {
+          onClose?.();
+        }
       }
     } catch (err) {
       toast.error(
@@ -150,7 +153,7 @@ export default function AuthModal({
         phone: registerForm.phone.trim(),
         email: registerForm.email.trim(),
         password: registerForm.password,
-        role: "customer",
+        role: "user",
       };
 
       const res = await registerApi(payload).unwrap();
@@ -176,8 +179,11 @@ export default function AuthModal({
                 token: loginRes.data.accessToken,
               })
             );
-            onClose?.();
-            if (onSuccess) onSuccess(loginRes.data.user);
+            if (onSuccess) {
+              onSuccess(loginRes.data.user);
+            } else {
+              onClose?.();
+            }
             return;
           }
         } catch (_) {

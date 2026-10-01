@@ -17,6 +17,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { LinkButton } from "@/components/ui/LinkButton";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import RichTextEditor from "@/components/ui/RichTextEditor";
@@ -59,6 +60,7 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
     authorBn: "সেইফ এলপিজি রিসার্চ অ্যান্ড ইন্টেলিজেন্স",
     publishDate: new Date().toISOString().split("T")[0],
     isPublished: true,
+    accessType: "free",
     isFeatured: false,
     tags: "lpg, market-update, gazette",
     metaTitle: "",
@@ -90,6 +92,7 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
           ? new Date(initialData.publishDate).toISOString().split("T")[0]
           : new Date().toISOString().split("T")[0],
         isPublished: initialData.isPublished !== false,
+        accessType: initialData.accessType || "free",
         isFeatured: Boolean(initialData.isFeatured),
         tags: Array.isArray(initialData.tags)
           ? initialData.tags.join(", ")
@@ -277,20 +280,17 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
         </div>
 
         <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
-          <Link href="/admin/market-updates">
-            <Button type="button" variant="outline" size="sm">
-              Cancel
-            </Button>
-          </Link>
+          <LinkButton href="/admin/market-updates" variant="outline" size="sm">
+            Cancel
+          </LinkButton>
           <Button
             type="submit"
             variant="primary"
             size="sm"
-            disabled={isSaving}
-            className="gap-2 shadow-xs"
+            isLoading={isSaving}
+            icon={Save}
           >
-            <Save className="h-4 w-4" />
-            <span>{isSaving ? "Saving..." : isEdit ? "Update Article" : "Publish Article"}</span>
+            {isEdit ? "Update Article" : "Publish Article"}
           </Button>
         </div>
       </div>
@@ -518,6 +518,50 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
                   Publish Immediately (পাবলিশ করুন)
                 </span>
               </label>
+
+              {/* Access Type: Free vs Paid */}
+              <div className="pt-2 border-t border-slate-100 space-y-1.5">
+                <label className="block text-xs font-bold text-slate-800">
+                  Content Access Type / অ্যাক্সেস ধরন *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setFormData((p) => ({ ...p, accessType: "free" }))}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      formData.accessType === "free"
+                        ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-500/20"
+                        : "border-slate-200 bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                      <span>Free (উন্মুক্ত)</span>
+                      {formData.accessType === "free" && (
+                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                      )}
+                    </div>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Open to all public visitors</p>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setFormData((p) => ({ ...p, accessType: "paid" }))}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                      formData.accessType === "paid"
+                        ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20"
+                        : "border-slate-200 bg-white hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                      <span>Paid (সাবস্ক্রাইবার)</span>
+                      {formData.accessType === "paid" && (
+                        <span className="h-2 w-2 rounded-full bg-amber-500" />
+                      )}
+                    </div>
+                    <p className="text-[10px] text-slate-500 mt-0.5">Subscribers & Admins only</p>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -558,14 +602,14 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
                     </div>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
+                    variant="danger-ghost"
+                    size="icon-sm"
                     onClick={handleRemovePdf}
-                    className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-100 hover:text-rose-700 transition-colors"
                     title="Remove attached PDF"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
+                    icon={Trash2}
+                  />
                 </div>
 
                 <div className="flex items-center gap-2 pt-2 border-t border-rose-100">

@@ -10,13 +10,16 @@ import {
   FaUsers,
   FaArrowRight,
   FaShieldAlt,
+  FaReceipt,
+  FaPlus,
 } from "react-icons/fa";
 import { H1, H3, P } from "@/components/ui/Typography";
 
 export default function AdminDashboardPage() {
   const { user } = useSelector((state) => state.auth);
+  const isInstructor = user?.role === "instructor";
 
-  const statCards = [
+  const adminStatCards = [
     {
       title: "Articles & Blogs",
       desc: "Manage bilingual technical articles and publications",
@@ -46,6 +49,39 @@ export default function AdminDashboardPage() {
       color: "bg-slate-100 text-slate-700 border-slate-200",
     },
   ];
+
+  const instructorStatCards = [
+    {
+      title: "My Courses",
+      desc: "Manage your course catalog, video lessons, and curriculum",
+      href: "/admin/courses",
+      icon: FaGraduationCap,
+      color: "bg-secondary/10 text-secondary border-secondary/20",
+    },
+    {
+      title: "Course Enrollments & Sales",
+      desc: "View enrolled students, purchases, and tuition revenue",
+      href: "/admin/courses/enrollments",
+      icon: FaReceipt,
+      color: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    },
+    {
+      title: "Create New Course",
+      desc: "Build and publish a new training module",
+      href: "/admin/courses/add",
+      icon: FaPlus,
+      color: "bg-primary/10 text-primary border-primary/20",
+    },
+    {
+      title: "Live Course Catalog",
+      desc: "Preview how your courses look to public learners",
+      href: "/courses",
+      icon: FaGraduationCap,
+      color: "bg-indigo-50 text-indigo-700 border-indigo-200",
+    },
+  ];
+
+  const statCards = isInstructor ? instructorStatCards : adminStatCards;
 
   return (
     <div className="space-y-6">

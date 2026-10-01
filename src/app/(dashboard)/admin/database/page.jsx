@@ -324,17 +324,15 @@ export default function AdminDatabasePage() {
             { id: "consumer", label: "Consumers (1Cr+)" },
             { id: "industrial_client", label: "Industrial Clients" },
           ].map((t) => (
-            <button
+            <Button
               key={t.id}
+              type="button"
+              variant={selectedType === t.id ? "primary" : "secondary"}
+              size="xs"
               onClick={() => setSelectedType(t.id)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors ${
-                selectedType === t.id
-                  ? "bg-primary text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-              }`}
             >
               {t.label}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -455,20 +453,22 @@ export default function AdminDatabasePage() {
 
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-1.5">
-                      <button
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
                         onClick={() => handleOpenEditModal(item)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-primary transition-colors"
                         title="Edit entry"
-                      >
-                        <Edit2 className="h-3.5 w-3.5" />
-                      </button>
-                      <button
+                        icon={Edit2}
+                      />
+                      <Button
+                        type="button"
+                        variant="danger-ghost"
+                        size="icon-sm"
                         onClick={() => handleDelete(item)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors"
                         title="Delete entry"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                        icon={Trash2}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

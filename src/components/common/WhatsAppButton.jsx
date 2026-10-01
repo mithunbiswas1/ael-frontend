@@ -3,6 +3,7 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import { FaWhatsapp } from "react-icons/fa6";
 
 export default function WhatsAppButton({
@@ -10,6 +11,18 @@ export default function WhatsAppButton({
   message = "Hello, I would like to inquire about LPG Safety & Guidelines.",
   className = "",
 }) {
+  const pathname = usePathname();
+
+  // Explicitly hide on all dashboard, admin, subscriber, and user-dashboard paths
+  if (
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/user-dashboard") ||
+    pathname?.startsWith("/subscriber") ||
+    pathname?.startsWith("/user")
+  ) {
+    return null;
+  }
   // Format phone number to clean international format without '+' or spaces
   const cleanNumber = phoneNumber.replace(/[^0-9]/g, "");
   const encodedMessage = encodeURIComponent(message);

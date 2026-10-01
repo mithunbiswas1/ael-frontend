@@ -2,7 +2,7 @@
 
 export default function AuthLayout({ children }) {
   return (
-    <div className="h-screen w-full overflow-hidden bg-slate-950">
+    <div className="h-screen w-full overflow-hidden bg-gray-100">
       {children}
     </div>
   );
