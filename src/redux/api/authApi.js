@@ -62,6 +62,24 @@ export const authApi = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+
+    // Send Forgot Password OTP via Email
+    forgotPassword: builder.mutation({
+      query: (data) => ({
+        url: endpoints.auth.forgotPassword,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Reset Password with OTP
+    resetPassword: builder.mutation({
+      query: (data) => ({
+        url: endpoints.auth.resetPassword,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -72,4 +90,6 @@ export const {
   useOtpVerifyLoginMutation,
   useSendRegistrationOtpMutation,
   useVerifyRegistrationOtpMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authApi;

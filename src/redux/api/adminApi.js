@@ -15,7 +15,7 @@ export const adminApi = apiSlice.injectEndpoints({
       providesTags: ["AdminStats"],
     }),
 
-    // 2. System Settings
+    // 2. System Settings (Admin)
     getSystemSettings: builder.query({
       query: () => ({
         url: endpoints.adminSuite.settings,
@@ -24,17 +24,26 @@ export const adminApi = apiSlice.injectEndpoints({
       providesTags: ["SystemSettings"],
     }),
 
-    // 3. Update System Settings
+    // 3. Public Settings (Navbar, Footer, SEO)
+    getPublicSettings: builder.query({
+      query: () => ({
+        url: endpoints.adminSuite.publicSettings,
+        method: "GET",
+      }),
+      providesTags: ["PublicSettings"],
+    }),
+
+    // 4. Update System Settings
     updateSystemSettings: builder.mutation({
       query: (data) => ({
         url: endpoints.adminSuite.updateSettings,
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: ["SystemSettings"],
+      invalidatesTags: ["SystemSettings", "PublicSettings"],
     }),
 
-    // 4. Analytics Reports
+    // 5. Analytics Reports
     getAnalyticsReports: builder.query({
       query: (params = {}) => {
         const queryParams = new URLSearchParams(params).toString();
@@ -51,6 +60,7 @@ export const adminApi = apiSlice.injectEndpoints({
 export const {
   useGetDashboardStatsQuery,
   useGetSystemSettingsQuery,
+  useGetPublicSettingsQuery,
   useUpdateSystemSettingsMutation,
   useGetAnalyticsReportsQuery,
 } = adminApi;

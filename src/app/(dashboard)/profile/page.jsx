@@ -60,12 +60,6 @@ export default function ProfilePage() {
     userName: "",
     email: "",
     phone: "",
-    designation: "",
-    bio: "",
-    website: "",
-    linkedin: "",
-    twitter: "",
-    facebook: "",
     address: "",
     city: "",
     district: "",
@@ -81,8 +75,10 @@ export default function ProfilePage() {
     confirmPassword: "",
   });
 
-  // Sync profile data to form and Redux on load
+  // Sync profile data to form on load (do not overwrite if actively editing)
   useEffect(() => {
+    if (isEditing) return;
+
     if (profileResponse?.data) {
       const u = profileResponse.data;
       setFormData({
@@ -90,12 +86,6 @@ export default function ProfilePage() {
         userName: u.userName || "",
         email: u.email || "",
         phone: u.phone || "",
-        designation: u.designation || "",
-        bio: u.bio || "",
-        website: u.website || "",
-        linkedin: u.linkedin || "",
-        twitter: u.twitter || "",
-        facebook: u.facebook || "",
         address: u.address || "",
         city: u.city || "",
         district: u.district || "",
@@ -103,21 +93,12 @@ export default function ProfilePage() {
         postal_code: u.postal_code || "",
         country: u.country || "Bangladesh",
       });
-
-      // Keep Redux auth slice updated
-      dispatch(updateUser(u));
     } else if (authUser) {
       setFormData({
         fullName: authUser.fullName || "",
         userName: authUser.userName || "",
         email: authUser.email || "",
         phone: authUser.phone || "",
-        designation: authUser.designation || "",
-        bio: authUser.bio || "",
-        website: authUser.website || "",
-        linkedin: authUser.linkedin || "",
-        twitter: authUser.twitter || "",
-        facebook: authUser.facebook || "",
         address: authUser.address || "",
         city: authUser.city || "",
         district: authUser.district || "",
@@ -126,7 +107,7 @@ export default function ProfilePage() {
         country: authUser.country || "Bangladesh",
       });
     }
-  }, [profileResponse, authUser, dispatch]);
+  }, [profileResponse, authUser, isEditing]);
 
   // Handle input change
   const handleInputChange = (e) => {
@@ -161,12 +142,6 @@ export default function ProfilePage() {
         userName: profile.userName || "",
         email: profile.email || "",
         phone: profile.phone || "",
-        designation: profile.designation || "",
-        bio: profile.bio || "",
-        website: profile.website || "",
-        linkedin: profile.linkedin || "",
-        twitter: profile.twitter || "",
-        facebook: profile.facebook || "",
         address: profile.address || "",
         city: profile.city || "",
         district: profile.district || "",
@@ -179,7 +154,25 @@ export default function ProfilePage() {
 
   // Handle profile update submit
   const handleUpdateProfile = async (e) => {
-    e.preventDefault();
+    if (e && typeof e.preventDefault === "function") {
+      e.preventDefault();
+    }
+
+    if (!formData.fullName?.trim()) {
+      toast.error(isBn ? "পূর্ণ নাম প্রদান করুন" : "Full name is required");
+      return;
+    }
+
+    if (!formData.userName?.trim()) {
+      toast.error(isBn ? "ব্যবহারকারী নাম প্রদান করুন" : "Username is required");
+      return;
+    }
+
+    if (!formData.phone?.trim()) {
+      toast.error(isBn ? "মোবাইল নম্বর প্রদান করুন" : "Phone number is required");
+      return;
+    }
+
     try {
       let payload;
 
@@ -193,7 +186,7 @@ export default function ProfilePage() {
         fd.append("profilePhoto", selectedFile);
         payload = fd;
       } else {
-        payload = formData;
+        payload = { ...formData };
       }
 
       const res = await updateProfileApi(payload).unwrap();
@@ -213,8 +206,8 @@ export default function ProfilePage() {
     } catch (err) {
       toast.error(
         err?.data?.message ||
-        err?.message ||
-        (isBn ? "প্রোফাইল আপডেট ব্যর্থ হয়েছে" : "Failed to update profile")
+          err?.message ||
+          (isBn ? "প্রোফাইল আপডেট ব্যর্থ হয়েছে" : "Failed to update profile")
       );
     }
   };
@@ -363,6 +356,7 @@ export default function ProfilePage() {
         isEditing={isEditing}
         setIsEditing={setIsEditing}
         onCancel={handleCancelEdit}
+        onSave={handleUpdateProfile}
         isUpdatingProfile={isUpdatingProfile}
         isSubscriberUser={isSubscriberUser}
         onOpenPasswordModal={() => setIsPasswordModalOpen(true)}

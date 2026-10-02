@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Sliders, Radio, Globe } from "lucide-react";
+import { Settings, Sparkles, Phone, Share2, Globe, Radio } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import {
@@ -11,13 +11,17 @@ import {
 } from "@/redux/api/adminApi";
 
 // Modularized Components
-import GeneralSettingsTab from "./_components/GeneralSettingsTab";
-import GatewaySettingsTab from "./_components/GatewaySettingsTab";
+import BrandingSettingsTab from "./_components/BrandingSettingsTab";
+import ContactSettingsTab from "./_components/ContactSettingsTab";
+import SocialSettingsTab from "./_components/SocialSettingsTab";
 import SeoSettingsTab from "./_components/SeoSettingsTab";
+import GatewaySettingsTab from "./_components/GatewaySettingsTab";
 
 export default function AdminSettingsPage() {
-  const [activeTab, setActiveTab] = useState("general"); // "general" | "gateways" | "seo"
+  const [activeTab, setActiveTab] = useState("branding");
   const [formData, setFormData] = useState({});
+  const [logoFiles, setLogoFiles] = useState({});
+  const [previewUrls, setPreviewUrls] = useState({});
 
   const { data: settingsResponse, isLoading, refetch } = useGetSystemSettingsQuery();
   const [updateSettings, { isLoading: isUpdating }] = useUpdateSystemSettingsMutation();
@@ -30,18 +34,36 @@ export default function AdminSettingsPage() {
 
   const handleSave = async () => {
     try {
-      await updateSettings(formData).unwrap();
-      toast.success("System settings updated successfully!");
+      const data = new FormData();
+
+      // Append files if selected
+      if (logoFiles.siteLogo) data.append("siteLogo", logoFiles.siteLogo);
+      if (logoFiles.footerLogo) data.append("footerLogo", logoFiles.footerLogo);
+      if (logoFiles.favicon) data.append("favicon", logoFiles.favicon);
+
+      // Append all other form fields
+      Object.keys(formData).forEach((key) => {
+        if (formData[key] !== undefined && formData[key] !== null) {
+          data.append(key, formData[key]);
+        }
+      });
+
+      await updateSettings(data).unwrap();
+      toast.success("Platform settings updated successfully!");
+      setLogoFiles({});
+      setPreviewUrls({});
       refetch();
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to save settings");
+      toast.error(err?.data?.message || "Failed to save platform settings");
     }
   };
 
   const tabs = [
-    { id: "general", label: "General & Identity", icon: Sliders },
-    { id: "gateways", label: "Gateways (SMS & SMTP)", icon: Radio },
-    { id: "seo", label: "SEO & Search Indexers", icon: Globe },
+    { id: "branding", label: "Branding & Logos", icon: Sparkles },
+    { id: "contact", label: "Topbar & Contacts", icon: Phone },
+    { id: "social", label: "Social Media", icon: Share2 },
+    { id: "seo", label: "SEO & Metadata", icon: Globe },
+    { id: "gateways", label: "Gateways & System", icon: Radio },
   ];
 
   return (
@@ -50,11 +72,11 @@ export default function AdminSettingsPage() {
       <AdminPageHeader
         icon={Settings}
         title="Platform Control & Settings Center"
-        description="Configure enterprise site identity, BTRC SMS Gateway masking, SMTP delivery, and global SEO metadata."
+        description="Configure website identity, logo assets, topbar contacts, social networks, BTRC SMS gateway, SMTP server, and global SEO metadata."
       />
 
       {/* 2. Navigation Tabs */}
-      <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200/80 w-fit">
+      <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200/80 w-fit">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (
@@ -62,7 +84,7 @@ export default function AdminSettingsPage() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 activeTab === tab.id
                   ? "bg-white text-slate-900 shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
@@ -82,8 +104,21 @@ export default function AdminSettingsPage() {
         </div>
       ) : (
         <>
-          {activeTab === "general" && (
-            <GeneralSettingsTab
+          {activeTab === "branding" && (
+            <BrandingSettingsTab
+              formData={formData}
+              setFormData={setFormData}
+              logoFiles={logoFiles}
+              setLogoFiles={setLogoFiles}
+              previewUrls={previewUrls}
+              setPreviewUrls={setPreviewUrls}
+              onSave={handleSave}
+              isUpdating={isUpdating}
+            />
+          )}
+
+          {activeTab === "contact" && (
+            <ContactSettingsTab
               formData={formData}
               setFormData={setFormData}
               onSave={handleSave}
@@ -91,8 +126,8 @@ export default function AdminSettingsPage() {
             />
           )}
 
-          {activeTab === "gateways" && (
-            <GatewaySettingsTab
+          {activeTab === "social" && (
+            <SocialSettingsTab
               formData={formData}
               setFormData={setFormData}
               onSave={handleSave}
@@ -102,6 +137,15 @@ export default function AdminSettingsPage() {
 
           {activeTab === "seo" && (
             <SeoSettingsTab
+              formData={formData}
+              setFormData={setFormData}
+              onSave={handleSave}
+              isUpdating={isUpdating}
+            />
+          )}
+
+          {activeTab === "gateways" && (
+            <GatewaySettingsTab
               formData={formData}
               setFormData={setFormData}
               onSave={handleSave}

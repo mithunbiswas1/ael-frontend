@@ -91,7 +91,9 @@ export const apiSlice = createApi({
     "Newsletter",
     "AdminStats",
     "SystemSettings",
+    "PublicSettings",
     "AnalyticsReports",
+    "Author",
   ],
   endpoints: () => ({}),
 });

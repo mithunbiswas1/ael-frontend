@@ -1,48 +1,98 @@
 // src/components/common/footer/footer.jsx
+"use client";
 
 import Link from "next/link";
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaYoutube,
+  FaInstagram,
+} from "react-icons/fa";
 import AelLogo from "@/components/common/AelLogo";
 import { H4, P } from "@/components/ui/Typography";
-
-const SOCIAL_LINKS = [
-  {
-    name: "Facebook",
-    href: "https://facebook.com",
-    icon: FaFacebookF,
-    bgClass: "bg-blue-600/80 hover:bg-blue-600",
-  },
-  {
-    name: "Twitter",
-    href: "https://twitter.com",
-    icon: FaTwitter,
-    bgClass: "bg-sky-500/80 hover:bg-sky-500",
-  },
-  {
-    name: "LinkedIn",
-    href: "https://linkedin.com",
-    icon: FaLinkedinIn,
-    bgClass: "bg-blue-700/80 hover:bg-blue-700",
-  },
-  {
-    name: "YouTube",
-    href: "https://youtube.com",
-    icon: FaYoutube,
-    bgClass: "bg-red-600/80 hover:bg-red-600",
-  },
-];
+import { useGetPublicSettingsQuery } from "@/redux/api/adminApi";
 
 export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
+  const { data: publicSettingsData } = useGetPublicSettingsQuery();
+  const settings = publicSettingsData?.data;
+
   const quickLinksTitle = dict?.quickLinksTitle || "QUICK LINKS";
   const resourcesTitle = dict?.resourcesTitle || "RESOURCES & SUPPORT";
   const contactTitle = dict?.contactTitle || "CONTACT US";
-  const tagline = dict?.tagline || "Promoting certified LPG safety awareness and regulatory compliance across Bangladesh for a safer today and sustainable tomorrow.";
-  const addressText = dict?.address || "House # 12, Road # 7, Dhanmondi, Dhaka-1205";
-  const phoneText = dict?.phone || "+880 1712-345678";
-  const emailText = dict?.email || "info@safelpg.com";
-  const websiteText = dict?.website || "www.safelpg.com";
-  const copyrightText = dict?.copyright || "All rights reserved. Powered by Safe LPG Bangladesh.";
+
+  const tagline =
+    settings?.footerAbout ||
+    settings?.tagline ||
+    dict?.tagline ||
+    "Promoting certified LPG safety awareness and regulatory compliance across Bangladesh for a safer today and sustainable tomorrow.";
+
+  const addressText =
+    settings?.address ||
+    dict?.address ||
+    "House # 12, Road # 7, Dhanmondi, Dhaka-1205";
+
+  const phoneText =
+    settings?.sitePhone ||
+    dict?.phone ||
+    "+880 1712-345678";
+
+  const emailText =
+    settings?.siteEmail ||
+    dict?.email ||
+    "info@safelpg.com";
+
+  const websiteText =
+    dict?.website ||
+    "www.safelpg.com";
+
+  const copyrightText =
+    settings?.copyrightText ||
+    dict?.copyright ||
+    "All rights reserved. Powered by Safe LPG Bangladesh.";
+
+  const socialList = [
+    {
+      name: "Facebook",
+      href: settings?.facebookUrl || "https://facebook.com",
+      icon: FaFacebookF,
+      bgClass: "bg-blue-600/80 hover:bg-blue-600",
+      configured: Boolean(settings?.facebookUrl),
+    },
+    {
+      name: "Twitter",
+      href: settings?.twitterUrl || "https://twitter.com",
+      icon: FaTwitter,
+      bgClass: "bg-sky-500/80 hover:bg-sky-500",
+      configured: Boolean(settings?.twitterUrl),
+    },
+    {
+      name: "LinkedIn",
+      href: settings?.linkedinUrl || "https://linkedin.com",
+      icon: FaLinkedinIn,
+      bgClass: "bg-blue-700/80 hover:bg-blue-700",
+      configured: Boolean(settings?.linkedinUrl),
+    },
+    {
+      name: "YouTube",
+      href: settings?.youtubeUrl || "https://youtube.com",
+      icon: FaYoutube,
+      bgClass: "bg-red-600/80 hover:bg-red-600",
+      configured: Boolean(settings?.youtubeUrl),
+    },
+    {
+      name: "Instagram",
+      href: settings?.instagramUrl || "https://instagram.com",
+      icon: FaInstagram,
+      bgClass: "bg-pink-600/80 hover:bg-pink-600",
+      configured: Boolean(settings?.instagramUrl),
+    },
+  ];
+
+  const activeSocials = socialList.some((s) => s.configured)
+    ? socialList.filter((s) => s.configured && s.href)
+    : socialList.slice(0, 4);
 
   const footerColumns = [
     {
@@ -77,7 +127,7 @@ export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
     {
       icon: Phone,
       text: phoneText,
-      href: "tel:+8801712345678",
+      href: `tel:${phoneText.replace(/[^0-9+]/g, "")}`,
     },
     {
       icon: Mail,
@@ -98,7 +148,7 @@ export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           {/* Column 1: Brand Info & Social Media (4 cols) */}
           <div className="flex flex-col lg:col-span-4">
-            <AelLogo light={true} />
+            <AelLogo light={true} isFooter={true} />
 
             <P size="xs" color="slate400" className="mt-4 max-w-sm">
               {tagline}
@@ -106,7 +156,7 @@ export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
 
             {/* Social Icons mapped */}
             <div className="mt-5 flex items-center gap-2">
-              {SOCIAL_LINKS.map((item) => {
+              {activeSocials.map((item) => {
                 const IconComponent = item.icon;
                 return (
                   <a
@@ -169,23 +219,19 @@ export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
               {contactItems.map((item, idx) => {
                 const IconComponent = item.icon;
                 return (
-                  <li key={idx} className="flex items-start gap-2.5">
-                    <IconComponent className="h-4 w-4 shrink-0 text-primary mt-0.5" />
+                  <li key={idx} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-slate-900 border border-slate-800 text-blue-400">
+                      <IconComponent className="h-3.5 w-3.5" />
+                    </div>
                     {item.href ? (
                       <a
                         href={item.href}
-                        target={item.href.startsWith("http") ? "_blank" : undefined}
-                        rel={
-                          item.href.startsWith("http")
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                        className="text-slate-400 hover:text-white transition-colors duration-150"
+                        className="text-slate-400 hover:text-white transition-colors duration-150 break-words leading-relaxed"
                       >
                         {item.text}
                       </a>
                     ) : (
-                      <span className="leading-relaxed text-slate-400">
+                      <span className="text-slate-400 break-words leading-relaxed">
                         {item.text}
                       </span>
                     )}

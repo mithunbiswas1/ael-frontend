@@ -1,3 +1,4 @@
+// src/app/(dashboard)/profile/_components/ProfileForm.jsx
 import {
   FaUser,
   FaEnvelope,
@@ -6,15 +7,9 @@ import {
   FaGlobe,
   FaTimes,
   FaSave,
-  FaBriefcase,
-  FaLinkedin,
-  FaTwitter,
-  FaFacebook,
-  FaLink,
 } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 import { H4, P } from "@/components/ui/Typography";
 
 export default function ProfileForm({
@@ -36,12 +31,12 @@ export default function ProfileForm({
           </div>
           <div>
             <H4 className="text-sm font-bold text-slate-900">
-              {isBn ? "ব্যক্তিগত ও পেশাগত তথ্য" : "Personal & Professional Information"}
+              {isBn ? "ব্যক্তিগত তথ্য" : "Personal Information"}
             </H4>
             <P className="text-xs text-slate-500">
               {isBn
-                ? "আপনার নাম, পেশাগত পদবি ও পরিচিতি বিবরণ"
-                : "Your personal details, professional designation, and author bio"}
+                ? "আপনার নাম ও ব্যবহারকারী নামের বিবরণ"
+                : "Your official name and system username"}
             </P>
           </div>
         </div>
@@ -66,38 +61,6 @@ export default function ProfileForm({
             required
             placeholder="username"
           />
-
-          <div className="sm:col-span-2">
-            <Input
-              label={isBn ? "পেশাগত পদবি / পরিচিতি" : "Professional Designation / Headline"}
-              name="designation"
-              value={formData.designation}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              placeholder={
-                isBn
-                  ? "যেমন: সিনিয়র এলপিজি সেফটি রিসার্চার ও টেকনিক্যাল স্পেশালিস্ট"
-                  : "e.g. Senior LPG Safety Researcher & Technical Specialist"
-              }
-              prefix={<FaBriefcase className="h-3.5 w-3.5" />}
-            />
-          </div>
-
-          <div className="sm:col-span-2">
-            <Textarea
-              label={isBn ? "সংক্ষিপ্ত পরিচিতি ও বায়ো (Author Bio / Description)" : "Author Bio & Description"}
-              name="bio"
-              value={formData.bio}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              rows={3}
-              placeholder={
-                isBn
-                  ? "আপনার পেশাগত অভিজ্ঞতা, দক্ষতা বা গবেষণার সংক্ষিপ্ত পরিচিতি..."
-                  : "Brief professional background, expertise, or research focus..."
-              }
-            />
-          </div>
         </div>
       </div>
 
@@ -226,67 +189,6 @@ export default function ProfileForm({
               prefix={<FaGlobe className="h-3.5 w-3.5" />}
             />
           </div>
-        </div>
-      </div>
-
-      {/* Section 4: Author & Social Profiles */}
-      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-2xs space-y-5">
-        <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-700">
-            <FaLink className="h-3.5 w-3.5" />
-          </div>
-          <div>
-            <H4 className="text-sm font-bold text-slate-900">
-              {isBn ? "লেখক প্রোফাইল ও সোশ্যাল লিংক" : "Author Profile & Social Links"}
-            </H4>
-            <P className="text-xs text-slate-500">
-              {isBn
-                ? "ওয়েবসাইট, লিঙ্কডইন ও সোশ্যাল মিডিয়ার লিংক যা আপনার লেখক পেজে প্রদর্শিত হবে"
-                : "Personal website, LinkedIn, and social profiles shown on your public author page"}
-            </P>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            label={isBn ? "ওয়েবসাইট / পোর্টফোলিও" : "Website / Portfolio URL"}
-            name="website"
-            value={formData.website}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            placeholder="https://example.com"
-            prefix={<FaGlobe className="h-3.5 w-3.5" />}
-          />
-
-          <Input
-            label={isBn ? "লিঙ্কডইন প্রোফাইল" : "LinkedIn Profile URL"}
-            name="linkedin"
-            value={formData.linkedin}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            placeholder="https://linkedin.com/in/username"
-            prefix={<FaLinkedin className="h-3.5 w-3.5" />}
-          />
-
-          <Input
-            label={isBn ? "টুইটার / এক্স প্রোফাইল" : "Twitter / X Profile URL"}
-            name="twitter"
-            value={formData.twitter}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            placeholder="https://x.com/username"
-            prefix={<FaTwitter className="h-3.5 w-3.5" />}
-          />
-
-          <Input
-            label={isBn ? "ফেসবুক প্রোফাইল" : "Facebook Profile URL"}
-            name="facebook"
-            value={formData.facebook}
-            onChange={handleInputChange}
-            disabled={!isEditing}
-            placeholder="https://facebook.com/username"
-            prefix={<FaFacebook className="h-3.5 w-3.5" />}
-          />
         </div>
       </div>
 

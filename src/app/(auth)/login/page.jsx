@@ -260,6 +260,12 @@ export default function LoginPage() {
                   <label className="block text-xs font-semibold text-slate-700">
                     {isBn ? "পাসওয়ার্ড *" : "Password *"}
                   </label>
+                  <Link
+                    href="/reset-password"
+                    className="text-[11px] font-semibold text-primary hover:underline transition-colors"
+                  >
+                    {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot Password?"}
+                  </Link>
                 </div>
                 <div className="relative">
                   <input

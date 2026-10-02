@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { setLogout } from "@/redux/slice/authSlice";
 import { P } from "@/components/ui/Typography";
 import { useGetMyPermissionsQuery } from "@/redux/api/roleApi";
+import AelLogo from "@/components/common/AelLogo";
 import {
   FaTachometerAlt,
   FaUser,
@@ -448,20 +449,17 @@ function SidebarContent({
       {/* Sidebar Header */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
         {!isCollapsed && (
-          <Link
-            href={isSubscriberOnly ? "/user-dashboard" : "/admin"}
-            scroll={false}
-            className="flex items-center gap-2"
-          >
-            <span className="text-xl font-black tracking-tight text-primary">
-              {isSubscriberOnly ? "AEL Learner" : "AEL Admin"}
-            </span>
-          </Link>
+          <AelLogo className="h-8 sm:h-9 w-auto max-w-[150px]" width={140} height={36} />
         )}
         {isCollapsed && (
-          <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg">
+          <Link
+            href="/"
+            scroll={false}
+            title="Home"
+            className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg hover:opacity-90 transition-opacity"
+          >
             A
-          </div>
+          </Link>
         )}
         <button
           type="button"

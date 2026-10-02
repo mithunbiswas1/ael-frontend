@@ -14,7 +14,7 @@ import {
   ChevronDown,
   ArrowRight,
 } from "lucide-react";
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaYoutube, FaInstagram } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import SearchModal from "@/components/shared/SearchModal";
@@ -22,6 +22,7 @@ import LanguageSelector from "./LanguageSelector";
 import ProfileDropdown from "./ProfileDropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogout } from "@/redux/slice/authSlice";
+import { useGetPublicSettingsQuery } from "@/redux/api/adminApi";
 
 const SOCIAL_LINKS = [
   {
@@ -104,60 +105,129 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
     };
   }, [mobileMenuOpen]);
 
-  const hotlineLabel = commonDict?.hotlineLabel || "Hotline";
-  const hotlineNumber = commonDict?.hotlineNumber || "16137";
-  const emailText = commonDict?.email || "info@lpgsafety.org.bd";
+  const { data: publicSettingsData } = useGetPublicSettingsQuery();
+  const settings = publicSettingsData?.data;
+
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8005";
+  const rawLogo = settings?.siteLogo || "/safe_lpg_2.png";
+  const siteLogoUrl =
+    rawLogo.startsWith("http") || rawLogo.startsWith("/")
+      ? rawLogo
+      : `${backendUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`;
+
+  const hotlineLabel = settings?.hotlineLabel || commonDict?.hotlineLabel || "Hotline";
+  const hotlineNumber = settings?.sitePhone || commonDict?.hotlineNumber || "16137";
+  const emailText = settings?.siteEmail || commonDict?.email || "info@lpgsafety.org.bd";
+
+  const socialList = [
+    {
+      name: "Facebook",
+      href: settings?.facebookUrl || "https://facebook.com",
+      icon: FaFacebookF,
+      bgClass: "bg-blue-600 hover:bg-blue-700",
+      configured: Boolean(settings?.facebookUrl),
+    },
+    {
+      name: "Twitter",
+      href: settings?.twitterUrl || "https://twitter.com",
+      icon: FaTwitter,
+      bgClass: "bg-sky-500 hover:bg-sky-600",
+      configured: Boolean(settings?.twitterUrl),
+    },
+    {
+      name: "LinkedIn",
+      href: settings?.linkedinUrl || "https://linkedin.com",
+      icon: FaLinkedinIn,
+      bgClass: "bg-blue-700 hover:bg-blue-800",
+      configured: Boolean(settings?.linkedinUrl),
+    },
+    {
+      name: "YouTube",
+      href: settings?.youtubeUrl || "https://youtube.com",
+      icon: FaYoutube,
+      bgClass: "bg-red-600 hover:bg-red-700",
+      configured: Boolean(settings?.youtubeUrl),
+    },
+    {
+      name: "Instagram",
+      href: settings?.instagramUrl || "https://instagram.com",
+      icon: FaInstagram,
+      bgClass: "bg-pink-600 hover:bg-pink-700",
+      configured: Boolean(settings?.instagramUrl),
+    },
+  ];
+
+  const activeSocials = socialList.some((s) => s.configured)
+    ? socialList.filter((s) => s.configured && s.href)
+    : socialList.slice(0, 4);
 
   return (
     <header className="sticky top-0 z-50 w-full shadow-xs">
       {/* 1. Top Utility Header Bar */}
-      <div className="bg-slate-950 text-slate-300 py-1.5 border-b border-slate-900 text-xs">
-        <div className="site-container flex items-center justify-between gap-3">
-          {/* Left: Hotline & Official Support */}
-          <div className="flex items-center gap-4 text-[11px] sm:text-xs">
-            <LinkButton
-              href="tel:16137"
-              variant="ghost"
-              className="p-0 h-auto font-normal text-[11px] sm:text-xs text-slate-300 hover:text-white hover:bg-transparent inline-flex items-center gap-1.5 active:scale-100 shadow-none border-0"
-            >
-              <Phone className="h-3.5 w-3.5 text-blue-400" />
-              <span>
-                {hotlineLabel}: <strong className="text-white font-semibold">{hotlineNumber}</strong>
-              </span>
-            </LinkButton>
+      {settings?.topbarEnabled !== false && (
+        <div className="bg-slate-950 text-slate-300 py-1.5 border-b border-slate-900 text-xs">
+          <div className="site-container flex items-center justify-between gap-3">
+            {/* Left: Hotline & Official Support */}
+            <div className="flex items-center gap-4 text-[11px] sm:text-xs">
+              <LinkButton
+                href={`tel:${hotlineNumber.replace(/[^0-9+]/g, "")}`}
+                variant="ghost"
+                className="p-0 h-auto font-normal text-[11px] sm:text-xs text-slate-300 hover:text-white hover:bg-transparent inline-flex items-center gap-1.5 active:scale-100 shadow-none border-0"
+              >
+                <Phone className="h-3.5 w-3.5 text-blue-400" />
+                <span>
+                  {hotlineLabel}: <strong className="text-white font-semibold">{hotlineNumber}</strong>
+                </span>
+              </LinkButton>
 
-            <span className="hidden sm:inline text-slate-700">|</span>
+              <span className="hidden sm:inline text-slate-700">|</span>
 
-            <LinkButton
-              href={`mailto:${emailText}`}
-              variant="ghost"
-              className="hidden sm:inline-flex p-0 h-auto font-normal text-[11px] sm:text-xs text-slate-300 hover:text-white hover:bg-transparent items-center gap-1.5 active:scale-100 shadow-none border-0"
-            >
-              <Mail className="h-3.5 w-3.5 text-blue-400" />
-              <span>{emailText}</span>
-            </LinkButton>
-          </div>
+              <LinkButton
+                href={`mailto:${emailText}`}
+                variant="ghost"
+                className="hidden sm:inline-flex p-0 h-auto font-normal text-[11px] sm:text-xs text-slate-300 hover:text-white hover:bg-transparent items-center gap-1.5 active:scale-100 shadow-none border-0"
+              >
+                <Mail className="h-3.5 w-3.5 text-blue-400" />
+                <span>{emailText}</span>
+              </LinkButton>
 
-          {/* Right: Social Icons */}
-          <div className="flex items-center gap-3 text-[11px] sm:text-xs">
-            <div className="flex items-center gap-1.5">
-              {SOCIAL_LINKS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <LinkButton
-                    key={item.name}
-                    href={item.href}
-                    aria-label={item.name}
-                    className={`h-5 w-5 min-w-[20px] rounded-full p-0 flex items-center justify-center text-white transition-all shadow-none border-0 ${item.bgClass}`}
-                  >
-                    <Icon className="h-2.5 w-2.5" />
-                  </LinkButton>
-                );
-              })}
+              {settings?.topbarAnnouncement && (
+                <>
+                  <span className="hidden md:inline text-slate-700">|</span>
+                  <span className="hidden md:inline-flex items-center gap-1.5 text-amber-400 font-medium">
+                    {settings.topbarAnnouncementUrl ? (
+                      <Link href={settings.topbarAnnouncementUrl} className="hover:underline">
+                        {settings.topbarAnnouncement}
+                      </Link>
+                    ) : (
+                      <span>{settings.topbarAnnouncement}</span>
+                    )}
+                  </span>
+                </>
+              )}
+            </div>
+
+            {/* Right: Social Icons */}
+            <div className="flex items-center gap-3 text-[11px] sm:text-xs">
+              <div className="flex items-center gap-1.5">
+                {activeSocials.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <LinkButton
+                      key={item.name}
+                      href={item.href}
+                      aria-label={item.name}
+                      className={`h-5 w-5 min-w-[20px] rounded-full p-0 flex items-center justify-center text-white transition-all shadow-none border-0 ${item.bgClass}`}
+                    >
+                      <Icon className="h-2.5 w-2.5" />
+                    </LinkButton>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 2. Main Navigation Bar */}
       <nav className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
@@ -177,11 +247,12 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
 
             <Link href="/" className="flex items-center shrink-0 transition-opacity hover:opacity-95">
               <Image
-                src="/safe_lpg_2.png"
-                alt="Safe LPG Logo"
+                src={siteLogoUrl}
+                alt={settings?.siteName || "Safe LPG Logo"}
                 width={165}
                 height={40}
                 priority
+                unoptimized={siteLogoUrl.startsWith("http")}
                 className="h-8 sm:h-9.5 w-auto object-contain"
               />
             </Link>
@@ -320,10 +391,11 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
                 className="flex items-center"
               >
                 <Image
-                  src="/safe_lpg_2.png"
-                  alt="Safe LPG Logo"
+                  src={siteLogoUrl}
+                  alt={settings?.siteName || "Safe LPG Logo"}
                   width={150}
                   height={38}
+                  unoptimized={siteLogoUrl.startsWith("http")}
                   className="h-8 w-auto object-contain"
                 />
               </Link>

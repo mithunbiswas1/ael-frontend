@@ -1,9 +1,8 @@
 // src/app/(dashboard)/profile/_components/ProfileHeader.jsx
 "use client";
 
-import { FaUser, FaKey, FaEdit, FaTimes, FaSave, FaGraduationCap } from "react-icons/fa";
+import { FaUser, FaKey, FaEdit, FaTimes, FaSave } from "react-icons/fa";
 import { Button } from "@/components/ui/Button";
-import { LinkButton } from "@/components/ui/LinkButton";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 
 export default function ProfileHeader({
@@ -11,8 +10,8 @@ export default function ProfileHeader({
   isEditing,
   setIsEditing,
   onCancel,
+  onSave,
   isUpdatingProfile,
-  isSubscriberUser,
   onOpenPasswordModal,
 }) {
   return (
@@ -56,10 +55,10 @@ export default function ProfileHeader({
               </Button>
 
               <Button
-                form="profileForm"
-                type="submit"
+                type="button"
                 variant="primary"
                 size="sm"
+                onClick={onSave}
                 disabled={isUpdatingProfile}
                 isLoading={isUpdatingProfile}
                 icon={FaSave}

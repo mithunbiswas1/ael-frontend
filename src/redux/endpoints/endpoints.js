@@ -9,6 +9,8 @@ export const endpoints = {
     otpVerifyLogin: "otp-verify",
     sendRegistrationOtp: "send-registration-otp",
     verifyRegistrationOtp: "verify-registration-otp",
+    forgotPassword: "forgot-password",
+    resetPassword: "reset-password",
   },
 
   // Order endpoints
@@ -172,6 +174,7 @@ export const endpoints = {
   adminSuite: {
     dashboardStats: "admin/dashboard-stats",
     settings: "admin/settings",
+    publicSettings: "admin/settings/public",
     updateSettings: "admin/settings",
   },
 };
