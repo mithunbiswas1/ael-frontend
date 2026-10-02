@@ -64,6 +64,12 @@ export const userApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Users"],
     }),
+
+    // Public: Get author public profile and articles
+    getAuthorProfile: builder.query({
+      query: (identifier) => `user/author/${encodeURIComponent(identifier)}`,
+      providesTags: (result, error, identifier) => [{ type: "Author", id: identifier }],
+    }),
   }),
 });
 
@@ -75,4 +81,5 @@ export const {
   useGetUserByIdAdminQuery,
   useUpdateUserByAdminMutation,
   useDeleteUserByAdminMutation,
+  useGetAuthorProfileQuery,
 } = userApi;

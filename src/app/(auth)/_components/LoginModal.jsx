@@ -99,7 +99,6 @@ const LoginModal = ({ isOpen, onClose, onSuccess, redirectPath }) => {
         }
       }
     } catch (err) {
-      console.error("OTP Error:", err);
       toast.error(
         err?.data?.errors?.[0] || err?.data?.message || "Something went wrong",
       );

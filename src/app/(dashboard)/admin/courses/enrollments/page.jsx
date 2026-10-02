@@ -28,10 +28,12 @@ import {
   TableCell,
 } from "@/components/ui/Table";
 import { H3, P } from "@/components/ui/Typography";
+import Pagination from "@/components/ui/Pagination";
 
 export default function CourseEnrollmentsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [page, setPage] = useState(1);
 
   const { data: responseData, isLoading, refetch } =
     useGetCourseEnrollmentsQuery();
@@ -62,6 +64,8 @@ export default function CourseEnrollmentsPage() {
       item.transactionId?.toLowerCase().includes(q)
     );
   });
+
+  const paginatedEnrollments = filteredEnrollments.slice((page - 1) * 10, page * 10);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "-";
@@ -94,9 +98,6 @@ export default function CourseEnrollmentsPage() {
                 {stats.totalStudents} Enrollments
               </span>
             </div>
-            <P className="mt-1 text-xs text-slate-500">
-              Audit student course purchases, direct enrollments, and tuition fees.
-            </P>
           </div>
 
           <div className="flex items-center gap-2">
@@ -197,8 +198,14 @@ export default function CourseEnrollmentsPage() {
             <SearchInput
               placeholder="Search by student, phone, or course..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onClear={() => setSearchTerm("")}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPage(1);
+              }}
+              onClear={() => {
+                setSearchTerm("");
+                setPage(1);
+              }}
               size="sm"
             />
           </div>
@@ -212,7 +219,10 @@ export default function CourseEnrollmentsPage() {
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setTypeFilter(tab.id)}
+                onClick={() => {
+                  setTypeFilter(tab.id);
+                  setPage(1);
+                }}
                 className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
                   typeFilter === tab.id
                     ? "bg-white text-slate-900 shadow-xs"
@@ -243,7 +253,8 @@ export default function CourseEnrollmentsPage() {
             </P>
           </div>
         ) : (
-          <Table containerClassName="border-slate-200/90">
+          <div className="space-y-4">
+            <Table containerClassName="border-slate-200/90">
             <TableHeader>
               <TableRow>
                 <TableHead>Student Info</TableHead>
@@ -256,7 +267,7 @@ export default function CourseEnrollmentsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredEnrollments.map((item) => (
+              {paginatedEnrollments.map((item) => (
                 <TableRow key={item.id || item.transactionId}>
                   {/* Student */}
                   <TableCell>
@@ -368,6 +379,16 @@ export default function CourseEnrollmentsPage() {
               ))}
             </TableBody>
           </Table>
+
+            {/* Pagination Controls */}
+            <Pagination
+              currentPage={page}
+              totalPages={Math.ceil(filteredEnrollments.length / 10) || 1}
+              totalItems={filteredEnrollments.length}
+              pageSize={10}
+              onPageChange={setPage}
+            />
+          </div>
         )}
       </div>
     </PermissionGuard>

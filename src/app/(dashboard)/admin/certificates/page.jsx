@@ -12,6 +12,7 @@ import {
 import { useGetCoursesQuery } from "@/redux/api/courseApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import CertificateFilterBar from "./_components/CertificateFilterBar";
 import CertificateTable from "./_components/CertificateTable";
 import CertificateFormModal from "./_components/CertificateFormModal";
@@ -29,6 +30,7 @@ const INITIAL_FORM = {
 
 export default function AdminCertificatesPage() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
   const {
     data: certsData,
     isLoading,
@@ -47,6 +49,9 @@ export default function AdminCertificatesPage() {
 
   const certificates = certsData?.data || [];
   const courses = coursesData?.data || [];
+  const totalCerts = certificates.length;
+  const totalPages = Math.ceil(totalCerts / 10) || 1;
+  const paginatedCerts = certificates.slice((page - 1) * 10, page * 10);
 
   const handleOpenIssueModal = () => {
     setEditingCertId(null);
@@ -113,17 +118,32 @@ export default function AdminCertificatesPage() {
       <div className="space-y-6">
         <CertificateFilterBar
           searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          onSearchChange={(val) => {
+            setSearchTerm(val);
+            setPage(1);
+          }}
           onOpenIssueModal={handleOpenIssueModal}
           totalCount={certificates.length}
         />
 
-        <CertificateTable
-          certificates={certificates}
-          isLoading={isLoading}
-          onEdit={handleEditCert}
-          onDelete={handleDeleteCert}
-        />
+        <div className="space-y-4">
+          <CertificateTable
+            certificates={paginatedCerts}
+            isLoading={isLoading}
+            onEdit={handleEditCert}
+            onDelete={handleDeleteCert}
+          />
+
+          {totalCerts > 0 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalCerts}
+              pageSize={10}
+              onPageChange={setPage}
+            />
+          )}
+        </div>
 
         <CertificateFormModal
           isOpen={isModalOpen}

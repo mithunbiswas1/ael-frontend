@@ -43,6 +43,7 @@ import {
   useUpdatePageByKeyMutation,
 } from "@/redux/api/pageApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
+import Pagination from "@/components/ui/Pagination";
 
 // The 4 Core Stakeholder Categories + All
 const CATEGORY_TABS = [
@@ -70,6 +71,7 @@ export default function SafetyGuidelinesListPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedType, setSelectedType] = useState("all"); // "all" | "guideline" | "agency"
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const [page, setPage] = useState(1);
 
   // Extract both collections from page sections
   const documents = useMemo(() => {
@@ -129,6 +131,10 @@ export default function SafetyGuidelinesListPage() {
       return true;
     });
   }, [allItems, selectedType, selectedCategory, search]);
+
+  const totalItems = filteredItems.length;
+  const totalPages = Math.ceil(totalItems / 10) || 1;
+  const paginatedItems = filteredItems.slice((page - 1) * 10, page * 10);
 
 
   // Handle Deletion
@@ -218,7 +224,10 @@ export default function SafetyGuidelinesListPage() {
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
+                onClick={() => {
+                  setSelectedCategory(cat.id);
+                  setPage(1);
+                }}
                 className={`flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
                   selectedCategory === cat.id
                     ? "bg-primary text-white shadow-2xs"
@@ -246,8 +255,14 @@ export default function SafetyGuidelinesListPage() {
             <SearchInput
               placeholder="Search by title, agency code, or filename..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onClear={() => setSearch("")}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              onClear={() => {
+                setSearch("");
+                setPage(1);
+              }}
               size="sm"
             />
           </div>
@@ -255,7 +270,10 @@ export default function SafetyGuidelinesListPage() {
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <Select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
+              onChange={(e) => {
+                setSelectedType(e.target.value);
+                setPage(1);
+              }}
               className="text-xs font-semibold w-full sm:w-64"
             >
               <option value="all">All Content Types</option>
@@ -270,6 +288,7 @@ export default function SafetyGuidelinesListPage() {
                   setSearch("");
                   setSelectedCategory("all");
                   setSelectedType("all");
+                  setPage(1);
                 }}
                 className="text-xs font-bold text-slate-500 hover:text-primary underline shrink-0"
               >
@@ -320,7 +339,7 @@ export default function SafetyGuidelinesListPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredItems.map((item) => {
+                {paginatedItems.map((item) => {
                   const isGuideline = item.itemType === "guideline";
                   const catBadge = CATEGORY_BADGES[item.category] || CATEGORY_BADGES.all;
                   const targetPdf = item.pdfUrl || (item.fileName ? `/public/upload/${item.fileName}` : null);
@@ -489,6 +508,16 @@ export default function SafetyGuidelinesListPage() {
                 })}
               </TableBody>
             </Table>
+          )}
+
+          {totalItems > 0 && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={10}
+              onPageChange={setPage}
+            />
           )}
         </div>
 

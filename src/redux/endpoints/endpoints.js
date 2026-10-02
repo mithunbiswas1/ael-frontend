@@ -7,6 +7,8 @@ export const endpoints = {
     login: "login",
     sendOtp: "new-otp",
     otpVerifyLogin: "otp-verify",
+    sendRegistrationOtp: "send-registration-otp",
+    verifyRegistrationOtp: "verify-registration-otp",
   },
 
   // Order endpoints
@@ -114,6 +116,7 @@ export const endpoints = {
     list: "contact/messages",
     updateStatus: (id) => `contact/messages/${id}`,
     delete: (id) => `contact/messages/${id}`,
+    reply: (id) => (id ? `contact/messages/${id}/reply` : "contact/reply"),
   },
 
   // Dedicated Home Banner API
@@ -163,6 +166,13 @@ export const endpoints = {
     update: (id) => `directory/${id}`,
     delete: (id) => `directory/${id}`,
     bulkImport: "directory/bulk-import",
+  },
+
+  // Admin Dashboard & Suite API
+  adminSuite: {
+    dashboardStats: "admin/dashboard-stats",
+    settings: "admin/settings",
+    updateSettings: "admin/settings",
   },
 };
 

@@ -21,7 +21,7 @@ export default function CheckoutHeroSection() {
           dark
           items={[
             { label: common.home || "Home", href: "/" },
-            { label: isBn ? "সাবস্ক্রিপশন প্ল্যান" : "Pricing", href: "/pricing" },
+            { label: isBn ? "সাবস্ক্রিপশন প্ল্যান" : "Subscription Plans", href: "/subscription" },
             { label: isBn ? "নিরাপদ চেকআউট" : "Secure Checkout" },
           ]}
           className="mb-3"

@@ -1,7 +1,7 @@
 // src/app/(pages)/blogs/_components/BlogCategoriesSidebar.jsx
 "use client";
 
-import { LayoutGrid, List } from "lucide-react";
+import { LayoutGrid, List, Shield, Newspaper } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 import { useDictionary } from "@/context/DictionaryContext";
 
@@ -24,7 +24,7 @@ export default function BlogCategoriesSidebar({
         </H4>
         <div className="space-y-1">
           {categories.map((cat) => {
-            const Icon = cat.icon;
+            const Icon = cat.icon || Shield;
             return (
               <button
                 key={cat.id}

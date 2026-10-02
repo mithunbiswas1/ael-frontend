@@ -10,6 +10,7 @@ import {
 } from "@/redux/api/userApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/Button";
 import UserFilterBar from "./_components/UserFilterBar";
 import UserTable from "./_components/UserTable";
@@ -25,7 +26,7 @@ export default function AdminUsersPage() {
     search: searchTerm || undefined,
     role: selectedRole !== "ALL" ? selectedRole : undefined,
     page,
-    limit: 50,
+    limit: 10,
   };
 
   const {
@@ -125,12 +126,22 @@ export default function AdminUsersPage() {
           </div>
         )}
 
-        <UserTable
-          users={users}
-          isLoading={isLoading}
-          onEdit={handleEditClick}
-          onDelete={handleDeleteClick}
-        />
+        <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+          <UserTable
+            users={users}
+            isLoading={isLoading}
+            onEdit={handleEditClick}
+            onDelete={handleDeleteClick}
+          />
+
+          <Pagination
+            currentPage={page}
+            totalPages={pagination.totalPages || 1}
+            totalItems={totalCount}
+            pageSize={10}
+            onPageChange={setPage}
+          />
+        </div>
 
         {/* User Edit Modal */}
         <UserEditModal

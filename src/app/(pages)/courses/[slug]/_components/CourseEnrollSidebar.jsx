@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import AuthModal from "@/components/shared/AuthModal";
 import CheckoutModal from "@/components/shared/CheckoutModal";
+import SocialShareBar from "@/components/shared/SocialShareBar";
 
 export default function CourseEnrollSidebar({ course, isFree }) {
   const router = useRouter();
@@ -118,13 +119,13 @@ export default function CourseEnrollSidebar({ course, isFree }) {
           {/* Media Preview Box */}
           <div className="relative aspect-16/9 w-full bg-slate-900">
             <Image
-              src={
-                course.imageUrl ||
-                "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop"
-              }
+              src={course.imageUrl || "/default_image.jpg"}
               alt={title || "Course Preview"}
               fill
               className="object-cover opacity-85"
+              onError={(e) => {
+                e.currentTarget.src = "/default_image.jpg";
+              }}
             />
             <div className="absolute inset-0 bg-slate-950/50 flex flex-col items-center justify-center text-white p-4 text-center">
               <span className="inline-flex items-center gap-1.5 rounded bg-slate-900/90 border border-slate-700 px-2.5 py-1 text-xs font-semibold mb-1">
@@ -276,6 +277,14 @@ export default function CourseEnrollSidebar({ course, isFree }) {
                   ? "সেইফ এলপিজি একাডেমি ও সহযোগী নিয়ন্ত্রক সংস্থা কর্তৃক অনুমোদিত সনদ।"
                   : "Authorized Certificate issued by Safe LPG Academy."}
               </span>
+            </div>
+
+            {/* Social Share Bar */}
+            <div className="mt-4 pt-3 border-t border-slate-100 flex justify-center">
+              <SocialShareBar
+                title={course.title}
+                isBn={isBn}
+              />
             </div>
           </div>
         </div>

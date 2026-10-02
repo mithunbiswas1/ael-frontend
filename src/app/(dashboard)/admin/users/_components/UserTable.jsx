@@ -90,10 +90,13 @@ export default function UserTable({
                   {user.image?.url || user.profilePhoto?.url || (typeof user.image === "string" && user.image) ? (
                     <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-slate-200">
                       <Image
-                        src={user.image?.url || user.profilePhoto?.url || user.image}
+                        src={user.image?.url || user.profilePhoto?.url || user.image || "/default_person.jpg"}
                         alt={user.fullName || user.userName}
                         fill
                         className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/default_person.jpg";
+                        }}
                       />
                     </div>
                   ) : (

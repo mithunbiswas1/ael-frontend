@@ -10,6 +10,7 @@ import {
 } from "@/redux/api/marketUpdateApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import MarketUpdateFilterBar from "./_components/MarketUpdateFilterBar";
 import MarketUpdateTable from "./_components/MarketUpdateTable";
 import { MARKET_UPDATE_CATEGORIES } from "./_components/MarketUpdateForm";
@@ -18,6 +19,7 @@ export default function AdminMarketUpdatesPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const {
@@ -27,12 +29,15 @@ export default function AdminMarketUpdatesPage() {
   } = useGetAdminMarketUpdatesQuery({
     q: searchTerm,
     category: selectedCategory,
+    page,
+    limit: 10,
   });
 
   const [deleteUpdate, { isLoading: isDeleting }] =
     useDeleteMarketUpdateMutation();
 
   const updates = updatesResponse?.data?.data || [];
+  const pagination = updatesResponse?.data?.pagination || {};
 
   const handleOpenCreate = () => {
     router.push("/admin/market-updates/add");
@@ -65,19 +70,35 @@ export default function AdminMarketUpdatesPage() {
       <div className="space-y-6">
         <MarketUpdateFilterBar
           searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          onSearchChange={(val) => {
+            setSearchTerm(val);
+            setPage(1);
+          }}
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={(cat) => {
+            setSelectedCategory(cat);
+            setPage(1);
+          }}
           categories={MARKET_UPDATE_CATEGORIES}
           onOpenCreate={handleOpenCreate}
         />
 
-        <MarketUpdateTable
-          updates={updates}
-          isLoading={isLoading}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-        />
+        <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+          <MarketUpdateTable
+            updates={updates}
+            isLoading={isLoading}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+          />
+
+          <Pagination
+            currentPage={page}
+            totalPages={pagination.totalPages || 1}
+            totalItems={pagination.total}
+            pageSize={10}
+            onPageChange={setPage}
+          />
+        </div>
 
         {/* Delete Confirmation Modal */}
         <DeleteConfirmationModal

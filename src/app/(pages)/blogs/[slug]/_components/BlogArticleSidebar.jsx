@@ -37,11 +37,14 @@ export default function BlogArticleSidebar({ relatedPosts }) {
               >
                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                   <Image
-                    src={item.imageUrl}
+                    src={item.imageUrl || "/default_image.jpg"}
                     alt={itemTitle}
                     fill
                     sizes="60px"
                     className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/default_image.jpg";
+                    }}
                   />
                 </div>
                 <div>

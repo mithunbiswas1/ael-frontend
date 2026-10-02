@@ -108,13 +108,16 @@ export default function HeroSection({ locale = "en", banner = {} }) {
                         className="relative h-full min-w-0 flex-[0_0_100%] overflow-hidden"
                       >
                         <Image
-                          src={slide.image}
+                          src={slide.image || "/default_image.jpg"}
                           alt={(isBn ? slide.altBn : slide.alt) || slide.alt || ""}
                           fill
                           priority={index === 0}
                           unoptimized
                           sizes="(max-width: 768px) 100vw, 45vw"
                           className="object-cover object-center transition-transform duration-700 ease-out"
+                          onError={(e) => {
+                            e.currentTarget.src = "/default_image.jpg";
+                          }}
                         />
                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10" />
                       </div>

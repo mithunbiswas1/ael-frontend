@@ -32,6 +32,7 @@ import { Select } from "@/components/ui/Select";
 import { Switch } from "@/components/ui/Switch";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { H4, P } from "@/components/ui/Typography";
+import Pagination from "@/components/ui/Pagination";
 import {
   useGetAllAdsAdminQuery,
   useCreateAdMutation,
@@ -68,6 +69,7 @@ const INITIAL_FORM = {
 export default function AdminAdvertisementsPage() {
   const [selectedSlot, setSelectedSlot] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
 
   const { data: adsResponse, isLoading, refetch } = useGetAllAdsAdminQuery({
     slot: selectedSlot !== "all" ? selectedSlot : undefined,
@@ -85,6 +87,9 @@ export default function AdminAdvertisementsPage() {
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const ads = Array.isArray(adsResponse?.data) ? adsResponse.data : [];
+  const totalAds = ads.length;
+  const totalPages = Math.ceil(totalAds / 10) || 1;
+  const paginatedAds = ads.slice((page - 1) * 10, page * 10);
 
   const handleFileUpload = async (files) => {
     if (!files || files.length === 0) return;
@@ -189,14 +194,20 @@ export default function AdminAdvertisementsPage() {
           <Input
             placeholder="Search by campaign title..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setPage(1);
+            }}
           />
         </div>
 
         <div className="w-full sm:w-64">
           <Select
             value={selectedSlot}
-            onChange={(e) => setSelectedSlot(e.target.value)}
+            onChange={(e) => {
+              setSelectedSlot(e.target.value);
+              setPage(1);
+            }}
             options={SLOT_OPTIONS}
             placeholder="Filter by ad slot"
           />
@@ -217,7 +228,8 @@ export default function AdminAdvertisementsPage() {
           </P>
         </div>
       ) : (
-        <Table containerClassName="border-slate-200/90">
+        <>
+          <Table containerClassName="border-slate-200/90">
           <TableHeader>
             <TableRow>
               <TableHead className="w-64">Campaign / Creative</TableHead>
@@ -229,7 +241,7 @@ export default function AdminAdvertisementsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {ads.map((ad) => {
+            {paginatedAds.map((ad) => {
               const isExpired = new Date(ad.endDate) < new Date();
               const ctr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(1) : "0.0";
 
@@ -245,6 +257,9 @@ export default function AdminAdvertisementsPage() {
                             alt={ad.title}
                             fill
                             className="object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/default_image.jpg";
+                            }}
                           />
                         </div>
                       ) : (
@@ -349,7 +364,20 @@ export default function AdminAdvertisementsPage() {
             })}
           </TableBody>
         </Table>
-      )}
+
+            {totalAds > 0 && (
+              <div className="mt-4">
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  totalItems={totalAds}
+                  pageSize={10}
+                  onPageChange={setPage}
+                />
+              </div>
+            )}
+          </>
+        )}
 
       {/* Create / Edit Modal */}
       <Dialog

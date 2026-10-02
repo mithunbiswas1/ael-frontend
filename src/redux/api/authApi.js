@@ -36,10 +36,28 @@ export const authApi = apiSlice.injectEndpoints({
       }),
     }),
 
-    // Verify OTP
+    // Verify OTP Login
     otpVerifyLogin: builder.mutation({
       query: (data) => ({
         url: endpoints.auth.otpVerifyLogin,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Send Registration OTP via Email
+    sendRegistrationOtp: builder.mutation({
+      query: (data) => ({
+        url: endpoints.auth.sendRegistrationOtp,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    // Verify Registration OTP
+    verifyRegistrationOtp: builder.mutation({
+      query: (data) => ({
+        url: endpoints.auth.verifyRegistrationOtp,
         method: "POST",
         body: data,
       }),
@@ -52,4 +70,6 @@ export const {
   useLoginMutation,
   useSendOtpMutation,
   useOtpVerifyLoginMutation,
+  useSendRegistrationOtpMutation,
+  useVerifyRegistrationOtpMutation,
 } = authApi;

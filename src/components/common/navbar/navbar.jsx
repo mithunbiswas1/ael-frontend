@@ -288,7 +288,7 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
                 </LinkButton>
 
                 <LinkButton
-                  href="/pricing"
+                  href="/subscription"
                   variant="primary"
                   size="sm"
                   className="hidden sm:inline-flex h-9 px-4 text-xs sm:text-sm font-bold shadow-xs"
@@ -522,7 +522,7 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
                     {commonDict?.loginToPortal || "Login to Portal"}
                   </LinkButton>
                   <LinkButton
-                    href="/pricing"
+                    href="/subscription"
                     variant="primary"
                     size="sm"
                     fullWidth

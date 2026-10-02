@@ -132,6 +132,13 @@ const ADMIN_PAGE_CATEGORIES = [
         module: "email",
         description: "Email broadcasts, newsletters and subscriber lists",
       },
+      {
+        id: "newsletter",
+        title: "Newsletter Subscribers",
+        path: "/admin/newsletter",
+        module: "newsletter",
+        description: "Subscribed readers, broadcast logs, email list and campaign reach",
+      },
     ],
   },
   {
@@ -143,20 +150,6 @@ const ADMIN_PAGE_CATEGORIES = [
         path: "/admin/subscriptions",
         module: "subscriptions",
         description: "Paid subscription tiers, membership validity and records",
-      },
-      {
-        id: "database",
-        title: "Large Database Directory",
-        path: "/admin/database",
-        module: "database",
-        description: "LPG industry directory, company records and dataset files",
-      },
-      {
-        id: "archive",
-        title: "Archives & Documents",
-        path: "/admin/archive",
-        module: "archive",
-        description: "Archived materials, historical documents and reports",
       },
     ],
   },
@@ -717,10 +710,13 @@ export default function UserPermissionsSlugPage() {
                   user.profilePhoto?.url ||
                   (typeof user.image === "string" && user.image) ? (
                   <Image
-                    src={user.image?.url || user.profilePhoto?.url || user.image}
+                    src={user.image?.url || user.profilePhoto?.url || user.image || "/default_person.jpg"}
                     alt={user.fullName || user.userName}
                     fill
                     className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/default_person.jpg";
+                    }}
                   />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center font-bold text-lg text-primary">

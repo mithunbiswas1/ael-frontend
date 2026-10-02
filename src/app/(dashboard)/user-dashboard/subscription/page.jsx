@@ -105,7 +105,7 @@ export default function UserSubscriptionPage() {
         }
         action={
           <LinkButton
-            href="/pricing"
+            href="/subscription"
             variant="outline"
             size="default"
             className="gap-2 bg-white text-slate-700 hover:bg-slate-50 border-slate-200"

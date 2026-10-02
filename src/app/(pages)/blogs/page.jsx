@@ -1,6 +1,5 @@
-// src/app/(pages)/blogs/page.jsx
 import BlogsContent from "./_view/BlogsContent";
-import { getBlogs } from "@/next-api/getBlogs";
+import { getBlogs, getBlogCategories } from "@/next-api/getBlogs";
 import { getPageContent } from "@/next-api/getPageContent";
 
 export const metadata = {
@@ -44,14 +43,16 @@ export const metadata = {
 };
 
 export default async function BlogsPage() {
-  const [blogs, cmsData] = await Promise.all([
+  const [blogs, categories, cmsData] = await Promise.all([
     getBlogs(),
+    getBlogCategories(),
     getPageContent("blogs"),
   ]);
 
   return (
     <BlogsContent
       blogsData={blogs}
+      categoriesData={categories}
       bannerData={cmsData.banner}
     />
   );

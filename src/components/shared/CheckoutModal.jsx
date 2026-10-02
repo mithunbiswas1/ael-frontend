@@ -13,7 +13,6 @@ import {
   ShieldCheck,
   ArrowRight,
   BookOpen,
-  Sparkles,
 } from "lucide-react";
 
 import { Dialog, DialogBody } from "@/components/ui/Dialog";
@@ -308,7 +307,7 @@ export default function CheckoutModal({
                     className="w-full sm:w-auto gap-2"
                     onClick={() => handleFinish("/user-dashboard/courses")}
                   >
-                    <Sparkles className="h-4 w-4" />
+                    <BookOpen className="h-4 w-4" />
                     <span>{isBn ? "কোর্স ড্যাশবোর্ডে যান" : "Go to Courses"}</span>
                   </Button>
                 )}

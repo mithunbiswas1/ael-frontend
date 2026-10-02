@@ -24,11 +24,10 @@ const ROUTE_PERMISSION_MAP = [
   { prefix: "/admin/safety-guidelines", module: "safety_guidelines" },
   { prefix: "/admin/regulatory-agencies", module: "safety_guidelines" },
   { prefix: "/admin/advertisements", module: "advertisements" },
-  { prefix: "/admin/archive", module: "archive" },
   { prefix: "/admin/sms", module: "sms" },
   { prefix: "/admin/email", module: "email" },
+  { prefix: "/admin/newsletter", module: "newsletter" },
   { prefix: "/admin/subscriptions", module: "subscriptions" },
-  { prefix: "/admin/database", module: "database" },
   { prefix: "/admin/pages/home", module: "pages_home" },
   { prefix: "/admin/pages/about", module: "pages_about" },
   { prefix: "/admin/pages/blogs", module: "pages_blogs" },
@@ -40,6 +39,7 @@ const ROUTE_PERMISSION_MAP = [
   { prefix: "/admin/pages/terms", module: "pages_terms" },
   { prefix: "/admin/pages/privacy", module: "pages_privacy" },
   { prefix: "/admin/pages/faq", module: "pages_faq" },
+  { prefix: "/admin/pages/subscription", module: "pages_subscription" },
 ];
 
 function DashboardContent({ children }) {

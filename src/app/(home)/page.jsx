@@ -8,6 +8,7 @@ import LatestBlogsSection from "./_components/LatestBlogsSection";
 import FeaturedTrainingSection from "./_components/FeaturedTrainingSection";
 import NewsletterSection from "./_components/NewsletterSection";
 import EmergencySupportBar from "./_components/EmergencySupportBar";
+import AdSlot from "@/components/shared/AdSlot";
 import { getLocale, getDict } from "@/lib/i18n";
 import { getBlogs } from "@/next-api/getBlogs";
 import { getCourses } from "@/next-api/getCourses";
@@ -47,6 +48,9 @@ export default async function HomePage() {
     <main className="relative min-h-screen overflow-hidden bg-slate-50 selection:bg-primary/20 selection:text-primary">
       <HeroSection locale={locale} banner={homeBanner} />
       {/* <MetricsBar dict={homeDict.metrics} locale={locale} /> */}
+      <div className="site-container my-4">
+        <AdSlot slot="header_banner" />
+      </div>
       <SafetyGuidelinesSection
         dict={homeDict.safetyGuidelines}
         locale={locale}
@@ -76,10 +80,14 @@ export default async function HomePage() {
                 dict={homeDict.newsletter}
                 locale={locale}
               />
+              <AdSlot slot="sidebar_ad" />
             </div>
           </div>
         </div>
       </section>
+      <div className="site-container my-4">
+        <AdSlot slot="footer_banner" />
+      </div>
       <EmergencySupportBar dict={homeDict.emergencyBar} locale={locale} />
     </main>
   );

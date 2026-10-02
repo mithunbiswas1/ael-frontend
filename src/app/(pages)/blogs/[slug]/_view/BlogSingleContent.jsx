@@ -15,12 +15,6 @@ export default function BlogSingleContent({ currentPost, relatedPosts }) {
 
   const [isPlaying, setIsPlaying] = useState(false);
 
-  const handleShare = (platform) => {
-    toast.success(
-      isBn ? `${platform}-এ শেয়ার করা হচ্ছে...` : `Sharing to ${platform}...`
-    );
-  };
-
   const title = isBn ? currentPost.titleBn || currentPost.title : currentPost.title;
 
   return (
@@ -46,12 +40,10 @@ export default function BlogSingleContent({ currentPost, relatedPosts }) {
             currentPost={currentPost}
             isPlaying={isPlaying}
             setIsPlaying={setIsPlaying}
-            handleShare={handleShare}
           />
           <BlogArticleSidebar
             currentPost={currentPost}
             relatedPosts={relatedPosts}
-            handleShare={handleShare}
           />
         </div>
       </div>

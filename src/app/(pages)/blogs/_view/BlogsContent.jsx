@@ -5,33 +5,43 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Shield, Newspaper } from "lucide-react";
 import VisualHeroBanner from "@/components/ui/VisualHeroBanner";
-import BlogCategoriesSidebar from "../_components/BlogCategoriesSidebar";
 import BlogPostsSection from "../_components/BlogPostsSection";
-import BlogRightSidebar from "../_components/BlogRightSidebar";
+import BlogSidebar from "../_components/BlogSidebar";
 import { useDictionary } from "@/context/DictionaryContext";
 
-export default function BlogsContent({ blogsData, bannerData }) {
+export default function BlogsContent({ blogsData, categoriesData, bannerData }) {
   const { locale, dict } = useDictionary();
   const isBn = locale === "bn";
   const blogsDict = dict?.blogs || {};
   const common = dict?.common || {};
 
+  // Build dynamic categories from backend API with fallback
   const categories = [
     {
       id: "all",
       name: isBn ? "সকল ক্যাটাগরি" : "All Categories",
       icon: Shield,
     },
-    {
-      id: "seminar",
-      name: isBn ? "সেমিনার" : "Seminar",
-      icon: Shield,
-    },
-    {
-      id: "programs_of_association",
-      name: isBn ? "অ্যাসোসিয়েশনের কার্যক্রম" : "Programs of Association",
-      icon: Newspaper,
-    },
+    ...(Array.isArray(categoriesData) && categoriesData.length > 0
+      ? categoriesData.map((cat) => ({
+          id: cat.slug || cat.nameEn || cat._id,
+          name: isBn
+            ? cat.nameBn || cat.nameEn || cat.name
+            : cat.nameEn || cat.name || cat.nameBn,
+          icon: Newspaper,
+        }))
+      : [
+          {
+            id: "seminar",
+            name: isBn ? "সেমিনার" : "Seminar",
+            icon: Shield,
+          },
+          {
+            id: "programs_of_association",
+            name: isBn ? "অ্যাসোসিয়েশনের কার্যক্রম" : "Programs of Association",
+            icon: Newspaper,
+          },
+        ]),
   ];
 
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -39,11 +49,14 @@ export default function BlogsContent({ blogsData, bannerData }) {
   const [sortBy, setSortBy] = useState("latest");
   const [viewType, setViewType] = useState("grid"); // "grid" | "list"
 
-  // Localized blogs mapping
+  // Localized blogs mapping with shortDescription
   const localizedBlogs = (blogsData || []).map((b) => ({
     ...b,
     title: isBn ? b.titleBn || b.title : b.title,
     description: isBn ? b.descriptionBn || b.description : b.description,
+    shortDescription: isBn
+      ? b.shortDescriptionBn || b.shortDescription || b.descriptionBn || b.description
+      : b.shortDescription || b.description,
     category: isBn ? b.categoryBn || b.category : b.category,
     date: isBn ? b.dateBn || b.date : b.date,
     readTime: isBn ? b.readTimeBn || b.readTime : b.readTime,
@@ -51,11 +64,23 @@ export default function BlogsContent({ blogsData, bannerData }) {
   }));
 
   const filteredBlogs = localizedBlogs.filter((b) => {
+    const rawCat = (b.category || "").toLowerCase();
+    const rawCatId = (b.categoryId || "").toLowerCase();
+    const targetCat = selectedCategory.toLowerCase();
+
     const matchesCategory =
-      selectedCategory === "all" || b.categoryId === selectedCategory;
+      selectedCategory === "all" ||
+      rawCat === targetCat ||
+      rawCatId === targetCat ||
+      rawCat.replace(/[\s-]+/g, "_") === targetCat.replace(/[\s-]+/g, "_") ||
+      rawCatId.replace(/[\s-]+/g, "_") === targetCat.replace(/[\s-]+/g, "_");
+
     const matchesSearch =
       b.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.description.toLowerCase().includes(searchQuery.toLowerCase());
+      b.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (b.shortDescription &&
+        b.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()));
+
     return matchesCategory && matchesSearch;
   });
 
@@ -66,31 +91,28 @@ export default function BlogsContent({ blogsData, bannerData }) {
       {/* 1. Hero Banner passed from page */}
       {bannerData && <VisualHeroBanner data={bannerData} />}
 
-      {/* 2. Main 3-Column Content Layout */}
+      {/* 2. Main 4-Column Content Layout: 3 columns blog, 1 column sidebar */}
       <section className="py-12 sm:py-16">
         <div className="site-container">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-            {/* Left Sidebar: Categories & View Type (3 cols) */}
-            <BlogCategoriesSidebar
-              categories={categories}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              viewType={viewType}
-              setViewType={setViewType}
-            />
-
-            {/* Center Content: Search & Blog Cards Grid (6 cols) */}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
+            {/* First 3 columns: Blog posts list / grid with inline View Toggle */}
             <BlogPostsSection
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               sortBy={sortBy}
               setSortBy={setSortBy}
               viewType={viewType}
+              setViewType={setViewType}
               filteredBlogs={filteredBlogs}
             />
 
-            {/* Right Sidebar: Popular Articles (3 cols) */}
-            <BlogRightSidebar popularPosts={popularPosts} />
+            {/* Last column: 1) Categories, 2) Popular blogs */}
+            <BlogSidebar
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              popularPosts={popularPosts}
+            />
           </div>
         </div>
       </section>

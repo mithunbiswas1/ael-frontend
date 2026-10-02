@@ -84,6 +84,16 @@ export const pageApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["ContactMessages"],
     }),
+
+    // Admin: Reply to contact message via Email SMTP
+    replyContactMessage: builder.mutation({
+      query: ({ id, data }) => ({
+        url: endpoints.contactMessages.reply(id),
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["ContactMessages"],
+    }),
   }),
 });
 
@@ -96,4 +106,5 @@ export const {
   useGetContactMessagesQuery,
   useUpdateContactMessageStatusMutation,
   useDeleteContactMessageMutation,
+  useReplyContactMessageMutation,
 } = pageApi;

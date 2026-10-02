@@ -296,6 +296,9 @@ export default function CourseFormModal({
                       fill
                       unoptimized
                       className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/default_image.jpg";
+                      }}
                     />
                   </div>
                   <div className="min-w-0 flex-1">

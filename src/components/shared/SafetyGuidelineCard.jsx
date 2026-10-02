@@ -1,7 +1,7 @@
 // src/components/shared/SafetyGuidelineCard.jsx
 
 import Link from "next/link";
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import { ArrowRight } from "lucide-react";
 import { H5, P } from "../ui/Typography";
 
@@ -42,7 +42,7 @@ export default function SafetyGuidelineCard({
 
         {/* Thumbnail Image */}
         <div className="relative aspect-16/10 w-full overflow-hidden rounded-lg bg-slate-100">
-          <Image
+          <SafeImage
             src={imageUrl}
             alt={badgeText}
             fill

@@ -11,6 +11,7 @@ import MarketUpdateCard from "@/components/shared/MarketUpdateCard";
 import { useGetMarketUpdatesQuery } from "@/redux/api/marketUpdateApi";
 import { useDictionary } from "@/context/DictionaryContext";
 import { Button } from "@/components/ui/Button";
+import Pagination from "@/components/ui/Pagination";
 
 export default function MarketUpdatesContent({
   bannerData,
@@ -22,6 +23,7 @@ export default function MarketUpdatesContent({
   const [activeTab, setActiveTab] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState("grid"); // "grid" | "list"
+  const [page, setPage] = useState(1);
   const cleanSearch = searchTerm.trim();
 
   // Live RTK Query data fetching
@@ -51,6 +53,10 @@ export default function MarketUpdatesContent({
       return matchesCategory && matchesSearch;
     });
   }, [liveUpdates, initialUpdates, activeTab, searchTerm]);
+
+  const totalItems = items.length;
+  const totalPages = Math.ceil(totalItems / 10) || 1;
+  const paginatedItems = items.slice((page - 1) * 10, page * 10);
 
   // Tab counts
   const currentTabObj =
@@ -83,14 +89,20 @@ export default function MarketUpdatesContent({
                 <input
                   type="text"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setPage(1);
+                  }}
                   placeholder={isBn ? "সার্কুলার বা প্রজ্ঞাপন খুঁজুন..." : "Search circulars & reports..."}
                   className="h-10 w-full rounded-full border border-slate-200 bg-white pl-10 pr-9 text-xs text-slate-800 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden focus:ring-1 focus:ring-primary/20 transition-all"
                 />
                 {searchTerm && (
                   <button
                     type="button"
-                    onClick={() => setSearchTerm("")}
+                    onClick={() => {
+                      setSearchTerm("");
+                      setPage(1);
+                    }}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full text-xs font-bold text-slate-400 hover:bg-slate-100 hover:text-slate-600"
                   >
                     ×
@@ -135,6 +147,7 @@ export default function MarketUpdatesContent({
             activeTab={activeTab}
             setActiveTab={(tab) => {
               setActiveTab(tab);
+              setPage(1);
             }}
           />
 
@@ -180,7 +193,7 @@ export default function MarketUpdatesContent({
                   : "flex flex-col gap-4 my-6"
               }
             >
-              {items.map((item) => {
+              {paginatedItems.map((item) => {
                 const title = isBn
                   ? item.titleBn || item.title
                   : item.titleEn || item.title;
@@ -215,6 +228,18 @@ export default function MarketUpdatesContent({
                   />
                 );
               })}
+            </div>
+          )}
+
+          {totalItems > 0 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={page}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={10}
+                onPageChange={setPage}
+              />
             </div>
           )}
         </div>

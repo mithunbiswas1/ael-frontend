@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { useSubscribeNewsletterMutation } from "@/redux/api/newsletterApi";
 
 export default function NewsletterForm({ dict = {}, locale = "en" }) {
   const isBn = locale === "bn";
@@ -14,9 +15,10 @@ export default function NewsletterForm({ dict = {}, locale = "en" }) {
     phone: "",
     email: "",
   });
-  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const [subscribeNewsletter, { isLoading }] = useSubscribeNewsletterMutation();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
       toast.error(
@@ -26,16 +28,30 @@ export default function NewsletterForm({ dict = {}, locale = "en" }) {
       );
       return;
     }
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+
+    try {
+      const res = await subscribeNewsletter({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+      }).unwrap();
+
       toast.success(
-        isBn
-          ? "আমাদের নিরাপত্তা নিউজলেটার সাবস্ক্রাইব করার জন্য ধন্যবাদ!"
-          : "Thank you for subscribing to our safety newsletter!"
+        res?.message ||
+          (isBn
+            ? "আমাদের নিরাপত্তা নিউজলেটার সাবস্ক্রাইব করার জন্য ধন্যবাদ!"
+            : "Thank you for subscribing to our safety newsletter!")
       );
       setFormData({ name: "", phone: "", email: "" });
-    }, 800);
+    } catch (err) {
+      toast.error(
+        err?.data?.message ||
+          err?.message ||
+          (isBn
+            ? "সাবস্ক্রিপশন ব্যর্থ হয়েছে। অনুগ্রহ করে পুনরায় চেষ্টা করুন।"
+            : "Failed to subscribe. Please try again.")
+      );
+    }
   };
 
   return (
@@ -43,7 +59,7 @@ export default function NewsletterForm({ dict = {}, locale = "en" }) {
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
         <Input
           type="text"
-          placeholder={isBn ? "আপনার নাম" : "Your Name"}
+          placeholder={isBn ? "আপনার নাম *" : "Your Name *"}
           value={formData.name}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, name: e.target.value }))
@@ -64,7 +80,7 @@ export default function NewsletterForm({ dict = {}, locale = "en" }) {
 
       <Input
         type="email"
-        placeholder={isBn ? "ইমেইল ঠিকানা" : "Email Address"}
+        placeholder={isBn ? "ইমেইল ঠিকানা *" : "Email Address *"}
         value={formData.email}
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, email: e.target.value }))
@@ -77,17 +93,18 @@ export default function NewsletterForm({ dict = {}, locale = "en" }) {
         type="submit"
         variant="primary"
         fullWidth
-        disabled={loading}
+        disabled={isLoading}
+        isLoading={isLoading}
         className="text-xs"
       >
         <span>
-          {loading
+          {isLoading
             ? isBn
               ? "সাবস্ক্রাইব হচ্ছে..."
               : "Subscribing..."
             : dict?.button || (isBn ? "এখনই সাবস্ক্রাইব করুন" : "Subscribe Now")}
         </span>
-        <ArrowRight className="h-3.5 w-3.5" />
+        {!isLoading && <ArrowRight className="h-3.5 w-3.5" />}
       </Button>
     </form>
   );

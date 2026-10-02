@@ -14,7 +14,6 @@ import {
   Download,
   Share2,
   Lock,
-  Sparkles,
   ShieldCheck,
 } from "lucide-react";
 import { FaFilePdf } from "react-icons/fa";
@@ -24,6 +23,7 @@ import CommentSection from "@/components/shared/CommentSection";
 import AdSlot from "@/components/shared/AdSlot";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { toast } from "sonner";
+import SocialShareBar from "@/components/shared/SocialShareBar";
 
 export default function MarketUpdateDetailContent({
   article,
@@ -122,7 +122,7 @@ export default function MarketUpdateDetailContent({
                 <div className="mb-1">
                   {isSubscribed ? (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
-                      <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
+                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
                       <span>{isBn ? "আপনার সাবস্ক্রিপশনের মাধ্যমে উন্মুক্ত" : "Unlocked with your Subscription"}</span>
                     </span>
                   ) : (
@@ -161,29 +161,26 @@ export default function MarketUpdateDetailContent({
                   )}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleShare}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors shadow-2xs"
-                >
-                  <Share2 className="h-3.5 w-3.5 text-slate-500" />
-                  <span>{isBn ? "শেয়ার করুন" : "Share"}</span>
-                </button>
+                <SocialShareBar
+                  title={title}
+                  isBn={isBn}
+                />
               </div>
             </header>
 
             {/* Featured Image */}
-            {article.image && (
-              <div className="relative aspect-16/9 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 mb-8 shadow-xs">
-                <Image
-                  src={article.image}
-                  alt={title}
-                  fill
-                  priority
-                  className="object-cover"
-                />
-              </div>
-            )}
+            <div className="relative aspect-16/9 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 mb-8 shadow-xs">
+              <Image
+                src={article.image || "/default_image.jpg"}
+                alt={title}
+                fill
+                priority
+                className="object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/default_image.jpg";
+                }}
+              />
+            </div>
 
             {/* Attached Official PDF Box */}
             {article.pdfUrl && (
@@ -211,7 +208,7 @@ export default function MarketUpdateDetailContent({
                   <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
                     {isLocked ? (
                       <LinkButton
-                        href="/pricing"
+                        href="/subscription"
                         variant="primary"
                         size="md"
                         className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white gap-2 font-bold shadow-xs text-xs"
@@ -290,18 +287,18 @@ export default function MarketUpdateDetailContent({
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
                     <LinkButton
-                      href="/pricing"
+                      href="/subscription"
                       variant="primary"
                       size="lg"
                       className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold gap-2 shadow-md"
                     >
-                      <Sparkles className="h-4 w-4" />
+                      <ShieldCheck className="h-4 w-4" />
                       <span>{isBn ? "সাবস্ক্রিপশন প্ল্যান দেখুন" : "Explore Subscription Plans"}</span>
                     </LinkButton>
 
                     {!isLoggedIn && (
                       <LinkButton
-                        href={`/sign-in?redirect=/market-updates/${article.slug || article._id}`}
+                        href={`/login?redirect=/market-updates/${article.slug || article._id}`}
                         variant="outline"
                         size="lg"
                         className="w-full sm:w-auto text-slate-700 border-slate-300 font-semibold"
@@ -399,14 +396,14 @@ export default function MarketUpdateDetailContent({
                       >
                         <div className="relative h-14 w-18 shrink-0 overflow-hidden rounded-lg bg-slate-100 border border-slate-200/60">
                           <Image
-                            src={
-                              item.image ||
-                              "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=300&auto=format&fit=crop"
-                            }
+                            src={item.image || "/default_image.jpg"}
                             alt={relTitle}
                             fill
                             sizes="72px"
                             className="object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "/default_image.jpg";
+                            }}
                           />
                           {item.pdfUrl && (
                             <span className="absolute bottom-1 right-1 flex items-center justify-center h-3.5 w-3.5 rounded bg-rose-600 text-white shadow-2xs">

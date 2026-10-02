@@ -1583,10 +1583,13 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
               <div className="relative h-24 w-40 rounded-lg overflow-hidden bg-slate-200 shrink-0 border border-slate-300">
                 <Image
-                  src={formData.imageUrl || "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop"}
+                  src={formData.imageUrl || "/default_image.jpg"}
                   alt="Course banner"
                   fill
                   className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
               </div>
               <div className="flex-1 space-y-2 w-full">

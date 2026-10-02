@@ -15,13 +15,17 @@ export default function LatestBlogsSection({
   const isBn = locale === "bn";
 
   const items = liveBlogs.slice(0, 2).map((blog) => ({
-    id: blog.id,
+    id: blog.id || blog._id,
     category: blog.category,
-    badgeText: isBn ? blog.categoryBn : blog.category.toUpperCase(),
-    imageUrl: blog.imageUrl,
-    title: isBn ? blog.titleBn : blog.title,
-    date: isBn ? blog.dateBn : blog.date,
-    readTime: isBn ? blog.readTimeBn : blog.readTime,
+    badgeText: isBn ? blog.categoryBn || blog.category : (blog.category || "").toUpperCase(),
+    imageUrl: blog.imageUrl || blog.image,
+    title: isBn ? blog.titleBn || blog.title : blog.title,
+    summary: isBn
+      ? blog.shortDescriptionBn || blog.descriptionBn || ""
+      : blog.shortDescription || blog.description || "",
+    date: isBn ? blog.dateBn || blog.date : blog.date,
+    readTime: isBn ? blog.readTimeBn || blog.readTime : blog.readTime,
+    author: isBn ? blog.authorBn || blog.author : blog.author,
     href: `/blogs/${blog.slug}`,
   }));
 
@@ -50,7 +54,7 @@ export default function LatestBlogsSection({
       />
 
       {/* Cards Grid */}
-      <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {items.map((item) => (
           <BlogCard
             key={item.id}
@@ -58,9 +62,12 @@ export default function LatestBlogsSection({
             badgeText={item.badgeText}
             imageUrl={item.imageUrl}
             title={item.title}
+            summary={item.summary}
             date={item.date}
             readTime={item.readTime}
+            author={item.author}
             href={item.href}
+            viewMode="grid"
           />
         ))}
       </div>

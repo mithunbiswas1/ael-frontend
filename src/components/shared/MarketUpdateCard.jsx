@@ -33,10 +33,11 @@ export default function MarketUpdateCard({
   href = "/market-updates",
   viewMode = "grid", // "grid" | "list"
 }) {
+  const defaultImage = "/default_image.jpg";
   const safeImageUrl =
     imageUrl && typeof imageUrl === "string" && imageUrl.trim() !== ""
       ? imageUrl
-      : "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=800&auto=format&fit=crop";
+      : defaultImage;
 
   const badgeStyle =
     BADGE_VARIANTS[category] ||
@@ -66,6 +67,9 @@ export default function MarketUpdateCard({
             fill
             sizes="(max-width: 640px) 100vw, 300px"
             className="object-cover"
+            onError={(e) => {
+              e.currentTarget.src = defaultImage;
+            }}
           />
 
           {/* Category Badge on image */}
@@ -140,6 +144,9 @@ export default function MarketUpdateCard({
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover"
+          onError={(e) => {
+            e.currentTarget.src = defaultImage;
+          }}
         />
 
         {/* Category Badge */}

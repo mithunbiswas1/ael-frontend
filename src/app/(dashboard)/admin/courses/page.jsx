@@ -10,6 +10,7 @@ import {
 } from "@/redux/api/courseApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import CourseFilterBar from "./_components/CourseFilterBar";
 import CourseTable from "./_components/CourseTable";
 
@@ -17,6 +18,7 @@ export default function AdminCoursesPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [priceFilter, setPriceFilter] = useState("all");
+  const [page, setPage] = useState(1);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   const { data: coursesData, isLoading, refetch } = useGetAdminCoursesQuery({
@@ -26,7 +28,12 @@ export default function AdminCoursesPage() {
 
   const [deleteCourse, { isLoading: isDeleting }] = useDeleteCourseMutation();
 
-  const courses = coursesData?.data || [];
+  const allCourses = Array.isArray(coursesData?.data)
+    ? coursesData.data
+    : coursesData?.data?.courses || [];
+  const totalCourses = allCourses.length;
+  const totalPages = Math.ceil(totalCourses / 10) || 1;
+  const paginatedCourses = allCourses.slice((page - 1) * 10, page * 10);
 
   const handleOpenCreate = () => {
     router.push("/admin/courses/add");
@@ -37,7 +44,7 @@ export default function AdminCoursesPage() {
   };
 
   const handleDeleteClick = (id) => {
-    const course = courses.find((c) => (c._id || c.courseId) === id);
+    const course = allCourses.find((c) => (c._id || c.courseId) === id);
     setDeleteTarget(course || { _id: id, titleEn: "Selected Course" });
   };
 
@@ -59,18 +66,34 @@ export default function AdminCoursesPage() {
       <div className="space-y-6">
         <CourseFilterBar
           searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          onSearchChange={(val) => {
+            setSearchTerm(val);
+            setPage(1);
+          }}
           priceFilter={priceFilter}
-          onPriceFilterChange={setPriceFilter}
+          onPriceFilterChange={(val) => {
+            setPriceFilter(val);
+            setPage(1);
+          }}
           onOpenCreateModal={handleOpenCreate}
         />
 
-        <CourseTable
-          courses={courses}
-          isLoading={isLoading}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-        />
+        <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+          <CourseTable
+            courses={paginatedCourses}
+            isLoading={isLoading}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+          />
+
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            totalItems={totalCourses}
+            pageSize={10}
+            onPageChange={setPage}
+          />
+        </div>
 
         {/* Delete Confirmation Modal */}
         <DeleteConfirmationModal

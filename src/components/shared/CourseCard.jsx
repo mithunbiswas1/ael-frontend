@@ -1,7 +1,7 @@
 // src/components/shared/CourseCard.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -36,6 +36,11 @@ export default function CourseCard({
   const { locale } = useDictionary();
   const isBn = locale === "bn";
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [enrollCourse, { isLoading: isEnrolling }] = useEnrollCourseMutation();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -45,7 +50,7 @@ export default function CourseCard({
   const courseSlug = slug || cid;
   const detailsHref = href || `/courses/${courseSlug}`;
 
-  const isSubscribed = Boolean(
+  const isSubscribed = mounted && Boolean(
     user?.role === "subscriber" ||
     (user?.subscription?.status === "active" &&
       user?.subscription?.planKey !== "course_single" &&
@@ -54,11 +59,13 @@ export default function CourseCard({
     ["super_admin", "admin", "instructor", "course_admin", "editor"].includes(user?.role)
   );
 
-  const isEnrolled = user?.enrolledCourses?.some(
-    (e) =>
-      e.courseId === cid ||
-      e.courseId === String(cid) ||
-      e.courseId === courseSlug
+  const isEnrolled = mounted && Boolean(
+    user?.enrolledCourses?.some(
+      (e) =>
+        e.courseId === cid ||
+        e.courseId === String(cid) ||
+        e.courseId === courseSlug
+    )
   );
 
   const hasAccess = isEnrolled || isSubscribed;
@@ -117,14 +124,14 @@ export default function CourseCard({
           {/* Thumbnail with floating badges */}
           <Link href={detailsHref} className="block relative aspect-16/10 w-full overflow-hidden rounded-lg bg-slate-100">
             <Image
-              src={
-                imageUrl ||
-                "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop"
-              }
+              src={imageUrl || "/default_image.jpg"}
               alt={title || "Course thumbnail"}
               fill
               sizes="(max-width: 768px) 100vw, 35vw"
               className="object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/default_image.jpg";
+              }}
             />
 
             {isBestSeller && (
@@ -175,10 +182,10 @@ export default function CourseCard({
         {/* Price & Action: 2 Buttons */}
         <div className="mt-4 border-t border-slate-100 pt-3">
           <div className="mb-2 text-base font-black text-slate-900 flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-slate-500" suppressHydrationWarning>
               {isSubscribed ? (isBn ? "অ্যাক্সেস:" : "Access:") : isPaid ? (isBn ? "কোর্স ফি:" : "Course Fee:") : (isBn ? "ফি:" : "Fee:")}
             </span>
-            <span className={isSubscribed ? "text-emerald-600 text-xs font-bold" : isPaid ? "text-primary" : "text-emerald-600"}>
+            <span className={isSubscribed ? "text-emerald-600 text-xs font-bold" : isPaid ? "text-primary" : "text-emerald-600"} suppressHydrationWarning>
               {isSubscribed ? (isBn ? "সাবস্ক্রিপশনে অন্তর্ভুক্ত" : "Included with Subscription") : price}
             </span>
           </div>

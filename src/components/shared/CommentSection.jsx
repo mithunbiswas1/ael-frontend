@@ -40,7 +40,7 @@ export default function CommentSection({
         if (u?._id || u?.id) {
           setStoredUserId(u._id || u.id);
         }
-      } catch (e) {}
+      } catch (e) { }
     }
   }, []);
 
@@ -176,7 +176,7 @@ export default function CommentSection({
               : "Sign in with your subscriber account to join the discussion and share regulatory feedback."}
           </p>
           <Link
-            href="/sign-in"
+            href="/login"
             className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-primary/90 transition-all"
           >
             <span>{isBn ? "লগইন করুন" : "Sign In to Comment"}</span>

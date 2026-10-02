@@ -61,13 +61,13 @@ export default function BlogTable({
             <TableCell>
               <div className="relative h-11 w-14 overflow-hidden rounded-lg bg-slate-100 shrink-0">
                 <Image
-                  src={
-                    blog.image ||
-                    "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800&auto=format&fit=crop"
-                  }
+                  src={blog.image || "/default_image.jpg"}
                   alt={blog.titleEn || "Blog thumbnail"}
                   fill
                   className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
               </div>
             </TableCell>

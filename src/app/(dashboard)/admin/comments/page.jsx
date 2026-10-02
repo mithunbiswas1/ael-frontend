@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/Input";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { H4, P } from "@/components/ui/Typography";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import {
   useGetAdminCommentsQuery,
   useUpdateCommentStatusMutation,
@@ -46,7 +47,7 @@ export default function AdminCommentsPage() {
     status: statusFilter,
     search: searchTerm,
     page,
-    limit: 25,
+    limit: 10,
   });
 
   const [updateStatus, { isLoading: isUpdating }] = useUpdateCommentStatusMutation();
@@ -138,7 +139,8 @@ export default function AdminCommentsPage() {
           </P>
         </div>
       ) : (
-        <Table containerClassName="border-slate-200/90">
+        <>
+          <Table containerClassName="border-slate-200/90">
           <TableHeader>
             <TableRow>
               <TableHead className="w-48">Commenter</TableHead>
@@ -253,6 +255,15 @@ export default function AdminCommentsPage() {
             ))}
           </TableBody>
         </Table>
+
+          <Pagination
+            currentPage={page}
+            totalPages={pagination.totalPages || 1}
+            totalItems={pagination.totalCount}
+            pageSize={10}
+            onPageChange={setPage}
+          />
+        </>
       )}
 
       {/* Reusable UI Delete Confirmation Modal */}

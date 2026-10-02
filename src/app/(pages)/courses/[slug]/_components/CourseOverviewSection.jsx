@@ -1,5 +1,5 @@
 // src/app/(pages)/courses/[slug]/_components/CourseOverviewSection.jsx
-import Image from "next/image";
+import SafeImage from "@/components/ui/SafeImage";
 import {
   CheckCircle2,
   PlayCircle,
@@ -295,9 +295,10 @@ export default async function CourseOverviewSection({ course }) {
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 rounded-lg bg-slate-50 border border-slate-200/80 p-4">
             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-primary">
-              <Image
-                src={course.instructor.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop"}
+              <SafeImage
+                src={course.instructor.avatar}
                 alt={instructorName || "Instructor"}
+                fallbackSrc="/default_person.jpg"
                 fill
                 className="object-cover"
               />

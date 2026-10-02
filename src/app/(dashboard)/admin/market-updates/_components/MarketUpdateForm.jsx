@@ -663,6 +663,9 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
                   alt="Featured banner"
                   fill
                   className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <button

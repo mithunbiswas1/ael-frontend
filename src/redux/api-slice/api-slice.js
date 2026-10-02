@@ -18,25 +18,40 @@ const baseQuery = fetchBaseQuery({
 
 // CUSTOM BASE QUERY WITH AUTH HANDLING
 const baseQueryWithAuth = async (args, api, extraOptions) => {
-  const result = await baseQuery(args, api, extraOptions);
+  try {
+    const result = await baseQuery(args, api, extraOptions);
 
-  // HANDLE UNAUTHENTICATED ERROR
-  if (result?.error) {
-    const status = result.error.status;
-    const data = result.error.data;
+    // HANDLE UNAUTHENTICATED ERROR
+    if (result?.error) {
+      const status = result.error.status;
+      const data = result.error.data;
 
-    if (status === 401 || data?.error === "Unauthenticated.") {
-      // remove token
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("accessToken");
+      if (status === 401 || data?.error === "Unauthenticated.") {
+        // remove token
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("accessToken");
+        }
+
+        // redirect only if on client side and not already on auth pages
+        if (
+          typeof window !== "undefined" &&
+          !window.location.pathname.startsWith("/login") &&
+          !window.location.pathname.startsWith("/registration")
+        ) {
+          window.location.href = "/login";
+        }
       }
-
-      // redirect
-      window.location.href = "/sign-in";
     }
-  }
 
-  return result;
+    return result;
+  } catch (err) {
+    return {
+      error: {
+        status: "FETCH_ERROR",
+        error: err?.message || String(err),
+      },
+    };
+  }
 };
 
 export const apiSlice = createApi({
@@ -73,6 +88,10 @@ export const apiSlice = createApi({
     "Campaigns",
     "Archives",
     "MarketUpdates",
+    "Newsletter",
+    "AdminStats",
+    "SystemSettings",
+    "AnalyticsReports",
   ],
   endpoints: () => ({}),
 });

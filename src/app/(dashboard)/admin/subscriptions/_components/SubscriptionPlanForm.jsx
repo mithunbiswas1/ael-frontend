@@ -9,7 +9,6 @@ import {
   ArrowLeft,
   Save,
   Layers,
-  Sparkles,
   DollarSign,
   Clock,
   CheckCircle2,

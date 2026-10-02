@@ -23,13 +23,13 @@ export default function SubscriberCourseCard({ course }) {
     <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white">
       <Link href={`/courses/learn/${courseSlug}`} className="block relative aspect-16/10 w-full overflow-hidden bg-slate-100">
         <Image
-          src={
-            course.imageUrl ||
-            "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop"
-          }
+          src={course.imageUrl || "/default_image.jpg"}
           alt={course.title}
           fill
           className="object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/default_image.jpg";
+          }}
         />
         <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
           <span className="rounded bg-slate-950/80 px-2 py-0.5 text-[9px] font-bold text-white">

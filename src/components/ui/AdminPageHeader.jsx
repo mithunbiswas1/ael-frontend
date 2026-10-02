@@ -39,11 +39,6 @@ export function AdminPageHeader({
             </span>
           )}
         </div>
-        {description && (
-          <P className="mt-1 text-xs text-slate-500">
-            {description}
-          </P>
-        )}
       </div>
 
       {action ||

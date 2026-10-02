@@ -39,10 +39,10 @@ import {
   FaEnvelopeOpenText,
   FaCreditCard,
   FaReceipt,
-  FaDatabase,
   FaFilePdf,
   FaBuilding,
   FaSignOutAlt,
+  FaCog,
 } from "react-icons/fa";
 
 const ALL_ADMIN_NAV_ITEMS = [
@@ -64,12 +64,7 @@ const ALL_ADMIN_NAV_ITEMS = [
     icon: FaChartLine,
     module: "market-updates",
   },
-  {
-    name: "Comments",
-    href: "/admin/comments",
-    icon: FaComments,
-    module: "comments",
-  },
+
   {
     name: "Safety Guidelines",
     href: "/admin/safety-guidelines",
@@ -95,16 +90,10 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "certificates",
   },
   {
-    name: "Users",
-    href: "/admin/users",
-    icon: FaUsers,
-    module: "users",
-  },
-  {
-    name: "Messages",
-    href: "/admin/messages",
-    icon: FaEnvelope,
-    module: "messages",
+    name: "Subscribers & Transactions",
+    href: "/admin/subscriptions",
+    icon: FaCreditCard,
+    module: "subscriptions",
   },
   {
     name: "Advertisements",
@@ -113,13 +102,7 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "advertisements",
   },
   {
-    name: "Archives",
-    href: "/admin/archive",
-    icon: FaArchive,
-    module: "archive",
-  },
-  {
-    name: "Bulk SMS",
+    name: "SMS Campaigns",
     href: "/admin/sms",
     icon: FaSms,
     module: "sms",
@@ -131,16 +114,35 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "email",
   },
   {
-    name: "Subscriptions",
-    href: "/admin/subscriptions",
-    icon: FaCreditCard,
-    module: "subscriptions",
+    name: "Newsletter User",
+    href: "/admin/newsletter",
+    icon: FaNewspaper,
+    module: "newsletter",
+  },
+
+  {
+    name: "Registered Users",
+    href: "/admin/users",
+    icon: FaUsers,
+    module: "users",
+  }, {
+    name: "Messages",
+    href: "/admin/messages",
+    icon: FaEnvelope,
+    module: "messages",
   },
   {
-    name: "Large Database",
-    href: "/admin/database",
-    icon: FaDatabase,
-    module: "database",
+    name: "Comments",
+    href: "/admin/comments",
+    icon: FaComments,
+    module: "comments",
+  },
+
+  {
+    name: "Settings",
+    href: "/admin/settings",
+    icon: FaCog,
+    module: null,
   },
   {
     name: "Profile",
@@ -216,6 +218,12 @@ const PAGES_NAV_ITEMS = [
     href: "/admin/pages/faq",
     icon: FaQuestionCircle,
     module: "pages_faq",
+  },
+  {
+    name: "Subscription & Plans",
+    href: "/admin/pages/subscription",
+    icon: FaCreditCard,
+    module: "pages_subscription",
   },
 ];
 
@@ -318,8 +326,8 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
   const visibleNavItems = isSubscriberOnly
     ? SUBSCRIBER_NAV_ITEMS
     : isInstructor
-    ? INSTRUCTOR_NAV_ITEMS
-    : ALL_ADMIN_NAV_ITEMS.filter((item) => hasPageAccess(item));
+      ? INSTRUCTOR_NAV_ITEMS
+      : ALL_ADMIN_NAV_ITEMS.filter((item) => hasPageAccess(item));
 
   const visiblePagesNavItems = isSubscriberOnly || isInstructor
     ? []
@@ -491,6 +499,9 @@ function SidebarContent({
               alt={user?.fullName || "User"}
               fill
               className="object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/default_person.jpg";
+              }}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary to-secondary text-white font-bold text-sm">

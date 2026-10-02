@@ -38,9 +38,17 @@ export const subscriptionApi = apiSlice.injectEndpoints({
     // Admin: Get all transactions
     getAdminSubscriptions: builder.query({
       query: (params = {}) => {
-        const queryParams = new URLSearchParams(params).toString();
+        const cleanParams = {};
+        Object.entries(params || {}).forEach(([key, val]) => {
+          if (val !== undefined && val !== null && val !== "" && val !== "all") {
+            cleanParams[key] = val;
+          }
+        });
+        const queryParams = new URLSearchParams(cleanParams).toString();
         return {
-          url: `${endpoints.subscriptions.adminList}?${queryParams}`,
+          url: queryParams
+            ? `${endpoints.subscriptions.adminList}?${queryParams}`
+            : endpoints.subscriptions.adminList,
           method: "GET",
         };
       },

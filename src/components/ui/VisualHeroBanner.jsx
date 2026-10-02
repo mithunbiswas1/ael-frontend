@@ -141,6 +141,9 @@ export default function VisualHeroBanner({
                   unoptimized
                   sizes="(max-width: 768px) 100vw, 45vw"
                   className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
               </div>

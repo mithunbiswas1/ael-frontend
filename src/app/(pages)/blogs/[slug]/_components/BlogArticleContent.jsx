@@ -3,19 +3,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Clock, Play, Lock, Sparkles, ShieldCheck } from "lucide-react";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaLinkedinIn,
-  FaWhatsapp,
-} from "react-icons/fa";
+import { Calendar, Clock, Play, Lock, ShieldCheck } from "lucide-react";
 import { useSelector } from "react-redux";
 import { H1, H3, P } from "@/components/ui/Typography";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { useDictionary } from "@/context/DictionaryContext";
+import { baseUriBackend } from "@/config/base-url";
 import CommentSection from "@/components/shared/CommentSection";
 import AdSlot from "@/components/shared/AdSlot";
+import SocialShareBar from "@/components/shared/SocialShareBar";
 
 export default function BlogArticleContent({
   currentPost,
@@ -42,6 +38,9 @@ export default function BlogArticleContent({
   const author = isBn ? currentPost.authorBn : currentPost.author;
   const date = isBn ? currentPost.dateBn : currentPost.date;
   const readTime = isBn ? currentPost.readTimeBn : currentPost.readTime;
+  const shortDescription = isBn
+    ? currentPost.shortDescriptionBn || currentPost.shortDescription || currentPost.descriptionBn
+    : currentPost.shortDescription || currentPost.shortDescriptionEn || currentPost.description;
 
   return (
     <article className="space-y-6 lg:col-span-8">
@@ -55,7 +54,7 @@ export default function BlogArticleContent({
           {isPaid && (
             isSubscribed ? (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-0.5 text-[10px] font-bold text-emerald-800 shadow-2xs">
-                <Sparkles className="h-3 w-3 text-emerald-600" />
+                <ShieldCheck className="h-3 w-3 text-emerald-600" />
                 <span>{isBn ? "সাবস্ক্রিপশনের মাধ্যমে উন্মুক্ত" : "Unlocked with Subscription"}</span>
               </span>
             ) : (
@@ -72,7 +71,13 @@ export default function BlogArticleContent({
         <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-y border-slate-200/80 py-3 text-xs text-slate-500">
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <span className="font-semibold text-slate-800">
-              {isBn ? "লেখক:" : "By"} {author}
+              {isBn ? "লেখক:" : "By"}{" "}
+              <Link
+                href={`/authors/${currentPost.authorUsername || currentPost.createdBy?.userName || encodeURIComponent(currentPost.author || currentPost.authorEn || "author")}`}
+                className="text-primary hover:underline font-bold"
+              >
+                {author}
+              </Link>
             </span>
             <span>|</span>
             <div className="flex items-center gap-1">
@@ -86,53 +91,34 @@ export default function BlogArticleContent({
             </div>
           </div>
 
-          {/* Share Icons */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-700">
-              {isBn ? "শেয়ার:" : "Share:"}
-            </span>
-            <button
-              onClick={() => handleShare("Facebook")}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-white shadow-2xs hover:opacity-90 transition-opacity"
-              title="Share on Facebook"
-            >
-              <FaFacebookF className="h-3.5 w-3.5" />
-            </button>
-            <button
-              onClick={() => handleShare("Twitter")}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-sky-500 text-white shadow-2xs hover:opacity-90 transition-opacity"
-              title="Share on Twitter"
-            >
-              <FaTwitter className="h-3.5 w-3.5" />
-            </button>
-            <button
-              onClick={() => handleShare("LinkedIn")}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-700 text-white shadow-2xs hover:opacity-90 transition-opacity"
-              title="Share on LinkedIn"
-            >
-              <FaLinkedinIn className="h-3.5 w-3.5" />
-            </button>
-            <button
-              onClick={() => handleShare("WhatsApp")}
-              className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-600 text-white shadow-2xs hover:opacity-90 transition-opacity"
-              title="Share on WhatsApp"
-            >
-              <FaWhatsapp className="h-4 w-4" />
-            </button>
-          </div>
+          {/* Share Bar */}
+          <SocialShareBar
+            title={title}
+            isBn={isBn}
+          />
         </div>
       </div>
 
-      {/* Featured Image */}
-      <div className="relative aspect-16/9 w-full overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100 shadow-xs">
+      {/* Featured Image with Short Description Overlay */}
+      <div className="relative aspect-16/9 w-full overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100 shadow-xs group">
         <Image
-          src={currentPost.imageUrl}
+          src={currentPost.imageUrl || "/default_image.jpg"}
           alt={title}
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 65vw"
           className="object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/default_image.jpg";
+          }}
         />
+        {shortDescription && (
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-4 sm:p-6 backdrop-blur-[1px]">
+            <p className="text-xs sm:text-sm font-medium text-white/95 leading-relaxed line-clamp-3 drop-shadow-xs">
+              {shortDescription}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Article Body Content */}
@@ -190,18 +176,18 @@ export default function BlogArticleContent({
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
                 <LinkButton
-                  href="/pricing"
+                  href="/subscription"
                   variant="primary"
                   size="lg"
                   className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white font-bold gap-2 shadow-md"
                 >
-                  <Sparkles className="h-4 w-4" />
+                  <ShieldCheck className="h-4 w-4" />
                   <span>{isBn ? "সাবস্ক্রিপশন প্ল্যান দেখুন" : "Explore Subscription Plans"}</span>
                 </LinkButton>
 
                 {!isLoggedIn && (
                   <LinkButton
-                    href={`/sign-in?redirect=/blogs/${currentPost.slug || currentPost._id}`}
+                    href={`/login?redirect=/blogs/${currentPost.slug || currentPost._id}`}
                     variant="outline"
                     size="lg"
                     className="w-full sm:w-auto text-slate-700 border-slate-300 font-semibold"
@@ -332,6 +318,70 @@ export default function BlogArticleContent({
 
       {/* Commercial Mid-Content Ad Slot */}
       <AdSlot slot="mid_content" />
+
+      {/* Author Bio Card */}
+      <div className="rounded-2xl border border-slate-200/80 bg-linear-to-br from-slate-50 via-white to-slate-50 p-5 sm:p-6 shadow-2xs">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+          <div className="relative h-16 w-16 overflow-hidden rounded-2xl border-2 border-white bg-slate-200 shadow-xs shrink-0">
+            {currentPost.authorImage ? (
+              <Image
+                src={
+                  currentPost.authorImage.startsWith("http")
+                    ? currentPost.authorImage
+                    : `${baseUriBackend}/${currentPost.authorImage.replace(/^\//, "")}`
+                }
+                alt={author}
+                fill
+                className="object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/default_person.jpg";
+                }}
+              />
+            ) : (
+              <Image
+                src="/default_person.jpg"
+                alt={author}
+                fill
+                className="object-cover"
+              />
+            )}
+          </div>
+
+          <div className="flex-1 text-center sm:text-left space-y-1.5">
+            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full">
+                {isBn ? "নিবন্ধের লেখক" : "Article Author"}
+              </span>
+            </div>
+
+            <H3 className="text-base font-bold text-slate-900">
+              <Link
+                href={`/authors/${currentPost.authorUsername || currentPost.createdBy?.userName || encodeURIComponent(currentPost.author || currentPost.authorEn || "author")}`}
+                className="hover:text-primary hover:underline transition-colors"
+              >
+                {author}
+              </Link>
+            </H3>
+
+            <P className="text-xs text-slate-500 leading-relaxed">
+              {currentPost.authorDesignation ||
+                (isBn
+                  ? "সেইফ এলপিজি জ্ঞানভাণ্ডার ও সুরক্ষা সেলের নিয়মিত টেকনিক্যাল লেখক ও গবেষক।"
+                  : "Safe LPG technical contributor & specialized energy author.")}
+            </P>
+
+            <div className="pt-2">
+              <Link
+                href={`/authors/${currentPost.authorUsername || currentPost.createdBy?.userName || encodeURIComponent(currentPost.author || currentPost.authorEn || "author")}`}
+                className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline"
+              >
+                <span>{isBn ? "লেখকের সকল প্রবন্ধ ও প্রোফাইল দেখুন" : "View Author Profile & All Articles"}</span>
+                <span>→</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Live Subscriber Comments Section */}
       <CommentSection

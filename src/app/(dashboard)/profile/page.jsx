@@ -60,13 +60,18 @@ export default function ProfilePage() {
     userName: "",
     email: "",
     phone: "",
+    designation: "",
+    bio: "",
+    website: "",
+    linkedin: "",
+    twitter: "",
+    facebook: "",
     address: "",
     city: "",
     district: "",
     state: "",
     postal_code: "",
     country: "",
-    bio: "",
   });
 
   // Password form state
@@ -85,13 +90,18 @@ export default function ProfilePage() {
         userName: u.userName || "",
         email: u.email || "",
         phone: u.phone || "",
+        designation: u.designation || "",
+        bio: u.bio || "",
+        website: u.website || "",
+        linkedin: u.linkedin || "",
+        twitter: u.twitter || "",
+        facebook: u.facebook || "",
         address: u.address || "",
         city: u.city || "",
         district: u.district || "",
         state: u.state || "",
         postal_code: u.postal_code || "",
         country: u.country || "Bangladesh",
-        bio: u.bio || "",
       });
 
       // Keep Redux auth slice updated
@@ -102,13 +112,18 @@ export default function ProfilePage() {
         userName: authUser.userName || "",
         email: authUser.email || "",
         phone: authUser.phone || "",
+        designation: authUser.designation || "",
+        bio: authUser.bio || "",
+        website: authUser.website || "",
+        linkedin: authUser.linkedin || "",
+        twitter: authUser.twitter || "",
+        facebook: authUser.facebook || "",
         address: authUser.address || "",
         city: authUser.city || "",
         district: authUser.district || "",
         state: authUser.state || "",
         postal_code: authUser.postal_code || "",
         country: authUser.country || "Bangladesh",
-        bio: authUser.bio || "",
       });
     }
   }, [profileResponse, authUser, dispatch]);
@@ -146,13 +161,18 @@ export default function ProfilePage() {
         userName: profile.userName || "",
         email: profile.email || "",
         phone: profile.phone || "",
+        designation: profile.designation || "",
+        bio: profile.bio || "",
+        website: profile.website || "",
+        linkedin: profile.linkedin || "",
+        twitter: profile.twitter || "",
+        facebook: profile.facebook || "",
         address: profile.address || "",
         city: profile.city || "",
         district: profile.district || "",
         state: profile.state || "",
         postal_code: profile.postal_code || "",
         country: profile.country || "Bangladesh",
-        bio: profile.bio || "",
       });
     }
   };

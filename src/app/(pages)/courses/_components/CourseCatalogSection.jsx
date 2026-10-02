@@ -1,7 +1,7 @@
 // src/app/(pages)/courses/_components/CourseCatalogSection.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,11 +22,11 @@ import {
 import { H2, H4, P } from "@/components/ui/Typography";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
-import { LinkButton } from "@/components/ui/LinkButton";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useEnrollCourseMutation } from "@/redux/api/courseApi";
 import AuthModal from "@/components/shared/AuthModal";
 import CheckoutModal from "@/components/shared/CheckoutModal";
+import Pagination from "@/components/ui/Pagination";
 
 export const PRICE_TABS = [
   { id: "all", label: "All Courses", labelBn: "সকল কোর্স" },
@@ -46,6 +46,21 @@ export default function CourseCatalogSection({
   const { locale } = useDictionary();
   const isBn = locale === "bn";
 
+  const [mounted, setMounted] = useState(false);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, priceFilter, filteredCourses.length]);
+
+  const totalItems = filteredCourses.length;
+  const totalPages = Math.ceil(totalItems / 10) || 1;
+  const paginatedCourses = filteredCourses.slice((page - 1) * 10, page * 10);
+
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [enrollCourse, { isLoading: isEnrolling }] = useEnrollCourseMutation();
 
@@ -54,7 +69,7 @@ export default function CourseCatalogSection({
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const [checkoutCourse, setCheckoutCourse] = useState(null);
 
-  const isSubscribed = Boolean(
+  const isSubscribed = mounted && Boolean(
     user?.role === "subscriber" ||
     (user?.subscription?.status === "active" &&
       user?.subscription?.planKey !== "course_single" &&
@@ -254,7 +269,7 @@ export default function CourseCatalogSection({
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredCourses.map((course) => {
+            {paginatedCourses.map((course) => {
               const courseSlug = course.slug || course.courseId || course.id;
               const courseTitle = isBn ? course.titleBn || course.title : course.title;
               const courseDesc = isBn ? course.descriptionBn || course.description : course.description;
@@ -278,14 +293,14 @@ export default function CourseCatalogSection({
                     {/* Course Thumbnail */}
                     <Link href={`/courses/${courseSlug}`} className="block relative aspect-16/10 w-full overflow-hidden bg-slate-100">
                       <Image
-                        src={
-                          course.imageUrl ||
-                          "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop"
-                        }
+                        src={course.imageUrl || "/default_image.jpg"}
                         alt={courseTitle || "Course thumbnail"}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-cover"
+                        onError={(e) => {
+                          e.currentTarget.src = "/default_image.jpg";
+                        }}
                       />
 
                       {/* Clean Badges (no rounded pills, crisp tags) */}
@@ -383,6 +398,18 @@ export default function CourseCatalogSection({
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {totalItems > 0 && (
+          <div className="mt-8">
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              totalItems={totalItems}
+              pageSize={10}
+              onPageChange={setPage}
+            />
           </div>
         )}
       </div>

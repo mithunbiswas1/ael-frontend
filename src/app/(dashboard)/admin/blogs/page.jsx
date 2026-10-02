@@ -10,6 +10,7 @@ import {
 } from "@/redux/api/blogApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
+import Pagination from "@/components/ui/Pagination";
 import BlogFilterBar from "./_components/BlogFilterBar";
 import BlogTable from "./_components/BlogTable";
 import { BLOG_CATEGORIES } from "./_components/BlogForm";
@@ -18,16 +19,20 @@ export default function AdminBlogsPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [page, setPage] = useState(1);
   const [deleteBlogTarget, setDeleteBlogTarget] = useState(null);
 
   const { data: blogResponse, isLoading, refetch } = useGetAdminBlogsQuery({
     q: searchTerm,
     category: selectedCategory,
+    page,
+    limit: 10,
   });
 
   const [deleteBlog, { isLoading: isDeleting }] = useDeleteBlogMutation();
 
   const blogs = blogResponse?.data?.data || [];
+  const pagination = blogResponse?.data?.pagination || {};
 
   const handleOpenCreate = () => {
     router.push("/admin/blogs/add");
@@ -60,19 +65,35 @@ export default function AdminBlogsPage() {
       <div className="space-y-6">
         <BlogFilterBar
           searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
+          onSearchChange={(val) => {
+            setSearchTerm(val);
+            setPage(1);
+          }}
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
+          onCategoryChange={(cat) => {
+            setSelectedCategory(cat);
+            setPage(1);
+          }}
           categories={BLOG_CATEGORIES}
           onOpenCreate={handleOpenCreate}
         />
 
-        <BlogTable
-          blogs={blogs}
-          isLoading={isLoading}
-          onEdit={handleEdit}
-          onDelete={handleDeleteClick}
-        />
+        <div className="rounded-2xl border border-slate-200/80 bg-white overflow-hidden shadow-2xs">
+          <BlogTable
+            blogs={blogs}
+            isLoading={isLoading}
+            onEdit={handleEdit}
+            onDelete={handleDeleteClick}
+          />
+
+          <Pagination
+            currentPage={page}
+            totalPages={pagination.totalPages || 1}
+            totalItems={pagination.total}
+            pageSize={10}
+            onPageChange={setPage}
+          />
+        </div>
 
         {/* UI Delete Confirmation Modal */}
         <DeleteConfirmationModal

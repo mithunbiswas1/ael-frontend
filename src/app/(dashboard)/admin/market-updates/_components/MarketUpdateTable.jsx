@@ -52,7 +52,6 @@ export default function MarketUpdateTable({
         <TableRow>
           <TableHead className="w-16">Banner</TableHead>
           <TableHead>Title & Category</TableHead>
-          <TableHead>PDF Attachment</TableHead>
           <TableHead>Publication Date</TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Actions</TableHead>
@@ -65,10 +64,13 @@ export default function MarketUpdateTable({
             <TableCell>
               <div className="relative h-11 w-16 overflow-hidden rounded-md border border-slate-200 bg-slate-100 shrink-0">
                 <Image
-                  src={item.image || "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?q=80&w=400"}
+                  src={item.image || "/default_image.jpg"}
                   alt={item.titleEn}
                   fill
                   className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
               </div>
             </TableCell>
@@ -94,28 +96,20 @@ export default function MarketUpdateTable({
                       ? "BERC Notice"
                       : "Global Market"}
                   </span>
+                  {item.pdfUrl && (
+                    <a
+                      href={item.pdfUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 rounded bg-rose-50 border border-rose-200 px-1.5 py-0.5 text-[10px] font-bold text-rose-700 hover:bg-rose-100 transition-colors"
+                      title={item.pdfOriginalName || "View PDF Attachment"}
+                    >
+                      <FaFilePdf className="h-2.5 w-2.5 text-rose-600" />
+                      <span>PDF</span>
+                    </a>
+                  )}
                 </div>
               </div>
-            </TableCell>
-
-            {/* PDF Attachment */}
-            <TableCell>
-              {item.pdfUrl ? (
-                <a
-                  href={item.pdfUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-rose-50 border border-rose-200 px-2.5 py-1 text-xs font-bold text-rose-700 hover:bg-rose-100 transition-colors"
-                  title="View PDF Document"
-                >
-                  <FaFilePdf className="h-3.5 w-3.5 text-rose-600 shrink-0" />
-                  <span className="truncate max-w-[130px]">
-                    {item.pdfOriginalName || "Attached PDF"}
-                  </span>
-                </a>
-              ) : (
-                <span className="text-xs text-slate-400 italic">No PDF attached</span>
-              )}
             </TableCell>
 
             {/* Date */}

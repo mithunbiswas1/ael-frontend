@@ -51,20 +51,17 @@ export default function ExpertTrainersSection({ data }) {
                   className="flex flex-col overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-xs transition-colors duration-200 hover:border-primary/50"
                 >
                   <div className="relative aspect-square w-full overflow-hidden bg-slate-100">
-                    {imageSrc ? (
-                      <Image
-                        src={imageSrc}
-                        alt={name || "Trainer"}
-                        fill
-                        unoptimized
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-slate-300 text-xs font-semibold">
-                        No Photo
-                      </div>
-                    )}
+                    <Image
+                      src={imageSrc || "/default_person.jpg"}
+                      alt={name || "Trainer"}
+                      fill
+                      unoptimized
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 20vw"
+                      className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/default_person.jpg";
+                      }}
+                    />
                   </div>
                   <div className="flex flex-1 flex-col p-3.5 text-center">
                     {name && (

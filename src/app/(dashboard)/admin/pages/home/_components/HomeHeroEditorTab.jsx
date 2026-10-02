@@ -356,11 +356,14 @@ export default function HomeHeroEditorTab({
                         title="Click to preview this slide"
                       >
                         <Image
-                          src={slide.image || "/lpg-hero.jpg"}
+                          src={slide.image || "/default_image.jpg"}
                           alt={slide.alt || "Slide image"}
                           fill
                           unoptimized
                           className="object-cover transition-transform"
+                          onError={(e) => {
+                            e.currentTarget.src = "/default_image.jpg";
+                          }}
                         />
                         {activeSlidePreview === idx && (
                           <div className="absolute inset-0 bg-primary/20 border-2 border-primary rounded-lg flex items-center justify-center">

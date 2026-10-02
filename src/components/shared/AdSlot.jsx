@@ -58,6 +58,9 @@ export default function AdSlot({ slot, className = "" }) {
                   alt={ad.title}
                   fill
                   className="object-cover group-hover:scale-102 transition-transform duration-300"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
               </div>
             )}
@@ -114,6 +117,9 @@ export default function AdSlot({ slot, className = "" }) {
               alt={ad.title}
               fill
               className="object-cover group-hover:scale-102 transition-transform duration-300"
+              onError={(e) => {
+                e.currentTarget.src = "/default_image.jpg";
+              }}
             />
           </div>
         ) : (

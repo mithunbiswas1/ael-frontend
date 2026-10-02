@@ -16,7 +16,7 @@ import {
 import { useEffect } from "react";
 
 const getImageUrl = (path) => {
-  if (!path) return "/placeholder.png";
+  if (!path) return "/default_image.jpg";
   if (path.startsWith("http://") || path.startsWith("https://")) {
     return path;
   }
@@ -167,6 +167,9 @@ export default function CartDrawer() {
                       alt={item.name}
                       fill
                       className="object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = "/default_image.jpg";
+                      }}
                     />
                   </div>
 

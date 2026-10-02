@@ -34,6 +34,8 @@ export async function getBlogs({
           titleBn: item.titleBn,
           description: item.descriptionEn,
           descriptionBn: item.descriptionBn,
+          shortDescription: item.shortDescriptionEn || item.descriptionEn || "",
+          shortDescriptionBn: item.shortDescriptionBn || item.descriptionBn || "",
           content: item.contentEn,
           contentBn: item.contentBn,
           category: item.category,
@@ -42,6 +44,12 @@ export async function getBlogs({
           imageUrl: item.image,
           author: item.authorEn,
           authorBn: item.authorBn,
+          authorUsername:
+            item.createdBy?.userName ||
+            (item.authorEn ? item.authorEn.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") : "author"),
+          authorImage: item.createdBy?.image || null,
+          authorDesignation: item.createdBy?.designation || "",
+          createdBy: item.createdBy,
           readTime: item.readTimeEn,
           readTimeBn: item.readTimeBn,
           date: new Date(item.createdAt).toLocaleDateString("en-US", {
@@ -78,6 +86,8 @@ export async function getBlogBySlug(slug) {
           titleBn: item.titleBn,
           description: item.descriptionEn,
           descriptionBn: item.descriptionBn,
+          shortDescription: item.shortDescriptionEn || item.descriptionEn || "",
+          shortDescriptionBn: item.shortDescriptionBn || item.descriptionBn || "",
           content: item.contentEn,
           contentBn: item.contentBn,
           category: item.category,
@@ -86,6 +96,12 @@ export async function getBlogBySlug(slug) {
           imageUrl: item.image,
           author: item.authorEn,
           authorBn: item.authorBn,
+          authorUsername:
+            item.createdBy?.userName ||
+            (item.authorEn ? item.authorEn.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") : "author"),
+          authorImage: item.createdBy?.image || null,
+          authorDesignation: item.createdBy?.designation || "",
+          createdBy: item.createdBy,
           readTime: item.readTimeEn,
           readTimeBn: item.readTimeBn,
           date: new Date(item.createdAt).toLocaleDateString("en-US", {
@@ -99,8 +115,25 @@ export async function getBlogBySlug(slug) {
       }
     }
   } catch (err) {
-    console.warn("[getBlogBySlug] Failed to fetch blog detail:", err.message);
+    // Silent catch
   }
 
   return null;
+}
+
+export async function getBlogCategories() {
+  try {
+    const res = await fetch(`${API_BASE_URL}blogs/categories`, {
+      next: { revalidate: 60 },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (Array.isArray(json?.data)) {
+        return json.data;
+      }
+    }
+  } catch (err) {
+    // Silent catch
+  }
+  return [];
 }

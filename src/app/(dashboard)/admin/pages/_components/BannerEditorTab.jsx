@@ -167,6 +167,9 @@ export default function BannerEditorTab({
                         fill
                         unoptimized
                         className="object-cover object-center transition-transform duration-700 ease-out"
+                        onError={(e) => {
+                          e.currentTarget.src = "/default_image.jpg";
+                        }}
                       />
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/10" />
                     </>

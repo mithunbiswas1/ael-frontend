@@ -18,7 +18,6 @@ import {
   CheckCircle2,
   Plus,
   Search,
-  Sparkles,
   HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -63,6 +62,8 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
     slug: "",
     descriptionEn: "",
     descriptionBn: "",
+    shortDescriptionEn: "",
+    shortDescriptionBn: "",
     contentEn: "",
     contentBn: "",
     category: "seminar",
@@ -92,6 +93,8 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
         slug: initialData.slug || "",
         descriptionEn: initialData.descriptionEn || "",
         descriptionBn: initialData.descriptionBn || "",
+        shortDescriptionEn: initialData.shortDescriptionEn || "",
+        shortDescriptionBn: initialData.shortDescriptionBn || "",
         contentEn: initialData.contentEn || "",
         contentBn: initialData.contentBn || "",
         category: initialData.category || "seminar",
@@ -388,10 +391,42 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
               </span>
             </div>
 
+            {/* Short Descriptions for Cards & Image Overlays */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-100">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Card Short Summary (English)
+                </label>
+                <textarea
+                  rows={3}
+                  className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden"
+                  placeholder="Concise 1-2 sentence summary displayed on blog cards and image banner..."
+                  value={formData.shortDescriptionEn}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, shortDescriptionEn: e.target.value }))
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  কার্ড সংক্ষিপ্ত বিবরণী (বাংলা)
+                </label>
+                <textarea
+                  rows={3}
+                  className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-800 focus:border-primary focus:outline-hidden"
+                  placeholder="ব্লগ কার্ড এবং ইমেজ ব্যানারে প্রদর্শনের জন্য ১-২ লাইনের সংক্ষিপ্ত সারসংক্ষেপ..."
+                  value={formData.shortDescriptionBn}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, shortDescriptionBn: e.target.value }))
+                  }
+                />
+              </div>
+            </div>
+
             {/* English Description with Quill */}
             <div className="space-y-1.5">
               <RichTextEditor
-                label="Article Description"
+                label="Article Detailed Description"
                 required
                 minHeight={500}
                 placeholder="Write rich formatted article content, safety instructions, technical standards, or regulatory bullet points in English..."
@@ -679,6 +714,9 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
                     fill
                     unoptimized
                     className="object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = "/default_image.jpg";
+                    }}
                   />
                   <Button
                     type="button"

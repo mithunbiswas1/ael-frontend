@@ -90,7 +90,7 @@ const OtpPage = () => {
             </button>
           </span>
           <Link
-            href="/sign-in"
+            href="/login"
             className="text-primary font-medium hover:underline cursor-pointer"
           >
             {isBn ? "নম্বর পরিবর্তন" : "Change Number"}

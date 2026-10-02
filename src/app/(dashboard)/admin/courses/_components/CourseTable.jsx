@@ -62,13 +62,13 @@ export default function CourseTable({
             <TableCell>
               <div className="relative h-11 w-16 overflow-hidden rounded-lg bg-slate-100 shrink-0">
                 <Image
-                  src={
-                    course.imageUrl ||
-                    "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop"
-                  }
+                  src={course.imageUrl || "/default_image.jpg"}
                   alt={course.title || "Course banner"}
                   fill
                   className="object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/default_image.jpg";
+                  }}
                 />
               </div>
             </TableCell>

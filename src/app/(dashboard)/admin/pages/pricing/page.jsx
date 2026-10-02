@@ -79,7 +79,7 @@ export default function AdminPricingPage() {
       pageKey="pricing"
       title="Pricing & Subscription Page Configuration"
       subtitle="Configure pricing hero visual banner and subscription packages for consumers and dealers."
-      previewUrl="/pricing"
+      previewUrl="/subscription"
       tabs={tabs}
       activeTab={activeTab}
       onTabChange={setActiveTab}
