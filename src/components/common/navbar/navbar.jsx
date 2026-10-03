@@ -329,7 +329,8 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
 
           {/* Right: Language Selector + Search + Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            {/* Search Trigger Button */}
+            {/* Search Trigger Button (temporarily commented out) */}
+            {/*
             <Button
               type="button"
               variant="outline"
@@ -340,6 +341,7 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
             >
               <Search className="h-4 w-4" />
             </Button>
+            */}
 
             {/* Language Selector in Navbar */}
             <LanguageSelector currentLocale={locale} />
@@ -419,7 +421,8 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
               <LanguageSelector currentLocale={locale} />
             </div>
 
-            {/* Mobile Search Quick Trigger */}
+            {/* Mobile Search Quick Trigger (temporarily commented out) */}
+            {/*
             <div className="mt-2 px-1">
               <button
                 type="button"
@@ -433,6 +436,7 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
                 <span>{commonDict?.searchPlaceholder || "Search guidelines, courses..."}</span>
               </button>
             </div>
+            */}
 
             {/* Links List with Collapsible Submenus */}
             <div className="mt-3 flex-1 overflow-y-auto space-y-1 pr-1">
@@ -609,11 +613,13 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
         </div>
       )}
 
-      {/* 4. Global Search Modal */}
+      {/* 4. Global Search Modal (temporarily commented out) */}
+      {/*
       <SearchModal
         isOpen={searchModalOpen}
         onClose={() => setSearchModalOpen(false)}
       />
+      */}
     </header>
   );
 }

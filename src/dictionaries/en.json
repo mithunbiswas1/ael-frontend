@@ -169,10 +169,22 @@
     "whoWeAreP1": "We are a dedicated national platform working for a safer and more sustainable LPG sector in Bangladesh. We create awareness, provide up-to-date information, deliver quality training and support all stakeholders including investors, companies, dealers, distributors and consumers.",
     "whoWeAreP2": "Through collaboration with government bodies, industry associations and safety experts, we aim to reduce operational risks, prevent incidents and build a proactive culture of safety across the entire LPG supply chain.",
     "features": [
-      { "title": "Safety First", "desc": "We promote safety as a core value in every aspect of the LPG industry." },
-      { "title": "Awareness for All", "desc": "We spread awareness among all stakeholders to ensure a safer LPG ecosystem." },
-      { "title": "Knowledge & Training", "desc": "We provide expert training, resources and guidance to build skills and confidence." },
-      { "title": "Stronger Together", "desc": "We collaborate with industry leaders and organizations to create a safer tomorrow." }
+      {
+        "title": "Safety First",
+        "desc": "We promote safety as a core value in every aspect of the LPG industry."
+      },
+      {
+        "title": "Awareness for All",
+        "desc": "We spread awareness among all stakeholders to ensure a safer LPG ecosystem."
+      },
+      {
+        "title": "Knowledge & Training",
+        "desc": "We provide expert training, resources and guidance to build skills and confidence."
+      },
+      {
+        "title": "Stronger Together",
+        "desc": "We collaborate with industry leaders and organizations to create a safer tomorrow."
+      }
     ],
     "missionTag": "CORE FOUNDATION",
     "missionTitle": "MISSION &",
@@ -187,10 +199,22 @@
     "statsTitle": "OUR NATIONAL IMPACT",
     "statsSubtitle": "Measurable progress toward a zero-incident LPG infrastructure in Bangladesh",
     "stats": [
-      { "value": "64", "label": "Districts Covered" },
-      { "value": "25,000+", "label": "Trained Participants" },
-      { "value": "120+", "label": "Safety Audits Conducted" },
-      { "value": "99.8%", "label": "Compliance Index" }
+      {
+        "value": "64",
+        "label": "Districts Covered"
+      },
+      {
+        "value": "25,000+",
+        "label": "Trained Participants"
+      },
+      {
+        "value": "120+",
+        "label": "Safety Audits Conducted"
+      },
+      {
+        "value": "99.8%",
+        "label": "Compliance Index"
+      }
     ]
   },
   "actsAndRules": {
@@ -367,7 +391,7 @@
     "safetyTipText": "Inspect the cylinder seal and O-ring integrity before accepting any delivery from your local retailer.",
     "regulatoryTitle": "REGULATORY OVERSIGHT",
     "officialDirectives": "Official directives and technical rules issued by national compliance authorities",
-    "downloadableManuals": "OFFICIAL GUIDELINES & MANUALS",
+    "downloadableManuals": "SAFETY GUIDELINES & MANUALS",
     "manualsSubtitle": "Download verified PDF standard operating procedures and technical manuals",
     "docName": "Document Name",
     "targetGroup": "Stakeholder Group",

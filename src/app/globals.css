@@ -99,3 +99,39 @@ button {
 [data-slot="table"] td * {
   white-space: nowrap !important;
 }
+
+/* Google Translate Overrides & UI Cleanup */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+html.translated-ltr,
+html.translated-rtl {
+  margin-top: 0 !important;
+}
+
+body.translated-ltr,
+body.translated-rtl {
+  top: 0px !important;
+  position: static !important;
+}
+
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.skiptranslate:not(.custom-translate) > iframe {
+  display: none !important;
+}

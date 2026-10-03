@@ -13,6 +13,7 @@ import {
 import AelLogo from "@/components/common/AelLogo";
 import { H4, P } from "@/components/ui/Typography";
 import { useGetPublicSettingsQuery } from "@/redux/api/adminApi";
+import GoogleTranslate from "./GoogleTranslate";
 
 export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
   const { data: publicSettingsData } = useGetPublicSettingsQuery();
@@ -242,11 +243,14 @@ export default function Footer({ dict = {}, commonDict = {}, locale = "en" }) {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Subtle Utility Badges */}
-        <div className="mt-12 sm:mt-16 border-t border-slate-900/80 pt-6">
-          <P size="xs" className="text-center">
+        {/* Bottom Bar: Copyright & Google Translate */}
+        <div className="mt-12 sm:mt-16 border-t border-slate-900/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <P size="xs" className="text-center sm:text-left order-2 sm:order-1">
             © {new Date().getFullYear()} {copyrightText}
           </P>
+          <div className="flex items-center gap-3 order-1 sm:order-2">
+            <GoogleTranslate />
+          </div>
         </div>
       </div>
     </footer>

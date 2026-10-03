@@ -8,6 +8,7 @@ import { getLocale, getDict } from "@/lib/i18n";
 import { DictionaryProvider } from "@/context/DictionaryContext";
 import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
 import AdSlot from "@/components/shared/AdSlot";
+import LanguageModal from "@/components/common/LanguageModal";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }) {
           <DictionaryProvider locale={locale} dict={dict}>
             {children}
             <AdSlot slot="popup_ad" />
+            <LanguageModal currentLocale={locale} />
             <Toaster position="top-center" richColors closeButton />
           </DictionaryProvider>
         </ReduxProvider>
