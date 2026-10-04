@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Send, RefreshCw } from "lucide-react";
+import { Send, RefreshCw, UserPlus } from "lucide-react";
 import { FaNewspaper } from "react-icons/fa";
 import { toast } from "sonner";
 
@@ -21,6 +21,7 @@ import NewsletterStatsGrid from "./_components/NewsletterStatsGrid";
 import NewsletterFilters from "./_components/NewsletterFilters";
 import NewsletterTable from "./_components/NewsletterTable";
 import BroadcastCampaignDialog from "./_components/BroadcastCampaignDialog";
+import AddSubscriberDialog from "./_components/AddSubscriberDialog";
 
 export default function AdminNewsletterPage() {
   const [search, setSearch] = useState("");
@@ -30,15 +31,14 @@ export default function AdminNewsletterPage() {
 
   // Modal states
   const [isBroadcastModalOpen, setIsBroadcastModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  // Broadcast form state
+  // Broadcast form state (Single-language, no dual En/Bn required)
   const [broadcastForm, setBroadcastForm] = useState({
     title: "",
-    titleBn: "",
     subject: "",
     summary: "",
-    summaryBn: "",
     ctaText: "View Details",
     ctaUrl: "/",
     targetAudience: "all",
@@ -108,16 +108,28 @@ export default function AdminNewsletterPage() {
       setIsBroadcastModalOpen(false);
       setBroadcastForm({
         title: "",
-        titleBn: "",
         subject: "",
         summary: "",
-        summaryBn: "",
         ctaText: "View Details",
         ctaUrl: "/",
         targetAudience: "all",
       });
     } catch (err) {
       toast.error(err?.data?.message || "Failed to send newsletter broadcast");
+    }
+  };
+
+  // Manual refresh with visual feedback & notification
+  const handleRefresh = async () => {
+    try {
+      const res = await refetch();
+      if (res.isError) {
+        toast.error(res?.error?.data?.message || "Failed to refresh subscribers");
+      } else {
+        toast.success("Subscribers list updated");
+      }
+    } catch {
+      toast.error("Failed to refresh subscribers");
     }
   };
 
@@ -128,16 +140,27 @@ export default function AdminNewsletterPage() {
         icon={FaNewspaper}
         title="Newsletter Subscribers"
         action={
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <Button
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => refetch()}
+              onClick={handleRefresh}
+              isLoading={isFetching}
               disabled={isFetching}
               icon={RefreshCw}
             >
               <span>Refresh</span>
+            </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsAddModalOpen(true)}
+              icon={UserPlus}
+            >
+              <span>Add Subscriber</span>
             </Button>
 
             <Button
@@ -178,7 +201,14 @@ export default function AdminNewsletterPage() {
         onPageChange={(newPage) => setPage(newPage)}
       />
 
-      {/* 5. Manual Broadcast Modal */}
+      {/* 5. Add Subscriber Modal (Single & CSV/Bulk) */}
+      <AddSubscriberDialog
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onRefresh={refetch}
+      />
+
+      {/* 6. Manual Broadcast Modal (Single title & content) */}
       <BroadcastCampaignDialog
         isOpen={isBroadcastModalOpen}
         onClose={() => setIsBroadcastModalOpen(false)}
@@ -189,7 +219,7 @@ export default function AdminNewsletterPage() {
         stats={stats}
       />
 
-      {/* 6. Delete Confirmation Modal */}
+      {/* 7. Delete Confirmation Modal */}
       <DeleteConfirmationModal
         isOpen={Boolean(deleteTarget)}
         onClose={() => setDeleteTarget(null)}

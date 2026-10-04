@@ -18,6 +18,7 @@ export async function verifyCertificateOnline(certId) {
         const item = json.data;
         return {
           id: item.certificateId,
+          certificateId: item.certificateId,
           studentName: item.studentName,
           studentNameBn: item.studentNameBn,
           courseTitle: item.courseTitle,
@@ -30,6 +31,7 @@ export async function verifyCertificateOnline(certId) {
           status: item.status,
           authorizedBy: item.authorizedBy,
           issuingAuthority: item.issuingAuthority,
+          ...item,
         };
       }
     }

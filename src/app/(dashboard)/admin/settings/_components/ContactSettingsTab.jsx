@@ -60,7 +60,7 @@ export default function ContactSettingsTab({
               name="hotlineLabel"
               value={formData.hotlineLabel || ""}
               onChange={handleChange}
-              placeholder="e.g. LPG Emergency Hotline"
+              placeholder="e.g.Hotline"
             />
           </div>
 

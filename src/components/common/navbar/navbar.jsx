@@ -23,33 +23,7 @@ import ProfileDropdown from "./ProfileDropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogout } from "@/redux/slice/authSlice";
 import { useGetPublicSettingsQuery } from "@/redux/api/adminApi";
-
-const SOCIAL_LINKS = [
-  {
-    name: "Facebook",
-    href: "https://facebook.com",
-    icon: FaFacebookF,
-    bgClass: "bg-blue-600 hover:bg-blue-700",
-  },
-  {
-    name: "Twitter",
-    href: "https://twitter.com",
-    icon: FaTwitter,
-    bgClass: "bg-sky-500 hover:bg-sky-600",
-  },
-  {
-    name: "LinkedIn",
-    href: "https://linkedin.com",
-    icon: FaLinkedinIn,
-    bgClass: "bg-blue-700 hover:bg-blue-800",
-  },
-  {
-    name: "YouTube",
-    href: "https://youtube.com",
-    icon: FaYoutube,
-    bgClass: "bg-red-600 hover:bg-red-700",
-  },
-];
+import AdSlot from "@/components/shared/AdSlot";
 
 export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
   const pathname = usePathname();
@@ -162,7 +136,7 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
     : socialList.slice(0, 4);
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-xs">
+    <header className="sticky top-0 z-50 w-full shadow-xs bg-white">
       {/* 1. Top Utility Header Bar */}
       {settings?.topbarEnabled !== false && (
         <div className="bg-slate-950 text-slate-300 py-1.5 border-b border-slate-900 text-xs">
@@ -228,6 +202,9 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
           </div>
         </div>
       )}
+
+      {/* 1. Header Banner Advertisement (Between Topbar and Navbar) */}
+      <AdSlot slot="header_banner" />
 
       {/* 2. Main Navigation Bar */}
       <nav className="border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
@@ -418,7 +395,7 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
               <span className="text-xs font-semibold text-slate-600">
                 {commonDict?.language || "Language"}:
               </span>
-              <LanguageSelector currentLocale={locale} />
+              <LanguageSelector currentLocale={locale} showFullOnMobile />
             </div>
 
             {/* Mobile Search Quick Trigger (temporarily commented out) */}

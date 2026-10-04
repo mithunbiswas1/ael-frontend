@@ -3,7 +3,7 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import { Save, UploadCloud, X, Image as ImageIcon, Sparkles } from "lucide-react";
+import { Save, UploadCloud, X, Image as ImageIcon, Palette } from "lucide-react";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 
@@ -65,7 +65,7 @@ export default function BrandingSettingsTab({
       {/* Header */}
       <div>
         <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" />
+          <Palette className="h-4 w-4 text-primary" />
           <span>Brand Identity & Visual Assets</span>
         </h4>
         <p className="text-xs text-slate-500 mt-0.5">

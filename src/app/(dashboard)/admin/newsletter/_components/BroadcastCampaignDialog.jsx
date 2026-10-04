@@ -115,29 +115,20 @@ export default function BroadcastCampaignDialog({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Input
-              label="Announcement Title (English)"
-              placeholder="e.g. Special Safety Directive Issued by DoE"
-              value={broadcastForm.title}
-              onChange={(e) =>
-                setBroadcastForm((prev) => ({ ...prev, title: e.target.value }))
-              }
-              required
-            />
-
-            <Input
-              label="Announcement Title (Bangla)"
-              placeholder="e.g. বিস্ফোরক অধিদপ্তর কর্তৃক নতুন নিরাপত্তা নির্দেশনা"
-              value={broadcastForm.titleBn}
-              onChange={(e) =>
-                setBroadcastForm((prev) => ({ ...prev, titleBn: e.target.value }))
-              }
-            />
-          </div>
-
+          {/* Campaign Title (Single Field) */}
           <Input
-            label="Email Subject Line"
+            label="Campaign / Announcement Title *"
+            placeholder="e.g. Special Safety Directive Issued by Department of Explosives"
+            value={broadcastForm.title}
+            onChange={(e) =>
+              setBroadcastForm((prev) => ({ ...prev, title: e.target.value }))
+            }
+            required
+          />
+
+          {/* Email Subject Line */}
+          <Input
+            label="Email Subject Line *"
             placeholder="e.g. [AEL SafeLPG] Urgent Safety Bulletin Regarding Cylinder Hydro-Testing"
             value={broadcastForm.subject}
             onChange={(e) =>
@@ -146,10 +137,11 @@ export default function BroadcastCampaignDialog({
             required
           />
 
+          {/* Newsletter Message Content (Single Field) */}
           <Textarea
-            label="Newsletter Summary Content (English)"
-            rows={4}
-            placeholder="Write the summary or key points of this newsletter bulletin..."
+            label="Newsletter Message Content *"
+            rows={5}
+            placeholder="Write the newsletter message, key points, announcements or safety instructions..."
             value={broadcastForm.summary}
             onChange={(e) =>
               setBroadcastForm((prev) => ({ ...prev, summary: e.target.value }))
@@ -157,20 +149,11 @@ export default function BroadcastCampaignDialog({
             required
           />
 
-          <Textarea
-            label="Newsletter Summary Content (Bangla)"
-            rows={3}
-            placeholder="নিউজলেটারে অন্তর্ভুক্ত গুরুত্বপূর্ণ পয়েন্ট বা নোটিশের সারসংক্ষেপ..."
-            value={broadcastForm.summaryBn}
-            onChange={(e) =>
-              setBroadcastForm((prev) => ({ ...prev, summaryBn: e.target.value }))
-            }
-          />
-
+          {/* Action CTA Link (Optional) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Input
-              label="Action Button Label"
-              placeholder="Read Full Directive"
+              label="Action Button Label (Optional)"
+              placeholder="e.g. View Guidelines"
               value={broadcastForm.ctaText}
               onChange={(e) =>
                 setBroadcastForm((prev) => ({ ...prev, ctaText: e.target.value }))
@@ -178,8 +161,8 @@ export default function BroadcastCampaignDialog({
             />
 
             <Input
-              label="Action Target URL"
-              placeholder="/safety-guidelines"
+              label="Action Target URL (Optional)"
+              placeholder="e.g. /safety-guidelines"
               value={broadcastForm.ctaUrl}
               onChange={(e) =>
                 setBroadcastForm((prev) => ({ ...prev, ctaUrl: e.target.value }))

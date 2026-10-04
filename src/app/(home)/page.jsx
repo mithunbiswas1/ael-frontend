@@ -48,9 +48,7 @@ export default async function HomePage() {
     <main className="relative min-h-screen overflow-hidden bg-slate-50 selection:bg-primary/20 selection:text-primary">
       <HeroSection locale={locale} banner={homeBanner} />
       {/* <MetricsBar dict={homeDict.metrics} locale={locale} /> */}
-      <div className="site-container my-4">
-        <AdSlot slot="header_banner" />
-      </div>
+      <AdSlot slot="mid_content" />
       <SafetyGuidelinesSection
         dict={homeDict.safetyGuidelines}
         locale={locale}
@@ -85,9 +83,7 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-      <div className="site-container my-4">
-        <AdSlot slot="footer_banner" />
-      </div>
+      <AdSlot slot="footer_banner" />
       <EmergencySupportBar dict={homeDict.emergencyBar} locale={locale} />
     </main>
   );

@@ -1,13 +1,13 @@
 // src/app/(dashboard)/admin/users/_components/UserFilterBar.jsx
 "use client";
 
-import { FaUsers } from "react-icons/fa";
+import { FaUserShield } from "react-icons/fa";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Select } from "@/components/ui/Select";
 
 const ROLE_OPTIONS = [
-  { value: "ALL", label: "All Roles (সকল রোল)" },
+  { value: "ALL", label: "All Roles" },
   { value: "super_admin", label: "Super Admin" },
   { value: "admin", label: "Admin" },
   { value: "instructor", label: "Instructor" },
@@ -26,9 +26,9 @@ export default function UserFilterBar({
     <div className="space-y-4">
       {/* Header & Action */}
       <AdminPageHeader
-        icon={FaUsers}
-        title="User Management"
-        description="Monitor registered platform members, change access roles, and manage account statuses."
+        icon={FaUserShield}
+        title="User & Role Permission"
+        description="Monitor registered platform members, manage assigned system roles, and configure page-level permissions."
         badge={`${totalUsers} Total`}
       />
 

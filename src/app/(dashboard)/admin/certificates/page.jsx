@@ -16,15 +16,16 @@ import Pagination from "@/components/ui/Pagination";
 import CertificateFilterBar from "./_components/CertificateFilterBar";
 import CertificateTable from "./_components/CertificateTable";
 import CertificateFormModal from "./_components/CertificateFormModal";
+import CertificatePreviewModal from "./_components/CertificatePreviewModal";
 
 const INITIAL_FORM = {
   certificateId: "",
   studentName: "",
-  studentNameBn: "",
+  studentRegNo: "",
   courseTitle: "",
-  courseTitleBn: "",
+  duration: "MARCH 15 2024 TO JUN 11 2024",
   grade: "Pass (90%)",
-  authorizedBy: "Engr. Mahmudul Hasan (DoE Lead Auditor)",
+  authorizedBy: "Mr. Mathew",
   validTill: "Lifetime Validity",
 };
 
@@ -43,6 +44,7 @@ export default function AdminCertificatesPage() {
   const [deleteCert, { isLoading: isDeleting }] = useDeleteCertificateMutation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previewCert, setPreviewCert] = useState(null);
   const [editingCertId, setEditingCertId] = useState(null);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [deleteCertTarget, setDeleteCertTarget] = useState(null);
@@ -58,6 +60,7 @@ export default function AdminCertificatesPage() {
     setFormData({
       ...INITIAL_FORM,
       certificateId: `CERT-LPG-${String(Math.floor(100 + Math.random() * 900))}`,
+      studentRegNo: `AIT${String(Math.floor(1000 + Math.random() * 9000))}`,
     });
     setIsModalOpen(true);
   };
@@ -67,11 +70,11 @@ export default function AdminCertificatesPage() {
     setFormData({
       certificateId: cert.certificateId || "",
       studentName: cert.studentName || "",
-      studentNameBn: cert.studentNameBn || "",
+      studentRegNo: cert.studentRegNo || cert.regNo || "",
       courseTitle: cert.courseTitle || "",
-      courseTitleBn: cert.courseTitleBn || "",
+      duration: cert.duration || "MARCH 15 2024 TO JUN 11 2024",
       grade: cert.grade || "Pass (90%)",
-      authorizedBy: cert.authorizedBy || "",
+      authorizedBy: cert.authorizedBy || "Mr. Mathew",
       validTill: cert.validTill || "Lifetime Validity",
     });
     setIsModalOpen(true);
@@ -130,6 +133,7 @@ export default function AdminCertificatesPage() {
           <CertificateTable
             certificates={paginatedCerts}
             isLoading={isLoading}
+            onPreview={(cert) => setPreviewCert(cert)}
             onEdit={handleEditCert}
             onDelete={handleDeleteCert}
           />
@@ -144,6 +148,13 @@ export default function AdminCertificatesPage() {
             />
           )}
         </div>
+
+        {/* Certificate Document Preview Modal (Print & PDF) */}
+        <CertificatePreviewModal
+          isOpen={Boolean(previewCert)}
+          onClose={() => setPreviewCert(null)}
+          certificate={previewCert}
+        />
 
         <CertificateFormModal
           isOpen={isModalOpen}

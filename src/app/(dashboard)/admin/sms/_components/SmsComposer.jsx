@@ -24,9 +24,7 @@ export default function SmsComposer({
           <Send className="h-4 w-4 text-primary" />
           <span>Compose Bulk SMS Broadcast</span>
         </h3>
-        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full flex items-center gap-1 w-fit">
-          Sends directly to all users&apos; registered phone numbers
-        </span>
+
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
@@ -49,11 +47,10 @@ export default function SmsComposer({
               SMS Message Content *
             </label>
             <span
-              className={`font-semibold px-2 py-0.5 rounded text-[10px] ${
-                isBanglaUnicode
+              className={`font-semibold px-2 py-0.5 rounded text-[10px] ${isBanglaUnicode
                   ? "bg-amber-100 text-amber-800"
                   : "bg-blue-100 text-blue-800"
-              }`}
+                }`}
             >
               {isBanglaUnicode
                 ? "Bangla Unicode (70 chars/SMS)"

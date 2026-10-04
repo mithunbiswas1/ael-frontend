@@ -2,7 +2,14 @@
 "use client";
 
 import Link from "next/link";
-import { FaAward, FaEdit, FaTrash, FaExternalLinkAlt, FaCheckCircle } from "react-icons/fa";
+import {
+  FaAward,
+  FaEdit,
+  FaTrash,
+  FaExternalLinkAlt,
+  FaCheckCircle,
+  FaEye,
+} from "react-icons/fa";
 import {
   Table,
   TableHeader,
@@ -17,6 +24,7 @@ import { H4, P } from "@/components/ui/Typography";
 export default function CertificateTable({
   certificates = [],
   isLoading,
+  onPreview,
   onEdit,
   onDelete,
 }) {
@@ -50,7 +58,7 @@ export default function CertificateTable({
           <TableHead className="w-32">Grade</TableHead>
           <TableHead className="w-36">Issue Date</TableHead>
           <TableHead className="w-28 text-center">Status</TableHead>
-          <TableHead className="w-32 text-right">Actions</TableHead>
+          <TableHead className="w-36 text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -67,26 +75,14 @@ export default function CertificateTable({
 
             {/* Recipient */}
             <TableCell>
-              <div className="space-y-0.5">
-                <p className="font-bold text-xs text-slate-900">{cert.studentName}</p>
-                {cert.studentNameBn && (
-                  <p className="text-[11px] text-slate-500">{cert.studentNameBn}</p>
-                )}
-              </div>
+              <p className="font-bold text-xs text-slate-900">{cert.studentName}</p>
             </TableCell>
 
             {/* Course */}
             <TableCell>
-              <div className="space-y-0.5">
-                <p className="text-xs font-medium text-slate-800 line-clamp-1">
-                  {cert.courseTitle}
-                </p>
-                {cert.courseTitleBn && (
-                  <p className="text-[11px] text-slate-400 line-clamp-1">
-                    {cert.courseTitleBn}
-                  </p>
-                )}
-              </div>
+              <p className="text-xs font-medium text-slate-800 line-clamp-1">
+                {cert.courseTitle}
+              </p>
             </TableCell>
 
             {/* Grade */}
@@ -112,6 +108,16 @@ export default function CertificateTable({
             {/* Actions */}
             <TableCell className="text-right">
               <div className="flex items-center justify-end gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="xs"
+                  onClick={() => onPreview?.(cert)}
+                  className="h-8 w-8 p-0 text-slate-500 hover:text-emerald-700 hover:bg-emerald-50"
+                  title="Preview & Print Certificate"
+                >
+                  <FaEye className="h-3.5 w-3.5" />
+                </Button>
                 <Link
                   href={`/verify-certificate?id=${cert.certificateId}`}
                   target="_blank"

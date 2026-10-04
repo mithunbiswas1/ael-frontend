@@ -33,7 +33,6 @@ const PAGE_NAME_MAP = {
   "/admin/courses/enrollments": "Enrollments",
   "/admin/certificates": "Certificates",
   "/admin/users": "Users",
-  "/admin/roles": "Roles",
   "/admin/messages": "Messages",
   "/admin/comments": "Comments",
   "/admin/safety-guidelines": "Safety",

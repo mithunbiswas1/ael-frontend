@@ -122,19 +122,13 @@ const ALL_ADMIN_NAV_ITEMS = [
   },
 
   {
-    name: "Registered Users",
+    name: "User and Role Permission",
     href: "/admin/users",
-    icon: FaUsers,
+    icon: FaUserShield,
     module: "users",
   },
   {
-    name: "Roles & Permissions",
-    href: "/admin/roles",
-    icon: FaUserShield,
-    module: "roles",
-  },
-  {
-    name: "Messages",
+    name: "Contact Messages",
     href: "/admin/messages",
     icon: FaEnvelope,
     module: "messages",

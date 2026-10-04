@@ -80,17 +80,10 @@ const ADMIN_PAGE_CATEGORIES = [
       },
       {
         id: "users",
-        title: "User Registry & Management",
+        title: "User and Role Permission",
         path: "/admin/users",
         module: "users",
         description: "Platform accounts, roles, access levels and user profiles",
-      },
-      {
-        id: "roles",
-        title: "Roles & Permissions",
-        path: "/admin/roles",
-        module: "roles",
-        description: "System roles, custom access policies and capability control",
       },
     ],
   },
@@ -971,21 +964,8 @@ export default function UserPermissionsSlugPage() {
           <div>
             <H3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span>Admin Page Access & Action Permissions</span>
-              {!isSuperAdminRole ? (
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
-                  <FaUnlock className="h-2.5 w-2.5" /> Page Control Enabled
-                </span>
-              ) : (
-                <span className="text-[11px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200 flex items-center gap-1">
-                  <FaShieldAlt className="h-2.5 w-2.5" /> Full Master Access
-                </span>
-              )}
+
             </H3>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              {!isSuperAdminRole
-                ? "Select specific pages and actions below to configure this user's access."
-                : "Super Admin has unrestricted master access to all system pages and actions."}
-            </p>
           </div>
 
           {!isSuperAdminRole && (
@@ -1030,7 +1010,7 @@ export default function UserPermissionsSlugPage() {
                 className="gap-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 border-rose-300"
               >
                 <FaTrashAlt className="h-3 w-3" />
-                <span>Revoke All</span>
+                <span>Remove All</span>
               </Button>
             </div>
           )}
@@ -1113,11 +1093,10 @@ export default function UserPermissionsSlugPage() {
 
                         {/* 4 Standard Action Checkboxes */}
                         <div
-                          className={`flex items-center gap-1.5 sm:gap-2 p-1 rounded-lg border ${
-                            isSuperAdminRole
-                              ? "bg-slate-100/70 border-slate-200 opacity-80 cursor-not-allowed"
-                              : "bg-slate-50 border-slate-200"
-                          }`}
+                          className={`flex items-center gap-1.5 sm:gap-2 p-1 rounded-lg border ${isSuperAdminRole
+                            ? "bg-slate-100/70 border-slate-200 opacity-80 cursor-not-allowed"
+                            : "bg-slate-50 border-slate-200"
+                            }`}
                         >
                           {AVAILABLE_ACTIONS.map((action) => {
                             const isActionChecked = hasActionPermission(
@@ -1128,26 +1107,23 @@ export default function UserPermissionsSlugPage() {
                             return (
                               <label
                                 key={action.key}
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs select-none transition-colors ${
-                                  isActionChecked
-                                    ? "bg-white text-slate-900 border border-slate-300 font-bold shadow-2xs"
-                                    : "text-slate-400 hover:text-slate-700 font-normal"
-                                } ${
-                                  isSuperAdminRole
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs select-none transition-colors ${isActionChecked
+                                  ? "bg-white text-slate-900 border border-slate-300 font-bold shadow-2xs"
+                                  : "text-slate-400 hover:text-slate-700 font-normal"
+                                  } ${isSuperAdminRole
                                     ? "cursor-not-allowed pointer-events-none"
                                     : "cursor-pointer"
-                                }`}
+                                  }`}
                               >
                                 <input
                                   type="checkbox"
                                   disabled={isSuperAdminRole}
                                   checked={isActionChecked}
                                   onChange={() => handleToggleAction(pg, action.key)}
-                                  className={`h-3.5 w-3.5 rounded text-primary focus:ring-primary border-slate-300 ${
-                                    isSuperAdminRole
-                                      ? "cursor-not-allowed opacity-60"
-                                      : "cursor-pointer"
-                                  }`}
+                                  className={`h-3.5 w-3.5 rounded text-primary focus:ring-primary border-slate-300 ${isSuperAdminRole
+                                    ? "cursor-not-allowed opacity-60"
+                                    : "cursor-pointer"
+                                    }`}
                                 />
                                 <span className="capitalize">{action.label}</span>
                               </label>

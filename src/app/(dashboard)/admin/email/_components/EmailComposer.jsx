@@ -22,9 +22,6 @@ export default function EmailComposer({
           <Send className="h-4 w-4 text-primary" />
           <span>Compose Email Broadcast</span>
         </h3>
-        <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-          All Registered Users & Newsletter Subscribers
-        </span>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">

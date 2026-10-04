@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   CreditCard,
   Search,
-  RotateCcw,
   Eye,
   UserPlus,
   Ban,
@@ -19,7 +18,6 @@ import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import {
   useGetAdminSubscriptionsQuery,
-  useRefundSubscriptionMutation,
   useRevokeUserSubscriptionMutation,
 } from "@/redux/api/subscriptionApi";
 import Input from "@/components/ui/Input";
@@ -47,7 +45,6 @@ function AdminSubscriptionsContent() {
   const [timeRange, setTimeRange] = useState("all");
   const [subPage, setSubPage] = useState(1);
   const [viewingSub, setViewingSub] = useState(null);
-  const [refundTarget, setRefundTarget] = useState(null);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [revokingUser, setRevokingUser] = useState(null);
 
@@ -67,8 +64,6 @@ function AdminSubscriptionsContent() {
     limit: 10,
   });
 
-  const [refundSubscription, { isLoading: isRefunding }] =
-    useRefundSubscriptionMutation();
   const [revokeSubscription, { isLoading: isRevoking }] =
     useRevokeUserSubscriptionMutation();
 
@@ -86,17 +81,6 @@ function AdminSubscriptionsContent() {
   const weeklyRevenue = payload.weeklyRevenue || 0;
   const activeSubscribers = payload.activeSubscribers || 0;
 
-  const handleConfirmRefund = async () => {
-    if (!refundTarget?._id) return;
-    try {
-      await refundSubscription(refundTarget._id).unwrap();
-      toast.success("Transaction marked as refunded.");
-      setRefundTarget(null);
-      refetchSubs();
-    } catch (err) {
-      toast.error("Failed to process refund.");
-    }
-  };
 
   const handleConfirmRevoke = async () => {
     if (!revokingUser?.userId) return;
@@ -550,17 +534,6 @@ function AdminSubscriptionsContent() {
                         icon={Eye}
                       />
 
-                      {item.status === "paid" && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon-sm"
-                          onClick={() => setRefundTarget(item)}
-                          title="Refund Transaction"
-                          icon={RotateCcw}
-                          className="text-slate-400 hover:bg-amber-50 hover:text-amber-600"
-                        />
-                      )}
 
                       {item.user?._id && (
                         <Button
@@ -695,25 +668,6 @@ function AdminSubscriptionsContent() {
         }}
       />
 
-      {/* Refund Confirmation Modal */}
-      <DeleteConfirmationModal
-        isOpen={Boolean(refundTarget)}
-        onClose={() => setRefundTarget(null)}
-        onConfirm={handleConfirmRefund}
-        isLoading={isRefunding}
-        variant="warning"
-        icon={<RotateCcw className="h-6 w-6 text-amber-500" />}
-        title="Process Refund"
-        description="Are you sure you want to process a refund for this subscription transaction? This will mark the transaction as refunded and revoke access."
-        itemTitle={
-          refundTarget
-            ? `${refundTarget.planName} (৳${Number(
-                refundTarget.grandTotal || 0
-              ).toLocaleString()}) - ${refundTarget.transactionId || ""}`
-            : ""
-        }
-        confirmText="Process Refund"
-      />
 
       {/* Revoke Confirmation Modal */}
       <DeleteConfirmationModal

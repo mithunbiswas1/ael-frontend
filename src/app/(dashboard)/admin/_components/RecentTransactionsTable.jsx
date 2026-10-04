@@ -23,7 +23,7 @@ export default function RecentTransactionsTable({ transactions }) {
           <span>Recent Billing Transactions</span>
         </h4>
         <Link
-          href="/admin/subscriptions?tab=transactions"
+          href="/admin/subscriptions"
           className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
         >
           <span>View All</span>
@@ -70,11 +70,10 @@ export default function RecentTransactionsTable({ transactions }) {
                 </TableCell>
                 <TableCell>
                   <span
-                    className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${
-                      tx.status === "paid" || tx.status === "active"
+                    className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold capitalize ${tx.status === "paid" || tx.status === "active"
                         ? "bg-emerald-100 text-emerald-800"
                         : "bg-amber-100 text-amber-800"
-                    }`}
+                      }`}
                   >
                     {tx.status}
                   </span>

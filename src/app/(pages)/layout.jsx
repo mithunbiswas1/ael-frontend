@@ -3,6 +3,7 @@
 import Footer from "@/components/common/footer/footer";
 import Navbar from "@/components/common/navbar/navbar";
 import WhatsAppButton from "@/components/common/WhatsAppButton";
+import AdSlot from "@/components/shared/AdSlot";
 import { getLocale, getDict } from "@/lib/i18n";
 
 export default async function PagesLayout({ children }) {
@@ -12,6 +13,9 @@ export default async function PagesLayout({ children }) {
     <>
       <Navbar dict={dict.navbar} commonDict={dict.common} locale={locale} />
       {children}
+      {/* 2 Absolute Ads for Front Panel (Pages) */}
+      <AdSlot slot="popup_ad" />
+      <AdSlot slot="right_overlay" />
       <WhatsAppButton />
       <Footer dict={dict.footer} commonDict={dict.common} locale={locale} />
     </>

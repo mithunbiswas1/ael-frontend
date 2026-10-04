@@ -18,6 +18,8 @@ import {
   FaPrint,
   FaTimes,
   FaCertificate,
+  FaFilePdf,
+  FaImage,
 } from "react-icons/fa";
 
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
@@ -26,6 +28,12 @@ import { LinkButton } from "@/components/ui/LinkButton";
 import { H3, P } from "@/components/ui/Typography";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useGetMyLearningCoursesQuery } from "@/redux/api/courseApi";
+import CertificateDocument from "@/components/shared/CertificateDocument";
+import {
+  downloadCertificateAsPdf,
+  downloadCertificateAsImage,
+  printCertificateOnly,
+} from "@/lib/certificateExporter";
 
 export default function UserCertificatesPage() {
   const { locale } = useDictionary();
@@ -34,6 +42,8 @@ export default function UserCertificatesPage() {
 
   const [activeTab, setActiveTab] = useState("all"); // "all", "completed", "pending"
   const [selectedCertForModal, setSelectedCertForModal] = useState(null);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [isExportingImage, setIsExportingImage] = useState(false);
   const printRef = useRef(null);
 
   const { data: learningData, isLoading } = useGetMyLearningCoursesQuery();
@@ -83,8 +93,31 @@ export default function UserCertificatesPage() {
     return true;
   });
 
+  const handleDownloadPdf = async () => {
+    if (!printRef.current || !selectedCertForModal) return;
+    setIsExportingPdf(true);
+    try {
+      const filename = `Certificate-${selectedCertForModal.certificateId || "AEL"}`;
+      await downloadCertificateAsPdf(printRef.current, filename);
+    } finally {
+      setIsExportingPdf(false);
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    if (!printRef.current || !selectedCertForModal) return;
+    setIsExportingImage(true);
+    try {
+      const filename = `Certificate-${selectedCertForModal.certificateId || "AEL"}`;
+      await downloadCertificateAsImage(printRef.current, filename);
+    } finally {
+      setIsExportingImage(false);
+    }
+  };
+
   const handlePrint = () => {
-    window.print();
+    if (!printRef.current) return;
+    printCertificateOnly(printRef.current);
   };
 
   return (
@@ -396,115 +429,134 @@ export default function UserCertificatesPage() {
 
       {/* 5. Printable Certificate Modal */}
       {selectedCertForModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs overflow-y-auto">
-          <div className="relative w-full max-w-3xl rounded-2xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200">
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setSelectedCertForModal(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
-            >
-              <FaTimes className="h-5 w-5" />
-            </button>
+        <>
+          <style jsx global>{`
+            @media print {
+              body {
+                background: #ffffff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: visible !important;
+              }
+              body * {
+                visibility: hidden;
+              }
+              #printable-certificate,
+              #printable-certificate * {
+                visibility: visible;
+              }
+              #printable-certificate {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100vw !important;
+                height: 100vh !important;
+                max-width: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                background: #faf8f5 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                page-break-inside: avoid;
+              }
+              @page {
+                size: A4 landscape;
+                margin: 0;
+              }
+            }
+          `}</style>
 
-            {/* Printable Certificate Frame */}
-            <div
-              ref={printRef}
-              className="border-8 border-double border-amber-600/30 rounded-xl p-6 sm:p-10 bg-gradient-to-b from-amber-50/40 via-white to-amber-50/20 text-center relative overflow-hidden"
-            >
-              {/* Watermark Crest */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-4 pointer-events-none">
-                <FaAward className="w-80 h-80 text-amber-900" />
-              </div>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs overflow-y-auto">
+            <div className="relative w-full max-w-4xl rounded-2xl bg-white p-4 sm:p-6 shadow-2xl border border-slate-200 my-auto max-h-[92vh] overflow-y-auto">
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setSelectedCertForModal(null)}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors z-20"
+              >
+                <FaTimes className="h-5 w-5" />
+              </button>
 
-              {/* Certificate Header */}
-              <div className="mb-4">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 text-amber-600 mb-2">
-                  <FaCertificate className="w-7 h-7" />
-                </div>
-                <h4 className="text-xs font-bold uppercase tracking-widest text-amber-700">
-                  Safe LPG Training Academy Bangladesh
-                </h4>
-                <p className="text-[10px] text-slate-400 uppercase tracking-wider">
-                  Accredited in collaboration with Department of Explosives (DoE) & LOAB
+              <div className="mb-3 pr-8">
+                <h3 className="text-base font-bold text-slate-900">
+                  {isBn ? "অফিসিয়াল সার্টিফিকেট প্রিভিউ" : "Official Certificate Preview"}
+                </h3>
+                <p className="text-xs text-slate-500 font-mono">
+                  ID: {selectedCertForModal.certificateId}
                 </p>
               </div>
 
-              <h2 className="text-xl sm:text-2xl font-black font-serif text-slate-900 mb-3 tracking-wide">
-                CERTIFICATE OF COMPLETION
-              </h2>
+              {/* Printable Certificate Frame */}
+              <div className="flex justify-center items-center w-full my-2 bg-slate-100/60 p-2 sm:p-4 rounded-xl border border-slate-200">
+                <CertificateDocument
+                  ref={printRef}
+                  certificate={selectedCertForModal}
+                  className="rounded-xl shadow-md border border-slate-200"
+                />
+              </div>
 
-              <p className="text-xs text-slate-500 italic mb-2">
-                This is to officially certify that
-              </p>
+              {/* Modal Actions */}
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                <p className="text-xs text-slate-500 font-sans">
+                  {isBn
+                    ? "শুধুমাত্র এই সার্টিফিকেটটি PDF বা ইমেজ হিসেবে ডাউনলোড করুন।"
+                    : "Download clean PDF or PNG image of only this certificate."}
+                </p>
 
-              {/* Student Name */}
-              <h3 className="text-lg sm:text-xl font-black text-primary border-b border-slate-200 pb-2 mb-3 inline-block min-w-64">
-                {selectedCertForModal.studentName}
-              </h3>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedCertForModal(null)}
+                    disabled={isExportingPdf || isExportingImage}
+                  >
+                    {isBn ? "বন্ধ করুন" : "Close"}
+                  </Button>
 
-              <p className="text-xs text-slate-600 max-w-lg mx-auto mb-2 leading-relaxed">
-                has successfully completed all modules, practical safety drills, and achieved an assessment grade of{" "}
-                <span className="font-bold text-slate-900">{selectedCertForModal.grade}</span> in
-              </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePrint}
+                    disabled={isExportingPdf || isExportingImage}
+                    icon={FaPrint}
+                  >
+                    <span>{isBn ? "প্রিন্ট" : "Print"}</span>
+                  </Button>
 
-              {/* Course Title */}
-              <h4 className="text-sm sm:text-base font-bold text-slate-900 mb-6 bg-slate-50 py-2 px-4 rounded-lg border border-slate-200/60 inline-block max-w-xl">
-                {selectedCertForModal.title}
-              </h4>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDownloadImage}
+                    isLoading={isExportingImage}
+                    disabled={isExportingImage || isExportingPdf}
+                    icon={FaImage}
+                    className="text-amber-800 border-amber-300 hover:bg-amber-50"
+                  >
+                    <span>{isBn ? "ইমেজ ডাউনলোড (PNG)" : "Download Image (PNG)"}</span>
+                  </Button>
 
-              {/* Certificate Footer Meta */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-slate-200 text-left text-[11px] text-slate-600">
-                <div>
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">
-                    Certificate ID
-                  </span>
-                  <span className="font-mono font-bold text-slate-800 text-xs">
-                    {selectedCertForModal.certificateId}
-                  </span>
-                </div>
-                <div className="text-center">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">
-                    Issue Date
-                  </span>
-                  <span className="font-semibold text-slate-800">
-                    {selectedCertForModal.issueDate}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase font-bold">
-                    Status
-                  </span>
-                  <span className="font-bold text-emerald-700">
-                    Verified & Authentic
-                  </span>
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="sm"
+                    onClick={handleDownloadPdf}
+                    isLoading={isExportingPdf}
+                    disabled={isExportingPdf || isExportingImage}
+                    icon={FaFilePdf}
+                    className="bg-[#7C481A] hover:bg-[#5C3411] text-white border-transparent shadow-xs"
+                  >
+                    <span>{isBn ? "পিডিএফ ডাউনলোড" : "Download PDF"}</span>
+                  </Button>
                 </div>
               </div>
             </div>
-
-            {/* Modal Actions */}
-            <div className="mt-6 flex flex-wrap items-center justify-end gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedCertForModal(null)}
-              >
-                {isBn ? "বন্ধ করুন" : "Close"}
-              </Button>
-              <Button
-                type="button"
-                variant="primary"
-                size="sm"
-                onClick={handlePrint}
-                className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
-              >
-                <FaPrint className="h-3.5 w-3.5" />
-                <span>{isBn ? "প্রিন্ট / পিডিএফ হিসেবে সংরক্ষণ" : "Print / Save as PDF"}</span>
-              </Button>
-            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

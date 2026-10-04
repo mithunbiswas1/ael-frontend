@@ -41,7 +41,6 @@ export default function CertificateFormModal({
       setFormData((prev) => ({
         ...prev,
         courseTitle: foundCourse.title,
-        courseTitleBn: foundCourse.titleBn || prev.courseTitleBn,
       }));
     }
   };
@@ -51,8 +50,8 @@ export default function CertificateFormModal({
       isOpen={isOpen}
       onClose={onClose}
       maxWidth="2xl"
-      title={isEditing ? "Edit Certificate Record" : "Issue New Safety Certificate"}
-      description="Issue or configure official digital certificates verifiable in the national registry."
+      title={isEditing ? "Edit Certificate Record" : "Issue New Certificate"}
+      description="Issue or configure official digital certificates verifiable in the registry."
     >
       <form onSubmit={onSubmit} className="p-6 space-y-4">
         {/* Top: Certificate ID & Grade */}
@@ -87,17 +86,16 @@ export default function CertificateFormModal({
             onChange={(e) =>
               setFormData({ ...formData, studentName: e.target.value })
             }
-            placeholder="Mohammad Tariqul Islam"
+            placeholder="e.g. Mohammad Tariqul Islam"
             required
           />
           <Input
-            label="শিক্ষার্থীর নাম (বাংলা) *"
-            value={formData.studentNameBn}
+            label="Student Registration No (Optional)"
+            value={formData.studentRegNo || ""}
             onChange={(e) =>
-              setFormData({ ...formData, studentNameBn: e.target.value })
+              setFormData({ ...formData, studentRegNo: e.target.value })
             }
-            placeholder="মোহাম্মদ তারিকুল ইসলাম"
-            required
+            placeholder="e.g. AIT4937"
           />
         </div>
 
@@ -107,7 +105,7 @@ export default function CertificateFormModal({
             label="Load from LMS Course (Optional)"
             onChange={handleCourseSelect}
             options={courseOptions}
-            placeholder="Pick a course to auto-fill titles..."
+            placeholder="Pick a course to auto-fill title..."
           />
         )}
 
@@ -119,28 +117,28 @@ export default function CertificateFormModal({
             onChange={(e) =>
               setFormData({ ...formData, courseTitle: e.target.value })
             }
-            placeholder="LPG Cylinder Storage & Handling Safety"
+            placeholder="e.g. HVAC Systems Design & Technical Engineering"
             required
           />
           <Input
-            label="কোর্স কারিকুলাম শিরোনাম (বাংলা)"
-            value={formData.courseTitleBn}
+            label="Training Duration (Optional)"
+            value={formData.duration || ""}
             onChange={(e) =>
-              setFormData({ ...formData, courseTitleBn: e.target.value })
+              setFormData({ ...formData, duration: e.target.value })
             }
-            placeholder="এলপিজি সিলিন্ডার মজুত ও ব্যবহার নিরাপত্তা"
+            placeholder="e.g. MARCH 15 2024 TO JUN 11 2024"
           />
         </div>
 
         {/* Authorities & Verification */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="Authorized Auditor / Signatory"
+            label="Authorized Signatory"
             value={formData.authorizedBy}
             onChange={(e) =>
               setFormData({ ...formData, authorizedBy: e.target.value })
             }
-            placeholder="Engr. Mahmudul Hasan (DoE Lead Auditor)"
+            placeholder="e.g. Mr. Mathew"
           />
           <Input
             label="Validity Period"

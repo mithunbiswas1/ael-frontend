@@ -334,7 +334,6 @@ export default function SafetyGuidelinesListPage() {
                   <TableHead className="font-bold text-slate-700">Type & Title / Name</TableHead>
                   <TableHead className="font-bold text-slate-700">Category</TableHead>
                   <TableHead className="font-bold text-slate-700">Access / Scope</TableHead>
-                  <TableHead className="font-bold text-slate-700">Attached PDF</TableHead>
                   <TableHead className="text-right font-bold text-slate-700">Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -440,31 +439,6 @@ export default function SafetyGuidelinesListPage() {
                         )}
                       </TableCell>
 
-                      {/* Attached PDF */}
-                      <TableCell>
-                        {fullPdfUrl ? (
-                          <div className="flex items-center gap-2">
-                            <a
-                              href={fullPdfUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 hover:text-emerald-700 hover:underline"
-                            >
-                              <FaFilePdf className="h-3.5 w-3.5" />
-                              <span className="truncate max-w-[120px]">
-                                {item.fileName || "View PDF"}
-                              </span>
-                            </a>
-                            {item.pdfSize && (
-                              <span className="text-[10px] text-slate-400">
-                                ({item.pdfSize})
-                              </span>
-                            )}
-                          </div>
-                        ) : (
-                          <span className="text-[11px] text-slate-400 italic">No PDF attached</span>
-                        )}
-                      </TableCell>
 
                       {/* Actions */}
                       <TableCell className="text-right">

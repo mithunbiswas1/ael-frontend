@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Sparkles, Phone, Share2, Globe } from "lucide-react";
+import { Settings, Palette, Phone, Share2, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import {
@@ -58,7 +58,7 @@ export default function AdminSettingsPage() {
   };
 
   const tabs = [
-    { id: "branding", label: "Branding & Logos", icon: Sparkles },
+    { id: "branding", label: "Branding & Logos", icon: Palette },
     { id: "contact", label: "Topbar & Contacts", icon: Phone },
     { id: "social", label: "Social Media", icon: Share2 },
     { id: "seo", label: "SEO & Metadata", icon: Globe },

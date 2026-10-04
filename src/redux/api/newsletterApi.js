@@ -53,6 +53,26 @@ export const newsletterApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Newsletter"],
     }),
 
+    // Admin: Create single subscriber
+    createNewsletterSubscriber: builder.mutation({
+      query: (data) => ({
+        url: "newsletter/subscribers",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Newsletter"],
+    }),
+
+    // Admin: Bulk create / upload subscribers
+    bulkCreateNewsletterSubscribers: builder.mutation({
+      query: (data) => ({
+        url: "newsletter/subscribers/bulk",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Newsletter"],
+    }),
+
     // Admin: Manual Broadcast
     broadcastNewsletter: builder.mutation({
       query: (data) => ({
@@ -71,5 +91,7 @@ export const {
   useGetNewsletterSubscribersQuery,
   useToggleNewsletterSubscriberMutation,
   useDeleteNewsletterSubscriberMutation,
+  useCreateNewsletterSubscriberMutation,
+  useBulkCreateNewsletterSubscribersMutation,
   useBroadcastNewsletterMutation,
 } = newsletterApi;

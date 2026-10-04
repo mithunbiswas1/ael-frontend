@@ -38,14 +38,38 @@ export default function CourseEnrollmentsPage() {
   const { data: responseData, isLoading, refetch } =
     useGetCourseEnrollmentsQuery();
 
-  const stats = responseData?.data?.stats || {
-    totalStudents: 0,
-    totalRevenue: 0,
-    totalPaid: 0,
-    totalFree: 0,
-  };
-
   const rawEnrollments = responseData?.data?.enrollments || [];
+
+  // Calculate unique learners (distinct students who enrolled)
+  const uniqueLearnerIds = new Set();
+  rawEnrollments.forEach((e) => {
+    if (e.userId) {
+      uniqueLearnerIds.add(e.userId.toString());
+    } else if (e.studentEmail && e.studentEmail.trim()) {
+      uniqueLearnerIds.add(e.studentEmail.trim().toLowerCase());
+    } else if (
+      e.studentPhone &&
+      e.studentPhone.trim() &&
+      e.studentPhone !== "01XXXXXXXXX"
+    ) {
+      uniqueLearnerIds.add(e.studentPhone.trim());
+    } else {
+      uniqueLearnerIds.add(e.studentName || e.id);
+    }
+  });
+
+  const totalUniqueStudents =
+    responseData?.data?.stats?.totalStudents ?? uniqueLearnerIds.size;
+  const totalPurchases =
+    responseData?.data?.stats?.totalEnrollments ?? rawEnrollments.length;
+
+  const stats = {
+    totalStudents: totalUniqueStudents,
+    totalEnrollments: totalPurchases,
+    totalRevenue: responseData?.data?.stats?.totalRevenue || 0,
+    totalPaid: responseData?.data?.stats?.totalPaid || 0,
+    totalFree: responseData?.data?.stats?.totalFree || 0,
+  };
 
   const filteredEnrollments = rawEnrollments.filter((item) => {
     // Type Filter
@@ -95,7 +119,7 @@ export default function CourseEnrollmentsPage() {
                 Course Enrollments & Sales History
               </H3>
               <span className="ml-2 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
-                {stats.totalStudents} Enrollments
+                {stats.totalEnrollments} Purchases ({stats.totalStudents} Learners)
               </span>
             </div>
           </div>
@@ -132,6 +156,9 @@ export default function CourseEnrollmentsPage() {
                 learners
               </span>
             </div>
+            <p className="mt-1 text-[11px] text-slate-500">
+              Total {stats.totalEnrollments} course purchases
+            </p>
           </div>
 
           <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs">
@@ -167,7 +194,7 @@ export default function CourseEnrollmentsPage() {
                 {stats.totalPaid.toLocaleString()}
               </span>
               <span className="text-xs font-medium text-slate-400">
-                transactions
+                purchases
               </span>
             </div>
           </div>
@@ -186,7 +213,7 @@ export default function CourseEnrollmentsPage() {
                 {stats.totalFree.toLocaleString()}
               </span>
               <span className="text-xs font-medium text-slate-400">
-                free learners
+                enrollments
               </span>
             </div>
           </div>
