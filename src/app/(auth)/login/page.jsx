@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import { Eye, EyeOff, Smartphone, Mail, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { H3, P } from "@/components/ui/Typography";
@@ -21,30 +21,28 @@ export default function LoginPage() {
   const { locale } = useDictionary();
   const isBn = locale === "bn";
 
-  // Tab State: "phone" (default) or "email"
-  const [activeTab, setActiveTab] = useState("phone");
   const [showPassword, setShowPassword] = useState(false);
   const [login, { isLoading }] = useLoginMutation();
 
-  // Dynamic Validation Schema based on active tab
+  // Validation Schema for unified identifier (email or phone) & password
   const validationSchema = Yup.object().shape({
-    phone: Yup.string().when([], {
-      is: () => activeTab === "phone",
-      then: (schema) =>
-        schema
-          .required(isBn ? "মোবাইল নম্বর লিখুন" : "Phone number is required")
-          .matches(/^[0-9+]+$/, isBn ? "শুধুমাত্র সংখ্যা লিখুন" : "Phone must contain numbers only")
-          .min(10, isBn ? "কমপক্ষে ১০ ডিজিটের নম্বর দিন" : "Phone must be at least 10 digits"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-    email: Yup.string().when([], {
-      is: () => activeTab === "email",
-      then: (schema) =>
-        schema
-          .required(isBn ? "ইমেইল লিখুন" : "Email is required")
-          .email(isBn ? "সঠিক ইমেইল ঠিকানা দিন" : "Invalid email address"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
+    identifier: Yup.string()
+      .required(isBn ? "ইমেইল অথবা মোবাইল নম্বর লিখুন" : "Email or phone number is required")
+      .test(
+        "is-valid-email-or-phone",
+        isBn ? "সঠিক ইমেইল অথবা মোবাইল নম্বর দিন" : "Enter a valid email or phone number",
+        (value) => {
+          if (!value) return false;
+          const trimmed = value.trim();
+          // If contains @, validate email pattern
+          if (trimmed.includes("@")) {
+            return /\S+@\S+\.\S+/.test(trimmed);
+          }
+          // Otherwise validate phone pattern (digits only, min 10 digits)
+          const cleanPhone = trimmed.replace(/^(\+88)/, "").replace(/^(88)/, "");
+          return /^[0-9+]+$/.test(trimmed) && cleanPhone.length >= 10;
+        }
+      ),
     password: Yup.string()
       .required(isBn ? "পাসওয়ার্ড লিখুন" : "Password is required")
       .min(6, isBn ? "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে" : "Password must be at least 6 characters"),
@@ -52,19 +50,20 @@ export default function LoginPage() {
 
   const formik = useFormik({
     initialValues: {
-      phone: "",
-      email: "",
+      identifier: "",
       password: "",
     },
     validationSchema,
-    enableReinitialize: true,
     onSubmit: async (values, { resetForm }) => {
       try {
+        const rawInput = values.identifier.trim();
+        const isEmail = rawInput.includes("@");
         const payload = {
           password: values.password,
-          ...(activeTab === "phone"
-            ? { phone: values.phone.trim() }
-            : { email: values.email.trim() }),
+          identifier: rawInput,
+          ...(isEmail
+            ? { email: rawInput.toLowerCase() }
+            : { phone: rawInput }),
         };
 
         const result = await login(payload).unwrap();
@@ -107,11 +106,6 @@ export default function LoginPage() {
     },
   });
 
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    formik.setErrors({});
-  };
-
   return (
     <div className="relative h-screen w-full flex items-center justify-center bg-gray-100 p-4 sm:p-6 overflow-hidden">
       {/* Subtle ambient backdrop glow */}
@@ -153,106 +147,49 @@ export default function LoginPage() {
           {/* Right: Login Form Panel */}
           <div className="lg:col-span-7 p-5 sm:p-6 lg:py-7 lg:px-8 flex flex-col justify-center bg-white">
             {/* Header */}
-            <div className="mb-5">
+            <div className="mb-6">
               <h2 className="text-xl font-black text-slate-900">
                 {isBn ? "অ্যাকাউন্টে লগইন করুন" : "Sign In to Your Account"}
               </h2>
               <p className="mt-1 text-xs text-slate-500">
                 {isBn
-                  ? "আপনার মোবাইল নম্বর অথবা ইমেইল ঠিকানা দিয়ে লগইন করুন।"
-                  : "Choose phone or email authentication to continue."}
+                  ? "আপনার ইমেইল অথবা মোবাইল নম্বর ও পাসওয়ার্ড দিয়ে লগইন করুন।"
+                  : "Enter your email or phone number and password to sign in."}
               </p>
-            </div>
-
-            {/* 2 Tabs: Phone Login (Default) and Email Login */}
-            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-100 border border-slate-200 mb-5">
-              <button
-                type="button"
-                onClick={() => handleTabChange("phone")}
-                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === "phone"
-                    ? "bg-primary text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <Smartphone className="h-3.5 w-3.5" />
-                <span>{isBn ? "মোবাইল লগইন" : "Phone Login"}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleTabChange("email")}
-                className={`flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === "email"
-                    ? "bg-primary text-white shadow-xs"
-                    : "text-slate-600 hover:text-slate-900"
-                }`}
-              >
-                <Mail className="h-3.5 w-3.5" />
-                <span>{isBn ? "ইমেইল লগইন" : "Email Login"}</span>
-              </button>
             </div>
 
             {/* Form */}
             <form onSubmit={formik.handleSubmit} className="space-y-4">
-              {/* Phone Tab Input */}
-              {activeTab === "phone" ? (
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    {isBn ? "মোবাইল নম্বর *" : "Phone Number *"}
-                  </label>
-                  <div className="flex">
-                    <span className="inline-flex items-center px-3.5 rounded-l-lg border border-r-0 border-slate-300 bg-slate-100 text-slate-700 text-xs font-mono font-medium select-none">
-                      +88
-                    </span>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formik.values.phone}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder={isBn ? "০১XXXXXXXXX" : "01XXXXXXXXX"}
-                      className={`flex-1 rounded-r-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
-                        formik.touched.phone && formik.errors.phone
-                          ? "border-rose-500"
-                          : "border-slate-300"
-                      }`}
-                    />
-                  </div>
-                  {formik.touched.phone && formik.errors.phone && (
-                    <p className="mt-1 text-[11px] font-medium text-rose-500">
-                      {formik.errors.phone}
-                    </p>
-                  )}
+              {/* Unified Email or Phone Input */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {isBn ? "ইমেইল অথবা মোবাইল নম্বর *" : "Email or Phone Number *"}
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    name="identifier"
+                    value={formik.values.identifier}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    placeholder={
+                      isBn
+                        ? "ইমেইল বা ফোন নম্বর (যেমন: name@example.com বা 01XXXXXXXXX)"
+                        : "Enter email or phone (e.g. name@example.com or 01XXXXXXXXX)"
+                    }
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
+                      formik.touched.identifier && formik.errors.identifier
+                        ? "border-rose-500"
+                        : "border-slate-300"
+                    }`}
+                  />
                 </div>
-              ) : (
-                /* Email Tab Input */
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    {isBn ? "ইমেইল অ্যাড্রেস *" : "Email Address *"}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="email"
-                      name="email"
-                      value={formik.values.email}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      placeholder="name@example.com"
-                      className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
-                        formik.touched.email && formik.errors.email
-                          ? "border-rose-500"
-                          : "border-slate-300"
-                      }`}
-                    />
-                  </div>
-                  {formik.touched.email && formik.errors.email && (
-                    <p className="mt-1 text-[11px] font-medium text-rose-500">
-                      {formik.errors.email}
-                    </p>
-                  )}
-                </div>
-              )}
+                {formik.touched.identifier && formik.errors.identifier && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {formik.errors.identifier}
+                  </p>
+                )}
+              </div>
 
               {/* Password Input */}
               <div>

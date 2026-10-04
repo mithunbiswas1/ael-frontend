@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, Sparkles, Phone, Share2, Globe, Radio } from "lucide-react";
+import { Settings, Sparkles, Phone, Share2, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import {
@@ -15,7 +15,6 @@ import BrandingSettingsTab from "./_components/BrandingSettingsTab";
 import ContactSettingsTab from "./_components/ContactSettingsTab";
 import SocialSettingsTab from "./_components/SocialSettingsTab";
 import SeoSettingsTab from "./_components/SeoSettingsTab";
-import GatewaySettingsTab from "./_components/GatewaySettingsTab";
 
 export default function AdminSettingsPage() {
   const [activeTab, setActiveTab] = useState("branding");
@@ -63,7 +62,6 @@ export default function AdminSettingsPage() {
     { id: "contact", label: "Topbar & Contacts", icon: Phone },
     { id: "social", label: "Social Media", icon: Share2 },
     { id: "seo", label: "SEO & Metadata", icon: Globe },
-    { id: "gateways", label: "Gateways & System", icon: Radio },
   ];
 
   return (
@@ -72,7 +70,7 @@ export default function AdminSettingsPage() {
       <AdminPageHeader
         icon={Settings}
         title="Platform Control & Settings Center"
-        description="Configure website identity, logo assets, topbar contacts, social networks, BTRC SMS gateway, SMTP server, and global SEO metadata."
+        description="Configure website identity, logo assets, topbar contacts, social networks, and global SEO metadata."
       />
 
       {/* 2. Navigation Tabs */}
@@ -137,15 +135,6 @@ export default function AdminSettingsPage() {
 
           {activeTab === "seo" && (
             <SeoSettingsTab
-              formData={formData}
-              setFormData={setFormData}
-              onSave={handleSave}
-              isUpdating={isUpdating}
-            />
-          )}
-
-          {activeTab === "gateways" && (
-            <GatewaySettingsTab
               formData={formData}
               setFormData={setFormData}
               onSave={handleSave}

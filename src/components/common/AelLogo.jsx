@@ -11,6 +11,10 @@ export default function AelLogo({
   width = 160,
   height = 40,
   isFooter = false,
+  href = "/",
+  target,
+  rel,
+  title,
 }) {
   const { data } = useGetPublicSettingsQuery();
   const settings = data?.data;
@@ -29,7 +33,10 @@ export default function AelLogo({
 
   return (
     <Link
-      href="/"
+      href={href}
+      target={target}
+      rel={target === "_blank" ? (rel || "noopener noreferrer") : rel}
+      title={title}
       className={`inline-flex items-center transition-opacity hover:opacity-95 ${className}`}
     >
       <Image

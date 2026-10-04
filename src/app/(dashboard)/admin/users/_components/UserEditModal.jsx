@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { Switch } from "@/components/ui/Switch";
 import { FaUserShield, FaSave, FaKey } from "react-icons/fa";
@@ -31,6 +32,7 @@ export default function UserEditModal({
     is_active: true,
     email: "",
     phone: "",
+    description: "",
   });
 
   useEffect(() => {
@@ -41,6 +43,7 @@ export default function UserEditModal({
         is_active: user.is_active !== false,
         email: user.email || "",
         phone: user.phone || "",
+        description: user.description || user.bio || "",
       });
     }
   }, [user]);
@@ -87,6 +90,15 @@ export default function UserEditModal({
           />
         </div>
 
+        {/* Description / Bio */}
+        <Textarea
+          label="Profile Description"
+          rows={2}
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          placeholder="User bio or administrative remarks..."
+        />
+
         {/* Subscription Info Card */}
         <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 space-y-1">
           <div className="flex items-center justify-between">
@@ -117,20 +129,19 @@ export default function UserEditModal({
           required
         />
 
-        {formData.role === "admin" && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between gap-3 text-xs">
-            <span className="text-emerald-900 font-medium">
-              Admin role selected: Granular page control can be assigned.
-            </span>
-            <Link
-              href={`/admin/users/${user._id}`}
-              className="text-xs font-bold text-emerald-800 hover:text-emerald-950 underline shrink-0"
-              onClick={onClose}
-            >
-              Configure Pages →
-            </Link>
-          </div>
-        )}
+        {/* Granular Page Control Link */}
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between gap-3 text-xs">
+          <span className="text-slate-700 font-medium">
+            Granular page access & permissions:
+          </span>
+          <Link
+            href={`/admin/users/${user._id}`}
+            className="text-xs font-bold text-primary hover:underline shrink-0"
+            onClick={onClose}
+          >
+            Configure Permissions →
+          </Link>
+        </div>
 
         {/* Active Account Status Toggle */}
         <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3.5">

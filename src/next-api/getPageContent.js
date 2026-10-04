@@ -56,7 +56,7 @@ export async function getPageContent(pageKey) {
       contentHtml: dbPage.contentHtml || "",
       contentHtmlBn: dbPage.contentHtmlBn || "",
     };
-  } catch (error) {
+  } catch {
     return {
       banner: null,
       sections: {},

@@ -85,6 +85,13 @@ const ADMIN_PAGE_CATEGORIES = [
         module: "users",
         description: "Platform accounts, roles, access levels and user profiles",
       },
+      {
+        id: "roles",
+        title: "Roles & Permissions",
+        path: "/admin/roles",
+        module: "roles",
+        description: "System roles, custom access policies and capability control",
+      },
     ],
   },
   {
@@ -110,6 +117,13 @@ const ADMIN_PAGE_CATEGORIES = [
         path: "/admin/safety-guidelines",
         module: "safety_guidelines",
         description: "LPG safety manuals, regulatory agencies (BERC, DoE, FSCD), stakeholder documents & PDFs",
+      },
+      {
+        id: "regulatory_agencies",
+        title: "Regulatory Agencies Directory",
+        path: "/admin/regulatory-agencies",
+        module: "regulatory_agencies",
+        description: "Government regulators (BERC, Explosives, DoE, FSCD) contacts and directory",
       },
       {
         id: "advertisements",
@@ -145,11 +159,25 @@ const ADMIN_PAGE_CATEGORIES = [
     category: "Data & Commercial Services",
     pages: [
       {
+        id: "market_updates",
+        title: "LPG Market Updates",
+        path: "/admin/market-updates",
+        module: "market-updates",
+        description: "LPG international price trends, monthly BERC tariffs and industry market data",
+      },
+      {
         id: "subscriptions",
         title: "Subscription Management",
         path: "/admin/subscriptions",
         module: "subscriptions",
         description: "Paid subscription tiers, membership validity and records",
+      },
+      {
+        id: "settings",
+        title: "System Settings",
+        path: "/admin/settings",
+        module: "settings",
+        description: "Platform configurations, general contact information, and preferences",
       },
     ],
   },
@@ -454,41 +482,25 @@ export default function UserPermissionsSlugPage() {
   // Role booleans
   const isAdminRole = selectedRole === "admin";
   const isSuperAdminRole = selectedRole === "super_admin";
-  const isLockedRole = !isAdminRole && !isSuperAdminRole;
 
   // Helper: check if action is allowed for page
   const hasActionPermission = (pagePath, actionKey) => {
     if (isSuperAdminRole) return true;
-
-    if (isAdminRole) {
-      const pagePerm = permissions.find((p) => p.page === pagePath);
-      return pagePerm ? pagePerm.actions.includes(actionKey) : false;
-    }
-
-    // For other roles (instructor, subscriber, user), check against default pages
-    const defaultPages = ROLE_DEFAULT_PAGES[selectedRole] || [];
-    const matched = defaultPages.find((dp) => dp.path === pagePath);
-    return matched ? matched.actions.includes(actionKey) : false;
+    const pagePerm = permissions.find((p) => p.page === pagePath);
+    return pagePerm ? pagePerm.actions.includes(actionKey) : false;
   };
 
   // Helper: check if page has any permissions granted
   const isPageEnabled = (pagePath) => {
     if (isSuperAdminRole) return true;
-
-    if (isAdminRole) {
-      const pagePerm = permissions.find((p) => p.page === pagePath);
-      return Boolean(pagePerm && pagePerm.actions.length > 0);
-    }
-
-    // For other roles, check default pages
-    const defaultPages = ROLE_DEFAULT_PAGES[selectedRole] || [];
-    return defaultPages.some((dp) => dp.path === pagePath);
+    const pagePerm = permissions.find((p) => p.page === pagePath);
+    return Boolean(pagePerm && pagePerm.actions.length > 0);
   };
 
-  // Toggle single action on a page (ONLY enabled for Admin role)
+  // Toggle single action on a page
   const handleToggleAction = (pageItem, actionKey) => {
-    if (!isAdminRole) {
-      toast.info("Page permissions can only be turned on or off for the Admin role.");
+    if (isSuperAdminRole) {
+      toast.info("Super Admin has unconditional access to all pages and actions.");
       return;
     }
 
@@ -503,6 +515,7 @@ export default function UserPermissionsSlugPage() {
           {
             page: pageItem.path,
             module: pageItem.module,
+            description: pageItem.description || "",
             actions: [actionKey],
           },
         ];
@@ -526,16 +539,17 @@ export default function UserPermissionsSlugPage() {
       const updated = [...prev];
       updated[existingIdx] = {
         ...currentPerm,
+        description: pageItem.description || currentPerm.description || "",
         actions: updatedActions,
       };
       return updated;
     });
   };
 
-  // Toggle full access for an entire page (ONLY enabled for Admin role)
+  // Toggle full access for an entire page
   const handleToggleWholePage = (pageItem) => {
-    if (!isAdminRole) {
-      toast.info("Page permissions can only be turned on or off for the Admin role.");
+    if (isSuperAdminRole) {
+      toast.info("Super Admin has unconditional access to all pages.");
       return;
     }
 
@@ -557,6 +571,7 @@ export default function UserPermissionsSlugPage() {
           {
             page: pageItem.path,
             module: pageItem.module,
+            description: pageItem.description || "",
             actions: AVAILABLE_ACTIONS.map((a) => a.key),
           },
         ];
@@ -566,11 +581,12 @@ export default function UserPermissionsSlugPage() {
 
   // Batch action: Grant full access to all admin pages
   const handleGrantAll = () => {
-    if (!isAdminRole) return;
+    if (isSuperAdminRole) return;
     setHasChanges(true);
     const fullPermissions = allFlatPages.map((pg) => ({
       page: pg.path,
       module: pg.module,
+      description: pg.description || "",
       actions: AVAILABLE_ACTIONS.map((a) => a.key),
     }));
     setPermissions(fullPermissions);
@@ -579,11 +595,12 @@ export default function UserPermissionsSlugPage() {
 
   // Batch action: Grant read-only access to all admin pages
   const handleGrantReadOnly = () => {
-    if (!isAdminRole) return;
+    if (isSuperAdminRole) return;
     setHasChanges(true);
     const viewOnlyPermissions = allFlatPages.map((pg) => ({
       page: pg.path,
       module: pg.module,
+      description: pg.description || "",
       actions: ["view"],
     }));
     setPermissions(viewOnlyPermissions);
@@ -592,10 +609,33 @@ export default function UserPermissionsSlugPage() {
 
   // Batch action: Revoke all page permissions
   const handleRevokeAll = () => {
-    if (!isAdminRole) return;
+    if (isSuperAdminRole) return;
     setHasChanges(true);
     setPermissions([]);
     toast.info("All custom page permissions revoked.");
+  };
+
+  // Load default preset pages for current role
+  const handleLoadRoleDefaults = () => {
+    if (isSuperAdminRole) return;
+    const defaultPages = ROLE_DEFAULT_PAGES[selectedRole] || [];
+    if (defaultPages.length === 0) {
+      toast.info(
+        `No default presets defined for ${selectedRole}. You can customize pages freely.`
+      );
+      return;
+    }
+    setHasChanges(true);
+    const mapped = defaultPages.map((dp) => ({
+      page: dp.path,
+      module: dp.module || "",
+      description: dp.description || "",
+      actions: dp.actions || ["view"],
+    }));
+    setPermissions(mapped);
+    toast.success(
+      `Loaded standard default pages for ${selectedRole.replace("_", " ")}`
+    );
   };
 
   // Role change handler
@@ -603,15 +643,11 @@ export default function UserPermissionsSlugPage() {
     setSelectedRole(newRole);
     setHasChanges(true);
 
-    if (newRole === "admin") {
-      toast.success(
-        "Admin role selected. You can now customize page permissions and control access below."
-      );
-    } else if (newRole === "super_admin") {
+    if (newRole === "super_admin") {
       toast.info("Super Admin selected: Full master platform access granted.");
     } else {
-      toast.info(
-        `Switched to ${newRole.replace("_", " ")}. Page permissions are locked to default.`
+      toast.success(
+        `Switched to ${newRole.replace("_", " ")}. You can configure page permissions below.`
       );
     }
   };
@@ -621,9 +657,7 @@ export default function UserPermissionsSlugPage() {
     if (!userId) return;
 
     try {
-      // If admin, persist the configured permissions
-      // If not admin, save appropriate payload
-      const payloadPermissions = isAdminRole ? permissions : [];
+      const payloadPermissions = isSuperAdminRole ? [] : permissions;
 
       await updateUser({
         userId,
@@ -820,20 +854,20 @@ export default function UserPermissionsSlugPage() {
         </div>
 
         {/* Dynamic Role Status Alert Banner */}
-        {isAdminRole && (
+        {!isSuperAdminRole && (
           <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">
             <FaUnlock className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
             <div>
               <H4 className="text-xs font-bold text-emerald-950 uppercase tracking-wider flex items-center gap-2">
-                <span>Admin Role Active: Granular Page Control Enabled</span>
+                <span>Granular Page & Action Permissions Control</span>
                 <span className="bg-emerald-200 text-emerald-900 text-[10px] px-2 py-0.5 rounded font-black">
-                  UNLOCKED
+                  EDITABLE
                 </span>
               </H4>
               <P className="text-xs text-emerald-900 mt-0.5 leading-relaxed">
-                As an <strong>Admin</strong>, you can select and grant specific administrative pages
-                and granular actions (View, Create, Edit, Delete) for this user. Use the checkboxes
-                and category controls below to customize their exact access level.
+                You can configure specific administrative and platform pages with granular actions
+                (View, Create, Edit, Delete) for this user. Click any master page toggle or checkbox
+                below to customize their exact access level.
               </P>
             </div>
           </div>
@@ -858,45 +892,29 @@ export default function UserPermissionsSlugPage() {
           </div>
         )}
 
-        {isLockedRole && (
-          <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
-            <FaLock className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <H4 className="text-xs font-bold text-amber-950 uppercase tracking-wider flex items-center gap-2">
-                <span>
-                  {selectedRole.replace("_", " ").toUpperCase()} Role: Default Pages Assigned
-                </span>
-                <span className="bg-amber-200 text-amber-900 text-[10px] px-2 py-0.5 rounded font-black">
-                  LOCKED
-                </span>
-              </H4>
-              <P className="text-xs text-amber-900 mt-0.5 leading-relaxed">
-                Page permissions for this role are preset to their standard default pages and{" "}
-                <strong>cannot be turned on or off</strong>. To give this user customized page
-                control and granular administrative privileges, change their role to{" "}
-                <strong>Admin</strong> in the dropdown above.
-              </P>
-            </div>
-          </div>
-        )}
-
-        {/* DEFAULT ACCESSIBLE PAGES SHOWCASE (Shown for Instructor, Subscriber, User) */}
-        {isLockedRole && currentRoleDefaultPages.length > 0 && (
+        {/* DEFAULT ACCESSIBLE PAGES REFERENCE (Shown if role has presets and no custom pages configured) */}
+        {currentRoleDefaultPages.length > 0 && permissions.length === 0 && (
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
             <div className="bg-slate-50/90 px-5 py-3.5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <FaLayerGroup className="h-4 w-4 text-primary" />
                 <H4 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                  Default Accessible Pages for {selectedRole.replace("_", " ")}
+                  Default Recommended Pages for {selectedRole.replace("_", " ")}
                 </H4>
                 <span className="bg-slate-200 text-slate-700 text-[11px] font-bold px-2 py-0.5 rounded">
                   {currentRoleDefaultPages.length} Default Pages
                 </span>
               </div>
-              <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1.5">
-                <FaLock className="h-3 w-3 text-slate-400" />
-                Fixed system presets (Non-editable)
-              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="xs"
+                onClick={handleLoadRoleDefaults}
+                className="gap-1.5 text-xs font-bold text-amber-700 hover:bg-amber-50 border-amber-300"
+              >
+                <FaLayerGroup className="h-3 w-3" />
+                <span>Apply Role Defaults</span>
+              </Button>
             </div>
 
             <div className="divide-y divide-slate-100">
@@ -921,7 +939,6 @@ export default function UserPermissionsSlugPage() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3">
-                    {/* Action Pills */}
                     <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-lg border border-slate-200">
                       {dp.actions.map((act) => (
                         <span
@@ -932,11 +949,6 @@ export default function UserPermissionsSlugPage() {
                         </span>
                       ))}
                     </div>
-
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
-                      <FaLock className="h-2.5 w-2.5 text-amber-600" />
-                      Default Assigned
-                    </span>
 
                     <Link
                       href={dp.path}
@@ -959,25 +971,37 @@ export default function UserPermissionsSlugPage() {
           <div>
             <H3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span>Admin Page Access & Action Permissions</span>
-              {isAdminRole ? (
+              {!isSuperAdminRole ? (
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
                   <FaUnlock className="h-2.5 w-2.5" /> Page Control Enabled
                 </span>
               ) : (
-                <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200 flex items-center gap-1">
-                  <FaLock className="h-2.5 w-2.5 text-slate-400" /> Read Only / Locked
+                <span className="text-[11px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200 flex items-center gap-1">
+                  <FaShieldAlt className="h-2.5 w-2.5" /> Full Master Access
                 </span>
               )}
             </H3>
             <p className="text-[11px] text-slate-500 mt-0.5">
-              {isAdminRole
-                ? "Select specific pages and actions below to configure this admin's access."
-                : "Page permission customization is locked. Select Admin role above to grant or modify page permissions."}
+              {!isSuperAdminRole
+                ? "Select specific pages and actions below to configure this user's access."
+                : "Super Admin has unrestricted master access to all system pages and actions."}
             </p>
           </div>
 
-          {isAdminRole && (
+          {!isSuperAdminRole && (
             <div className="flex flex-wrap items-center gap-2">
+              {currentRoleDefaultPages.length > 0 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="xs"
+                  onClick={handleLoadRoleDefaults}
+                  className="gap-1.5 text-xs font-bold text-amber-700 hover:bg-amber-50 border-amber-300"
+                >
+                  <FaLayerGroup className="h-3 w-3" />
+                  <span>Apply Role Defaults</span>
+                </Button>
+              )}
               <Button
                 type="button"
                 variant="outline"
@@ -1008,13 +1032,6 @@ export default function UserPermissionsSlugPage() {
                 <FaTrashAlt className="h-3 w-3" />
                 <span>Revoke All</span>
               </Button>
-            </div>
-          )}
-
-          {!isAdminRole && (
-            <div className="flex items-center gap-2 text-xs text-slate-400 italic bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
-              <FaLock className="h-3 w-3 text-slate-400" />
-              <span>Permission switches locked for {selectedRole.replace("_", " ")}</span>
             </div>
           )}
         </div>
@@ -1070,27 +1087,25 @@ export default function UserPermissionsSlugPage() {
                         {/* Page master toggle */}
                         <Button
                           type="button"
-                          disabled={!isAdminRole}
+                          disabled={isSuperAdminRole}
                           onClick={() => handleToggleWholePage(pg)}
                           variant={isEnabled ? "primary-soft" : "subtle"}
                           size="xs"
                           icon={
-                            !isAdminRole
-                              ? FaLock
+                            isSuperAdminRole
+                              ? FaShieldAlt
                               : isEnabled
                                 ? FaCheck
                                 : FaTimes
                           }
                           className={
-                            !isAdminRole
+                            isSuperAdminRole
                               ? "opacity-75 cursor-not-allowed bg-slate-100 text-slate-500 border-slate-200"
                               : ""
                           }
                         >
-                          {!isAdminRole
-                            ? isEnabled
-                              ? "Default Active"
-                              : "Restricted"
+                          {isSuperAdminRole
+                            ? "Master Access"
                             : isEnabled
                               ? "Enabled"
                               : "Disabled"}
@@ -1098,10 +1113,11 @@ export default function UserPermissionsSlugPage() {
 
                         {/* 4 Standard Action Checkboxes */}
                         <div
-                          className={`flex items-center gap-1.5 sm:gap-2 p-1 rounded-lg border ${isAdminRole
-                              ? "bg-slate-50 border-slate-200"
-                              : "bg-slate-100/70 border-slate-200 opacity-80 cursor-not-allowed"
-                            }`}
+                          className={`flex items-center gap-1.5 sm:gap-2 p-1 rounded-lg border ${
+                            isSuperAdminRole
+                              ? "bg-slate-100/70 border-slate-200 opacity-80 cursor-not-allowed"
+                              : "bg-slate-50 border-slate-200"
+                          }`}
                         >
                           {AVAILABLE_ACTIONS.map((action) => {
                             const isActionChecked = hasActionPermission(
@@ -1112,23 +1128,26 @@ export default function UserPermissionsSlugPage() {
                             return (
                               <label
                                 key={action.key}
-                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs select-none transition-colors ${isActionChecked
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs select-none transition-colors ${
+                                  isActionChecked
                                     ? "bg-white text-slate-900 border border-slate-300 font-bold shadow-2xs"
                                     : "text-slate-400 hover:text-slate-700 font-normal"
-                                  } ${!isAdminRole
+                                } ${
+                                  isSuperAdminRole
                                     ? "cursor-not-allowed pointer-events-none"
                                     : "cursor-pointer"
-                                  }`}
+                                }`}
                               >
                                 <input
                                   type="checkbox"
-                                  disabled={!isAdminRole}
+                                  disabled={isSuperAdminRole}
                                   checked={isActionChecked}
                                   onChange={() => handleToggleAction(pg, action.key)}
-                                  className={`h-3.5 w-3.5 rounded text-primary focus:ring-primary border-slate-300 ${!isAdminRole
+                                  className={`h-3.5 w-3.5 rounded text-primary focus:ring-primary border-slate-300 ${
+                                    isSuperAdminRole
                                       ? "cursor-not-allowed opacity-60"
                                       : "cursor-pointer"
-                                    }`}
+                                  }`}
                                 />
                                 <span className="capitalize">{action.label}</span>
                               </label>
@@ -1167,13 +1186,13 @@ export default function UserPermissionsSlugPage() {
             </span>
             <span className="text-slate-300">|</span>
             <span className="text-xs">
-              {isAdminRole ? (
-                <span className="text-emerald-700 font-bold flex items-center gap-1">
-                  <FaUnlock className="h-2.5 w-2.5" /> Page Control Enabled
+              {isSuperAdminRole ? (
+                <span className="text-purple-700 font-bold flex items-center gap-1">
+                  <FaShieldAlt className="h-2.5 w-2.5" /> Master Access (All Pages)
                 </span>
               ) : (
-                <span className="text-slate-500 font-semibold flex items-center gap-1">
-                  <FaLock className="h-2.5 w-2.5 text-slate-400" /> Default Pages Only (Locked)
+                <span className="text-emerald-700 font-bold flex items-center gap-1">
+                  <FaUnlock className="h-2.5 w-2.5" /> {permissions.length} Page(s) Configured
                 </span>
               )}
             </span>

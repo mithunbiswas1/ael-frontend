@@ -23,6 +23,7 @@ export const roleApi = apiSlice.injectEndpoints({
         method: "GET",
       }),
       providesTags: ["Permissions"],
+      keepUnusedDataFor: 0,
     }),
 
     // Create custom role

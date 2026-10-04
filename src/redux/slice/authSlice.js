@@ -16,7 +16,7 @@ const loadAuthFromStorage = () => {
           user: user,
           token: token,
         };
-      } catch (e) {
+      } catch {
         return {
           isLoggedIn: false,
           user: null,
@@ -45,8 +45,10 @@ const authSlice = createSlice({
       state.token = token;
 
       // Save to localStorage
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      if (typeof window !== "undefined") {
+        localStorage.setItem("accessToken", token);
+        localStorage.setItem("user", JSON.stringify(user));
+      }
     },
     setLogout: (state) => {
       state.isLoggedIn = false;
@@ -54,9 +56,12 @@ const authSlice = createSlice({
       state.token = null;
 
       // Remove from localStorage
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        sessionStorage.removeItem("sidebar_scroll_pos");
+      }
     },
     updateUser: (state, action) => {
       state.user = action.payload;

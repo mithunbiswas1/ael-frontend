@@ -48,8 +48,8 @@ function DashboardContent({ children }) {
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const { data: permData, isLoading: isPermLoading } = useGetMyPermissionsQuery(
-    undefined,
-    { skip: !isLoggedIn }
+    user?._id,
+    { skip: !isLoggedIn || !user?._id, refetchOnMountOrArgChange: true }
   );
 
   const [isLoading, setIsLoading] = useState(true);
@@ -65,7 +65,8 @@ function DashboardContent({ children }) {
   }, [isLoggedIn, router]);
 
   const isSuperAdmin =
-    user?.role === "super_admin" || permData?.data?.isSuperAdmin;
+    user?.role === "super_admin" ||
+    (Boolean(permData?.data?.isSuperAdmin) && permData?.data?.role === "super_admin");
 
   const permissions = permData?.data?.permissions || [];
 

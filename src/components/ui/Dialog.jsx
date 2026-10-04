@@ -31,6 +31,7 @@ export const Dialog = forwardRef(function Dialog(
     closeOnEscape = true,
     showCloseButton = true,
     title,
+    description,
     headerRight,
   },
   ref
@@ -109,13 +110,18 @@ export const Dialog = forwardRef(function Dialog(
           className
         )}
       >
-        {(title || showCloseButton || headerRight) && (
+        {(title || description || showCloseButton || headerRight) && (
           <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4 bg-slate-50 shrink-0">
             <div>
               {title && (
                 <H4 className="text-base sm:text-lg font-bold text-slate-900">
                   {title}
                 </H4>
+              )}
+              {description && (
+                <P className="text-xs text-slate-500 mt-0.5">
+                  {description}
+                </P>
               )}
             </div>
 

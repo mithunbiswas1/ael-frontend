@@ -19,7 +19,7 @@ export async function getAuthorProfile(identifier) {
       const json = await res.json();
       return json?.data || null;
     }
-  } catch (err) {
+  } catch {
     // Fail gracefully
   }
 

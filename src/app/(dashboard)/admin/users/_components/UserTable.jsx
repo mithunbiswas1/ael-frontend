@@ -26,6 +26,187 @@ const ROLE_BADGES = {
   general_user: "bg-slate-100 text-slate-700 border-slate-200",
 };
 
+const PAGE_NAME_MAP = {
+  "/admin": "Dashboard",
+  "/admin/blogs": "Blogs",
+  "/admin/courses": "Courses",
+  "/admin/courses/enrollments": "Enrollments",
+  "/admin/certificates": "Certificates",
+  "/admin/users": "Users",
+  "/admin/roles": "Roles",
+  "/admin/messages": "Messages",
+  "/admin/comments": "Comments",
+  "/admin/safety-guidelines": "Safety",
+  "/admin/regulatory-agencies": "Agencies",
+  "/admin/advertisements": "Ads",
+  "/admin/sms": "SMS",
+  "/admin/email": "Email",
+  "/admin/newsletter": "Newsletter",
+  "/admin/subscriptions": "Subscriptions",
+  "/admin/market-updates": "Market Updates",
+  "/admin/settings": "Settings",
+  "/admin/pages/home": "Home CMS",
+  "/admin/pages/about": "About CMS",
+  "/admin/pages/blogs": "Blog CMS",
+  "/admin/pages/contact": "Contact CMS",
+  "/admin/pages/safety-guidelines": "Safety CMS",
+  "/admin/pages/market-updates": "Market CMS",
+  "/admin/pages/courses": "Courses CMS",
+  "/admin/pages/acts-and-rules": "Acts CMS",
+  "/admin/pages/terms": "Terms CMS",
+  "/admin/pages/privacy": "Privacy CMS",
+  "/admin/pages/faq": "FAQ CMS",
+  "/admin/pages/subscription": "Pricing CMS",
+};
+
+const getPageLabel = (pageItem) => {
+  if (!pageItem) return "Page";
+  if (pageItem.page && PAGE_NAME_MAP[pageItem.page]) {
+    return PAGE_NAME_MAP[pageItem.page];
+  }
+  if (pageItem.module) {
+    return (
+      PAGE_NAME_MAP[`/admin/${pageItem.module}`] ||
+      pageItem.module.replace(/[-_]/g, " ")
+    );
+  }
+  if (pageItem.page) {
+    return pageItem.page
+      .replace("/admin/pages/", "")
+      .replace("/admin/", "")
+      .replace(/[-_/]/g, " ");
+  }
+  return "Page";
+};
+
+function renderAccessiblePages(user) {
+  const isSuperAdmin = user.role === "super_admin";
+  const isAdmin = user.role === "admin";
+  const isInstructor = user.role === "instructor" || user.role === "course_admin";
+
+  // Only display page access pills for Admin and Instructor (and Super Admin)
+  if (!isSuperAdmin && !isAdmin && !isInstructor) {
+    return <span className="text-slate-300 text-xs font-mono">—</span>;
+  }
+
+  if (isSuperAdmin) {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-purple-50 px-2.5 py-0.5 text-[10px] font-bold text-purple-700 border border-purple-200 shadow-2xs">
+        ★ Master Access
+      </span>
+    );
+  }
+
+  const userPerms = Array.isArray(user.permissions)
+    ? user.permissions.filter((p) => p.actions && p.actions.length > 0)
+    : [];
+
+  // If custom permissions are configured
+  if (userPerms.length > 0) {
+    if (userPerms.length >= 18) {
+      return (
+        <Link
+          href={`/admin/users/${user._id}`}
+          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 border border-emerald-200 transition-colors shadow-2xs group"
+          title={`Full platform access (${userPerms.length} pages enabled). Click to configure.`}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span>All Pages ({userPerms.length})</span>
+        </Link>
+      );
+    }
+
+    const maxVisible = 4;
+    const visiblePerms = userPerms.slice(0, maxVisible);
+    const row1Perms = visiblePerms.slice(0, 2);
+    const row2Perms = visiblePerms.slice(2, 4);
+    const remainingCount = userPerms.length - maxVisible;
+    const remainingTooltip = userPerms
+      .slice(maxVisible)
+      .map(getPageLabel)
+      .join(", ");
+
+    return (
+      <Link
+        href={`/admin/users/${user._id}`}
+        className="flex flex-col gap-1.5 py-0.5 group/pills w-fit"
+        title="Click to view or edit page permissions"
+      >
+        {/* Row 1: First 2 pills */}
+        <div className="flex items-center gap-1.5 flex-nowrap">
+          {row1Perms.map((p, idx) => (
+            <span
+              key={idx}
+              className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 capitalize truncate max-w-[125px]"
+              title={`${getPageLabel(p)} (${p.actions?.join(", ")})`}
+            >
+              {getPageLabel(p)}
+            </span>
+          ))}
+        </div>
+
+        {/* Row 2: Up to 2 pills + more pill on the exact same line */}
+        {(row2Perms.length > 0 || remainingCount > 0) && (
+          <div className="flex items-center gap-1.5 flex-nowrap">
+            {row2Perms.map((p, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-200 capitalize truncate max-w-[125px]"
+                title={`${getPageLabel(p)} (${p.actions?.join(", ")})`}
+              >
+                {getPageLabel(p)}
+              </span>
+            ))}
+            {remainingCount > 0 && (
+              <span
+                className="inline-flex items-center shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/20 group-hover/pills:bg-primary group-hover/pills:text-white transition-colors"
+                title={`More accessible pages: ${remainingTooltip}`}
+              >
+                +{remainingCount} more
+              </span>
+            )}
+          </div>
+        )}
+      </Link>
+    );
+  }
+
+  // Default role presets if no custom permissions configured yet
+  if (isInstructor) {
+    return (
+      <Link
+        href={`/admin/users/${user._id}`}
+        className="flex items-center gap-1.5"
+        title="Default Instructor pages. Click to customize or grant all pages."
+      >
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+          Courses
+        </span>
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+          Enrollments
+        </span>
+      </Link>
+    );
+  }
+
+  if (isAdmin) {
+    return (
+      <Link
+        href={`/admin/users/${user._id}`}
+        className="flex items-center gap-1.5"
+        title="Default Admin role (Access to all admin pages). Click to configure."
+      >
+        <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+          <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+          All Admin Pages
+        </span>
+      </Link>
+    );
+  }
+
+  return <span className="text-slate-300 text-xs font-mono">—</span>;
+}
+
 export default function UserTable({
   users = [],
   isLoading,
@@ -56,11 +237,12 @@ export default function UserTable({
     <Table containerClassName="border-slate-200/90">
       <TableHeader>
         <TableRow>
-          <TableHead className="w-64">User Profile</TableHead>
+          <TableHead className="w-56">User Profile</TableHead>
           <TableHead>Contact Information</TableHead>
-          <TableHead className="w-36">Role</TableHead>
-          <TableHead className="w-28 text-center">Status</TableHead>
-          <TableHead className="w-36">Joined Date</TableHead>
+          <TableHead className="w-32">Role</TableHead>
+          <TableHead className="w-80 min-w-[290px]">Accessible Pages</TableHead>
+          <TableHead className="w-24 text-center">Status</TableHead>
+          <TableHead className="w-28">Joined Date</TableHead>
           <TableHead className="w-28 text-right">Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -133,11 +315,11 @@ export default function UserTable({
                   <FaUserShield className="h-3 w-3" />
                   {user.role}
                 </span>
-                {user.subscription?.status === "active" && (
-                  <span className="block text-[10px] text-emerald-700 font-semibold mt-0.5">
-                    ★ {user.subscription.planName || user.subscription.planKey}
-                  </span>
-                )}
+              </TableCell>
+
+              {/* Accessible Pages (for Admin & Instructor) */}
+              <TableCell>
+                {renderAccessiblePages(user)}
               </TableCell>
 
               {/* Status */}

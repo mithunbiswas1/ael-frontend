@@ -9,7 +9,7 @@ const loadCartFromStorage = () => {
     if (stored) {
       try {
         return JSON.parse(stored);
-      } catch (e) {
+      } catch {
         return [];
       }
     }
@@ -24,7 +24,7 @@ const loadBuyNowFromStorage = () => {
     if (stored) {
       try {
         return JSON.parse(stored);
-      } catch (e) {
+      } catch {
         return null;
       }
     }

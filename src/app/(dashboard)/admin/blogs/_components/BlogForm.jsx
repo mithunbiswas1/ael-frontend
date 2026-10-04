@@ -3,6 +3,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -19,6 +20,7 @@ import {
   Plus,
   Search,
   HelpCircle,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
@@ -50,11 +52,16 @@ export const BLOG_CATEGORIES = [
 
 export default function BlogForm({ initialData = null, isEdit = false }) {
   const router = useRouter();
+  const { user } = useSelector((state) => state.auth);
   const [uploadImage, { isLoading: isUploadingImage }] = useUploadPageImageMutation();
   const [createBlog, { isLoading: isCreating }] = useCreateBlogMutation();
   const [updateBlog, { isLoading: isUpdating }] = useUpdateBlogMutation();
 
   const isSaving = isCreating || isUpdating;
+
+  const currentUserName = user?.fullName || user?.userName || user?.name || "Admin";
+  const authorDisplayName = isEdit && initialData?.authorEn ? initialData.authorEn : currentUserName;
+  const authorDisplayBn = isEdit && initialData?.authorBn ? initialData.authorBn : authorDisplayName;
 
   const [formData, setFormData] = useState({
     titleEn: "",
@@ -69,8 +76,8 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
     category: "seminar",
     categoryBn: "সেমিনার",
     image: "",
-    authorEn: "Safe LPG Technical Committee",
-    authorBn: "সেইফ এলপিজি টেকনিক্যাল কমিটি",
+    authorEn: authorDisplayName,
+    authorBn: authorDisplayBn,
     readTimeEn: "5 min read",
     readTimeBn: "৫ মিনিট পাঠ",
     tags: "lpg, safety, regulations",
@@ -100,8 +107,8 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
         category: initialData.category || "seminar",
         categoryBn: initialData.categoryBn || "সেমিনার",
         image: initialData.image || "",
-        authorEn: initialData.authorEn || "Safe LPG Technical Committee",
-        authorBn: initialData.authorBn || "সেইফ এলপিজি টেকনিক্যাল কমিটি",
+        authorEn: initialData.authorEn || authorDisplayName,
+        authorBn: initialData.authorBn || authorDisplayBn,
         readTimeEn: initialData.readTimeEn || "5 min read",
         readTimeBn: initialData.readTimeBn || "৫ মিনিট পাঠ",
         tags: Array.isArray(initialData.tags)
@@ -117,8 +124,14 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
         canonicalUrl: initialData.canonicalUrl || "",
         ogImage: initialData.ogImage || "",
       });
+    } else if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        authorEn: currentUserName,
+        authorBn: currentUserName,
+      }));
     }
-  }, [initialData]);
+  }, [initialData, user, currentUserName, authorDisplayName, authorDisplayBn]);
 
   const stripHtml = (html = "") => {
     return html.replace(/<[^>]*>?/gm, " ").replace(/\s+/g, " ").trim();
@@ -258,6 +271,8 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
 
     const payload = {
       ...formData,
+      authorEn: authorDisplayName,
+      authorBn: authorDisplayBn,
       tags: typeof formData.tags === "string"
         ? formData.tags.split(",").map((t) => t.trim()).filter(Boolean)
         : formData.tags,
@@ -752,28 +767,57 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
 
           {/* Metadata: Author & Read Time */}
           <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2 flex items-center gap-2">
-              <User className="h-3.5 w-3.5 text-primary" />
-              <span>Author & Details</span>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2 flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <User className="h-3.5 w-3.5 text-primary" />
+                <span>Author & Details</span>
+              </span>
+              <span className="text-[10px] font-semibold text-slate-400 flex items-center gap-1">
+                <Lock className="h-3 w-3" /> Fixed
+              </span>
             </h3>
 
             <div className="space-y-3">
-              <Input
-                label="Author"
-                placeholder="Safe LPG Technical Committee"
-                value={formData.authorEn}
-                onChange={(e) =>
-                  setFormData({ ...formData, authorEn: e.target.value })
-                }
-              />
-              <Input
-                label="লেখক"
-                placeholder="সেইফ এলপিজি টেকনিক্যাল কমিটি"
-                value={formData.authorBn}
-                onChange={(e) =>
-                  setFormData({ ...formData, authorBn: e.target.value })
-                }
-              />
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                  <span>Author / লেখক (Posting User)</span>
+                  <span className="text-[10px] text-slate-400 font-normal">
+                    Auto-assigned
+                  </span>
+                </label>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50/90 text-slate-800">
+                  <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-primary/10 flex items-center justify-center font-bold text-xs text-primary">
+                    {user?.image ? (
+                      <Image
+                        src={
+                          typeof user.image === "string"
+                            ? user.image
+                            : user.image?.url || "/default_person.jpg"
+                        }
+                        alt={authorDisplayName}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      (authorDisplayName || "U").slice(0, 2).toUpperCase()
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-xs text-slate-900 truncate">
+                      {authorDisplayName}
+                    </p>
+                    <p className="text-[11px] text-slate-500 truncate">
+                      @{user?.userName || "author"} •{" "}
+                      <span className="capitalize">
+                        {user?.role?.replace("_", " ") || "Administrator"}
+                      </span>
+                    </p>
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200 shrink-0">
+                    <Lock className="h-2.5 w-2.5" /> Fixed
+                  </span>
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <Input
                   label="Read Time"

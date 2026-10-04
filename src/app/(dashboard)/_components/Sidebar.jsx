@@ -126,7 +126,14 @@ const ALL_ADMIN_NAV_ITEMS = [
     href: "/admin/users",
     icon: FaUsers,
     module: "users",
-  }, {
+  },
+  {
+    name: "Roles & Permissions",
+    href: "/admin/roles",
+    icon: FaUserShield,
+    module: "roles",
+  },
+  {
     name: "Messages",
     href: "/admin/messages",
     icon: FaEnvelope,
@@ -262,13 +269,14 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
 
-  const { data: permData } = useGetMyPermissionsQuery(undefined, {
-    skip: !isLoggedIn,
+  const { data: permData } = useGetMyPermissionsQuery(user?._id, {
+    skip: !isLoggedIn || !user?._id,
+    refetchOnMountOrArgChange: true,
   });
 
   const isSuperAdmin =
     user?.role === "super_admin" ||
-    permData?.data?.isSuperAdmin;
+    (Boolean(permData?.data?.isSuperAdmin) && permData?.data?.role === "super_admin");
 
   const permissions = permData?.data?.permissions || [];
 
@@ -326,11 +334,11 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
 
   const visibleNavItems = isSubscriberOnly
     ? SUBSCRIBER_NAV_ITEMS
-    : isInstructor
+    : isInstructor && (!permissions || permissions.length === 0)
       ? INSTRUCTOR_NAV_ITEMS
       : ALL_ADMIN_NAV_ITEMS.filter((item) => hasPageAccess(item));
 
-  const visiblePagesNavItems = isSubscriberOnly || isInstructor
+  const visiblePagesNavItems = isSubscriberOnly || (isInstructor && (!permissions || permissions.length === 0))
     ? []
     : PAGES_NAV_ITEMS.filter((item) => hasPageAccess(item));
 
@@ -403,6 +411,9 @@ function SidebarContent({
 
   const handleLogout = () => {
     dispatch(setLogout());
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("sidebar_scroll_pos");
+    }
     if (onMobileClose) onMobileClose();
     toast.success("Logged out successfully");
     router.push("/");
@@ -449,13 +460,23 @@ function SidebarContent({
       {/* Sidebar Header */}
       <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
         {!isCollapsed && (
-          <AelLogo className="h-8 sm:h-9 w-auto max-w-[150px]" width={140} height={36} />
+          <AelLogo
+            href="/"
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Open Site in New Tab"
+            className="h-8 sm:h-9 w-auto max-w-[150px]"
+            width={140}
+            height={36}
+          />
         )}
         {isCollapsed && (
           <Link
             href="/"
+            target="_blank"
+            rel="noopener noreferrer"
             scroll={false}
-            title="Home"
+            title="Open Site in New Tab"
             className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-lg hover:opacity-90 transition-opacity"
           >
             A

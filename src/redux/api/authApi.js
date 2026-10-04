@@ -24,7 +24,7 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: [],
+      invalidatesTags: ["Permissions", "Auth", "Profile", "Users", "Roles"],
     }),
 
     // Send OTP
@@ -43,6 +43,7 @@ export const authApi = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["Permissions", "Auth", "Profile", "Users", "Roles"],
     }),
 
     // Send Registration OTP via Email

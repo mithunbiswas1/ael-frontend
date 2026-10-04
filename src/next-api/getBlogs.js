@@ -114,7 +114,7 @@ export async function getBlogBySlug(slug) {
         };
       }
     }
-  } catch (err) {
+  } catch {
     // Silent catch
   }
 
@@ -132,7 +132,7 @@ export async function getBlogCategories() {
         return json.data;
       }
     }
-  } catch (err) {
+  } catch {
     // Silent catch
   }
   return [];

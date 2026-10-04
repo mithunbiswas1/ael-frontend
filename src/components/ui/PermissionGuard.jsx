@@ -21,8 +21,9 @@ export default function PermissionGuard({
   fallback = null,
 }) {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const { data: permData, isLoading } = useGetMyPermissionsQuery(undefined, {
-    skip: !isLoggedIn,
+  const { data: permData, isLoading } = useGetMyPermissionsQuery(user?._id, {
+    skip: !isLoggedIn || !user?._id,
+    refetchOnMountOrArgChange: true,
   });
 
   if (!isLoggedIn) return fallback;
@@ -31,7 +32,7 @@ export default function PermissionGuard({
   // 1. Super Admin master override
   if (
     user?.role === "super_admin" ||
-    permData?.data?.isSuperAdmin
+    (Boolean(permData?.data?.isSuperAdmin) && permData?.data?.role === "super_admin")
   ) {
     return <>{children}</>;
   }

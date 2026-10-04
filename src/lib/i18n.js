@@ -12,7 +12,7 @@ export async function getLocale() {
     if (locale && SUPPORTED_LOCALES.includes(locale)) {
       return locale;
     }
-  } catch (error) {
+  } catch {
     // Fallback if accessed outside request context
   }
   return DEFAULT_LOCALE;

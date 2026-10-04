@@ -33,11 +33,6 @@ export default function ProfileForm({
             <H4 className="text-sm font-bold text-slate-900">
               {isBn ? "ব্যক্তিগত তথ্য" : "Personal Information"}
             </H4>
-            <P className="text-xs text-slate-500">
-              {isBn
-                ? "আপনার নাম ও ব্যবহারকারী নামের বিবরণ"
-                : "Your official name and system username"}
-            </P>
           </div>
         </div>
 
@@ -74,11 +69,6 @@ export default function ProfileForm({
             <H4 className="text-sm font-bold text-slate-900">
               {isBn ? "যোগাযোগের বিবরণ" : "Contact Information"}
             </H4>
-            <P className="text-xs text-slate-500">
-              {isBn
-                ? "বিজ্ঞপ্তি ও যোগাযোগের তথ্য"
-                : "Direct contact and communication details"}
-            </P>
           </div>
         </div>
 
@@ -118,11 +108,6 @@ export default function ProfileForm({
             <H4 className="text-sm font-bold text-slate-900">
               {isBn ? "ঠিকানা ও অবস্থান" : "Address & Location"}
             </H4>
-            <P className="text-xs text-slate-500">
-              {isBn
-                ? "আপনার বর্তমান ঠিকানা ও পোস্টাল বিবরণ"
-                : "Your residential or commercial address details"}
-            </P>
           </div>
         </div>
 
