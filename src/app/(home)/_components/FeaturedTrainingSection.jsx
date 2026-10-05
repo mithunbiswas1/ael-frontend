@@ -23,17 +23,18 @@ export default function FeaturedTrainingSection({ dict = {}, liveCourse = null, 
       </div>
 
       <CourseCard
+        course={course}
         courseId={course.courseId}
         slug={courseSlug}
-        isBestSeller={true}
         isPaid={course.price > 0}
         imageUrl={course.imageUrl}
-        title={isBn ? course.titleBn : course.title}
-        description={isBn ? course.descriptionBn : course.description}
-        duration={isBn ? course.durationBn : course.duration}
+        title={isBn ? course.titleBn || course.title : course.title}
+        description={isBn ? course.descriptionBn || course.description : course.description}
+        duration={isBn ? course.durationBn || course.duration : course.duration}
         lessonsCount={course.totalLessons}
-        level={isBn ? course.levelBn : course.level}
-        price={`৳ ${course.price}`}
+        price={course.price}
+        category={isBn ? course.categoryBn || course.category : course.category}
+        curriculum={course.curriculum}
         href={`/courses/${courseSlug}`}
       />
     </div>
