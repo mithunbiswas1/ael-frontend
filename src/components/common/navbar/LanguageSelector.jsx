@@ -18,7 +18,12 @@ export default function LanguageSelector({
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [optimisticLocale, setOptimisticLocale] = useState(currentLocale);
   const [activeTranslateCode, setActiveTranslateCode] = useState("");
+
+  useEffect(() => {
+    setOptimisticLocale(currentLocale);
+  }, [currentLocale]);
 
   // Track active Google Translate foreign language
   useEffect(() => {
@@ -37,7 +42,7 @@ export default function LanguageSelector({
     return () => window.removeEventListener("language-changed", updateActive);
   }, [currentLocale]);
 
-  // Switch between native English and Bangla
+  // Switch between native English and Bangla without hard page reload
   const handleSwitchLocale = (targetLocale) => {
     const activeForeignCode = getActiveLanguage("");
     const isForeignTranslated =
@@ -46,7 +51,10 @@ export default function LanguageSelector({
       activeForeignCode !== "bn";
 
     // Only skip if already on target locale AND no foreign translation is active
-    if (targetLocale === currentLocale && !isForeignTranslated) return;
+    if (targetLocale === optimisticLocale && !isForeignTranslated) return;
+
+    // Optimistic immediate UI update
+    setOptimisticLocale(targetLocale);
 
     // 1. Thoroughly purge Google Translate cookie & state across all domain scopes
     clearGoogleCookie();
@@ -64,12 +72,16 @@ export default function LanguageSelector({
         new CustomEvent("language-changed", { detail: targetLocale })
       );
       router.refresh();
-      window.location.reload();
+
+      // Only perform a full reload if transitioning away from an active foreign Google translation
+      if (isForeignTranslated) {
+        window.location.reload();
+      }
     });
   };
 
-  const isEnglishActive = currentLocale === "en" && !activeTranslateCode;
-  const isBanglaActive = currentLocale === "bn" && !activeTranslateCode;
+  const isEnglishActive = optimisticLocale === "en" && !activeTranslateCode;
+  const isBanglaActive = optimisticLocale === "bn" && !activeTranslateCode;
 
   return (
     <div
