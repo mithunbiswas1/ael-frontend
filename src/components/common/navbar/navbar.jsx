@@ -328,8 +328,8 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
             </Button>
             */}
 
-            {/* Language Selector in Navbar */}
-            <LanguageSelector currentLocale={locale} />
+            {/* Language Selector in Navbar (Desktop only; on mobile it is inside the drawer) */}
+            <LanguageSelector currentLocale={locale} className="hidden lg:flex" />
 
             {/* Auth State: Profile Dropdown when logged in, or Login & Subscribe when logged out */}
             {isUserLoggedIn ? (
