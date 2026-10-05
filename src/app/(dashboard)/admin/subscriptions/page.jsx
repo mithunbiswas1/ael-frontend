@@ -13,6 +13,7 @@ import {
   TrendingUp,
   DollarSign,
   Users,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
@@ -222,11 +223,10 @@ function AdminSubscriptionsContent() {
                 setEndDate("");
                 setSubPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                timeRange === "all" && !startDate && !endDate
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${timeRange === "all" && !startDate && !endDate
                   ? "bg-white text-slate-900 shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               All Time
             </button>
@@ -238,11 +238,10 @@ function AdminSubscriptionsContent() {
                 setEndDate("");
                 setSubPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                timeRange === "month"
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${timeRange === "month"
                   ? "bg-white text-primary shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               This Month
             </button>
@@ -254,11 +253,10 @@ function AdminSubscriptionsContent() {
                 setEndDate("");
                 setSubPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                timeRange === "week"
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${timeRange === "week"
                   ? "bg-white text-primary shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               This Week
             </button>
@@ -270,11 +268,10 @@ function AdminSubscriptionsContent() {
                 setEndDate("");
                 setSubPage(1);
               }}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                timeRange === "today"
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${timeRange === "today"
                   ? "bg-white text-primary shadow-2xs"
                   : "text-slate-600 hover:text-slate-900"
-              }`}
+                }`}
             >
               Today
             </button>
@@ -285,22 +282,22 @@ function AdminSubscriptionsContent() {
             timeRange !== "all" ||
             startDate ||
             endDate) && (
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedPlan("all");
-                setTimeRange("all");
-                setStartDate("");
-                setEndDate("");
-                setSubPage(1);
-              }}
-              className="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors flex items-center gap-1 cursor-pointer"
-            >
-              <RotateCcw className="h-3 w-3" />
-              <span>Reset All Filters</span>
-            </button>
-          )}
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedPlan("all");
+                  setTimeRange("all");
+                  setStartDate("");
+                  setEndDate("");
+                  setSubPage(1);
+                }}
+                className="text-xs font-bold text-slate-500 hover:text-rose-600 transition-colors flex items-center gap-1 cursor-pointer"
+              >
+                <RotateCcw className="h-3 w-3" />
+                <span>Reset All Filters</span>
+              </button>
+            )}
         </div>
 
         {/* Date-to-Date inputs, Search & Plan */}
@@ -460,23 +457,23 @@ function AdminSubscriptionsContent() {
                         : null;
                       const rem = exp
                         ? Math.ceil(
-                            (exp.getTime() - new Date().getTime()) /
-                              (1000 * 60 * 60 * 24)
-                          )
+                          (exp.getTime() - new Date().getTime()) /
+                          (1000 * 60 * 60 * 24)
+                        )
                         : null;
                       const durationStr =
                         item.billingCycle === "yearly" ||
-                        item.plan === "yearly"
+                          item.plan === "yearly"
                           ? "365 Days (1 Year)"
                           : item.billingCycle === "half_yearly" ||
                             item.plan === "half_yearly"
-                          ? "180 Days (6 Months)"
-                          : item.billingCycle === "monthly" ||
-                            item.plan === "monthly"
-                          ? "30 Days (1 Month)"
-                          : item.plan === "course_single"
-                          ? "Course Single Access"
-                          : "30 Days (Standard)";
+                            ? "180 Days (6 Months)"
+                            : item.billingCycle === "monthly" ||
+                              item.plan === "monthly"
+                              ? "30 Days (1 Month)"
+                              : item.plan === "course_single"
+                                ? "Course Single Access"
+                                : "30 Days (Standard)";
 
                       return (
                         <div className="space-y-0.5">

@@ -53,21 +53,20 @@ export default function AdSlot({ slot, className = "" }) {
   const [isDismissed, setIsDismissed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Clear any legacy sessionStorage persistence so reloading ALWAYS displays ads
+  // Check sessionStorage on mount to persist dismissed ad state throughout user session
   useEffect(() => {
     setIsMounted(true);
     try {
-      if (typeof window !== "undefined") {
-        Object.keys(sessionStorage).forEach((key) => {
-          if (key.startsWith("ad_dismissed_")) {
-            sessionStorage.removeItem(key);
-          }
-        });
+      if (typeof window !== "undefined" && slot) {
+        const dismissed = sessionStorage.getItem(`ad_dismissed_${slot}`);
+        if (dismissed === "true") {
+          setIsDismissed(true);
+        }
       }
     } catch {
-      // Ignore
+      // Ignore sessionStorage access errors
     }
-  }, []);
+  }, [slot]);
 
   // Load Google Ads script if needed
   useEffect(() => {
@@ -84,14 +83,20 @@ export default function AdSlot({ slot, className = "" }) {
   const ad = adResponse?.data;
   const spec = SLOT_SPECS[slot] || SLOT_SPECS.header_banner;
 
-  // Dismiss only for the current view without persisting to sessionStorage
-  // When the user reloads the page, the ad will render fresh!
+  // Dismiss ad and persist to sessionStorage for the session
   const handleDismiss = (e) => {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
     setIsDismissed(true);
+    try {
+      if (typeof window !== "undefined" && slot) {
+        sessionStorage.setItem(`ad_dismissed_${slot}`, "true");
+      }
+    } catch {
+      // Ignore
+    }
   };
 
   const handleClick = () => {

@@ -1,10 +1,14 @@
 // src/components/common/navbar/LanguageSelector.jsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
-import { openLanguageModal, getActiveLanguage } from "@/components/common/LanguageModal";
-import { ALL_LANGUAGES } from "@/components/common/footer/google-translate-languages";
+import { useState, useEffect, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import {
+  openLanguageModal,
+  getActiveLanguage,
+  clearGoogleCookie,
+} from "@/components/common/LanguageModal";
+import { setLocaleAction } from "@/app/actions/locale";
 import { cn } from "@/lib/cn";
 
 export default function LanguageSelector({
@@ -12,12 +16,20 @@ export default function LanguageSelector({
   showFullOnMobile = false,
   className = "",
 }) {
-  const [activeCode, setActiveCode] = useState(currentLocale);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [activeTranslateCode, setActiveTranslateCode] = useState("");
 
+  // Track active Google Translate foreign language
   useEffect(() => {
     const updateActive = () => {
-      const code = getActiveLanguage(currentLocale);
-      setActiveCode(code);
+      const code = getActiveLanguage("");
+      // Only foreign languages (not native en or bn) count as active Google translation
+      if (code && code !== "en" && code !== "bn") {
+        setActiveTranslateCode(code);
+      } else {
+        setActiveTranslateCode("");
+      }
     };
 
     updateActive();
@@ -25,49 +37,121 @@ export default function LanguageSelector({
     return () => window.removeEventListener("language-changed", updateActive);
   }, [currentLocale]);
 
-  // Determine display label (full and short name)
-  let fullLabel = currentLocale === "bn" ? "বাংলা" : "English";
-  let shortLabel = currentLocale === "bn" ? "বা" : "En";
+  // Switch between native English and Bangla
+  const handleSwitchLocale = (targetLocale) => {
+    if (targetLocale === currentLocale && !activeTranslateCode) return;
 
-  if (activeCode === "bn") {
-    fullLabel = "বাংলা";
-    shortLabel = "বা";
-  } else if (activeCode === "en") {
-    fullLabel = "English";
-    shortLabel = "En";
-  } else if (activeCode) {
-    const matched = ALL_LANGUAGES.find((l) => l.code === activeCode);
-    if (matched) {
-      fullLabel = matched.name;
-      shortLabel = matched.nativeName
-        ? matched.nativeName.slice(0, 2)
-        : matched.code.toUpperCase().slice(0, 2);
-    } else {
-      shortLabel = activeCode.toUpperCase().slice(0, 2);
-    }
-  }
+    // Clear any Google Translate cookie so the native language renders cleanly
+    clearGoogleCookie();
+
+    startTransition(async () => {
+      document.cookie = `locale=${targetLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      try {
+        await setLocaleAction(targetLocale);
+      } catch {
+        // ignore
+      }
+      window.dispatchEvent(
+        new CustomEvent("language-changed", { detail: targetLocale })
+      );
+      router.refresh();
+      window.location.reload();
+    });
+  };
+
+  const isEnglishActive = currentLocale === "en" && !activeTranslateCode;
+  const isBanglaActive = currentLocale === "bn" && !activeTranslateCode;
 
   return (
-    <button
-      type="button"
-      onClick={() => openLanguageModal()}
+    <div
+      translate="no"
       className={cn(
-        "flex h-9 items-center gap-1 sm:gap-1.5 rounded-lg border border-slate-200/90 bg-white px-2 sm:px-3 text-xs sm:text-sm font-bold sm:font-semibold text-slate-800 shadow-2xs hover:border-primary/50 hover:bg-slate-50 transition-all focus:outline-hidden shrink-0",
+        "notranslate flex items-center gap-1.5 sm:gap-2 shrink-0 select-none",
         className
       )}
-      aria-label="Change language or translate"
-      title={fullLabel}
     >
-      {/* On mobile navbar: short name like En, বা */}
-      {showFullOnMobile ? (
-        <span>{fullLabel}</span>
-      ) : (
-        <>
-          <span className="inline sm:hidden font-bold text-xs">{shortLabel}</span>
-          <span className="hidden sm:inline">{fullLabel}</span>
-        </>
-      )}
-      <ChevronDown className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-slate-400 shrink-0" />
-    </button>
+      {/* 
+        1. En / বা Switch Button 
+        Matching navbar button design structure: h-9, rounded-lg, border-slate-200/90, shadow-2xs
+      */}
+      <div
+        role="group"
+        aria-label="Language switch"
+        translate="no"
+        className="notranslate flex h-9 items-center p-0.5 rounded-lg border border-slate-200/90 bg-slate-100/90 shadow-2xs shrink-0"
+      >
+        <button
+          type="button"
+          translate="no"
+          onClick={() => handleSwitchLocale("en")}
+          disabled={isPending}
+          className={cn(
+            "notranslate h-7.5 px-2 sm:px-2.5 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center cursor-pointer",
+            isEnglishActive
+              ? "bg-white text-slate-900 shadow-xs border border-slate-200/70"
+              : "text-slate-500 hover:text-slate-900"
+          )}
+          title="Switch to English"
+          aria-pressed={isEnglishActive}
+        >
+          En
+        </button>
+        <button
+          type="button"
+          translate="no"
+          onClick={() => handleSwitchLocale("bn")}
+          disabled={isPending}
+          className={cn(
+            "notranslate h-7.5 px-2 sm:px-2.5 rounded-md text-xs font-bold transition-all duration-150 flex items-center justify-center font-serif cursor-pointer",
+            isBanglaActive
+              ? "bg-white text-slate-900 shadow-xs border border-slate-200/70"
+              : "text-slate-500 hover:text-slate-900"
+          )}
+          title="বাংলায় পরিবর্তন করুন"
+          aria-pressed={isBanglaActive}
+        >
+          বা
+        </button>
+      </div>
+
+      {/* 
+        2. Separate Translate Button
+        Matching navbar button design structure: h-9, rounded-lg, border-slate-200/90, shadow-2xs
+      */}
+      <button
+        type="button"
+        translate="no"
+        onClick={() => openLanguageModal()}
+        className={cn(
+          "notranslate flex h-9 items-center gap-1.5 rounded-lg border border-slate-200/90 bg-white px-2.5 sm:px-3 text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs hover:border-primary/50 hover:bg-slate-50 transition-all focus:outline-hidden shrink-0 cursor-pointer",
+          activeTranslateCode && "border-primary/50 bg-primary/5 text-primary"
+        )}
+        aria-label="Translate website"
+        title={
+          activeTranslateCode
+            ? `Google Translate: ${activeTranslateCode.toUpperCase()}`
+            : "Translate website"
+        }
+      >
+
+        <span
+          translate="no"
+          className={cn(
+            "notranslate font-semibold",
+            showFullOnMobile ? "inline" : "inline text-xs sm:text-sm"
+          )}
+        >
+          Translate
+        </span>
+        {activeTranslateCode && (
+          <span
+            translate="no"
+            className="notranslate ml-0.5 px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase"
+          >
+            {activeTranslateCode}
+          </span>
+        )}
+      </button>
+    </div>
   );
 }

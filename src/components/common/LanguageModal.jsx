@@ -4,8 +4,10 @@
 import { useState, useEffect, useRef, useMemo, useTransition } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import { Languages, Search, X } from "lucide-react";
 import { ALL_LANGUAGES } from "./footer/google-translate-languages";
 import { setLocaleAction } from "@/app/actions/locale";
+import { cn } from "@/lib/cn";
 
 // Safeguard Node removeChild & insertBefore against React DOM crashes when Google Translate mutates DOM text nodes
 if (typeof window !== "undefined") {
@@ -25,6 +27,25 @@ if (typeof window !== "undefined") {
       }
       return originalInsertBefore.apply(this, arguments);
     };
+  }
+}
+
+// Clear Google Translate cookie across all domain scopes
+export function clearGoogleCookie() {
+  if (typeof document === "undefined") return;
+  const host = typeof window !== "undefined" ? window.location.hostname : "";
+  document.cookie =
+    "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  if (host) {
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${host}; path=/;`;
+    if (host.includes(".")) {
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.${host}; path=/;`;
+    }
+  }
+  try {
+    localStorage.removeItem("google_translate_lang");
+  } catch {
+    // ignore
   }
 }
 
@@ -56,7 +77,7 @@ export default function LanguageModal({ currentLocale = "en" }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [translateLang, setTranslateLang] = useState("");
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const searchInputRef = useRef(null);
   const router = useRouter();
 
@@ -130,48 +151,8 @@ export default function LanguageModal({ currentLocale = "en" }) {
     };
   }, [isOpen]);
 
-  // Clear Google Translate cookie
-  const clearGoogleCookie = () => {
-    const host = typeof window !== "undefined" ? window.location.hostname : "";
-    document.cookie =
-      "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    if (host) {
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${host}; path=/;`;
-      if (host.includes(".")) {
-        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.${host}; path=/;`;
-      }
-    }
-    try {
-      localStorage.removeItem("google_translate_lang");
-    } catch {
-      // ignore
-    }
-  };
-
-  // Switch to Primary System Language (English or Bangla)
-  const handleSelectPrimaryLanguage = (targetLocale) => {
-    setIsOpen(false);
-    clearGoogleCookie();
-    setTranslateLang("");
-
-    // Trigger google translate reset combo if present
-    const select = document.querySelector(".goog-te-combo");
-    if (select) {
-      select.value = "";
-      select.dispatchEvent(new Event("change"));
-    }
-
-    // Set locale cookie and call server action
-    startTransition(async () => {
-      document.cookie = `locale=${targetLocale}; path=/; max-age=31536000; SameSite=Lax`;
-      await setLocaleAction(targetLocale);
-      window.dispatchEvent(new CustomEvent("language-changed", { detail: targetLocale }));
-      router.refresh();
-      window.location.reload();
-    });
-  };
-
-  // Switch to Translate Language (other 100+ languages)
+  // Switch to Translate Language (English & Bangla excluded)
+  // Requirement: "translate modal theke kono language select korte en bn theke default en cole asbe"
   const handleSelectTranslateLanguage = (langCode) => {
     try {
       localStorage.setItem("google_translate_lang", langCode);
@@ -179,7 +160,7 @@ export default function LanguageModal({ currentLocale = "en" }) {
       // ignore
     }
 
-    // Set cookie
+    // Set cookie for google translate
     const cookieVal = `/auto/${langCode}`;
     document.cookie = `googtrans=${cookieVal}; path=/;`;
     if (typeof window !== "undefined") {
@@ -192,6 +173,16 @@ export default function LanguageModal({ currentLocale = "en" }) {
       }
     }
 
+    // Reset base system locale to default 'en'
+    document.cookie = `locale=en; path=/; max-age=31536000; SameSite=Lax`;
+    startTransition(async () => {
+      try {
+        await setLocaleAction("en");
+      } catch {
+        // ignore
+      }
+    });
+
     setTranslateLang(langCode);
     setIsOpen(false);
     window.dispatchEvent(new CustomEvent("language-changed", { detail: langCode }));
@@ -200,6 +191,9 @@ export default function LanguageModal({ currentLocale = "en" }) {
     if (select) {
       select.value = langCode;
       select.dispatchEvent(new Event("change"));
+      if (currentLocale !== "en") {
+        window.location.reload();
+      }
     } else {
       window.location.reload();
     }
@@ -234,9 +228,6 @@ export default function LanguageModal({ currentLocale = "en" }) {
     );
   }, [searchQuery]);
 
-  const isEnglishActive = !translateLang && currentLocale === "en";
-  const isBanglaActive = !translateLang && currentLocale === "bn";
-
   if (!mounted) return null;
 
   return (
@@ -257,96 +248,72 @@ export default function LanguageModal({ currentLocale = "en" }) {
         aria-hidden="true"
       />
 
-      {/* Minimalist AI-style Center-Center Modal */}
+      {/* 
+        Translate Modal: 
+        1. English & Bangla removed (only 100+ translation languages).
+        2. Protected with translate="no" and className="notranslate" so Google Translate NEVER translates modal text.
+      */}
       {isOpen &&
         createPortal(
           <div
             role="dialog"
             aria-modal="true"
-            aria-label="Select Language"
-            className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
+            aria-label="Translate Website"
+            translate="no"
+            className="notranslate fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in duration-150"
             onClick={(e) => {
               if (e.target === e.currentTarget) setIsOpen(false);
             }}
           >
-            <div className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl animate-in zoom-in-95 duration-150 flex flex-col h-[80vh] my-auto">
+            <div
+              translate="no"
+              className="notranslate relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl animate-in zoom-in-95 duration-150 flex flex-col h-[75vh] max-h-[620px] my-auto"
+            >
               {/* Modal Header */}
-              <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4 bg-white shrink-0">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900 tracking-tight">
-                    Select Language
+              <div
+                translate="no"
+                className="notranslate flex items-center justify-between border-b border-slate-100 px-5 py-4 bg-white shrink-0"
+              >
+                <div className="notranslate flex items-center gap-2" translate="no">
+                  <Languages className="h-4 w-4 text-primary shrink-0" />
+                  <h3 className="notranslate text-sm font-bold text-slate-900 tracking-tight" translate="no">
+                    Google Translate
                   </h3>
                 </div>
 
                 <button
                   type="button"
+                  translate="no"
                   onClick={() => setIsOpen(false)}
-                  className="h-7 w-7 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-800 hover:bg-slate-100 text-sm font-medium transition-colors"
+                  className="notranslate h-7 w-7 rounded-md flex items-center justify-center text-slate-400 hover:text-slate-800 hover:bg-slate-100 text-sm font-medium transition-colors cursor-pointer"
                   aria-label="Close"
                 >
-                  ✕
+                  <X className="h-4 w-4" />
                 </button>
               </div>
 
-              {/* TOP SECTION: Primary Languages (English & Bangla) */}
-              <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/60 shrink-0">
-                <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Primary Languages
-                </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {/* English */}
-                  <button
-                    type="button"
-                    onClick={() => handleSelectPrimaryLanguage("en")}
-                    disabled={isPending}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition-all duration-150 ${isEnglishActive
-                        ? "bg-slate-900 border-slate-900 text-white shadow-xs"
-                        : "bg-white border-slate-200/90 text-slate-800 hover:border-slate-300 hover:bg-slate-100"
-                      }`}
-                  >
-                    <span>English</span>
-                    {isEnglishActive && (
-                      <span className="text-xs font-bold">✓</span>
-                    )}
-                  </button>
-
-                  {/* Bangla */}
-                  <button
-                    type="button"
-                    onClick={() => handleSelectPrimaryLanguage("bn")}
-                    disabled={isPending}
-                    className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold border transition-all duration-150 font-serif ${isBanglaActive
-                        ? "bg-slate-900 border-slate-900 text-white shadow-xs"
-                        : "bg-white border-slate-200/90 text-slate-800 hover:border-slate-300 hover:bg-slate-100"
-                      }`}
-                  >
-                    <span>বাংলা (Bangla)</span>
-                    {isBanglaActive && (
-                      <span className="text-xs font-bold">✓</span>
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              {/* LOWER SECTION: Other Languages for Translate */}
-              <div className="px-5 pt-3 pb-2 border-b border-slate-100 bg-white shrink-0">
-                <span className="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-                  Translate ({translateLanguages.length} Languages)
-                </span>
-                <div className="relative">
+              {/* Search Input Section */}
+              <div
+                translate="no"
+                className="notranslate px-5 pt-3.5 pb-2.5 border-b border-slate-100 bg-white shrink-0"
+              >
+                <div className="notranslate relative" translate="no">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
                   <input
                     ref={searchInputRef}
                     type="text"
+                    translate="no"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search languages (e.g. Arabic, Spanish, French, Hindi)..."
-                    className="w-full rounded-xl bg-slate-50 border border-slate-200/90 py-2 px-3 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all"
+                    placeholder="Search translation language (e.g. Arabic, Spanish, French, Hindi)..."
+                    className="notranslate w-full rounded-xl bg-slate-50 border border-slate-200/90 py-2 pl-8.5 pr-8 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:border-slate-900 focus:ring-1 focus:ring-slate-900 transition-all"
                   />
                   {searchQuery && (
                     <button
                       type="button"
+                      translate="no"
                       onClick={() => setSearchQuery("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs px-1"
+                      className="notranslate absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs px-1 cursor-pointer"
                     >
                       Clear
                     </button>
@@ -354,29 +321,46 @@ export default function LanguageModal({ currentLocale = "en" }) {
                 </div>
               </div>
 
-              {/* Translate Languages Grid (Bangla and English excluded) */}
-              <div className="flex-1 overflow-y-auto px-5 py-3 overscroll-contain">
+              {/* Translation Languages Grid (Bangla and English excluded) */}
+              <div
+                translate="no"
+                className="notranslate flex-1 overflow-y-auto px-5 py-3 overscroll-contain"
+              >
                 {translateLanguages.length === 0 ? (
-                  <div className="py-8 text-center text-xs text-slate-400">
+                  <div
+                    className="notranslate py-8 text-center text-xs text-slate-400"
+                    translate="no"
+                  >
                     No language matching &ldquo;{searchQuery}&rdquo;
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+                  <div
+                    className="notranslate grid grid-cols-2 sm:grid-cols-3 gap-1.5"
+                    translate="no"
+                  >
                     {translateLanguages.map((lang) => {
                       const isActive = translateLang === lang.code;
                       return (
                         <button
                           key={lang.code}
                           type="button"
+                          translate="no"
                           onClick={() => handleSelectTranslateLanguage(lang.code)}
-                          className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all duration-150 text-left ${isActive
+                          className={cn(
+                            "notranslate flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-all duration-150 text-left cursor-pointer",
+                            isActive
                               ? "bg-slate-900 text-white font-medium shadow-xs"
                               : "text-slate-700 hover:bg-slate-100 hover:text-slate-950 font-normal"
-                            }`}
+                          )}
                         >
-                          <span className="truncate">{lang.name}</span>
+                          <span className="notranslate truncate" translate="no">
+                            {lang.name}
+                          </span>
                           {isActive && (
-                            <span className="ml-1 text-[11px] font-bold">
+                            <span
+                              className="notranslate ml-1 text-[11px] font-bold"
+                              translate="no"
+                            >
                               ✓
                             </span>
                           )}
@@ -387,20 +371,25 @@ export default function LanguageModal({ currentLocale = "en" }) {
                 )}
               </div>
 
-              {/* Footer */}
-              <div className="flex items-center justify-between border-t border-slate-100 px-5 py-3 bg-slate-50/70 shrink-0">
+              {/* Modal Footer */}
+              <div
+                translate="no"
+                className="notranslate flex items-center justify-between border-t border-slate-100 px-5 py-3 bg-slate-50/70 shrink-0"
+              >
                 <button
                   type="button"
+                  translate="no"
                   onClick={handleResetOriginal}
-                  className="text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors"
+                  className="notranslate text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
                 >
                   Reset to original
                 </button>
 
                 <button
                   type="button"
+                  translate="no"
                   onClick={() => setIsOpen(false)}
-                  className="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors"
+                  className="notranslate px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-medium transition-colors cursor-pointer"
                 >
                   Done
                 </button>

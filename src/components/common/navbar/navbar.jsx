@@ -62,6 +62,14 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
     { name: dict?.navLinks?.blog || "Blog", href: "/blogs" },
     { name: dict?.navLinks?.about || "About", href: "/about" },
     { name: dict?.navLinks?.contact || "Contact", href: "/contact" },
+    ...(isUserLoggedIn
+      ? [
+          {
+            name: dict?.navLinks?.subscription || "Subscription",
+            href: "/subscription",
+          },
+        ]
+      : []),
   ];
 
   // Close mobile drawer and modal on route change
