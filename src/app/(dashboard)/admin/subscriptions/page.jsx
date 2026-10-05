@@ -35,6 +35,7 @@ import {
 } from "@/components/ui/Table";
 import Pagination from "@/components/ui/Pagination";
 import AssignSubscriptionModal from "./_components/AssignSubscriptionModal";
+import { cn } from "@/lib/cn";
 
 function AdminSubscriptionsContent() {
   const router = useRouter();
@@ -119,10 +120,24 @@ function AdminSubscriptionsContent() {
         </div>
       </div>
 
-      {/* 2. 4 Real-time KPI Metric Cards */}
+      {/* 2. 4 Real-time KPI Metric Cards (Interactive quick-filters) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Revenue */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs">
+        <div
+          onClick={() => {
+            setTimeRange("all");
+            setStartDate("");
+            setEndDate("");
+            setSubPage(1);
+          }}
+          className={cn(
+            "rounded-2xl border bg-white p-5 shadow-2xs cursor-pointer transition-all hover:border-purple-300",
+            timeRange === "all" && !startDate && !endDate
+              ? "border-purple-500 ring-2 ring-purple-100"
+              : "border-slate-200/90"
+          )}
+          title="Click to view all-time transactions"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               Total Revenue
@@ -144,7 +159,21 @@ function AdminSubscriptionsContent() {
         </div>
 
         {/* Monthly Report */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs">
+        <div
+          onClick={() => {
+            setTimeRange("month");
+            setStartDate("");
+            setEndDate("");
+            setSubPage(1);
+          }}
+          className={cn(
+            "rounded-2xl border bg-white p-5 shadow-2xs cursor-pointer transition-all hover:border-blue-300",
+            timeRange === "month"
+              ? "border-blue-500 ring-2 ring-blue-100"
+              : "border-slate-200/90"
+          )}
+          title="Click to view current month transactions"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               This Month Report
@@ -166,7 +195,21 @@ function AdminSubscriptionsContent() {
         </div>
 
         {/* Weekly Report */}
-        <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs">
+        <div
+          onClick={() => {
+            setTimeRange("week");
+            setStartDate("");
+            setEndDate("");
+            setSubPage(1);
+          }}
+          className={cn(
+            "rounded-2xl border bg-white p-5 shadow-2xs cursor-pointer transition-all hover:border-emerald-300",
+            timeRange === "week"
+              ? "border-emerald-500 ring-2 ring-emerald-100"
+              : "border-slate-200/90"
+          )}
+          title="Click to view past 7 days transactions"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
               This Week Report
