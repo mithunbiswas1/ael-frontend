@@ -30,20 +30,60 @@ if (typeof window !== "undefined") {
   }
 }
 
-// Clear Google Translate cookie across all domain scopes
+// Comprehensive Google Translate cleanup across all domain scopes, paths, and DOM elements
 export function clearGoogleCookie() {
   if (typeof document === "undefined") return;
-  const host = typeof window !== "undefined" ? window.location.hostname : "";
-  document.cookie =
-    "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  if (host) {
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=${host}; path=/;`;
-    if (host.includes(".")) {
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; domain=.${host}; path=/;`;
-    }
+
+  const hostname = window.location.hostname;
+  const hostParts = hostname.split(".");
+
+  // 1. Build all possible domain variations
+  const domains = ["", hostname, `.${hostname}`];
+  for (let i = 0; i < hostParts.length - 1; i++) {
+    const parentDomain = hostParts.slice(i).join(".");
+    domains.push(parentDomain);
+    domains.push(`.${parentDomain}`);
   }
+
+  // Common cookie paths
+  const paths = ["/", "", window.location.pathname];
+
+  // 2. Annihilate googtrans cookie across all combinations
+  domains.forEach((dom) => {
+    paths.forEach((p) => {
+      const domainAttr = dom ? `; domain=${dom}` : "";
+      const pathAttr = p ? `; path=${p}` : "";
+
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0${pathAttr}${domainAttr}`;
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0${pathAttr}${domainAttr}`;
+      document.cookie = `googtrans=; max-age=0${pathAttr}${domainAttr}`;
+    });
+  });
+
+  // 3. Reset storage
   try {
     localStorage.removeItem("google_translate_lang");
+    sessionStorage.removeItem("google_translate_lang");
+  } catch {
+    // ignore
+  }
+
+  // 4. Reset Google Translate combo in DOM if present
+  try {
+    const select = document.querySelector(".goog-te-combo");
+    if (select) {
+      select.value = "";
+      select.dispatchEvent(new Event("change"));
+    }
+  } catch {
+    // ignore
+  }
+
+  // 5. Clean up Google Translate DOM artifacts (RTL, classes, banner)
+  try {
+    document.documentElement.classList.remove("translated-ltr", "translated-rtl");
+    document.documentElement.removeAttribute("dir");
+    document.body.removeAttribute("dir");
   } catch {
     // ignore
   }
@@ -62,9 +102,19 @@ export function getActiveLanguage(fallbackLocale = "en") {
   try {
     const match = document.cookie.match(/(?:^|;\s*)googtrans=([^;]+)/);
     if (match && match[1]) {
-      const parts = decodeURIComponent(match[1]).split("/");
-      const code = parts[parts.length - 1];
-      if (code && code !== "auto") return code;
+      // Strip any quotes or whitespace that Google Translate or browser wraps around the value
+      let rawVal = decodeURIComponent(match[1]).trim().replace(/^["']|["']$/g, "");
+      const parts = rawVal.split("/").filter(Boolean);
+      const code = parts[parts.length - 1]?.trim().toLowerCase();
+      if (
+        code &&
+        code !== "auto" &&
+        code !== "deleted" &&
+        code !== "null" &&
+        code !== "undefined"
+      ) {
+        return code;
+      }
     }
   } catch {
     // fallback
@@ -160,18 +210,21 @@ export default function LanguageModal({ currentLocale = "en" }) {
       // ignore
     }
 
-    // Set cookie for google translate
+    // Set cookie for google translate across all domain scopes
     const cookieVal = `/auto/${langCode}`;
-    document.cookie = `googtrans=${cookieVal}; path=/;`;
-    if (typeof window !== "undefined") {
-      const host = window.location.hostname;
-      if (host) {
-        document.cookie = `googtrans=${cookieVal}; domain=${host}; path=/;`;
-        if (host.includes(".")) {
-          document.cookie = `googtrans=${cookieVal}; domain=.${host}; path=/;`;
-        }
-      }
+    const hostname = typeof window !== "undefined" ? window.location.hostname : "";
+    const hostParts = hostname ? hostname.split(".") : [];
+    const domains = ["", hostname, `.${hostname}`];
+    for (let i = 0; i < hostParts.length - 1; i++) {
+      const parentDomain = hostParts.slice(i).join(".");
+      domains.push(parentDomain);
+      domains.push(`.${parentDomain}`);
     }
+
+    domains.forEach((dom) => {
+      const domainAttr = dom ? `; domain=${dom}` : "";
+      document.cookie = `googtrans=${cookieVal}; path=/${domainAttr}`;
+    });
 
     // Reset base system locale to default 'en'
     document.cookie = `locale=en; path=/; max-age=31536000; SameSite=Lax`;

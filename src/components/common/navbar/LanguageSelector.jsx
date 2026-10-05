@@ -39,13 +39,22 @@ export default function LanguageSelector({
 
   // Switch between native English and Bangla
   const handleSwitchLocale = (targetLocale) => {
-    if (targetLocale === currentLocale && !activeTranslateCode) return;
+    const activeForeignCode = getActiveLanguage("");
+    const isForeignTranslated =
+      Boolean(activeForeignCode) &&
+      activeForeignCode !== "en" &&
+      activeForeignCode !== "bn";
 
-    // Clear any Google Translate cookie so the native language renders cleanly
+    // Only skip if already on target locale AND no foreign translation is active
+    if (targetLocale === currentLocale && !isForeignTranslated) return;
+
+    // 1. Thoroughly purge Google Translate cookie & state across all domain scopes
     clearGoogleCookie();
+    setActiveTranslateCode("");
 
+    // 2. Set native locale cookie synchronously and call server action
+    document.cookie = `locale=${targetLocale}; path=/; max-age=31536000; SameSite=Lax`;
     startTransition(async () => {
-      document.cookie = `locale=${targetLocale}; path=/; max-age=31536000; SameSite=Lax`;
       try {
         await setLocaleAction(targetLocale);
       } catch {
