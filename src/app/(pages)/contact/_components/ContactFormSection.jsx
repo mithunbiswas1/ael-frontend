@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import Input from "@/components/ui/Input";
-import Select from "@/components/ui/Select";
 import Textarea from "@/components/ui/Textarea";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Button from "@/components/ui/Button";
@@ -28,7 +27,7 @@ export default function ContactFormSection() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
       toast.error(
         isBn
           ? "অনুগ্রহ করে সকল আবশ্যকীয় তথ্য পূরণ করুন।"
@@ -65,22 +64,6 @@ export default function ContactFormSection() {
       );
     }
   };
-
-  const subjectOptions = isBn
-    ? [
-        { value: "Safety Incident Inquiry", label: "নিরাপত্তা ও দুর্ঘটনা সংক্রান্ত তথ্য" },
-        { value: "Training & LMS Certification", label: "প্রশিক্ষণ ও সার্টিফিকেট সংক্রান্ত" },
-        { value: "Dealer Regulatory Compliance", label: "ডিলার কমপ্লায়েন্স ও লাইসেন্সিং" },
-        { value: "Auto Gas Operational Safety", label: "অটো গ্যাস অপারেশনাল নিরাপত্তা" },
-        { value: "General Support", label: "সাধারণ সহায়তা" },
-      ]
-    : [
-        { value: "Safety Incident Inquiry", label: "Safety Incident Inquiry" },
-        { value: "Training & LMS Certification", label: "Training & LMS Certification" },
-        { value: "Dealer Regulatory Compliance", label: "Dealer Regulatory Compliance" },
-        { value: "Auto Gas Operational Safety", label: "Auto Gas Operational Safety" },
-        { value: "General Support", label: "General Support" },
-      ];
 
   return (
     <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs lg:col-span-7">
@@ -139,16 +122,18 @@ export default function ContactFormSection() {
             variant="filled"
           />
 
-          <Select
-            label={contact.subjectLabel || (isBn ? "অনুসন্ধানের বিষয়" : "Inquiry Subject")}
+          <Input
+            label={contact.subjectLabel || (isBn ? "বিষয়" : "Subject")}
             required
+            placeholder={
+              contact.subjectPlaceholder ||
+              (isBn ? "বিষয় লিখুন..." : "Enter subject...")
+            }
             value={formData.subject}
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, subject: e.target.value }))
             }
-            placeholder={isBn ? "বিষয় নির্বাচন করুন" : "Select Topic"}
             variant="filled"
-            options={subjectOptions}
           />
         </div>
 
