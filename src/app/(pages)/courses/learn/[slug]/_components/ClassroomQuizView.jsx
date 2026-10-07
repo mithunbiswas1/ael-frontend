@@ -389,8 +389,8 @@ export default function ClassroomQuizView({
                         <Lock className="h-3.5 w-3.5" />
                         <span>
                           {isBn
-                            ? `মডিউল ২ আনলক করতে ভর্তি হন (৳ ${coursePrice})`
-                            : `Enroll to Unlock Module 2 (৳ ${coursePrice})`}
+                            ? `মডিউল ২ আনলক করতে ভর্তি / সাবস্ক্রাইব করুন (৳ ${coursePrice})`
+                            : `Enroll or Subscribe to Unlock Module 2 (৳ ${coursePrice})`}
                         </span>
                       </>
                     ) : (

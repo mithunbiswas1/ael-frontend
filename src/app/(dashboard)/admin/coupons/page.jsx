@@ -4,7 +4,6 @@
 import { useState } from "react";
 import {
   Tag,
-  Gift,
   Plus,
   Search,
   Copy,
@@ -13,7 +12,7 @@ import {
   Eye,
   CheckCircle2,
   XCircle,
-  Sparkles,
+  ShieldCheck,
   Infinity,
   Clock,
   RotateCcw,
@@ -124,7 +123,7 @@ export default function AdminCouponsPage() {
       {/* 1. Header */}
       <AdminPageHeader
         icon={Tag}
-        title="Discount Coupons & Whole-Life Gift Vouchers"
+        title="Discount Coupons & Vouchers"
         description="Create dynamic promotional codes, flat/percentage discounts, or grant 100% free lifetime access to any subscription or course."
         action={
           <Button
@@ -138,7 +137,7 @@ export default function AdminCouponsPage() {
             className="gap-2 font-bold"
           >
             <Plus className="h-4 w-4" />
-            <span>Create Coupon / Gift Voucher</span>
+            <span>Create Coupon / Voucher</span>
           </Button>
         }
       />
@@ -165,11 +164,11 @@ export default function AdminCouponsPage() {
 
         <div className="p-4 rounded-xl border border-amber-200/80 bg-amber-50/40 shadow-2xs">
           <div className="flex items-center justify-between text-amber-800 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Lifetime Gift Access</span>
-            <Sparkles className="h-4 w-4 text-amber-600" />
+            <span className="text-xs font-semibold uppercase tracking-wider">Lifetime Access</span>
+            <ShieldCheck className="h-4 w-4 text-amber-600" />
           </div>
           <div className="text-2xl font-black text-amber-950">{lifetimeGiftsCount}</div>
-          <p className="text-[11px] text-amber-700/80 mt-1">Grants whole-life subscription</p>
+          <p className="text-[11px] text-amber-700/80 mt-1">Permanent access vouchers</p>
         </div>
 
         <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs">
@@ -300,8 +299,8 @@ export default function AdminCouponsPage() {
                     <div className="space-y-1">
                       {c.discountType === "free_access" ? (
                         <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] font-black bg-emerald-100 text-emerald-800 border border-emerald-300">
-                          <Gift className="h-3 w-3 text-emerald-700" />
-                          <span>100% FREE GIFT</span>
+                          <CheckCircle2 className="h-3 w-3 text-emerald-700" />
+                          <span>100% FREE ACCESS</span>
                         </span>
                       ) : c.discountType === "percentage" ? (
                         <span className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-[11px] font-bold bg-primary/10 text-primary border border-primary/20">
@@ -320,11 +319,11 @@ export default function AdminCouponsPage() {
                         </span>
                       )}
 
-                      {/* Lifetime Gift Badge */}
+                      {/* Lifetime Badge */}
                       {c.isLifetimeAccess && (
                         <div className="flex items-center gap-1 text-[10px] font-bold text-amber-700">
-                          <Sparkles className="h-2.5 w-2.5" />
-                          <span>Whole Life Access Grant</span>
+                          <ShieldCheck className="h-3 w-3" />
+                          <span>Lifetime Access</span>
                         </div>
                       )}
                     </div>

@@ -154,11 +154,25 @@ export default function ClassroomContent({ courseSlug }) {
     const adminRoles = ["super_admin", "admin", "instructor", "course_admin", "manager"];
     if (adminRoles.includes(user?.role)) return true;
 
-    // Active subscriber has access to all courses while subscription is valid
+    // Active subscriber has access to all courses while subscription is valid (> 0 days remaining)
+    const sub = user?.subscription;
+    const now = Date.now();
+    const hasRemainingDays =
+      sub?.remainingDays !== undefined && sub?.remainingDays !== null
+        ? Number(sub.remainingDays) > 0
+        : true;
+    const hasValidExpiry = sub?.expiresAt
+      ? new Date(sub.expiresAt).getTime() > now
+      : sub?.planKey === "lifetime";
+
     const isSubActive =
-      user?.subscription?.status === "active" &&
-      user?.subscription?.planKey !== "course_single" &&
-      (!user?.subscription?.expiresAt || new Date(user.subscription.expiresAt) > new Date());
+      sub?.status === "active" &&
+      sub?.planKey &&
+      sub?.planKey !== "course_single" &&
+      sub?.planKey !== "free" &&
+      hasValidExpiry &&
+      hasRemainingDays;
+
     if (isSubActive) return true;
 
     // Check my learning courses
@@ -491,6 +505,18 @@ export default function ClassroomContent({ courseSlug }) {
     }
   }, [lessons, activeView.lessonIdx, activeView.type]);
 
+  // Strict guard: Paid course + No enrollment or valid subscription -> cannot view Module 2+
+  useEffect(() => {
+    if (!isCourseFree && !hasFullAccess && activeView.moduleIdx > 0) {
+      setActiveView({
+        type: "video",
+        lessonIdx: 0,
+        moduleIdx: 0,
+      });
+      setIsCheckoutModalOpen(true);
+    }
+  }, [isCourseFree, hasFullAccess, activeView.moduleIdx]);
+
   const hasAnyFreeLesson = useMemo(() => {
     return lessons.some((l) => !l.isLocked);
   }, [lessons]);
@@ -693,13 +719,29 @@ export default function ClassroomContent({ courseSlug }) {
       return;
     }
 
+    // If last lesson in Module 1 and Module 1 does NOT have a quiz:
+    // Module 1 is finished! For a paid course without enrollment or valid subscription, open CheckoutModal immediately!
+    if (isLastLessonInMod && currentModIdx === 0 && !isCourseFree && !hasFullAccess) {
+      setIsCheckoutModalOpen(true);
+      toast.warning(
+        isBn
+          ? "১ম মডিউল সম্পন্ন হয়েছে! পরবর্তী মডিউল দেখতে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।"
+          : "Module 1 completed! Please enroll or subscribe to continue to Module 2."
+      );
+      return;
+    }
+
     if (currentLessonIdx < lessons.length - 1) {
       const nextLesson = lessons[currentLessonIdx + 1];
 
-      // Check 1: Is next lesson premium locked (Paid course & not enrolled)?
-      if (nextLesson.isPremiumLocked && !isCourseFree && !hasFullAccess) {
-        setLockedLessonTarget(nextLesson);
-        setLockedLessonModalOpen(true);
+      // Check 1: Is next lesson in Module 2+ or premium locked (Paid course & not enrolled)?
+      if ((nextLesson.moduleIdx > 0 || nextLesson.isPremiumLocked) && !isCourseFree && !hasFullAccess) {
+        setIsCheckoutModalOpen(true);
+        toast.warning(
+          isBn
+            ? "মডিউল ২ এবং পরবর্তী পাঠগুলো দেখতে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।"
+            : "Please enroll in the course or subscribe to unlock Module 2 onwards."
+        );
         return;
       }
 
@@ -817,10 +859,16 @@ export default function ClassroomContent({ courseSlug }) {
   };
 
   const handleSelectLockedLesson = (lesson) => {
-    if (lesson.isPremiumLocked && !isCourseFree && !hasFullAccess) {
-      setLockedLessonTarget(lesson);
-      setLockedLessonModalOpen(true);
-    } else if (lesson.isGatedLocked) {
+    if (!isCourseFree && !hasFullAccess && (lesson.moduleIdx > 0 || lesson.isPremiumLocked)) {
+      setIsCheckoutModalOpen(true);
+      toast.warning(
+        isBn
+          ? `মডিউল ${lesson.moduleIdx + 1} দেখতে অনুগ্রহ করে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।`
+          : `Please enroll in the course or subscribe to unlock Module ${lesson.moduleIdx + 1}.`
+      );
+      return;
+    }
+    if (lesson.isGatedLocked) {
       toast.warning(
         isBn
           ? `এই মডিউলটি লক করা রয়েছে। পূর্ববর্তী মডিউলের কুইজ সম্পন্ন করুন।`
@@ -836,6 +884,16 @@ export default function ClassroomContent({ courseSlug }) {
   };
 
   const handleTakeModuleQuiz = (mod, modIdx) => {
+    if (!isCourseFree && !hasFullAccess && modIdx > 0) {
+      setIsCheckoutModalOpen(true);
+      toast.warning(
+        isBn
+          ? `মডিউল ${modIdx + 1} কুইজ আনলক করতে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।`
+          : `Please enroll in the course or subscribe to unlock Module ${modIdx + 1} Quiz.`
+      );
+      return;
+    }
+
     const modLessons = mod.lessons || [];
     const allCompleted =
       modLessons.length === 0 ||
@@ -909,6 +967,14 @@ export default function ClassroomContent({ courseSlug }) {
             ? "🎓 অভিনন্দন! আপনি ফাইনাল সার্টিফিকেশন পরীক্ষায় পাস করেছেন এবং আপনার সার্টিফিকেট তৈরি হয়েছে!"
             : "🎓 Congratulations! You passed the Certification Exam and earned your certificate!"
         );
+      } else if (moduleIndex === 0 && !isCourseFree && !hasFullAccess) {
+        // Module 1 finished! Open Checkout Modal immediately!
+        setIsCheckoutModalOpen(true);
+        toast.success(
+          isBn
+            ? "🎉 অভিনন্দন! আপনি ১ম মডিউল সম্পন্ন করেছেন। মডিউল ২ দেখতে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।"
+            : "🎉 Module 1 completed! Please enroll or subscribe to unlock Module 2."
+        );
       } else {
         toast.success(
           isBn
@@ -924,13 +990,13 @@ export default function ClassroomContent({ courseSlug }) {
     const nextMod = modules[nextModIdx];
     if (!nextMod) return;
 
-    // If paid course and user does not have full access, enrollment is mandatory to access Module 2+!
+    // If paid course and user does not have full access, enrollment or subscription is mandatory to access Module 2+!
     if (!isCourseFree && !hasFullAccess) {
       setIsCheckoutModalOpen(true);
       toast.warning(
         isBn
-          ? `মডিউল ${nextModIdx + 1} দেখতে অনুগ্রহ করে সম্পূর্ণ কোর্সে ভর্তি সম্পন্ন করুন।`
-          : `Please enroll in the course to unlock Module ${nextModIdx + 1}.`
+          ? `মডিউল ${nextModIdx + 1} দেখতে অনুগ্রহ করে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।`
+          : `Please enroll in the course or subscribe to unlock Module ${nextModIdx + 1}.`
       );
       return;
     }

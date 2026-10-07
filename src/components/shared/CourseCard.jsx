@@ -93,15 +93,29 @@ export default function CourseCard({
 
   const displayImage = course?.imageUrl || imageUrl || "/default_image.jpg";
 
+  const sub = user?.subscription;
+  const now = Date.now();
+  const hasRemainingDays =
+    sub?.remainingDays !== undefined && sub?.remainingDays !== null
+      ? Number(sub.remainingDays) > 0
+      : true;
+  const hasValidExpiry = sub?.expiresAt
+    ? new Date(sub.expiresAt).getTime() > now
+    : sub?.planKey === "lifetime";
+
+  const isSubActive =
+    sub?.status === "active" &&
+    sub?.planKey &&
+    sub?.planKey !== "course_single" &&
+    sub?.planKey !== "free" &&
+    hasValidExpiry &&
+    hasRemainingDays;
+
   const isSubscribed =
     mounted &&
     Boolean(
-      user?.role === "subscriber" ||
-        (user?.subscription?.status === "active" &&
-          user?.subscription?.planKey !== "course_single" &&
-          (!user?.subscription?.expiresAt ||
-            new Date(user.subscription.expiresAt) > new Date())) ||
-        ["super_admin", "admin", "instructor", "course_admin", "editor"].includes(
+      isSubActive ||
+        ["super_admin", "admin", "instructor", "course_admin", "manager", "editor"].includes(
           user?.role
         )
     );

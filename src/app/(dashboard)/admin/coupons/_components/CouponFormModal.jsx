@@ -5,12 +5,10 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import {
   Tag,
-  Gift,
   Calendar,
   Clock,
   Percent,
   CheckCircle2,
-  Sparkles,
   Infinity,
   ShieldCheck,
 } from "lucide-react";
@@ -157,14 +155,14 @@ export default function CouponFormModal({
       title={
         <div className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-            <Gift className="h-5 w-5" />
+            <Tag className="h-5 w-5" />
           </div>
           <div>
             <h3 className="text-base font-bold text-slate-900">
-              {isEdit ? "Edit Coupon / Gift Voucher" : "Create Coupon or Gift Voucher"}
+              {isEdit ? "Edit Coupon / Voucher" : "Create Coupon or Voucher"}
             </h3>
             <p className="text-xs text-slate-500">
-              Configure dynamic discounts, usage limits, or whole-life lifetime gift vouchers.
+              Configure promotional codes, percentage discounts, or lifetime access vouchers.
             </p>
           </div>
         </div>
@@ -183,7 +181,7 @@ export default function CouponFormModal({
                 onClick={() => handleGenerateCode(discountType === "free_access" ? "GIFT" : "PROMO")}
                 className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
               >
-                <Sparkles className="h-3 w-3" />
+                <Tag className="h-3 w-3" />
                 Generate Code
               </button>
             </div>
@@ -245,8 +243,8 @@ export default function CouponFormModal({
               }`}
             >
               <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 mb-1">
-                <Gift className="h-4 w-4" />
-                <span>100% Free Gift</span>
+                <CheckCircle2 className="h-4 w-4" />
+                <span>100% Free Voucher</span>
               </div>
               <p className="text-[11px] text-slate-500 leading-snug">
                 100% discount. Activates without payment gateway.
@@ -344,12 +342,12 @@ export default function CouponFormModal({
             />
             <div>
               <div className="flex items-center gap-1.5 text-xs font-bold text-amber-900">
-                <Sparkles className="h-3.5 w-3.5 text-amber-600" />
-                <span>Gift Whole Life Access (Lifetime / 100 Years)</span>
+                <ShieldCheck className="h-3.5 w-3.5 text-amber-600" />
+                <span>Grant Lifetime Access (100 Years)</span>
               </div>
               <p className="text-[11px] text-amber-800/80 mt-0.5 leading-relaxed">
                 When activated on a subscription package or course, sets the validity to lifetime
-                (100 years). Perfect for gifting permanent VIP status to students and staff.
+                (100 years). Perfect for providing permanent access to students and staff.
               </p>
             </div>
           </label>

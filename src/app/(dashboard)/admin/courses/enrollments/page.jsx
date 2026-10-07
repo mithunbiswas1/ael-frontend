@@ -9,7 +9,6 @@ import {
   FaUsers,
   FaMoneyBillWave,
   FaCheckCircle,
-  FaGift,
   FaExternalLinkAlt,
   FaUserGraduate,
   FaPhoneAlt,
@@ -204,8 +203,8 @@ export default function CourseEnrollmentsPage() {
               <span className="text-xs font-semibold text-slate-500">
                 Free Direct Enrollments
               </span>
-              <div className="rounded-lg bg-sky-50 p-2 text-sky-600">
-                <FaGift className="h-4 w-4" />
+              <div className="rounded-lg bg-emerald-50 p-2 text-emerald-600">
+                <FaCheckCircle className="h-4 w-4" />
               </div>
             </div>
             <div className="mt-2 flex items-baseline gap-2">

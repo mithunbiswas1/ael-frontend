@@ -97,7 +97,7 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "subscriptions",
   },
   {
-    name: "Coupons & Gift Vouchers",
+    name: "Coupons & Vouchers",
     href: "/admin/coupons",
     icon: FaTag,
     module: "subscriptions",

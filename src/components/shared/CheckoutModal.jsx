@@ -14,8 +14,6 @@ import {
   ArrowRight,
   BookOpen,
   Tag,
-  Gift,
-  Sparkles,
   X,
 } from "lucide-react";
 
@@ -107,12 +105,6 @@ export default function CheckoutModal({
 
   const discountAmount = appliedCoupon ? Number(appliedCoupon.discountAmount || 0) : 0;
   const grandTotal = Math.max(0, basePrice - discountAmount);
-  const isFreeGift = Boolean(
-    appliedCoupon &&
-      (grandTotal === 0 ||
-        appliedCoupon.discountType === "free_access" ||
-        appliedCoupon.isLifetimeAccess)
-  );
 
   const itemTitle = isCourseCheckout
     ? isBn
@@ -246,8 +238,8 @@ export default function CheckoutModal({
         res?.message ||
           (grandTotal === 0
             ? isBn
-              ? "উপহার কুপন সফলভাবে সক্রিয় করা হয়েছে!"
-              : "Gift access activated successfully!"
+              ? "কুপন সফলভাবে সক্রিয় করা হয়েছে!"
+              : "Access activated successfully!"
             : isBn
             ? "পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!"
             : "Payment completed successfully!")
@@ -285,8 +277,8 @@ export default function CheckoutModal({
       toast.success(
         grandTotal === 0
           ? isBn
-            ? "উপহার কুপন সফলভাবে সক্রিয় করা হয়েছে!"
-            : "Gift access activated!"
+            ? "অ্যাক্সেস সক্রিয় করা হয়েছে!"
+            : "Access activated!"
           : isBn
           ? "পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!"
           : "Payment completed successfully!"
@@ -332,8 +324,8 @@ export default function CheckoutModal({
                 <H3 className="text-xl font-black text-slate-900">
                   {grandTotal === 0
                     ? isBn
-                      ? "উপহার কুপন সক্রিয় হয়েছে!"
-                      : "Gift Access Activated!"
+                      ? "অ্যাক্সেস সক্রিয় হয়েছে!"
+                      : "Access Activated!"
                     : isBn
                     ? "পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!"
                     : "Payment Confirmed!"}
@@ -341,8 +333,8 @@ export default function CheckoutModal({
                 <P className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
                   {grandTotal === 0
                     ? isBn
-                      ? `অভিনন্দন, ${fullName}! আপনার উপহার কুপনটি সক্রিয় হয়েছে এবং সম্পূর্ণ অ্যাক্সেস উন্মুক্ত করা হয়েছে।`
-                      : `Congratulations, ${fullName}! Your gift voucher is activated and full access is now unlocked.`
+                      ? `অভিনন্দন, ${fullName}! আপনার কুপন ভাউচারটি সক্রিয় হয়েছে এবং সম্পূর্ণ অ্যাক্সেস উন্মুক্ত করা হয়েছে।`
+                      : `Congratulations, ${fullName}! Your voucher is activated and access is now unlocked.`
                     : isBn
                     ? `ধন্যবাদ, ${fullName}। আপনার পেমেন্ট নিশ্চিত করা হয়েছে এবং অ্যাক্সেস সক্রিয় করা হয়েছে।`
                     : `Thank you, ${fullName}. Your transaction is complete and access is now officially active.`}
@@ -370,7 +362,7 @@ export default function CheckoutModal({
                       <Tag className="h-3 w-3" />
                       {appliedCoupon.code}
                       {appliedCoupon.isLifetimeAccess && (
-                        <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1 rounded">
+                        <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded font-semibold">
                           {isBn ? "আজীবন" : "Lifetime"}
                         </span>
                       )}
@@ -384,15 +376,15 @@ export default function CheckoutModal({
                   <span className="font-bold text-emerald-700">
                     {grandTotal === 0
                       ? isBn
-                        ? "৳ ০ (সম্পূর্ণ উপহার)"
-                        : "৳ 0 (100% Free Gift)"
+                        ? "৳ ০ (সম্পূর্ণ ফ্রি)"
+                        : "৳ 0 (100% Free)"
                       : `৳ ${grandTotal.toLocaleString()}`}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">{isBn ? "পেমেন্ট মাধ্যম:" : "Method:"}</span>
                   <span className="font-semibold text-slate-700 uppercase">
-                    {grandTotal === 0 ? (isBn ? "গিফট ভাউচার" : "Gift Voucher") : paymentMethod}
+                    {grandTotal === 0 ? (isBn ? "কুপন ভাউচার" : "Coupon Voucher") : paymentMethod}
                   </span>
                 </div>
               </div>
@@ -468,7 +460,7 @@ export default function CheckoutModal({
                       <span>{appliedCoupon.code}</span>
                       {appliedCoupon.isLifetimeAccess && (
                         <span className="bg-emerald-100 text-emerald-800 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                          {isBn ? "আজীবন গিফট" : "Lifetime Gift"}
+                          {isBn ? "আজীবন অ্যাক্সেস" : "Lifetime Access"}
                         </span>
                       )}
                     </div>
@@ -485,8 +477,8 @@ export default function CheckoutModal({
                   </div>
                   <div className="text-xl font-black text-primary">
                     {grandTotal === 0 ? (
-                      <span className="text-emerald-600 flex items-center gap-1 text-base font-black">
-                        <Gift className="h-4.5 w-4.5" />
+                      <span className="text-emerald-600 flex items-center gap-1.5 text-base font-black">
+                        <CheckCircle2 className="h-4.5 w-4.5" />
                         <span>{isBn ? "বিনামূল্যে (৳০)" : "FREE (৳0)"}</span>
                       </span>
                     ) : (
@@ -496,14 +488,14 @@ export default function CheckoutModal({
                 </div>
               </div>
 
-              {/* Promo / Lifetime Gift Coupon Input Section */}
+              {/* Promo / Discount Coupon Input Section */}
               <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/80 p-3">
                 {!appliedCoupon ? (
                   <div className="space-y-1.5">
                     <div className="text-[11px] font-semibold text-slate-700 flex items-center gap-1.5">
                       <Tag className="h-3.5 w-3.5 text-primary" />
                       <span>
-                        {isBn ? "প্রোমো বা লাইফটাইম গিফট কুপন আছে?" : "Have a Promo or Lifetime Gift Voucher?"}
+                        {isBn ? "প্রোমো বা ডিসকাউন্ট কুপন আছে?" : "Have a promo or discount coupon code?"}
                       </span>
                     </div>
                     <div className="flex gap-2">
@@ -539,7 +531,7 @@ export default function CheckoutModal({
                   <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200/90 rounded-lg px-3 py-2 text-xs">
                     <div className="flex items-center gap-2">
                       <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0">
-                        <Gift className="h-4 w-4" />
+                        <Tag className="h-4 w-4" />
                       </div>
                       <div>
                         <div className="font-bold text-emerald-900 flex items-center gap-1.5">
@@ -551,8 +543,8 @@ export default function CheckoutModal({
                         <div className="text-[11px] text-emerald-700">
                           {appliedCoupon.isLifetimeAccess
                             ? isBn
-                              ? "🎁 ১০০% আজীবন মেয়াদের ফ্রি উপহার অনুমোদিত!"
-                              : "🎁 100% Lifetime Gift Subscription Granted!"
+                              ? "১০০% আজীবন মেয়াদের ফ্রি অ্যাক্সেস অনুমোদিত"
+                              : "100% Lifetime Access Granted"
                             : isBn
                             ? `৳ ${discountAmount} মূল্যছাড় কার্যকর করা হয়েছে`
                             : `৳${discountAmount} discount applied`}
@@ -633,20 +625,20 @@ export default function CheckoutModal({
                 </div>
               </div>
 
-              {/* Payment Method Selector or Free Gift Notice */}
+              {/* Payment Method Selector or Free Voucher Notice */}
               {grandTotal === 0 ? (
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50/70 p-3.5 flex items-start gap-3">
                   <div className="h-8 w-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
-                    <Sparkles className="h-4 w-4" />
+                    <CheckCircle2 className="h-4 w-4" />
                   </div>
                   <div className="space-y-0.5">
                     <div className="text-xs font-bold text-emerald-950">
-                      {isBn ? "১০০% ফ্রি গিফট কুপন ভাউচার" : "100% Free Gift Voucher"}
+                      {isBn ? "১০০% ফ্রি কুপন ভাউচার" : "100% Free Voucher"}
                     </div>
                     <P className="text-[11px] text-emerald-800">
                       {isBn
                         ? "এই কুপনের মাধ্যমে কোনো অর্থ প্রদান ছাড়াই সম্পূর্ণ অ্যাক্সেস সরাসরি চালু হবে। নিচের বাটনে চাপ দিন।"
-                        : "Zero payment required! Clicking activate will immediately unlock lifetime subscription access."}
+                        : "Zero payment required. Clicking below will immediately unlock your access."}
                     </P>
                   </div>
                 </div>
@@ -707,7 +699,7 @@ export default function CheckoutModal({
                   size="lg"
                   fullWidth
                   isLoading={isProcessing}
-                  icon={grandTotal === 0 ? Gift : Lock}
+                  icon={grandTotal === 0 ? CheckCircle2 : Lock}
                   className={grandTotal === 0 ? "bg-emerald-600 hover:bg-emerald-700 border-emerald-600" : ""}
                 >
                   <span>
@@ -717,8 +709,8 @@ export default function CheckoutModal({
                         : "Activating Access..."
                       : grandTotal === 0
                       ? isBn
-                        ? "🎁 সম্পূর্ণ ফ্রি উপহারটি গ্রহণ করুন (৳০)"
-                        : "🎁 Claim Free Gift & Activate Access (৳0)"
+                        ? "সম্পূর্ণ ফ্রি অ্যাক্সেস সক্রিয় করুন (৳০)"
+                        : "Activate Free Access (৳0)"
                       : isBn
                       ? `নিরাপদে পে করুন (এখনই সক্রিয় করুন) ৳ ${grandTotal.toLocaleString()}`
                       : `Pay & Activate Instantly ৳ ${grandTotal.toLocaleString()}`}

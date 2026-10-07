@@ -185,19 +185,23 @@ export default function UserSubscriptionPage() {
                           }`}
                       >
                         {isSubscriber && remainingDays !== null ? (
-                          <>
-                            {remainingDays}{" "}
-                            <span className="text-base font-bold text-slate-700">
-                              {isBn ? "দিন বাকি" : "Days Left"}
-                            </span>
-                          </>
+                          remainingDays > 730 ? (
+                            <span>{isBn ? "আজীবন অ্যাক্সেস" : "Lifetime Access"}</span>
+                          ) : (
+                            <>
+                              {remainingDays}{" "}
+                              <span className="text-base font-bold text-slate-700">
+                                {isBn ? "দিন বাকি" : "Days Left"}
+                              </span>
+                            </>
+                          )
                         ) : isBn ? (
                           "০ দিন"
                         ) : (
                           "0 Days"
                         )}
                       </span>
-                      {userSub?.totalDays && isSubscriber ? (
+                      {userSub?.totalDays && isSubscriber && remainingDays <= 730 ? (
                         <span className="text-xs text-slate-400 font-medium">
                           ({isBn
                             ? `মোট মেয়াদ: ${userSub.totalDays} দিন`

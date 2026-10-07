@@ -3,13 +3,12 @@
 
 import {
   Tag,
-  Gift,
   Calendar,
   Users,
   CheckCircle2,
   XCircle,
   Copy,
-  Sparkles,
+  ShieldCheck,
   Infinity,
   Clock,
 } from "lucide-react";
@@ -78,8 +77,8 @@ export default function CouponDetailsModal({ isOpen, onClose, coupon }) {
           <div className="flex items-center gap-2">
             {coupon.isLifetimeAccess && (
               <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300">
-                <Sparkles className="h-3 w-3 text-amber-600" />
-                <span>Whole Life Access</span>
+                <ShieldCheck className="h-3 w-3 text-amber-600" />
+                <span>Lifetime Access</span>
               </span>
             )}
             <span
@@ -100,7 +99,7 @@ export default function CouponDetailsModal({ isOpen, onClose, coupon }) {
             <span className="text-slate-400 block mb-0.5">Discount Type</span>
             <span className="font-bold text-slate-800 capitalize">
               {coupon.discountType === "free_access"
-                ? "100% Free Gift"
+                ? "100% Free Voucher"
                 : coupon.discountType === "percentage"
                 ? `${coupon.discountValue}% Off`
                 : `৳ ${coupon.discountValue} Flat Off`}

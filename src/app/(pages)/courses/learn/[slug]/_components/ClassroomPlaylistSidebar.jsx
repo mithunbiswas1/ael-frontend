@@ -215,8 +215,12 @@ export default function ClassroomPlaylistSidebar({
                   <div className="p-2.5 border-t border-slate-100 bg-slate-50/50">
                     <button
                       type="button"
-                      disabled={isQuizLocked}
+                      disabled={isQuizLocked && !(!hasFullAccess && !isModFree && modIdx > 0)}
                       onClick={() => {
+                        if (!isModFree && !hasFullAccess && modIdx > 0) {
+                          if (onTakeModuleQuiz) onTakeModuleQuiz(mod, modIdx);
+                          return;
+                        }
                         if (onTakeModuleQuiz) onTakeModuleQuiz(mod, modIdx);
                         if (typeof window !== "undefined" && window.innerWidth < 1024) {
                           setSidebarOpen(false);
@@ -224,17 +228,21 @@ export default function ClassroomPlaylistSidebar({
                       }}
                       className={`w-full flex items-center justify-between p-2.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${activeView?.type === "quiz" && activeView?.moduleIdx === modIdx
                         ? "bg-primary/10 border-2 border-primary text-primary font-bold shadow-2xs"
-                        : isQuizLocked
-                          ? "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
-                          : isQuizPassed
-                            ? "bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-800"
-                            : quizResult
-                              ? "bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-rose-800"
-                              : "bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900"
+                        : !isModFree && !hasFullAccess && modIdx > 0
+                          ? "bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900"
+                          : isQuizLocked
+                            ? "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
+                            : isQuizPassed
+                              ? "bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-emerald-800"
+                              : quizResult
+                                ? "bg-rose-50 hover:bg-rose-100/80 border border-rose-200 text-rose-800"
+                                : "bg-amber-50 hover:bg-amber-100/80 border border-amber-200 text-amber-900"
                         }`}
                     >
                       <div className="flex items-center gap-2 truncate">
-                        {isQuizPassed ? (
+                        {!isModFree && !hasFullAccess && modIdx > 0 ? (
+                          <Lock className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                        ) : isQuizPassed ? (
                           <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                         ) : isQuizLocked ? (
                           <Lock className="h-3.5 w-3.5 text-slate-400 shrink-0" />
@@ -253,11 +261,15 @@ export default function ClassroomPlaylistSidebar({
                         </span>
                       </div>
                       <span className="text-[10px] bg-white border border-slate-200 px-1.5 py-0.5 rounded font-bold shrink-0">
-                        {isQuizPassed
-                          ? `${quizScore}%`
-                          : quizResult
-                            ? `${quizScore}% (Retry)`
-                            : `${mod.quiz.questions.length} Qs`}
+                        {!isModFree && !hasFullAccess && modIdx > 0 ? (
+                          isBn ? "ভর্তি আবশ্যক" : "Enroll Req"
+                        ) : isQuizPassed ? (
+                          `${quizScore}%`
+                        ) : quizResult ? (
+                          `${quizScore}% (Retry)`
+                        ) : (
+                          `${mod.quiz.questions.length} Qs`
+                        )}
                       </span>
                     </button>
                   </div>
@@ -311,6 +323,12 @@ export default function ClassroomPlaylistSidebar({
                     <button
                       type="button"
                       onClick={() => {
+                        if (!hasFullAccess && modules.length > 1) {
+                          if (onSelectLockedLesson) {
+                            onSelectLockedLesson({ moduleIdx: modules.length - 1, isPremiumLocked: true });
+                          }
+                          return;
+                        }
                         const lastModIdx = modules.length - 1;
                         const lastMod = modules[lastModIdx];
                         if (onTakeModuleQuiz) onTakeModuleQuiz(lastMod, lastModIdx);
