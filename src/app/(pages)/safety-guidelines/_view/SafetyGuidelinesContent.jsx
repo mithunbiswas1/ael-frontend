@@ -11,9 +11,17 @@ export default function SafetyGuidelinesContent({ sections = {} }) {
   const [activeTab, setActiveTab] = useState("investors");
 
   useEffect(() => {
-    const tabFromUrl = searchParams.get("tab")?.toLowerCase();
-    if (tabFromUrl && STAKEHOLDER_TABS.some((t) => t.id.toLowerCase() === tabFromUrl)) {
-      setActiveTab(tabFromUrl);
+    const rawTab = searchParams?.get("tab")?.toLowerCase();
+    if (!rawTab) return;
+    const tabAliases = {
+      consumer: "customer",
+      household: "customer",
+      industrial: "investors",
+      "auto-gas": "dealer",
+    };
+    const target = tabAliases[rawTab] || rawTab;
+    if (STAKEHOLDER_TABS.some((t) => t.id.toLowerCase() === target)) {
+      setActiveTab(target);
     }
   }, [searchParams]);
 

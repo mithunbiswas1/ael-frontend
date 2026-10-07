@@ -8,6 +8,8 @@ import { FaImage, FaAward, FaFilePdf, FaBuilding, FaArrowRight } from "react-ico
 import PageConfigShell from "../_components/PageConfigShell";
 import BannerEditorTab from "../_components/BannerEditorTab";
 import StandardsEditorTab from "./_components/StandardsEditorTab";
+import DocumentsEditorTab from "./_components/DocumentsEditorTab";
+import AgenciesEditorTab from "./_components/AgenciesEditorTab";
 import {
   useGetPageByKeyQuery,
   useUpdatePageByKeyMutation,
@@ -34,6 +36,8 @@ export default function AdminSafetyGuidelinesPage() {
     },
     sections: {
       standardsList: [],
+      documentDownloads: [],
+      regulatoryAgencies: [],
     },
   });
 
@@ -56,6 +60,8 @@ export default function AdminSafetyGuidelinesPage() {
         },
         sections: {
           standardsList: pageData.data.sections?.standardsList || [],
+          documentDownloads: pageData.data.sections?.documentDownloads || [],
+          regulatoryAgencies: pageData.data.sections?.regulatoryAgencies || [],
           ...(pageData.data.sections || {}),
         },
       }));
@@ -64,26 +70,29 @@ export default function AdminSafetyGuidelinesPage() {
 
   const handleSave = async () => {
     try {
+      const { _id, createdAt, updatedAt, __v, ...cleanFormData } = formData;
       await updatePage({
         pageKey: "safety-guidelines",
-        data: formData,
+        data: cleanFormData,
       }).unwrap();
-      toast.success("Hero banner and standards list updated successfully!");
+      toast.success("Safety guidelines configuration updated successfully!");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to update safety guidelines");
+      toast.error(err?.data?.message || err?.message || "Failed to update safety guidelines");
     }
   };
 
   const tabs = [
     { id: "banner", label: "Hero Banner", icon: FaImage },
     { id: "standards", label: "Standards List", icon: FaAward },
+    { id: "documents", label: "Guidelines & Downloads", icon: FaFilePdf },
+    { id: "agencies", label: "Regulatory Authorities", icon: FaBuilding },
   ];
 
   return (
     <PageConfigShell
       pageKey="safety-guidelines"
       title="Safety Guidelines Configuration"
-      subtitle="Manage hero banner and international regulatory standards (ISO / EN / NFPA) displayed on the public safety guidelines page."
+      subtitle="Manage hero banner, ISO/NFPA standards, downloadable manuals, and regulatory authorities displayed on the public safety guidelines page."
       previewUrl="/safety-guidelines"
       tabs={tabs}
       activeTab={activeTab}
@@ -109,7 +118,7 @@ export default function AdminSafetyGuidelinesPage() {
                 </span>
               </h4>
               <p className="text-[11px] text-slate-500 mt-0.5">
-                Manage manuals, circulars, stakeholder documents (Investors, Dealer, Distributor, Customer), and authorities with PDF attachments.
+                Upload new PDFs, manage downloadable SOPs by stakeholder category (Investors, Dealer, Distributor, Customer), and authorities.
               </p>
             </div>
           </div>
@@ -135,6 +144,30 @@ export default function AdminSafetyGuidelinesPage() {
             setFormData((prev) => ({
               ...prev,
               sections: { ...prev.sections, standardsList: newList },
+            }))
+          }
+        />
+      )}
+
+      {activeTab === "documents" && (
+        <DocumentsEditorTab
+          documents={formData.sections?.documentDownloads}
+          onChange={(newDocs) =>
+            setFormData((prev) => ({
+              ...prev,
+              sections: { ...prev.sections, documentDownloads: newDocs },
+            }))
+          }
+        />
+      )}
+
+      {activeTab === "agencies" && (
+        <AgenciesEditorTab
+          agencies={formData.sections?.regulatoryAgencies}
+          onChange={(newAgencies) =>
+            setFormData((prev) => ({
+              ...prev,
+              sections: { ...prev.sections, regulatoryAgencies: newAgencies },
             }))
           }
         />

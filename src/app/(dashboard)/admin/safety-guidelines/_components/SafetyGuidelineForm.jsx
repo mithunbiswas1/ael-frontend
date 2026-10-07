@@ -110,8 +110,8 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
   useEffect(() => {
     if (pageData?.data && isEdit && activeId) {
       const sections = pageData.data.sections || {};
-      const docs = sections.documentDownloads || [];
-      const agencies = sections.regulatoryAgencies || [];
+      const docs = Array.isArray(sections.documentDownloads) ? sections.documentDownloads : [];
+      const agencies = Array.isArray(sections.regulatoryAgencies) ? sections.regulatoryAgencies : [];
 
       // Check in guidelines
       const foundDoc = docs.find((d) => String(d.id) === String(activeId));
@@ -119,7 +119,7 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
         setContentType("guideline");
         setFormData({
           id: foundDoc.id,
-          category: foundDoc.targetTab || "investors",
+          category: foundDoc.targetTab || "all",
           nameEn: foundDoc.nameEn || "",
           nameBn: foundDoc.nameBn || "",
           access: foundDoc.access || "Public",
@@ -146,7 +146,7 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
         setContentType("agency");
         setFormData({
           id: foundAgency.id,
-          category: foundAgency.targetTab || "investors",
+          category: foundAgency.targetTab || "all",
           nameEn: "",
           nameBn: "",
           access: "Public",
@@ -234,30 +234,32 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
       return;
     }
 
+    const targetId = activeId || formData.id || Date.now();
+
     // Validation based on selected type
     if (contentType === "guideline") {
-      if (!formData.nameEn.trim()) {
+      if (!formData.nameEn?.trim()) {
         toast.error("Please enter the document title in English");
         return;
       }
-      if (!formData.nameBn.trim()) {
+      if (!formData.nameBn?.trim()) {
         toast.error("Please enter the document title in Bangla");
         return;
       }
     } else {
-      if (!formData.agencyName.trim()) {
+      if (!formData.agencyName?.trim()) {
         toast.error("Please enter the agency acronym / short code (e.g. BERC, DoE)");
         return;
       }
-      if (!formData.titleEn.trim()) {
+      if (!formData.titleEn?.trim()) {
         toast.error("Please enter the official authority name in English");
         return;
       }
-      if (!formData.titleBn.trim()) {
+      if (!formData.titleBn?.trim()) {
         toast.error("Please enter the official authority name in Bangla");
         return;
       }
-      if (!formData.href.trim() || formData.href === "https://") {
+      if (!formData.href?.trim() || formData.href === "https://") {
         toast.error("Please provide the authority official website URL");
         return;
       }
@@ -275,59 +277,59 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
       if (contentType === "guideline") {
         // Construct Guideline Object
         const guidelineItem = {
-          id: formData.id || Date.now(),
+          id: targetId,
           itemType: "guideline",
-          nameEn: formData.nameEn.trim(),
-          nameBn: formData.nameBn.trim(),
-          targetTab: formData.category, // investors, dealer, distributor, customer, all
+          nameEn: (formData.nameEn || "").trim(),
+          nameBn: (formData.nameBn || "").trim(),
+          targetTab: formData.category || "all", // investors, dealer, distributor, customer, all
           type: formData.formatType || "PDF",
           access: formData.access || "Public",
           fileName: formData.fileName || "",
           pdfUrl: formData.pdfUrl || "",
           pdfSize: formData.pdfSize || "",
-          descriptionEn: formData.descriptionEn || "",
-          descriptionBn: formData.descriptionBn || "",
+          descriptionEn: (formData.descriptionEn || "").trim(),
+          descriptionBn: (formData.descriptionBn || "").trim(),
         };
 
         if (isEdit) {
-          const docIndex = updatedDocs.findIndex((d) => String(d.id) === String(formData.id));
+          const docIndex = updatedDocs.findIndex((d) => String(d.id) === String(targetId));
           if (docIndex >= 0) {
             updatedDocs[docIndex] = guidelineItem;
           } else {
             updatedDocs.push(guidelineItem);
           }
           // Remove from agencies if previously was an agency
-          updatedAgencies = updatedAgencies.filter((a) => String(a.id) !== String(formData.id));
+          updatedAgencies = updatedAgencies.filter((a) => String(a.id) !== String(targetId));
         } else {
           updatedDocs.push(guidelineItem);
         }
       } else {
         // Construct Agency Object
         const agencyItem = {
-          id: formData.id || `agency-${Date.now()}`,
+          id: targetId,
           itemType: "agency",
-          name: formData.agencyName.trim(),
-          titleEn: formData.titleEn.trim(),
-          titleBn: formData.titleBn.trim(),
-          targetTab: formData.category, // investors, dealer, distributor, customer, all
-          descEn: formData.descEn.trim(),
-          descBn: formData.descBn.trim(),
-          badgeBg: formData.badgeBg,
-          href: formData.href.trim(),
+          name: (formData.agencyName || "").trim(),
+          titleEn: (formData.titleEn || "").trim(),
+          titleBn: (formData.titleBn || "").trim(),
+          targetTab: formData.category || "all", // investors, dealer, distributor, customer, all
+          descEn: (formData.descEn || "").trim(),
+          descBn: (formData.descBn || "").trim(),
+          badgeBg: formData.badgeBg || "bg-blue-50 text-blue-700 border-blue-200",
+          href: (formData.href || "").trim(),
           fileName: formData.fileName || "",
           pdfUrl: formData.pdfUrl || "",
           pdfSize: formData.pdfSize || "",
         };
 
         if (isEdit) {
-          const agencyIndex = updatedAgencies.findIndex((a) => String(a.id) === String(formData.id));
+          const agencyIndex = updatedAgencies.findIndex((a) => String(a.id) === String(targetId));
           if (agencyIndex >= 0) {
             updatedAgencies[agencyIndex] = agencyItem;
           } else {
             updatedAgencies.push(agencyItem);
           }
           // Remove from docs if previously was a guideline
-          updatedDocs = updatedDocs.filter((d) => String(d.id) !== String(formData.id));
+          updatedDocs = updatedDocs.filter((d) => String(d.id) !== String(targetId));
         } else {
           updatedAgencies.push(agencyItem);
         }
@@ -339,10 +341,13 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
         regulatoryAgencies: updatedAgencies,
       };
 
+      // Strip system metadata fields so Mongoose update succeeds without conflict
+      const { _id, createdAt, updatedAt, __v, ...cleanPageData } = pageData.data;
+
       await updatePage({
         pageKey: "safety-guidelines",
         data: {
-          ...pageData.data,
+          ...cleanPageData,
           sections: updatedSections,
         },
       }).unwrap();
@@ -355,7 +360,7 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
 
       router.push("/admin/safety-guidelines");
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to save changes. Please try again.");
+      toast.error(err?.data?.message || err?.message || "Failed to save changes. Please try again.");
     }
   };
 

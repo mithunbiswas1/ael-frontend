@@ -48,7 +48,9 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
   const dynamicAgencies = Array.isArray(sections?.regulatoryAgencies) ? sections.regulatoryAgencies : [];
   const dynamicDocs = Array.isArray(sections?.documentDownloads) ? sections.documentDownloads : [];
 
-  const handleDownload = (doc) => {
+  const [downloadingId, setDownloadingId] = useState(null);
+
+  const handleDownload = async (doc) => {
     const docTitle = isBn ? doc.nameBn : doc.nameEn;
     // Only restrict if doc requires login AND user is NOT logged in
     if (doc.access === "Login Required" && !isLoggedIn) {
@@ -61,21 +63,58 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
     }
 
     const downloadTarget = doc.pdfUrl || (doc.fileName ? `/public/upload/${doc.fileName}` : null);
-    if (downloadTarget) {
-      const fullUrl = getMediaUrl(downloadTarget);
-
-      window.open(fullUrl, "_blank", "noopener,noreferrer");
-      toast.success(
-        isBn
-          ? `ডাউনলোড ওপেন হচ্ছে: ${docTitle} (PDF)`
-          : `Opening download: ${docTitle} (PDF)`
-      );
-    } else {
+    if (!downloadTarget) {
       toast.info(
         isBn
           ? `এই দলিলের পিডিএফ ফাইল শীঘ্রই আপলোড করা হবে।`
           : `PDF file for this document will be uploaded soon.`
       );
+      return;
+    }
+
+    const fullUrl = getMediaUrl(downloadTarget);
+    const filename =
+      doc.fileName ||
+      `${(doc.nameEn || "safety-document").toLowerCase().replace(/[^a-z0-9]/gi, "-")}.pdf`;
+
+    setDownloadingId(doc.id);
+
+    try {
+      const res = await fetch(fullUrl);
+      if (!res.ok) throw new Error("Direct download failed");
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(blobUrl);
+
+      toast.success(
+        isBn
+          ? `ডাউনলোড সম্পন্ন হয়েছে: ${docTitle}`
+          : `Downloaded successfully: ${docTitle}`
+      );
+    } catch {
+      // Fallback: Trigger direct browser download / new tab open
+      const link = document.createElement("a");
+      link.href = fullUrl;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      toast.success(
+        isBn
+          ? `পিডিএফ ফাইল ওপেন করা হচ্ছে: ${docTitle}`
+          : `Opening PDF: ${docTitle}`
+      );
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -329,15 +368,19 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
                             <button
                               type="button"
                               onClick={() => handleDownload(doc)}
-                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-primary shadow-2xs hover:bg-primary hover:text-white transition-colors cursor-pointer"
+                              disabled={downloadingId === doc.id}
+                              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-primary shadow-2xs hover:bg-primary hover:text-white transition-colors cursor-pointer disabled:opacity-50"
                               title={isBn ? "পিডিএফ ডাউনলোড" : "Download PDF"}
                             >
-                              <Download className="h-3.5 w-3.5" />
+                              {downloadingId === doc.id ? (
+                                <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                              ) : (
+                                <Download className="h-3.5 w-3.5" />
+                              )}
                             </button>
                           ) : (
                             <Link
                               href="/login"
-                              onClick={() => handleDownload(doc)}
                               className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-500 hover:border-primary hover:text-primary transition-colors cursor-pointer"
                               title={
                                 isBn

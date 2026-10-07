@@ -159,10 +159,12 @@ export default function SafetyGuidelinesListPage() {
         regulatoryAgencies: updatedAgencies,
       };
 
+      const { _id, createdAt, updatedAt, __v, ...cleanPageData } = pageData.data;
+
       await updatePage({
         pageKey: "safety-guidelines",
         data: {
-          ...pageData.data,
+          ...cleanPageData,
           sections: updatedSections,
         },
       }).unwrap();

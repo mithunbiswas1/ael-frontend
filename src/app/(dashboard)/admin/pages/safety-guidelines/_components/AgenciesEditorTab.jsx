@@ -112,7 +112,7 @@ export default function AgenciesEditorTab({ agencies = [], onChange }) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <Input
                   label="Description (English)"
                   value={item.descEn || ""}
@@ -124,6 +124,12 @@ export default function AgenciesEditorTab({ agencies = [], onChange }) {
                   value={item.descBn || ""}
                   onChange={(e) => handleChange(idx, "descBn", e.target.value)}
                   placeholder="বিদ্যুৎ ও জ্বালানি মন্ত্রণালয়ের অধীনস্থ জাতীয় নিয়ন্ত্রক কর্তৃপক্ষ।"
+                />
+                <Input
+                  label="Gazette / Notification PDF URL"
+                  value={item.pdfUrl || ""}
+                  onChange={(e) => handleChange(idx, "pdfUrl", e.target.value)}
+                  placeholder="https://api.charutec.com/public/upload/..."
                 />
               </div>
             </div>

@@ -113,7 +113,7 @@ export default function DocumentsEditorTab({ documents = [], onChange }) {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <Select
                   label="Target Stakeholder Tab"
                   value={item.targetTab || "all"}
@@ -129,10 +129,17 @@ export default function DocumentsEditorTab({ documents = [], onChange }) {
                 />
 
                 <Input
-                  label="PDF Filename / Path"
+                  label="PDF Filename"
                   value={item.fileName || ""}
                   onChange={(e) => handleChange(idx, "fileName", e.target.value)}
-                  placeholder="e.g. lpg-guidelines.pdf"
+                  placeholder="e.g. investor-lpg-safety-manual.pdf"
+                />
+
+                <Input
+                  label="Direct PDF URL"
+                  value={item.pdfUrl || ""}
+                  onChange={(e) => handleChange(idx, "pdfUrl", e.target.value)}
+                  placeholder="https://api.charutec.com/public/upload/..."
                 />
               </div>
             </div>

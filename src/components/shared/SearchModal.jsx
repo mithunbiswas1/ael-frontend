@@ -38,7 +38,7 @@ const SEARCH_DATABASE = [
     category: "Guideline",
     categoryColor: "bg-emerald-600 text-white",
     icon: ShieldCheck,
-    href: "/safety-guidelines?tab=consumer",
+    href: "/safety-guidelines?tab=customer",
   },
   {
     id: "sg-dealer",
@@ -65,7 +65,7 @@ const SEARCH_DATABASE = [
     category: "Guideline",
     categoryColor: "bg-emerald-600 text-white",
     icon: ShieldCheck,
-    href: "/safety-guidelines?tab=auto-gas",
+    href: "/safety-guidelines?tab=dealer",
   },
   {
     id: "sg-industrial",
@@ -74,7 +74,7 @@ const SEARCH_DATABASE = [
     category: "Guideline",
     categoryColor: "bg-emerald-600 text-white",
     icon: ShieldCheck,
-    href: "/safety-guidelines?tab=industrial",
+    href: "/safety-guidelines?tab=investors",
   },
 
   // Market Updates
