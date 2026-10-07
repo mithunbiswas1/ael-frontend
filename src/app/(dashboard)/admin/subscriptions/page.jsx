@@ -8,6 +8,7 @@ import {
   Search,
   Eye,
   UserPlus,
+  Plus,
   Ban,
   Calendar,
   TrendingUp,
@@ -106,16 +107,27 @@ function AdminSubscriptionsContent() {
           description="Real-time financial audit, subscriber ledger, automated invoice records, access grants, and payment refunds."
         />
 
-        <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto shrink-0">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAssignModalOpen(true)}
+            icon={UserPlus}
+            className="shadow-2xs font-bold"
+          >
+            Grant Access to User
+          </Button>
+
           <Button
             type="button"
             variant="primary"
             size="sm"
-            onClick={() => setIsAssignModalOpen(true)}
-            icon={UserPlus}
-            className="shadow-2xs"
+            onClick={() => router.push("/admin/subscriptions/add")}
+            icon={Plus}
+            className="shadow-2xs font-bold"
           >
-            Grant Access to User
+            Create New Plan
           </Button>
         </div>
       </div>

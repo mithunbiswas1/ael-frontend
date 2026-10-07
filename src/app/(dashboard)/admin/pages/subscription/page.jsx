@@ -162,7 +162,7 @@ export default function AdminSubscriptionPageConfig() {
               type="button"
               variant="primary"
               size="sm"
-              onClick={() => router.push("/admin/subscriptions/create")}
+              onClick={() => router.push("/admin/subscriptions/add")}
               icon={FaPlus}
               className="self-start sm:self-auto"
             >
@@ -185,7 +185,7 @@ export default function AdminSubscriptionPageConfig() {
                 type="button"
                 variant="primary"
                 size="sm"
-                onClick={() => router.push("/admin/subscriptions/create")}
+                onClick={() => router.push("/admin/subscriptions/add")}
                 icon={FaPlus}
                 className="mt-4"
               >
@@ -197,11 +197,10 @@ export default function AdminSubscriptionPageConfig() {
               {plans.map((plan) => (
                 <div
                   key={plan._id}
-                  className={`relative flex flex-col justify-between rounded-2xl border bg-white p-6 transition-all duration-200 ${
-                    plan.isPopular
+                  className={`relative flex flex-col justify-between rounded-2xl border bg-white p-6 transition-all duration-200 ${plan.isPopular
                       ? "border-primary ring-2 ring-primary/20 shadow-md"
                       : "border-slate-200/90 shadow-2xs hover:border-slate-300"
-                  }`}
+                    }`}
                 >
                   {plan.isPopular && (
                     <div className="absolute -top-3 left-6 rounded-full bg-primary px-3 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-xs">
@@ -215,11 +214,10 @@ export default function AdminSubscriptionPageConfig() {
                         Key: {plan.planKey}
                       </span>
                       <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          plan.isActive
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${plan.isActive
                             ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                             : "bg-slate-100 text-slate-500"
-                        }`}
+                          }`}
                       >
                         {plan.isActive ? "● Live / Active" : "Disabled"}
                       </span>

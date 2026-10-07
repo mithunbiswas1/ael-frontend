@@ -1,22 +1,24 @@
 // src/app/(dashboard)/admin/subscriptions/edit/[id]/page.jsx
 "use client";
 
-import { use } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import { useGetSubscriptionPlanByIdQuery } from "@/redux/api/subscriptionApi";
 import SubscriptionPlanForm from "../../_components/SubscriptionPlanForm";
 
-export default function EditSubscriptionPlanPage({ params }) {
-  const resolvedParams = use(params);
-  const { id } = resolvedParams;
+export default function EditSubscriptionPlanPage({ params: propParams }) {
+  const routeParams = useParams();
+  const id = routeParams?.id || propParams?.id;
 
-  const { data: planResponse, isLoading, error } = useGetSubscriptionPlanByIdQuery(id);
+  const { data: planResponse, isLoading, error } = useGetSubscriptionPlanByIdQuery(id, {
+    skip: !id,
+  });
   const plan = planResponse?.data;
 
   return (
-    <PermissionGuard module="roles" action="edit">
+    <PermissionGuard module="subscriptions" page="/admin/subscriptions" action="edit">
       <title>
         {plan?.nameEn
           ? `Edit "${plan.nameEn}" Plan | Safe LPG Admin`

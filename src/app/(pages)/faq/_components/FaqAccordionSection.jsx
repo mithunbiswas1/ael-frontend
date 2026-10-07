@@ -4,7 +4,6 @@
 import { useState } from "react";
 import { Search, Phone, ArrowRight } from "lucide-react";
 import Input from "@/components/ui/Input";
-import Button from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { H3, P } from "@/components/ui/Typography";
 import {
@@ -23,30 +22,20 @@ export default function FaqAccordionSection({ items = [] }) {
   const faqItems =
     Array.isArray(items) && items.length > 0
       ? items.map((item) => ({
-          category: (isBn && item.categoryBn) ? item.categoryBn : (item.category || (isBn ? "সাধারণ" : "General")),
           question: isBn && item.questionBn ? item.questionBn : (item.question || ""),
           answer: isBn && item.answerBn ? item.answerBn : (item.answer || ""),
         }))
       : [];
 
-  // Extract unique categories dynamically
-  const uniqueCategories = [
-    isBn ? "সকল" : "All",
-    ...Array.from(new Set(faqItems.map((item) => item.category).filter(Boolean))),
-  ];
-
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState(uniqueCategories[0]);
 
   const filteredFaqs = faqItems.filter((item) => {
-    const isAll = activeCategory === uniqueCategories[0];
-    const matchesCategory = isAll || item.category === activeCategory;
-    const matchesSearch =
-      !searchTerm ||
-      item.question?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.answer?.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesCategory && matchesSearch;
+    if (!searchTerm.trim()) return true;
+    const q = searchTerm.toLowerCase();
+    return (
+      item.question?.toLowerCase().includes(q) ||
+      item.answer?.toLowerCase().includes(q)
+    );
   });
 
   return (
@@ -67,24 +56,6 @@ export default function FaqAccordionSection({ items = [] }) {
             size="md"
             className="bg-slate-50/80"
           />
-        </div>
-
-        {/* Category Tabs */}
-        <div className="mb-8 flex flex-wrap gap-1.5 border-b border-slate-100 pb-4">
-          {uniqueCategories.map((cat) => (
-            <Button
-              key={cat}
-              variant="unstyled"
-              onClick={() => setActiveCategory(cat)}
-              className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
-                activeCategory === cat
-                  ? "bg-primary text-white shadow-2xs"
-                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              {cat}
-            </Button>
-          ))}
         </div>
 
         {/* Modular Accessible Accordion Component */}
