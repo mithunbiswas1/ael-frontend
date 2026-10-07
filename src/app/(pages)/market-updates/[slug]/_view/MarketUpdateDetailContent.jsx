@@ -115,7 +115,7 @@ export default function MarketUpdateDetailContent({
         {/* 2-Column Responsive Layout on lg */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
           {/* Main Article Content (8 Cols on lg) */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 min-w-0 max-w-full overflow-hidden">
             {/* Header Area */}
             <header className="mb-6 space-y-4">
               {isPaid && (
@@ -134,13 +134,13 @@ export default function MarketUpdateDetailContent({
                 </div>
               )}
 
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 leading-tight break-words [overflow-wrap:anywhere]">
                 {title}
               </h1>
 
               {/* Metadata bar */}
               <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-y border-slate-200 py-3 text-xs text-slate-600">
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                   {author && (
                     <div className="flex items-center gap-1.5 font-medium">
                       <User className="h-3.5 w-3.5 text-slate-400" />
@@ -153,12 +153,14 @@ export default function MarketUpdateDetailContent({
                     <span>{formattedDate}</span>
                   </div>
 
-                  {article.views !== undefined && (
-                    <div className="flex items-center gap-1.5">
-                      <Eye className="h-3.5 w-3.5 text-slate-400" />
-                      <span>{article.views} {isBn ? "বার পঠিত" : "views"}</span>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-1 font-medium text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full">
+                    <Eye className="h-3.5 w-3.5 text-primary" />
+                    <span>
+                      {isBn
+                        ? `${Number(article.views || 0).toLocaleString("bn-BD")} বার পঠিত`
+                        : `${Number(article.views || 0).toLocaleString()} views`}
+                    </span>
+                  </div>
                 </div>
 
                 <SocialShareBar
@@ -245,11 +247,11 @@ export default function MarketUpdateDetailContent({
 
             {/* Summary Callout */}
             {summary && (
-              <div className="rounded-xl border-l-4 border-primary bg-primary/5 p-4 sm:p-5 mb-8 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
+              <div className="rounded-xl border-l-4 border-primary bg-primary/5 p-4 sm:p-5 mb-8 text-xs sm:text-sm text-slate-700 leading-relaxed font-medium min-w-0 max-w-full overflow-hidden break-words [overflow-wrap:anywhere]">
                 <p className="font-bold text-primary text-xs uppercase tracking-wider mb-1">
                   {isBn ? "মূল সারসংক্ষেপ" : "Executive Telemetry Summary"}
                 </p>
-                {summary}
+                <div className="break-words [overflow-wrap:anywhere]">{summary}</div>
               </div>
             )}
 
@@ -260,7 +262,7 @@ export default function MarketUpdateDetailContent({
                 {content && (
                   <div className="relative max-h-36 overflow-hidden select-none pointer-events-none opacity-40">
                     <div
-                      className="prose prose-slate max-w-none text-slate-800 text-sm leading-relaxed"
+                      className="prose prose-slate max-w-none text-slate-800 text-sm leading-relaxed break-words [overflow-wrap:anywhere] max-w-full overflow-hidden [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_img]:max-w-full [&_img]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_code]:break-words [&_iframe]:max-w-full"
                       dangerouslySetInnerHTML={{ __html: content }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/80 to-white" />
@@ -322,7 +324,7 @@ export default function MarketUpdateDetailContent({
               </div>
             ) : content ? (
               <div
-                className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 mb-10 prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl"
+                className="prose prose-slate max-w-none text-slate-800 text-sm sm:text-base leading-relaxed space-y-4 mb-10 prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-img:rounded-xl min-w-0 max-w-full overflow-hidden break-words [overflow-wrap:anywhere] [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_img]:max-w-full [&_img]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_code]:break-words [&_iframe]:max-w-full"
                 dangerouslySetInnerHTML={{ __html: content }}
               />
             ) : (
@@ -362,7 +364,7 @@ export default function MarketUpdateDetailContent({
           </div>
 
           {/* Right Sidebar: Related Market Intelligence & Quick Navigation (4 Cols on lg) */}
-          <aside className="space-y-6 lg:col-span-4 lg:sticky lg:top-24">
+          <aside className="space-y-6 lg:col-span-4 lg:sticky lg:top-24 min-w-0 max-w-full">
             {/* Related Market Intelligence Box */}
             <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-xs">
               <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-100">

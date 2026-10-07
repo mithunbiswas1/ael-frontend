@@ -7,7 +7,7 @@ export async function getMarketUpdateDetail(slug) {
 
   try {
     const res = await fetch(`${API_BASE_URL}market-updates/detail/${slug}`, {
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
 
     if (res.ok) {

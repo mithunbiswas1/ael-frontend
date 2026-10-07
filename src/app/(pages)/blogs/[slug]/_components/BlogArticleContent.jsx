@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Calendar, Clock, Play, Lock, ShieldCheck } from "lucide-react";
+import { Calendar, Clock, Play, Lock, ShieldCheck, Eye } from "lucide-react";
 import { useSelector } from "react-redux";
 import { H1, H3, P } from "@/components/ui/Typography";
 import { LinkButton } from "@/components/ui/LinkButton";
@@ -44,7 +44,7 @@ export default function BlogArticleContent({
     : currentPost.shortDescription || currentPost.shortDescriptionEn || currentPost.description;
 
   return (
-    <article className="space-y-6 lg:col-span-8">
+    <article className="space-y-6 lg:col-span-8 min-w-0 max-w-full overflow-hidden">
       {/* Header: Title & Meta & Social Share */}
       <div>
         <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -90,6 +90,15 @@ export default function BlogArticleContent({
               <Clock className="h-3.5 w-3.5 text-slate-400" />
               <span>{readTime}</span>
             </div>
+            <span>|</span>
+            <div className="flex items-center gap-1 font-medium text-slate-700 bg-slate-100 px-2.5 py-0.5 rounded-full">
+              <Eye className="h-3.5 w-3.5 text-primary" />
+              <span>
+                {isBn
+                  ? `${Number(currentPost.views || 0).toLocaleString("bn-BD")} বার পঠিত`
+                  : `${Number(currentPost.views || 0).toLocaleString()} views`}
+              </span>
+            </div>
           </div>
 
           {/* Share Bar */}
@@ -114,8 +123,8 @@ export default function BlogArticleContent({
           }}
         />
         {shortDescription && (
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-4 sm:p-6 backdrop-blur-[1px]">
-            <p className="text-xs sm:text-sm font-medium text-white/95 leading-relaxed line-clamp-3 drop-shadow-xs">
+          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-4 sm:p-6 backdrop-blur-[1px] max-w-full">
+            <p className="text-xs sm:text-sm font-medium text-white/95 leading-relaxed line-clamp-3 drop-shadow-xs break-words [overflow-wrap:anywhere]">
               {shortDescription}
             </p>
           </div>
@@ -123,7 +132,7 @@ export default function BlogArticleContent({
       </div>
 
       {/* Article Body Content */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 text-slate-700 shadow-xs space-y-6 text-sm leading-relaxed">
+      <div className="rounded-xl border border-slate-200/80 bg-white p-6 sm:p-8 text-slate-700 shadow-xs space-y-6 text-sm leading-relaxed min-w-0 max-w-full overflow-hidden break-words [overflow-wrap:anywhere]">
         {(() => {
           const rawDesc = isBn
             ? currentPost.descriptionBn || currentPost.description
@@ -133,13 +142,13 @@ export default function BlogArticleContent({
           if (isHtml) {
             return (
               <div
-                className="rich-text-output text-slate-800 leading-relaxed text-sm sm:text-base space-y-3 [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/40 [&>blockquote]:pl-4 [&>blockquote]:italic [&>h2]:text-lg [&>h2]:font-bold [&>h3]:text-base [&>h3]:font-bold [&>a]:text-primary [&>a]:underline"
+                className="rich-text-output text-slate-800 leading-relaxed text-sm sm:text-base space-y-3 break-words [overflow-wrap:anywhere] max-w-full overflow-hidden [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/40 [&>blockquote]:pl-4 [&>blockquote]:italic [&>h2]:text-lg [&>h2]:font-bold [&>h3]:text-base [&>h3]:font-bold [&>a]:text-primary [&>a]:underline [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_img]:max-w-full [&_img]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_code]:break-words [&_iframe]:max-w-full"
                 dangerouslySetInnerHTML={{ __html: rawDesc }}
               />
             );
           }
           return (
-            <P weight="semibold" color="dark" size="lg">
+            <P weight="semibold" color="dark" size="lg" className="break-words [overflow-wrap:anywhere]">
               {rawDesc}
             </P>
           );
@@ -221,13 +230,13 @@ export default function BlogArticleContent({
               if (isHtml) {
                 return (
                   <div
-                    className="rich-text-output text-slate-700 leading-relaxed text-sm space-y-3 [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/40 [&>blockquote]:pl-4 [&>blockquote]:italic [&>h2]:text-lg [&>h2]:font-bold [&>h3]:text-base [&>h3]:font-bold [&>a]:text-primary [&>a]:underline"
+                    className="rich-text-output text-slate-700 leading-relaxed text-sm space-y-3 break-words [overflow-wrap:anywhere] max-w-full overflow-hidden [&>p]:mb-3 [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>blockquote]:border-l-4 [&>blockquote]:border-primary/40 [&>blockquote]:pl-4 [&>blockquote]:italic [&>h2]:text-lg [&>h2]:font-bold [&>h3]:text-base [&>h3]:font-bold [&>a]:text-primary [&>a]:underline [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_img]:max-w-full [&_img]:h-auto [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words [&_code]:break-words [&_iframe]:max-w-full"
                     dangerouslySetInnerHTML={{ __html: rawContent }}
                   />
                 );
               }
               return (
-                <div className="space-y-4 whitespace-pre-line text-sm text-slate-700 leading-relaxed font-sans">
+                <div className="space-y-4 whitespace-pre-line text-sm text-slate-700 leading-relaxed font-sans break-words [overflow-wrap:anywhere] max-w-full overflow-hidden">
                   {rawContent}
                 </div>
               );
@@ -235,11 +244,11 @@ export default function BlogArticleContent({
 
             {currentPost.sections && currentPost.sections.length > 0 ? (
               currentPost.sections.map((section, idx) => (
-                <div key={idx} className="space-y-2">
-                  <H3 className="text-base font-bold text-slate-900">
+                <div key={idx} className="space-y-2 break-words [overflow-wrap:anywhere] max-w-full">
+                  <H3 className="text-base font-bold text-slate-900 break-words [overflow-wrap:anywhere]">
                     {isBn ? section.headingBn : section.headingEn}
                   </H3>
-                  <P color="gray" className="leading-relaxed">
+                  <P color="gray" className="leading-relaxed break-words [overflow-wrap:anywhere]">
                     {isBn ? section.bodyBn : section.bodyEn}
                   </P>
                   {idx === 0 && (

@@ -135,3 +135,40 @@ body.translated-rtl {
 .skiptranslate:not(.custom-translate) > iframe {
   display: none !important;
 }
+
+/* Universal details page rich-text & description overflow prevention */
+.rich-text-output,
+.prose {
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+}
+
+.rich-text-output pre,
+.prose pre {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+.rich-text-output table,
+.prose table {
+  display: block !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.rich-text-output img,
+.prose img {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.rich-text-output iframe,
+.prose iframe,
+.rich-text-output video,
+.prose video {
+  max-width: 100% !important;
+}

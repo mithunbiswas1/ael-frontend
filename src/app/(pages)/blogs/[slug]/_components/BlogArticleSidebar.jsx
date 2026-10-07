@@ -17,7 +17,7 @@ export default function BlogArticleSidebar({ relatedPosts }) {
   ];
 
   return (
-    <aside className="space-y-5 lg:col-span-4">
+    <aside className="space-y-5 lg:col-span-4 min-w-0 max-w-full">
       {/* Related Posts */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 shadow-xs">
         <H4 className="text-xs font-bold uppercase tracking-wider text-slate-900 mb-3.5">

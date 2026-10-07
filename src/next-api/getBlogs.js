@@ -58,6 +58,8 @@ export async function getBlogs({
             year: "numeric",
           }),
           dateBn: new Date(item.createdAt).toLocaleDateString("bn-BD"),
+          views: item.views || 0,
+          accessType: item.accessType || "free",
           tags: item.tags || [],
         }));
       }
@@ -72,7 +74,7 @@ export async function getBlogs({
 export async function getBlogBySlug(slug) {
   try {
     const res = await fetch(`${API_BASE_URL}blogs/detail/${slug}`, {
-      next: { revalidate: 60 },
+      cache: "no-store",
     });
 
     if (res.ok) {
@@ -104,6 +106,8 @@ export async function getBlogBySlug(slug) {
           createdBy: item.createdBy,
           readTime: item.readTimeEn,
           readTimeBn: item.readTimeBn,
+          views: item.views || 0,
+          accessType: item.accessType || "free",
           date: new Date(item.createdAt).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",

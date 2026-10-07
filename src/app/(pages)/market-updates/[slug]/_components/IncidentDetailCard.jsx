@@ -63,7 +63,7 @@ export default async function IncidentDetailCard({ incident }) {
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 mb-2">
               {summaryLabel}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50/50 p-4 rounded-lg border border-slate-200/80">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50/50 p-4 rounded-lg border border-slate-200/80 break-words [overflow-wrap:anywhere]">
               {incident.details}
             </p>
           </div>
@@ -72,7 +72,7 @@ export default async function IncidentDetailCard({ incident }) {
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 mb-2">
               {impactLabel}
             </h3>
-            <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs font-medium text-slate-800">
+            <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs font-medium text-slate-800 break-words [overflow-wrap:anywhere]">
               {incident.casualties}
             </div>
           </div>
@@ -82,7 +82,7 @@ export default async function IncidentDetailCard({ incident }) {
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 mb-2">
                 {capaLabel}
               </h3>
-              <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 p-4 text-xs text-slate-700 leading-relaxed">
+              <div className="rounded-lg border border-emerald-200 bg-emerald-50/50 p-4 text-xs text-slate-700 leading-relaxed break-words [overflow-wrap:anywhere]">
                 {incident.preventiveAction}
               </div>
             </div>
