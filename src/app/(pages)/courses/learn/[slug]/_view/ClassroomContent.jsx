@@ -145,14 +145,10 @@ export default function ClassroomContent({ courseSlug }) {
 
   // Determine if user has full access to this course
   const hasFullAccess = useMemo(() => {
-    if (!isLoggedIn) return false;
-
     // Free courses are accessible to any logged in user
     if (isCourseFree) return true;
 
-    // Admin & manager roles have preview access to all courses
-    const adminRoles = ["super_admin", "admin", "instructor", "course_admin", "manager"];
-    if (adminRoles.includes(user?.role)) return true;
+    if (!isLoggedIn || !user) return false;
 
     // Active subscriber has access to all courses while subscription is valid (> 0 days remaining)
     const sub = user?.subscription;
@@ -175,21 +171,15 @@ export default function ClassroomContent({ courseSlug }) {
 
     if (isSubActive) return true;
 
-    // Check my learning courses
-    const myCourses = Array.isArray(learningData?.data) ? learningData.data : [];
-    const inLearning = myCourses.some(
-      (c) =>
-        (c.courseId && String(c.courseId) === String(canonicalCourseId)) ||
-        (c.slug && String(c.slug) === String(canonicalSlug)) ||
-        (c._id && String(c._id) === String(course?._id))
-    );
-    if (inLearning) return true;
-
     // Check user.enrolledCourses on auth user object
     const userEnrolled = Array.isArray(user?.enrolledCourses)
       ? user.enrolledCourses
       : [];
     const inUserEnrolled = userEnrolled.some((e) => {
+      // Free preview enrollments do NOT grant full access to paid courses
+      if (typeof e === "object" && (e?.status === "preview" || e?.isFreePreview === true)) {
+        return false;
+      }
       const eId = typeof e === "string" ? e : e?.courseId || e?._id;
       return (
         String(eId) === String(canonicalCourseId) ||
@@ -200,7 +190,7 @@ export default function ClassroomContent({ courseSlug }) {
     });
 
     return inUserEnrolled;
-  }, [isLoggedIn, user, isCourseFree, learningData, canonicalCourseId, canonicalSlug, course]);
+  }, [isLoggedIn, user, isCourseFree, canonicalCourseId, canonicalSlug, course]);
 
   // Sync completed lessons, lesson positions, and module quiz results
   useEffect(() => {
@@ -407,12 +397,13 @@ export default function ClassroomContent({ courseSlug }) {
           }
         }
 
-        // A completed lesson is NEVER locked for replay!
+        // A completed lesson is only replayable if user has access to that tier!
         const isAlreadyCompleted =
           completedLessonIds.includes(lessonId) ||
           completedLessonIds.includes(String(l._id));
 
-        const isLocked = !isAlreadyCompleted && (isPremiumLocked || isSequentialLocked);
+        // Premium lock ALWAYS locks the lesson if user has no access, regardless of completion status!
+        const isLocked = isPremiumLocked || (!isAlreadyCompleted && isSequentialLocked);
 
         const isLastInModule = lIdx === (mod.lessons?.length || 1) - 1;
         const hasModuleQuiz = Boolean(mod.quiz?.questions && mod.quiz.questions.length > 0);
@@ -1103,6 +1094,9 @@ export default function ClassroomContent({ courseSlug }) {
             handleNextLesson={handleNextLesson}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            isCourseFree={isCourseFree}
+            hasFullAccess={hasFullAccess}
+            onOpenCheckout={() => setIsCheckoutModalOpen(true)}
           />
         )}
 
@@ -1114,6 +1108,15 @@ export default function ClassroomContent({ courseSlug }) {
           activeView={activeView}
           currentLessonIdx={currentLessonIdx}
           onSelectLesson={(globalIdx, mIdx) => {
+            if (!isCourseFree && !hasFullAccess && mIdx > 0) {
+              setIsCheckoutModalOpen(true);
+              toast.warning(
+                isBn
+                  ? `মডিউল ${mIdx + 1} দেখতে অনুগ্রহ করে কোর্সে ভর্তি হন বা সাবস্ক্রিপশন নিশ্চিত করুন।`
+                  : `Please enroll or subscribe to unlock Module ${mIdx + 1}.`
+              );
+              return;
+            }
             setActiveView({
               type: "video",
               lessonIdx: globalIdx,
@@ -1127,6 +1130,7 @@ export default function ClassroomContent({ courseSlug }) {
           onTakeModuleQuiz={handleTakeModuleQuiz}
           onSelectLockedLesson={handleSelectLockedLesson}
           hasFullAccess={hasFullAccess}
+          isCourseFree={isCourseFree}
         />
       </div>
 
@@ -1188,7 +1192,10 @@ export default function ClassroomContent({ courseSlug }) {
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}
         course={course}
-        onSuccess={() => setIsCheckoutModalOpen(false)}
+        onSuccess={() => {
+          setIsCheckoutModalOpen(false);
+          if (refetchLearning) refetchLearning();
+        }}
       />
     </div>
   );

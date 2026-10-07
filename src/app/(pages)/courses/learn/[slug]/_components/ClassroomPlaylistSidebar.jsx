@@ -31,6 +31,7 @@ export default function ClassroomPlaylistSidebar({
   onTakeModuleQuiz,
   onSelectLockedLesson,
   hasFullAccess = true,
+  isCourseFree = false,
 }) {
   const { locale } = useDictionary();
   const isBn = locale === "bn";
@@ -137,7 +138,9 @@ export default function ClassroomPlaylistSidebar({
                     const isCompleted = completedLessonIds.includes(lesson.id);
                     const savedPos = lessonProgressMap[lesson.id] || 0;
                     const isPaused = !isCompleted && savedPos > 3;
+                    const isPremiumGated = !isCourseFree && !hasFullAccess && modIdx > 0;
                     const isLocked = Boolean(lesson.isLocked);
+                    const effectiveLocked = isLocked || isPremiumGated;
                     const lessonTitle = isBn ? lesson.titleBn || lesson.title : lesson.title;
                     const lessonDuration = isBn ? lesson.durationBn || lesson.duration : lesson.duration;
                     const lessonNumber = `${modIdx + 1}.${lIdx + 1}`;
@@ -147,7 +150,7 @@ export default function ClassroomPlaylistSidebar({
                         key={lesson.id}
                         type="button"
                         onClick={() => {
-                          if (isLocked) {
+                          if (effectiveLocked) {
                             if (onSelectLockedLesson) onSelectLockedLesson(lesson);
                           } else {
                             if (onSelectLesson) {
@@ -162,8 +165,8 @@ export default function ClassroomPlaylistSidebar({
                         }}
                         className={`w-full text-left px-4 py-3 text-xs transition-colors flex items-start gap-2.5 cursor-pointer ${isActive
                           ? "bg-primary/5 text-primary border-l-2 border-primary font-bold shadow-2xs"
-                          : isLocked
-                            ? "text-slate-400 bg-slate-50/40 opacity-70 hover:bg-slate-50 cursor-not-allowed"
+                          : effectiveLocked
+                            ? "text-slate-500 bg-slate-50/60 hover:bg-amber-50/50"
                             : "text-slate-700 hover:bg-slate-50"
                           }`}
                       >
@@ -172,8 +175,8 @@ export default function ClassroomPlaylistSidebar({
                             <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" title="Completed" />
                           ) : isPaused ? (
                             <PauseCircle className="h-3.5 w-3.5 text-amber-500" title="In progress / Paused" />
-                          ) : isLocked ? (
-                            <Lock className="h-3.5 w-3.5 text-slate-400" title="Locked" />
+                          ) : effectiveLocked ? (
+                            <Lock className="h-3.5 w-3.5 text-amber-600" title={isPremiumGated ? "Enrollment / Subscription Required" : "Locked"} />
                           ) : isActive ? (
                             <PlayCircle className="h-3.5 w-3.5 text-primary" title="Now Playing" />
                           ) : (

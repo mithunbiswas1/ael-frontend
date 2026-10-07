@@ -8,6 +8,7 @@ import {
   CheckCircle2,
   FileText,
   Download,
+  Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
@@ -31,6 +32,9 @@ export default function ClassroomVideoPlayer({
   activeTab,
   setActiveTab,
   onTriggerQuiz,
+  isCourseFree = false,
+  hasFullAccess = true,
+  onOpenCheckout,
 }) {
   const { locale } = useDictionary();
   const isBn = locale === "bn";
@@ -55,6 +59,11 @@ export default function ClassroomVideoPlayer({
   const { user } = useSelector((state) => state.auth);
   const userScope = user?._id ? `user_${user._id}` : "guest";
 
+  const isModule2PlusLocked =
+    !isCourseFree &&
+    !hasFullAccess &&
+    ((currentLesson?.moduleIdx ?? 0) > 0 || Boolean(currentLesson?.isPremiumLocked));
+
   const [updateCourseProgress] = useUpdateCourseProgressMutation();
   const lastHeartbeatRef = useRef(0);
   const videoRef = useRef(null);
@@ -73,6 +82,7 @@ export default function ClassroomVideoPlayer({
 
   // Attempt to resume from saved position on loadedmetadata
   const handleLoadedMetadata = () => {
+    if (isModule2PlusLocked) return;
     if (hasResumedRef.current || !videoRef.current) return;
     try {
       const savedSec =
@@ -103,6 +113,7 @@ export default function ClassroomVideoPlayer({
 
   // 10-second heartbeat interval for active tracking
   useEffect(() => {
+    if (isModule2PlusLocked) return;
     lastHeartbeatRef.current = 0;
     const interval = setInterval(() => {
       if (videoRef.current && !videoRef.current.paused) {
@@ -122,9 +133,13 @@ export default function ClassroomVideoPlayer({
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [courseId, currentLesson.id, updateCourseProgress]);
+  }, [courseId, currentLesson.id, updateCourseProgress, isModule2PlusLocked]);
 
   const handleCompleteCurrent = () => {
+    if (isModule2PlusLocked) {
+      if (onOpenCheckout) onOpenCheckout();
+      return;
+    }
     if (!completedLessonIds.includes(currentLesson.id)) {
       setCompletedLessonIds((prev) => [...prev, currentLesson.id]);
     }
@@ -218,9 +233,54 @@ export default function ClassroomVideoPlayer({
 
   return (
     <main className="flex flex-1 flex-col overflow-y-auto bg-slate-50">
-      {/* Video Screen */}
-      <div className="relative aspect-16/9 w-full max-h-[60vh] bg-black flex items-center justify-center border-b border-slate-200">
-        {isEmbed ? (
+      {/* Video Screen OR Locked Premium Wall */}
+      <div className="relative aspect-16/9 w-full max-h-[60vh] bg-slate-950 flex items-center justify-center border-b border-slate-200 overflow-hidden">
+        {isModule2PlusLocked ? (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950/95 via-slate-900 to-slate-950 text-white">
+            <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shadow-lg shadow-amber-500/5">
+              <Lock className="h-7 w-7" />
+            </div>
+
+            <span className="inline-block rounded-full bg-amber-500/15 border border-amber-500/30 px-3 py-1 text-[11px] font-bold text-amber-300 uppercase tracking-wider mb-2">
+              {isBn ? "মডিউল ২ লক করা রয়েছে • কোর্স ভর্তি আবশ্যক" : "Module 2 Locked • Enrollment Required"}
+            </span>
+
+            <h2 className="text-base sm:text-lg font-bold text-white max-w-lg leading-snug">
+              {title}
+            </h2>
+
+            <p className="text-xs text-slate-300 max-w-md mt-2 leading-relaxed">
+              {isBn
+                ? "এই কোর্সের ১ম মডিউল ফ্রি প্রিভিউ ছিল। মডিউল ২ এবং পরবর্তী সকল ভিডিও লেকচার, হ্যান্ডআউট ও সার্টিফিকেট পেতে কোর্সে ভর্তি সম্পন্ন করুন বা সাবস্ক্রিপশন নিশ্চিত করুন।"
+                : "Module 1 was a free preview. Please enroll in the course or subscribe to unlock Module 2 onwards."}
+            </p>
+
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+              <Button
+                type="button"
+                variant="primary"
+                size="md"
+                onClick={onOpenCheckout}
+                className="gap-2 font-bold bg-amber-500 hover:bg-amber-600 text-slate-950 shadow-md cursor-pointer"
+              >
+                <Lock className="h-4 w-4" />
+                <span>
+                  {isBn
+                    ? `কোর্সে ভর্তি হন (৳ ${course?.price || 0}) / সাবস্ক্রাইব করুন`
+                    : `Enroll Now (৳ ${course?.price || 0}) / Subscribe`}
+                </span>
+              </Button>
+
+              <button
+                type="button"
+                onClick={handlePrevLesson}
+                className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-semibold transition border border-white/10 cursor-pointer"
+              >
+                {isBn ? "১ম মডিউলে ফিরে যান" : "Return to Module 1"}
+              </button>
+            </div>
+          </div>
+        ) : isEmbed ? (
           <iframe
             src={videoSrc}
             title={title}
@@ -264,31 +324,48 @@ export default function ClassroomVideoPlayer({
             <span>{isBn ? "পূর্ববর্তী পাঠ" : "Previous Lesson"}</span>
           </button>
 
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={() => {
-              handleCompleteCurrent();
-              if (handleNextLesson) handleNextLesson();
-            }}
-            className="gap-1 font-bold text-xs"
-          >
-            <span>
-              {currentLesson?.isLastInModule && currentLesson?.hasModuleQuiz
-                ? isBn
-                  ? "সম্পন্ন করে কুইজে যান"
-                  : "Complete & Go to Quiz"
-                : currentLessonIdx === totalLessons - 1
-                ? isBn
-                  ? "সম্পন্ন করে মূল্যায়ন কুইজে যান"
-                  : "Finish & Take Quiz"
-                : isBn
-                ? "সম্পন্ন করে পরবর্তী পাঠ"
-                : "Complete & Next Lesson"}
-            </span>
-            <ChevronRight className="h-3.5 w-3.5" />
-          </Button>
+          {isModule2PlusLocked ? (
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={onOpenCheckout}
+              className="gap-1 font-bold text-xs bg-amber-600 hover:bg-amber-700 text-white"
+            >
+              <Lock className="h-3.5 w-3.5" />
+              <span>
+                {isBn
+                  ? `কোর্সে ভর্তি হন (৳ ${course?.price || 0})`
+                  : `Enroll Now (৳ ${course?.price || 0})`}
+              </span>
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={() => {
+                handleCompleteCurrent();
+                if (handleNextLesson) handleNextLesson();
+              }}
+              className="gap-1 font-bold text-xs"
+            >
+              <span>
+                {currentLesson?.isLastInModule && currentLesson?.hasModuleQuiz
+                  ? isBn
+                    ? "সম্পন্ন করে কুইজে যান"
+                    : "Complete & Go to Quiz"
+                  : currentLessonIdx === totalLessons - 1
+                  ? isBn
+                    ? "সম্পন্ন করে মূল্যায়ন কুইজে যান"
+                    : "Finish & Take Quiz"
+                  : isBn
+                  ? "সম্পন্ন করে পরবর্তী পাঠ"
+                  : "Complete & Next Lesson"}
+              </span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
