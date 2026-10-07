@@ -21,6 +21,7 @@ import { useDictionary } from "@/context/DictionaryContext";
 import { useEnrollCourseMutation } from "@/redux/api/courseApi";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import AuthModal from "@/components/shared/AuthModal";
 import CheckoutModal from "@/components/shared/CheckoutModal";
 import SocialShareBar from "@/components/shared/SocialShareBar";
@@ -140,7 +141,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
           {/* Media Preview Box */}
           <div className="relative aspect-16/9 w-full bg-slate-900">
             <Image
-              src={course.imageUrl || "/default_image.jpg"}
+              src={getMediaUrl(course.imageUrl, "/default_image.jpg")}
               alt={title || "Course Preview"}
               fill
               className="object-cover opacity-85"

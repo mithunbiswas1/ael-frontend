@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { H3, P } from "@/components/ui/Typography";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 export default function SubscriberCourseCard({ course }) {
   const cid = course.courseId || course.id;
@@ -23,7 +24,7 @@ export default function SubscriberCourseCard({ course }) {
     <div className="flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200/80 bg-white">
       <Link href={`/courses/learn/${courseSlug}`} className="block relative aspect-16/10 w-full overflow-hidden bg-slate-100">
         <Image
-          src={course.imageUrl || "/default_image.jpg"}
+          src={getMediaUrl(course.imageUrl, "/default_image.jpg")}
           alt={course.title}
           fill
           className="object-cover"

@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useGetPublicSettingsQuery } from "@/redux/api/adminApi";
 
+import { getMediaUrl } from "@/utils/mediaUrl";
+
 export default function AelLogo({
   className = "",
   light = false,
@@ -23,11 +25,7 @@ export default function AelLogo({
     ? settings?.footerLogo || settings?.siteLogo || "/safe_lpg_2.png"
     : settings?.siteLogo || "/safe_lpg_2.png";
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8005";
-  const logoSrc =
-    rawSrc.startsWith("http") || rawSrc.startsWith("/")
-      ? rawSrc
-      : `${backendUrl}${rawSrc.startsWith("/") ? "" : "/"}${rawSrc}`;
+  const logoSrc = getMediaUrl(rawSrc, "/safe_lpg_2.png");
 
   const altText = settings?.siteName || "Safe LPG Logo";
 

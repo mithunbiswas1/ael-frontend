@@ -9,6 +9,7 @@ import {
   useGetActiveAdBySlotQuery,
   useTrackAdClickMutation,
 } from "@/redux/api/advertisementApi";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 // Standard Google Ads dimension specifications for the 6 ad slots
 const SLOT_SPECS = {
@@ -107,12 +108,7 @@ export default function AdSlot({ slot, className = "" }) {
 
   // Helper to safely format image URLs
   const resolveImageUrl = (src) => {
-    if (!src) return "/default_image.jpg";
-    if (src.startsWith("http") || src.startsWith("data:")) return src;
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8005";
-    const cleanBackend = backendUrl.replace(/\/$/, "");
-    const cleanSrc = src.replace(/^\//, "");
-    return `${cleanBackend}/${cleanSrc}`;
+    return getMediaUrl(src, "/default_image.jpg");
   };
 
   // Hidden if dismissed or loading or not mounted

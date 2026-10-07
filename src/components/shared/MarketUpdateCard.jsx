@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Calendar, ArrowRight } from "lucide-react";
 import { FaFilePdf } from "react-icons/fa";
 import { H4 } from "@/components/ui/Typography";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 const BADGE_VARIANTS = {
   incidents: "bg-rose-600 text-white",
@@ -34,10 +35,7 @@ export default function MarketUpdateCard({
   viewMode = "grid", // "grid" | "list"
 }) {
   const defaultImage = "/default_image.jpg";
-  const safeImageUrl =
-    imageUrl && typeof imageUrl === "string" && imageUrl.trim() !== ""
-      ? imageUrl
-      : defaultImage;
+  const safeImageUrl = getMediaUrl(imageUrl, defaultImage);
 
   const badgeStyle =
     BADGE_VARIANTS[category] ||

@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Save, UploadCloud, X, Image as ImageIcon, Palette } from "lucide-react";
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 export default function BrandingSettingsTab({
   formData,
@@ -48,16 +49,7 @@ export default function BrandingSettingsTab({
     if (previewUrls[field]) return previewUrls[field];
     const val = formData[field];
     if (!val) return fallback;
-    if (val.startsWith("http://") || val.startsWith("https://") || val.startsWith("data:")) {
-      return val;
-    }
-    if (val.startsWith("/public/upload")) {
-      const base =
-        process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") ||
-        "http://localhost:8005";
-      return `${base}${val}`;
-    }
-    return val;
+    return getMediaUrl(val, fallback);
   };
 
   return (

@@ -18,6 +18,7 @@ import {
 } from "@/redux/api/userApi";
 import { updateUser } from "@/redux/slice/authSlice";
 import { baseUriBackend } from "@/config/base-url";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import { useDictionary } from "@/context/DictionaryContext";
 import { P } from "@/components/ui/Typography";
 
@@ -271,8 +272,7 @@ export default function ProfilePage() {
   const avatarSrc = useMemo(() => {
     if (previewUrl) return previewUrl;
     if (profile?.image) {
-      if (profile.image.startsWith("http")) return profile.image;
-      return `${baseUriBackend}${profile.image.replace(/^\//, "")}`;
+      return getMediaUrl(profile.image, null);
     }
     return null;
   }, [previewUrl, profile?.image]);

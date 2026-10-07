@@ -22,6 +22,7 @@ import { H2, H4, P } from "@/components/ui/Typography";
 import { Button } from "@/components/ui/Button";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useEnrollCourseMutation } from "@/redux/api/courseApi";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import AuthModal from "@/components/shared/AuthModal";
 import CheckoutModal from "@/components/shared/CheckoutModal";
 import Pagination from "@/components/ui/Pagination";
@@ -244,7 +245,7 @@ export default function CourseCatalogSection({
                     {/* Course Thumbnail */}
                     <Link href={`/courses/${courseSlug}`} className="block relative aspect-16/10 w-full overflow-hidden bg-slate-100">
                       <Image
-                        src={course.imageUrl || "/default_image.jpg"}
+                        src={getMediaUrl(course.imageUrl, "/default_image.jpg")}
                         alt={courseTitle || "Course thumbnail"}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import {
   FaPlus,
   FaFilePdf,
@@ -342,11 +343,7 @@ export default function SafetyGuidelinesListPage() {
                   const isGuideline = item.itemType === "guideline";
                   const catBadge = CATEGORY_BADGES[item.category] || CATEGORY_BADGES.all;
                   const targetPdf = item.pdfUrl || (item.fileName ? `/public/upload/${item.fileName}` : null);
-                  const fullPdfUrl = targetPdf
-                    ? targetPdf.startsWith("http")
-                      ? targetPdf
-                      : `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") || "http://localhost:8005"}${targetPdf}`
-                    : null;
+                  const fullPdfUrl = targetPdf ? getMediaUrl(targetPdf) : null;
 
                   return (
                     <TableRow key={item.id} className="hover:bg-slate-50/50">

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
 import { H4, P } from "@/components/ui/Typography";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 export default function CourseTable({
   courses = [],
@@ -61,7 +62,7 @@ export default function CourseTable({
             <TableCell>
               <div className="relative h-11 w-16 overflow-hidden rounded-lg bg-slate-100 shrink-0">
                 <Image
-                  src={course.imageUrl || "/default_image.jpg"}
+                  src={getMediaUrl(course.imageUrl, "/default_image.jpg")}
                   alt={course.title || "Course banner"}
                   fill
                   className="object-cover"

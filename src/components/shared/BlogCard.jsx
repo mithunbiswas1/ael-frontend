@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Calendar, ArrowRight } from "lucide-react";
 import { H4 } from "@/components/ui/Typography";
 import { useDictionary } from "@/context/DictionaryContext";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 const BLOG_BADGE_VARIANTS = {
   seminar: "bg-blue-600 text-white",
@@ -71,10 +72,7 @@ export default function BlogCard({
   const isBn = locale === "bn";
 
   const defaultImage = "/default_image.jpg";
-  const safeImageUrl =
-    imageUrl && typeof imageUrl === "string" && imageUrl.trim() !== ""
-      ? imageUrl
-      : defaultImage;
+  const safeImageUrl = getMediaUrl(imageUrl, defaultImage);
 
   const resolvedBadgeText = formatBadgeText(badgeText || category, isBn);
 

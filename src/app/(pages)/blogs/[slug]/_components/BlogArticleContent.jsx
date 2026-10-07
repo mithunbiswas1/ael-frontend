@@ -9,6 +9,7 @@ import { H1, H3, P } from "@/components/ui/Typography";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { useDictionary } from "@/context/DictionaryContext";
 import { baseUriBackend } from "@/config/base-url";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import CommentSection from "@/components/shared/CommentSection";
 import AdSlot from "@/components/shared/AdSlot";
 import SocialShareBar from "@/components/shared/SocialShareBar";
@@ -102,7 +103,7 @@ export default function BlogArticleContent({
       {/* Featured Image with Short Description Overlay */}
       <div className="relative aspect-16/9 w-full overflow-hidden rounded-xl border border-slate-200/80 bg-slate-100 shadow-xs group">
         <Image
-          src={currentPost.imageUrl || "/default_image.jpg"}
+          src={getMediaUrl(currentPost.imageUrl || currentPost.image, "/default_image.jpg")}
           alt={title}
           fill
           priority
@@ -323,28 +324,15 @@ export default function BlogArticleContent({
       <div className="rounded-2xl border border-slate-200/80 bg-linear-to-br from-slate-50 via-white to-slate-50 p-5 sm:p-6 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
           <div className="relative h-16 w-16 overflow-hidden rounded-2xl border-2 border-white bg-slate-200 shadow-xs shrink-0">
-            {currentPost.authorImage ? (
-              <Image
-                src={
-                  currentPost.authorImage.startsWith("http")
-                    ? currentPost.authorImage
-                    : `${baseUriBackend}/${currentPost.authorImage.replace(/^\//, "")}`
-                }
-                alt={author}
-                fill
-                className="object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = "/default_person.jpg";
-                }}
-              />
-            ) : (
-              <Image
-                src="/default_person.jpg"
-                alt={author}
-                fill
-                className="object-cover"
-              />
-            )}
+            <Image
+              src={getMediaUrl(currentPost.authorImage, "/default_person.jpg")}
+              alt={author}
+              fill
+              className="object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/default_person.jpg";
+              }}
+            />
           </div>
 
           <div className="flex-1 text-center sm:text-left space-y-1.5">

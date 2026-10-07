@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { baseUriBackend } from "@/config/base-url";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import {
   closeCart,
   updateQuantity,
@@ -16,12 +17,7 @@ import {
 import { useEffect } from "react";
 
 const getImageUrl = (path) => {
-  if (!path) return "/default_image.jpg";
-  if (path.startsWith("http://") || path.startsWith("https://")) {
-    return path;
-  }
-  const cleanPath = path.replace(/^\/+/, "");
-  return `${baseUriBackend}${cleanPath}`;
+  return getMediaUrl(path, "/default_image.jpg");
 };
 
 export default function CartDrawer() {

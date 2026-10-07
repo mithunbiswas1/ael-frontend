@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import { H3, P } from "@/components/ui/Typography";
 import {
   useGetPageByKeyQuery,
@@ -845,11 +846,7 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
 
               <div className="flex items-center gap-2">
                 <a
-                  href={
-                    formData.pdfUrl.startsWith("http")
-                      ? formData.pdfUrl
-                      : `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") || "http://localhost:8005"}${formData.pdfUrl}`
-                  }
+                  href={getMediaUrl(formData.pdfUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-emerald-300 bg-white px-3 text-xs font-bold text-emerald-700 shadow-2xs hover:bg-emerald-100 transition-colors"

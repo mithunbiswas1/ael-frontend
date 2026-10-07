@@ -18,6 +18,7 @@ import {
 
 import { Button } from "@/components/ui/Button";
 import { useDictionary } from "@/context/DictionaryContext";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import { useEnrollCourseMutation } from "@/redux/api/courseApi";
 import AuthModal from "@/components/shared/AuthModal";
 import CheckoutModal from "@/components/shared/CheckoutModal";
@@ -91,7 +92,7 @@ export default function CourseCard({
   const hasFreeModule =
     courseCurriculum.length > 0 && (courseCurriculum[0].isFree || !isPaid);
 
-  const displayImage = course?.imageUrl || imageUrl || "/default_image.jpg";
+  const displayImage = getMediaUrl(course?.imageUrl || imageUrl, "/default_image.jpg");
 
   const sub = user?.subscription;
   const now = Date.now();

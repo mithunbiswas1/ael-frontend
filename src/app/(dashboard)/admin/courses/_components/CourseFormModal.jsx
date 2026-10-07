@@ -13,6 +13,11 @@ import { Select } from "@/components/ui/Select";
 import { P } from "@/components/ui/Typography";
 import { useUploadCourseVideoMutation } from "@/redux/api/courseApi";
 import { useUploadPageImageMutation } from "@/redux/api/pageApi";
+import {
+  uploadVideoWithProgress,
+  MAX_VIDEO_UPLOAD_SIZE,
+} from "@/utils/uploadWithProgress";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import DragDropUploadZone from "@/app/(dashboard)/_components/DragDropUploadZone";
 
 const CATEGORY_OPTIONS = [
@@ -42,6 +47,8 @@ export default function CourseFormModal({
     useUploadCourseVideoMutation();
   const [uploadImage, { isLoading: isUploadingImage }] =
     useUploadPageImageMutation();
+  const [videoUploadProgress, setVideoUploadProgress] = useState(null);
+  const [isUploadingCustomVideo, setIsUploadingCustomVideo] = useState(false);
 
   const handleImageUpload = async (files) => {
     if (!files || files.length === 0) return;
@@ -72,18 +79,26 @@ export default function CourseFormModal({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check size limit (max 100MB)
-    if (file.size > 100 * 1024 * 1024) {
-      toast.error("Video file size must be less than 100MB.");
+    // Check size limit (max 1GB)
+    if (file.size > MAX_VIDEO_UPLOAD_SIZE) {
+      toast.error("ভিডিও ফাইল সাইজ সর্বোচ্চ ১জিবি (1GB) হতে পারবে। / Video file size must be within 1GB.");
       return;
     }
 
-    const payload = new FormData();
-    payload.append("video", file);
+    setIsUploadingCustomVideo(true);
+    setVideoUploadProgress({
+      percent: 1,
+      loadedMB: "0.1",
+      totalMB: (file.size / (1024 * 1024)).toFixed(1),
+    });
 
     try {
-      toast.loading("Uploading course video...", { id: "upload-vid" });
-      const res = await uploadVideo(payload).unwrap();
+      const res = await uploadVideoWithProgress({
+        file,
+        onProgress: (prog) => {
+          setVideoUploadProgress(prog);
+        },
+      });
       const videoPath = res?.data?.videoUrl;
 
       if (videoPath) {
@@ -91,19 +106,17 @@ export default function CourseFormModal({
           ...prev,
           videoUrl: videoPath,
         }));
-        toast.success("Direct video uploaded successfully!", {
-          id: "upload-vid",
-        });
+        toast.success("ভিডিও সফলভাবে আপলোড সম্পন্ন হয়েছে! / Video uploaded successfully!");
       } else {
-        toast.error("Failed to retrieve uploaded video URL", {
-          id: "upload-vid",
-        });
+        toast.error("Failed to retrieve uploaded video URL");
       }
     } catch (err) {
       toast.error(
-        err?.data?.message || "Failed to upload video to backend.",
-        { id: "upload-vid" }
+        err?.message || "Failed to upload video to backend."
       );
+    } finally {
+      setIsUploadingCustomVideo(false);
+      setVideoUploadProgress(null);
     }
   };
 
@@ -385,33 +398,64 @@ export default function CourseFormModal({
               {/* Left Column: Upload button & URL */}
               <div className="md:col-span-7 space-y-3">
                 <div className="rounded-xl border-2 border-dashed border-slate-300 hover:border-primary/60 bg-slate-50/70 p-4 transition-colors text-center">
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary mb-2">
-                    <FaUpload className="h-4 w-4" />
-                  </div>
-                  <P className="text-xs font-bold text-slate-800">
-                    Upload Lesson / Promo Video File
-                  </P>
-                  <P className="text-[11px] text-slate-500 mt-0.5">
-                    Direct MP4, WebM (up to 100MB supported)
-                  </P>
+                  {isUploadingCustomVideo && videoUploadProgress ? (
+                    <div className="py-2 px-3 space-y-2 max-w-sm mx-auto">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                        <span className="flex items-center gap-1.5 text-primary">
+                          <FaUpload className="h-3.5 w-3.5 animate-bounce" />
+                          <span>ভিডিও ফাইল আপলোড হচ্ছে...</span>
+                        </span>
+                        <span className="font-mono text-primary font-bold">
+                          {videoUploadProgress.percent || 0}%
+                        </span>
+                      </div>
 
-                  <div className="mt-3 flex items-center justify-center gap-2">
-                    <Button
-                      type="button"
-                      variant="primary"
-                      size="xs"
-                      disabled={isUploadingVideo}
-                      onClick={() => fileInputRef.current?.click()}
-                      className="gap-1.5"
-                    >
-                      {isUploadingVideo ? (
-                        <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      ) : (
-                        <FaUpload className="h-3 w-3" />
-                      )}
-                      <span>{isUploadingVideo ? "Uploading..." : "Select Video File"}</span>
-                    </Button>
-                  </div>
+                      {/* Progress bar */}
+                      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
+                        <div
+                          className="bg-primary h-full transition-all duration-200 rounded-full"
+                          style={{
+                            width: `${Math.max(5, videoUploadProgress.percent || 0)}%`,
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                        <span>
+                          {videoUploadProgress.loadedMB} MB / {videoUploadProgress.totalMB} MB
+                        </span>
+                        <span className="text-slate-400">
+                          (১জিবি ও ১০+ মিনিট সমর্থিত)
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary mb-2">
+                        <FaUpload className="h-4 w-4" />
+                      </div>
+                      <P className="text-xs font-bold text-slate-800">
+                        Upload Lesson / Promo Video File
+                      </P>
+                      <P className="text-[11px] text-slate-500 mt-0.5">
+                        Direct MP4, WebM, MOV, MKV (সর্বোচ্চ ১জিবি / 1GB supported)
+                      </P>
+
+                      <div className="mt-3 flex items-center justify-center gap-2">
+                        <Button
+                          type="button"
+                          variant="primary"
+                          size="xs"
+                          disabled={isUploadingCustomVideo || isUploadingVideo}
+                          onClick={() => fileInputRef.current?.click()}
+                          className="gap-1.5"
+                        >
+                          <FaUpload className="h-3 w-3" />
+                          <span>Select Video File</span>
+                        </Button>
+                      </div>
+                    </>
+                  )}
                 </div>
 
                 <Input
@@ -445,13 +489,7 @@ export default function CourseFormModal({
                         playsInline
                         preload="metadata"
                         className="w-full h-full object-contain"
-                        src={
-                          formData.videoUrl.startsWith("/") && !formData.videoUrl.startsWith("//")
-                            ? formData.videoUrl.startsWith("/public/upload")
-                              ? `http://localhost:8005${formData.videoUrl}`
-                              : formData.videoUrl
-                            : formData.videoUrl
-                        }
+                        src={getMediaUrl(formData.videoUrl, "/sample-course-video.mp4")}
                       >
                         Your browser does not support HTML5 video tag.
                       </video>

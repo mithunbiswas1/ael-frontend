@@ -23,6 +23,7 @@ import ProfileDropdown from "./ProfileDropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { setLogout } from "@/redux/slice/authSlice";
 import { useGetPublicSettingsQuery } from "@/redux/api/adminApi";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import AdSlot from "@/components/shared/AdSlot";
 
 export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
@@ -90,12 +91,8 @@ export default function Navbar({ dict = {}, commonDict = {}, locale = "en" }) {
   const { data: publicSettingsData } = useGetPublicSettingsQuery();
   const settings = publicSettingsData?.data;
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8005";
   const rawLogo = settings?.siteLogo || "/safe_lpg_2.png";
-  const siteLogoUrl =
-    rawLogo.startsWith("http") || rawLogo.startsWith("/")
-      ? rawLogo
-      : `${backendUrl}${rawLogo.startsWith("/") ? "" : "/"}${rawLogo}`;
+  const siteLogoUrl = getMediaUrl(rawLogo, "/safe_lpg_2.png");
 
   const hotlineLabel = settings?.hotlineLabel || commonDict?.hotlineLabel || "Hotline";
   const hotlineNumber = settings?.sitePhone || commonDict?.hotlineNumber || "16137";

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
 import { H4, P } from "@/components/ui/Typography";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 export default function BlogTable({
   blogs = [],
@@ -61,7 +62,7 @@ export default function BlogTable({
             <TableCell>
               <div className="relative h-11 w-14 overflow-hidden rounded-lg bg-slate-100 shrink-0">
                 <Image
-                  src={blog.image || "/default_image.jpg"}
+                  src={getMediaUrl(blog.image, "/default_image.jpg")}
                   alt={blog.titleEn || "Blog thumbnail"}
                   fill
                   className="object-cover"

@@ -31,6 +31,10 @@ import {
   useUploadCourseVideoMutation,
   useUploadCoursePdfMutation,
 } from "@/redux/api/courseApi";
+import {
+  uploadVideoWithProgress,
+  MAX_VIDEO_UPLOAD_SIZE,
+} from "@/utils/uploadWithProgress";
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { Badge } from "@/components/ui/Badge";
@@ -58,6 +62,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
   // Individual video & pdf upload trackers
   const [uploadingLessonKey, setUploadingLessonKey] = useState(null); // `${modIdx}_${lessonIdx}`
   const [uploadingLessonPdfKey, setUploadingLessonPdfKey] = useState(null); // `${modIdx}_${lessonIdx}`
+  const [uploadProgressMap, setUploadProgressMap] = useState({});
 
   // Active question tab per module: { [modIdx]: questionIdx }
   const [activeQuestionTabs, setActiveQuestionTabs] = useState({});
@@ -244,26 +249,55 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
     }
   };
 
-  // Direct Video Upload Handler for a specific lesson
+  // Direct Video Upload Handler for a specific lesson (Supports up to 1GB & 10+ min uploads)
   const handleLessonVideoUpload = async (file, modIdx, lessonIdx) => {
     if (!file) return;
+
+    if (file.size > MAX_VIDEO_UPLOAD_SIZE) {
+      toast.error(
+        "ভিডিও ফাইল সাইজ সর্বোচ্চ ১জিবি (1GB) হতে পারবে। / Video file size must be within 1GB."
+      );
+      return;
+    }
+
     const key = `${modIdx}_${lessonIdx}`;
     setUploadingLessonKey(key);
-
-    const body = new FormData();
-    body.append("video", file);
+    setUploadProgressMap((prev) => ({
+      ...prev,
+      [key]: {
+        percent: 1,
+        loadedMB: "0.1",
+        totalMB: (file.size / (1024 * 1024)).toFixed(1),
+      },
+    }));
 
     try {
-      const res = await uploadVideo(body).unwrap();
+      const res = await uploadVideoWithProgress({
+        file,
+        onProgress: (prog) => {
+          setUploadProgressMap((prev) => ({
+            ...prev,
+            [key]: prog,
+          }));
+        },
+      });
+
       const videoUrl = res?.data?.videoUrl;
       if (videoUrl) {
         updateLesson(modIdx, lessonIdx, "videoUrl", videoUrl);
-        toast.success("Lesson video file uploaded successfully!");
+        toast.success("লেসন ভিডিও সফলভাবে আপলোড সম্পন্ন হয়েছে! / Video uploaded successfully!");
+      } else {
+        toast.error("ভিডিও লিঙ্ক সংগ্রহ করতে ব্যর্থ হয়েছে। / Failed to get video URL.");
       }
     } catch (err) {
-      toast.error(err?.data?.message || "Failed to upload video");
+      toast.error(err?.message || "Failed to upload video");
     } finally {
       setUploadingLessonKey(null);
+      setUploadProgressMap((prev) => {
+        const next = { ...prev };
+        delete next[key];
+        return next;
+      });
     }
   };
 
@@ -988,9 +1022,39 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                     }`}
                                 >
                                   {uploadingLessonKey === `${modIdx}_${lIdx}` ? (
-                                    <div className="py-2 space-y-2">
-                                      <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                                      <p className="text-xs font-semibold text-primary">Uploading video file... Please wait</p>
+                                    <div className="py-3 px-4 space-y-2.5 max-w-md mx-auto">
+                                      <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                                        <span className="flex items-center gap-1.5 text-primary">
+                                          <Upload className="h-4 w-4 animate-bounce" />
+                                          <span>ভিডিও ফাইল আপলোড হচ্ছে...</span>
+                                        </span>
+                                        <span className="font-mono text-primary font-bold">
+                                          {uploadProgressMap[`${modIdx}_${lIdx}`]?.percent || 0}%
+                                        </span>
+                                      </div>
+
+                                      {/* Real-time Animated Progress Bar */}
+                                      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
+                                        <div
+                                          className="bg-primary h-full transition-all duration-200 rounded-full"
+                                          style={{
+                                            width: `${Math.max(5, uploadProgressMap[`${modIdx}_${lIdx}`]?.percent || 0)}%`,
+                                          }}
+                                        />
+                                      </div>
+
+                                      <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                                        <span>
+                                          {uploadProgressMap[`${modIdx}_${lIdx}`]?.loadedMB || "0"} MB /{" "}
+                                          {uploadProgressMap[`${modIdx}_${lIdx}`]?.totalMB || "0"} MB
+                                        </span>
+                                        <span className="text-slate-400">
+                                          (১জিবি পর্যন্ত ও ১০ মিনিট সমর্থিত)
+                                        </span>
+                                      </div>
+                                      <p className="text-[10px] text-slate-400">
+                                        আপলোড চলাকালীন পৃষ্ঠাটি বন্ধ বা রিলোড করবেন না।
+                                      </p>
                                     </div>
                                   ) : (
                                     <label className="cursor-pointer block space-y-1.5">
@@ -998,10 +1062,10 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                         <Upload className="h-4 w-4" />
                                       </div>
                                       <p className="text-xs font-bold text-slate-800">
-                                        Click to upload video or drag and drop
+                                        ভিডিও ফাইল আপলোড করতে ক্লিক করুন বা ড্র্যাগ করুন (১জিবি পর্যন্ত)
                                       </p>
                                       <p className="text-[11px] text-slate-500">
-                                        MP4, WebM, MOV video files supported
+                                        MP4, WebM, MOV, MKV সমর্থিত (সর্বোচ্চ ১জিবি / 1GB)
                                       </p>
                                       <input
                                         type="file"

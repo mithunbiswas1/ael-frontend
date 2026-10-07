@@ -8,6 +8,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { H1, P } from "@/components/ui/Typography";
 import AmbientGlow from "@/components/ui/AmbientGlow";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 export default function HeroSection({ locale = "en", banner = {} }) {
   const isBn = locale === "bn";
@@ -108,7 +109,7 @@ export default function HeroSection({ locale = "en", banner = {} }) {
                         className="relative h-full min-w-0 flex-[0_0_100%] overflow-hidden"
                       >
                         <Image
-                          src={slide.image || "/default_image.jpg"}
+                          src={getMediaUrl(slide.image, "/default_image.jpg")}
                           alt={(isBn ? slide.altBn : slide.alt) || slide.alt || ""}
                           fill
                           priority={index === 0}

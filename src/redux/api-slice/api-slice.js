@@ -5,6 +5,7 @@ import { API_BASE_URL } from "@/config/base-url";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
+  timeout: 15 * 60 * 1000, // 15 minutes timeout for large 1GB video uploads
   prepareHeaders: (headers) => {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("accessToken");

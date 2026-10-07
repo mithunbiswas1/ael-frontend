@@ -19,6 +19,7 @@ import {
 import { toast } from "sonner";
 import { H3, H4 } from "@/components/ui/Typography";
 import SectionHeader from "@/components/ui/SectionHeader";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import {
   Table,
   TableHeader,
@@ -61,9 +62,7 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
 
     const downloadTarget = doc.pdfUrl || (doc.fileName ? `/public/upload/${doc.fileName}` : null);
     if (downloadTarget) {
-      const fullUrl = downloadTarget.startsWith("http")
-        ? downloadTarget
-        : `${process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") || "http://localhost:8005"}${downloadTarget}`;
+      const fullUrl = getMediaUrl(downloadTarget);
 
       window.open(fullUrl, "_blank", "noopener,noreferrer");
       toast.success(

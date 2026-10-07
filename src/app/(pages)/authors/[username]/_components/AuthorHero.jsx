@@ -14,19 +14,12 @@ import {
   FaShieldAlt,
   FaCalendarAlt,
 } from "react-icons/fa";
-import { baseUriBackend } from "@/config/base-url";
+import { getMediaUrl } from "@/utils/mediaUrl";
 import { H1, H3, P } from "@/components/ui/Typography";
 
 export default function AuthorHero({ author, stats = {}, isBn }) {
   const defaultPerson = "/default_person.jpg";
-
-  const getInitialAvatar = () => {
-    if (!author?.image) return defaultPerson;
-    if (author.image.startsWith("http")) return author.image;
-    return `${baseUriBackend}/${author.image.replace(/^\//, "")}`;
-  };
-
-  const [imgSrc, setImgSrc] = useState(getInitialAvatar());
+  const [imgSrc, setImgSrc] = useState(getMediaUrl(author?.image, defaultPerson));
 
   const designation =
     author.designation ||

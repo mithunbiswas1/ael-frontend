@@ -8,8 +8,11 @@ export async function middleware(request) {
   const learnMatch = pathname.match(/^\/courses\/learn\/(\d+)$/);
   if (learnMatch) {
     const courseId = learnMatch[1];
+    const apiUrl = (
+      process.env.NEXT_PUBLIC_API_URL || "https://api.charutec.com/api/v1"
+    ).replace(/\/$/, "");
     try {
-      const res = await fetch(`http://localhost:8005/api/v1/courses/${courseId}`, {
+      const res = await fetch(`${apiUrl}/courses/${courseId}`, {
         cache: "no-store",
       });
       if (res.ok) {
@@ -29,8 +32,11 @@ export async function middleware(request) {
   const detailMatch = pathname.match(/^\/courses\/(\d+)$/);
   if (detailMatch) {
     const courseId = detailMatch[1];
+    const apiUrl = (
+      process.env.NEXT_PUBLIC_API_URL || "https://api.charutec.com/api/v1"
+    ).replace(/\/$/, "");
     try {
-      const res = await fetch(`http://localhost:8005/api/v1/courses/${courseId}`, {
+      const res = await fetch(`${apiUrl}/courses/${courseId}`, {
         cache: "no-store",
       });
       if (res.ok) {

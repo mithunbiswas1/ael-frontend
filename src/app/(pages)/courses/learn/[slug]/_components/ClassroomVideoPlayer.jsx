@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useUpdateCourseProgressMutation } from "@/redux/api/courseApi";
 import { Button } from "@/components/ui/Button";
+import { getMediaUrl } from "@/utils/mediaUrl";
 
 export default function ClassroomVideoPlayer({
   courseId,
@@ -49,10 +50,7 @@ export default function ClassroomVideoPlayer({
     rawVideoUrl.includes("youtu.be") ||
     rawVideoUrl.includes("vimeo.com");
 
-  const videoSrc =
-    rawVideoUrl.startsWith("/public/upload")
-      ? `http://localhost:8005${rawVideoUrl}`
-      : rawVideoUrl;
+  const videoSrc = getMediaUrl(rawVideoUrl, "/sample-course-video.mp4");
 
   const { user } = useSelector((state) => state.auth);
   const userScope = user?._id ? `user_${user._id}` : "guest";
@@ -380,7 +378,7 @@ export default function ClassroomVideoPlayer({
                   </div>
                 </div>
                 <a
-                  href={course.pdfUrl.startsWith("/") ? `http://localhost:8005${course.pdfUrl}` : course.pdfUrl}
+                  href={getMediaUrl(course.pdfUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   download
@@ -407,7 +405,7 @@ export default function ClassroomVideoPlayer({
                   </div>
                 </div>
                 <a
-                  href={currentLesson.pdfUrl.startsWith("/") ? `http://localhost:8005${currentLesson.pdfUrl}` : currentLesson.pdfUrl}
+                  href={getMediaUrl(currentLesson.pdfUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   download
