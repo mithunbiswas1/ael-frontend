@@ -20,6 +20,21 @@ const MAX_WIDTHS = {
   full: "max-w-full",
 };
 
+let openDialogCount = 0;
+
+export function unlockAllDialogScrolls() {
+  openDialogCount = 0;
+  if (typeof document !== "undefined") {
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+    document.body.style.paddingRight = "";
+    const mainEl = document.querySelector("main");
+    if (mainEl && mainEl.style.overflow === "hidden") {
+      mainEl.style.overflow = "";
+    }
+  }
+}
+
 export const Dialog = forwardRef(function Dialog(
   {
     isOpen = false,
@@ -43,28 +58,20 @@ export const Dialog = forwardRef(function Dialog(
     setIsMounted(true);
   }, []);
 
-  // Lock both document.body, document.documentElement, and dashboard main scroll when open
+  // Safely lock and restore body and html scroll with reference counting
   useEffect(() => {
     if (!isOpen) return;
 
-    const originalBodyOverflow = document.body.style.overflow;
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-    const originalBodyPaddingRight = document.body.style.paddingRight;
+    openDialogCount++;
 
-    // Prevent layout shift from scrollbar removal
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
-    if (scrollbarWidth > 0) {
-      document.body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-
-    // Also lock dashboard main content scrolling if present
-    const mainEl = document.querySelector("main");
-    const originalMainOverflow = mainEl ? mainEl.style.overflow : "";
-    if (mainEl) {
-      mainEl.style.overflow = "hidden";
+    if (openDialogCount === 1) {
+      const scrollbarWidth =
+        window.innerWidth - document.documentElement.clientWidth;
+      if (scrollbarWidth > 0) {
+        document.body.style.paddingRight = `${scrollbarWidth}px`;
+      }
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     }
 
     const handleKeyDown = (e) => {
@@ -76,13 +83,17 @@ export const Dialog = forwardRef(function Dialog(
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = originalBodyOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
-      document.body.style.paddingRight = originalBodyPaddingRight;
-      if (mainEl) {
-        mainEl.style.overflow = originalMainOverflow;
-      }
       window.removeEventListener("keydown", handleKeyDown);
+      openDialogCount = Math.max(0, openDialogCount - 1);
+      if (openDialogCount === 0) {
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
+        document.body.style.paddingRight = "";
+        const mainEl = document.querySelector("main");
+        if (mainEl && mainEl.style.overflow === "hidden") {
+          mainEl.style.overflow = "";
+        }
+      }
     };
   }, [isOpen, closeOnEscape, onClose]);
 

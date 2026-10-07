@@ -58,8 +58,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
   // Individual video & pdf upload trackers
   const [uploadingLessonKey, setUploadingLessonKey] = useState(null); // `${modIdx}_${lessonIdx}`
   const [uploadingLessonPdfKey, setUploadingLessonPdfKey] = useState(null); // `${modIdx}_${lessonIdx}`
-  const [isUploadingPromoVideo, setIsUploadingPromoVideo] = useState(false);
-  const [isUploadingCoursePdf, setIsUploadingCoursePdf] = useState(false);
 
   // Active question tab per module: { [modIdx]: questionIdx }
   const [activeQuestionTabs, setActiveQuestionTabs] = useState({});
@@ -82,23 +80,23 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         audienceBn: initialData.audienceBn || "ভোক্তা ও গৃহিণী",
         level: initialData.level || "Beginner",
         levelBn: initialData.levelBn || "প্রাথমিক",
-        duration: initialData.duration || "1h 30m",
-        durationBn: initialData.durationBn || "১ ঘণ্টা ৩০ মিনিট",
+        duration: initialData.duration || "",
+        durationBn: initialData.durationBn || "",
         price: initialData.price || 0,
         imageUrl: initialData.imageUrl || "",
-        videoUrl: initialData.videoUrl || "/sample-course-video.mp4",
+        videoUrl: initialData.videoUrl || "",
         pdfUrl: initialData.pdfUrl || "",
         pdfOriginalName: initialData.pdfOriginalName || "",
         pdfSize: initialData.pdfSize || "",
         isPublished: initialData.isPublished !== undefined ? initialData.isPublished : true,
         instructor: {
-          name: initialData.instructor?.name || "Engr. Mahmudul Hasan",
-          nameBn: initialData.instructor?.nameBn || "প্রকৌশলী মাহমুদুল হাসান",
-          role: initialData.instructor?.role || "Lead Safety Auditor",
-          roleBn: initialData.instructor?.roleBn || "প্রধান নিরাপত্তা নিরীক্ষক",
-          experience: initialData.instructor?.experience || "15+ Years Industrial Experience",
-          experienceBn: initialData.instructor?.experienceBn || "১৫+ বছরের শিল্প অভিজ্ঞতা",
-          avatar: initialData.instructor?.avatar || "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop",
+          name: initialData.instructor?.name || "",
+          nameBn: initialData.instructor?.nameBn || "",
+          role: initialData.instructor?.role || "",
+          roleBn: initialData.instructor?.roleBn || "",
+          experience: initialData.instructor?.experience || "",
+          experienceBn: initialData.instructor?.experienceBn || "",
+          avatar: initialData.instructor?.avatar || "",
         },
         curriculum: initialData.curriculum && initialData.curriculum.length > 0
           ? initialData.curriculum.map((mod) => ({
@@ -109,8 +107,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
               ? mod.lessons.map((l) => ({
                 title: l.title || "",
                 titleBn: l.titleBn || "",
-                duration: l.duration || "10 mins",
-                durationBn: l.durationBn || "১০ মিনিট",
+                duration: l.duration || "",
+                durationBn: l.durationBn || "",
                 videoUrl: l.videoUrl || "",
                 pdfUrl: l.pdfUrl || "",
                 pdfOriginalName: l.pdfOriginalName || "",
@@ -118,20 +116,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                 notes: l.notes || "",
                 notesBn: l.notesBn || "",
               }))
-              : [
-                {
-                  title: "Lesson 1: Introduction",
-                  titleBn: "পাঠ ১: পরিচিতি",
-                  duration: "10 mins",
-                  durationBn: "১০ মিনিট",
-                  videoUrl: "",
-                  pdfUrl: "",
-                  pdfOriginalName: "",
-                  freePreview: false,
-                  notes: "",
-                  notesBn: "",
-                },
-              ],
+              : [],
             quiz: {
               title: mod.quiz?.title || "",
               titleBn: mod.quiz?.titleBn || "",
@@ -149,31 +134,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                 : [],
             },
           }))
-          : [
-            {
-              moduleTitle: "Module 1: Fundamentals & Orientation",
-              moduleTitleBn: "মডিউল ১: প্রাথমিক ধারণা ও নির্দেশিকা",
-              isFree: true, // First module free by default for demo
-              lessons: [
-                {
-                  title: "Lesson 1: Overview & Guidelines",
-                  titleBn: "পাঠ ১: সারসংক্ষেপ ও নির্দেশিকা",
-                  duration: "12 mins",
-                  durationBn: "১২ মিনিট",
-                  videoUrl: "/sample-course-video.mp4",
-                  freePreview: true,
-                  notes: "",
-                  notesBn: "",
-                },
-              ],
-              quiz: {
-                title: "Module 1 Assessment Quiz",
-                titleBn: "মডিউল ১ মূল্যায়ন কুইজ",
-                passingScore: 70,
-                questions: [],
-              },
-            },
-          ],
+          : [],
       };
     }
 
@@ -184,54 +145,54 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
       slug: "",
       description: "",
       descriptionBn: "",
-      category: "Consumer Safety",
-      categoryBn: "ভোক্তা নিরাপত্তা",
+      category: "",
+      categoryBn: "",
       badge: "FREE",
       badgeColor: "bg-emerald-500",
-      audience: "Consumers & Homemakers",
-      audienceBn: "ভোক্তা ও গৃহিণী",
+      audience: "",
+      audienceBn: "",
       level: "Beginner",
       levelBn: "প্রাথমিক",
-      duration: "1h 30m",
-      durationBn: "১ ঘণ্টা ৩০ মিনিট",
+      duration: "",
+      durationBn: "",
       price: 0,
-      imageUrl: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?q=80&w=800&auto=format&fit=crop",
-      videoUrl: "/sample-course-video.mp4",
+      imageUrl: "",
+      videoUrl: "",
       pdfUrl: "",
       pdfOriginalName: "",
       pdfSize: "",
       isPublished: true,
       instructor: {
-        name: "Engr. Mahmudul Hasan",
-        nameBn: "প্রকৌশলী মাহমুদুল হাসান",
-        role: "Lead Safety Auditor",
-        roleBn: "প্রধান নিরাপত্তা নিরীক্ষক",
-        experience: "15+ Years Industrial Experience",
-        experienceBn: "১৫+ বছরের শিল্প অভিজ্ঞতা",
-        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=200&auto=format&fit=crop",
+        name: "",
+        nameBn: "",
+        role: "",
+        roleBn: "",
+        experience: "",
+        experienceBn: "",
+        avatar: "",
       },
       curriculum: [
         {
-          moduleTitle: "Module 1: Orientation & Basics",
-          moduleTitleBn: "মডিউল ১: পরিচিতি ও প্রাথমিক ধারণা",
-          isFree: true, // First module free
+          moduleTitle: "",
+          moduleTitleBn: "",
+          isFree: true,
           lessons: [
             {
-              title: "Lesson 1.1: Introduction",
-              titleBn: "পাঠ ১.১: ভূমিকা ও প্রাথমিক নির্দেশনা",
-              duration: "10 mins",
-              durationBn: "১০ মিনিট",
-              videoUrl: "/sample-course-video.mp4",
+              title: "",
+              titleBn: "",
+              duration: "",
+              durationBn: "",
+              videoUrl: "",
               pdfUrl: "",
               pdfOriginalName: "",
-              freePreview: true,
+              freePreview: false,
               notes: "",
               notesBn: "",
             },
           ],
           quiz: {
-            title: "Module 1 Quiz",
-            titleBn: "মডিউল ১ কুইজ",
+            title: "",
+            titleBn: "",
             passingScore: 70,
             questions: [],
           },
@@ -250,6 +211,16 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         next.add(index);
       }
       return next;
+    });
+  };
+
+  // Collapse / Expand All Modules
+  const toggleExpandAllModules = () => {
+    setExpandedModules((prev) => {
+      if (prev.size === formData.curriculum.length) {
+        return new Set();
+      }
+      return new Set(formData.curriculum.map((_, idx) => idx));
     });
   };
 
@@ -296,54 +267,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
     }
   };
 
-  // Direct Promo / Overview Video Upload Handler
-  const handlePromoVideoUpload = async (file) => {
-    if (!file) return;
-    setIsUploadingPromoVideo(true);
-
-    const body = new FormData();
-    body.append("video", file);
-
-    try {
-      const res = await uploadVideo(body).unwrap();
-      const videoUrl = res?.data?.videoUrl;
-      if (videoUrl) {
-        setFormData((prev) => ({ ...prev, videoUrl }));
-        toast.success("Course overview video uploaded successfully!");
-      }
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to upload overview video");
-    } finally {
-      setIsUploadingPromoVideo(false);
-    }
-  };
-
-  // Direct Course PDF Guide / Study Material Upload Handler
-  const handleCoursePdfUpload = async (file) => {
-    if (!file) return;
-    setIsUploadingCoursePdf(true);
-
-    const body = new FormData();
-    body.append("pdf", file);
-
-    try {
-      const res = await uploadPdf(body).unwrap();
-      const pdfUrl = res?.data?.pdfUrl;
-      if (pdfUrl) {
-        setFormData((prev) => ({
-          ...prev,
-          pdfUrl,
-          pdfOriginalName: res?.data?.originalName || file.name,
-          pdfSize: res?.data?.size ? `${(res.data.size / (1024 * 1024)).toFixed(2)} MB` : "PDF Document",
-        }));
-        toast.success("Course study guide PDF uploaded successfully!");
-      }
-    } catch (err) {
-      toast.error(err?.data?.message || "Failed to upload course PDF");
-    } finally {
-      setIsUploadingCoursePdf(false);
-    }
-  };
 
   // Direct Lesson PDF Handout Upload Handler
   const handleLessonPdfUpload = async (file, modIdx, lessonIdx) => {
@@ -379,15 +302,15 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
     const newIdx = formData.curriculum.length;
     const newModuleNumber = newIdx + 1;
     const newModule = {
-      moduleTitle: `Module ${newModuleNumber}: New Topic`,
-      moduleTitleBn: `মডিউল ${newModuleNumber}: নতুন বিষয়`,
+      moduleTitle: "",
+      moduleTitleBn: "",
       isFree: false,
       lessons: [
         {
-          title: `Lesson ${newModuleNumber}.1: Lecture`,
-          titleBn: `পাঠ ${newModuleNumber}.১: লেকচার`,
-          duration: "10 mins",
-          durationBn: "১০ মিনিট",
+          title: "",
+          titleBn: "",
+          duration: "",
+          durationBn: "",
           videoUrl: "",
           freePreview: false,
           notes: "",
@@ -395,8 +318,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         },
       ],
       quiz: {
-        title: `Module ${newModuleNumber} Quiz`,
-        titleBn: `মডিউল ${newModuleNumber} কুইজ`,
+        title: "",
+        titleBn: "",
         passingScore: 70,
         questions: [],
       },
@@ -438,13 +361,12 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
     setFormData((prev) => {
       const curriculum = [...prev.curriculum];
       const currentLessons = curriculum[modIdx].lessons || [];
-      const newLessonNum = currentLessons.length + 1;
 
       const newLesson = {
-        title: `Lesson ${modIdx + 1}.${newLessonNum}: Topic Title`,
-        titleBn: `পাঠ ${modIdx + 1}.${newLessonNum}: পাঠের শিরোনাম`,
-        duration: "10 mins",
-        durationBn: "১০ মিনিট",
+        title: "",
+        titleBn: "",
+        duration: "",
+        durationBn: "",
         videoUrl: "",
         pdfUrl: "",
         pdfOriginalName: "",
@@ -603,11 +525,20 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
       totalQuizzes: totalQuizzesCount,
       badge: formData.price > 0 ? "PREMIUM" : "FREE",
       badgeColor: formData.price > 0 ? "bg-amber-600" : "bg-emerald-600",
+      curriculum: formData.curriculum.map((m, mIdx) => ({
+        ...m,
+        isFree: formData.price === 0 || mIdx === 0,
+        lessons: (m.lessons || []).map((l) => ({
+          ...l,
+          freePreview: formData.price === 0 || mIdx === 0,
+        })),
+      })),
     };
 
     try {
-      if (isEdit && initialData?._id) {
-        await updateCourse({ id: initialData._id, data: payload }).unwrap();
+      const targetId = initialData?._id || initialData?.courseId;
+      if (isEdit && targetId) {
+        await updateCourse({ id: targetId, data: payload }).unwrap();
         toast.success("Course and modules updated successfully!");
       } else {
         await createCourse(payload).unwrap();
@@ -691,7 +622,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
           onClick={() => setActiveTab("instructor")}
           icon={UserCheck}
         >
-          Instructor & Media
+          Instructor & Banner
         </Button>
       </div>
 
@@ -699,21 +630,82 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
       {activeTab === "modules" && (
         <div className="space-y-6">
           {/* Header & Quick stats */}
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div>
-              <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span>Course Modules & Video Structure</span>
-                <Badge variant="success" size="xs">
-                  Multi-Module Enabled
-                </Badge>
-              </h2>
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
+                  <span>Course Modules</span>
+                </h2>
+
+                {/* Course Type Toggle (Free Course / Paid Course) */}
+                <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        price: 0,
+                        badge: "FREE",
+                        badgeColor: "bg-emerald-600",
+                      }));
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${formData.price === 0
+                      ? "bg-emerald-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                      }`}
+                  >
+                    <span> Free Course (ফ্রি কোর্স)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        price: prev.price > 0 ? prev.price : 1200,
+                        badge: "PREMIUM",
+                        badgeColor: "bg-amber-500",
+                      }));
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${formData.price > 0
+                      ? "bg-amber-600 text-white shadow-xs"
+                      : "text-slate-600 hover:text-slate-900"
+                      }`}
+                  >
+                    <span>Paid Course (পেইড কোর্স)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Informative Rule Helper */}
+              <p className="text-[11px] text-slate-500">
+                {formData.price > 0 ? (
+                  <span className="text-amber-800 bg-amber-50 border border-amber-200/80 rounded px-2 py-0.5 font-medium inline-block">
+                    <strong>Paid Course Rule:</strong> Module 1 is always available as a free preview for all logged-in students. After completing Module 1, enrollment/subscription is required to access Module 2.
+                  </span>
+                ) : (
+                  <span className="text-emerald-800 bg-emerald-50 border border-emerald-200/80 rounded px-2 py-0.5 font-medium inline-block">
+                    <strong>Free Course Rule:</strong> All modules and videos are completely free and accessible to everyone.
+                  </span>
+                )}
+              </p>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 shrink-0 self-end lg:self-center">
               <div className="text-right text-[11px] text-slate-500 pr-2 border-r border-slate-200">
                 <p className="font-bold text-slate-800">{totalLessonsCount} Lessons</p>
                 <p>{totalQuizzesCount} Quizzes</p>
               </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={toggleExpandAllModules}
+              >
+                {expandedModules.size === formData.curriculum.length
+                  ? "Collapse All Modules"
+                  : "Expand All Modules"}
+              </Button>
               <Button
                 type="button"
                 variant="primary"
@@ -732,23 +724,30 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
               const isExpanded = expandedModules.has(modIdx);
               const lessonCount = module.lessons?.length || 0;
               const quizQuestionsCount = module.quiz?.questions?.length || 0;
+              const isFirstModuleInPaid = formData.price > 0 && modIdx === 0;
 
               return (
                 <div
                   key={modIdx}
-                  className={`bg-white rounded-2xl border transition-all ${module.isFree
-                      ? "border-emerald-300 ring-1 ring-emerald-200/50"
-                      : "border-slate-200"
+                  className={`bg-white rounded-2xl border transition-all ${isFirstModuleInPaid || formData.price === 0
+                    ? "border-emerald-300 ring-1 ring-emerald-200/50"
+                    : "border-slate-200"
                     }`}
                 >
-                  {/* Module Header Bar */}
-                  <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100">
+                  {/* Module Header Bar (Click anywhere to collapse / expand) */}
+                  <div
+                    onClick={() => toggleModule(modIdx)}
+                    className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 cursor-pointer select-none hover:bg-slate-50/80 transition-colors"
+                  >
                     <div className="flex items-center gap-3 flex-1">
                       <Button
                         type="button"
                         variant="subtle"
                         size="icon-sm"
-                        onClick={() => toggleModule(modIdx)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleModule(modIdx);
+                        }}
                       >
                         {isExpanded ? (
                           <ChevronUp className="h-4 w-4" />
@@ -765,13 +764,17 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                           <span className="font-bold text-slate-900 text-sm">
                             {module.moduleTitle || `Module ${modIdx + 1}`}
                           </span>
-                          {module.isFree ? (
+                          {formData.price === 0 ? (
                             <Badge variant="pill-success" size="xs" icon={Check}>
-                              FREE MODULE FOR REGISTERED USERS
+                              100% FREE MODULE
+                            </Badge>
+                          ) : modIdx === 0 ? (
+                            <Badge variant="pill-success" size="xs" icon={Check}>
+                              MODULE 1: ALL-TIME FREE PREVIEW
                             </Badge>
                           ) : (
                             <Badge variant="pill-neutral" size="xs">
-                              Enrolled Only
+                              MODULE {modIdx + 1}: ENROLLED ONLY
                             </Badge>
                           )}
                         </div>
@@ -789,26 +792,18 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-center">
-                      {/* Free Module Toggle Button */}
-                      <label className="flex items-center gap-2 cursor-pointer bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 text-xs">
-                        <Checkbox
-                          checked={Boolean(module.isFree)}
-                          onCheckedChange={(checked) =>
-                            updateModuleField(modIdx, "isFree", checked)
-                          }
-                          variant="success"
-                        />
-                        <span className="font-semibold text-slate-700 text-[11px]">
-                          Free Preview Module
-                        </span>
-                      </label>
-
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center gap-2 self-end sm:self-center"
+                    >
                       <Button
                         type="button"
                         variant="danger-soft"
                         size="icon-sm"
-                        onClick={() => removeModule(modIdx)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeModule(modIdx);
+                        }}
                         title="Delete Module"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -868,31 +863,15 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                               <span className="font-bold text-xs text-slate-700">
                                 Lesson {lIdx + 1}
                               </span>
-                              <div className="flex items-center gap-2">
-                                <label className="flex items-center gap-1.5 text-[11px] text-slate-600 cursor-pointer">
-                                  <Checkbox
-                                    checked={Boolean(lesson.freePreview || module.isFree)}
-                                    onCheckedChange={(checked) =>
-                                      updateLesson(
-                                        modIdx,
-                                        lIdx,
-                                        "freePreview",
-                                        checked
-                                      )
-                                    }
-                                  />
-                                  <span>Free Preview</span>
-                                </label>
-                                <Button
-                                  type="button"
-                                  variant="danger-soft"
-                                  size="icon-xs"
-                                  onClick={() => removeLesson(modIdx, lIdx)}
-                                  title="Remove Lesson"
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
-                              </div>
+                              <Button
+                                type="button"
+                                variant="danger-soft"
+                                size="icon-xs"
+                                onClick={() => removeLesson(modIdx, lIdx)}
+                                title="Remove Lesson"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1004,8 +983,8 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                     if (file) handleLessonVideoUpload(file, modIdx, lIdx);
                                   }}
                                   className={`border-2 border-dashed rounded-xl p-5 text-center transition-colors ${uploadingLessonKey === `${modIdx}_${lIdx}`
-                                      ? "border-primary bg-primary/5"
-                                      : "border-slate-300 bg-white hover:border-primary/60 hover:bg-slate-50"
+                                    ? "border-primary bg-primary/5"
+                                    : "border-slate-300 bg-white hover:border-primary/60 hover:bg-slate-50"
                                     }`}
                                 >
                                   {uploadingLessonKey === `${modIdx}_${lIdx}` ? (
@@ -1040,76 +1019,76 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                             </div>
 
                             {/* Optional Lesson PDF Handout / Reading File */}
-                              <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                                <div className="flex items-center justify-between">
-                                  <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-                                    <FileText className="h-3.5 w-3.5 text-primary" />
-                                    <span>Lesson PDF Handout / Notes (Optional)</span>
-                                  </label>
-                                  {lesson.pdfUrl && (
-                                    <Badge variant="success" size="xs">
-                                      ✓ PDF Attached
-                                    </Badge>
-                                  )}
-                                </div>
-
-                                {lesson.pdfUrl ? (
-                                  <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
-                                    <div className="flex items-center gap-2 min-w-0">
-                                      <FileText className="h-4 w-4 text-rose-600 shrink-0" />
-                                      <span className="text-xs font-semibold text-slate-800 truncate">
-                                        {lesson.pdfOriginalName || "Lesson-Handout.pdf"}
-                                      </span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 shrink-0">
-                                      <a
-                                        href={lesson.pdfUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-600 text-xs"
-                                        title="Preview PDF"
-                                      >
-                                        <Eye className="h-3.5 w-3.5" />
-                                      </a>
-                                      <Button
-                                        type="button"
-                                        variant="danger-ghost"
-                                        size="xs"
-                                        onClick={() => {
-                                          updateLesson(modIdx, lIdx, "pdfUrl", "");
-                                          updateLesson(modIdx, lIdx, "pdfOriginalName", "");
-                                        }}
-                                      >
-                                        Remove
-                                      </Button>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="bg-white p-2 rounded-lg border border-dashed border-slate-300 text-center">
-                                    {uploadingLessonPdfKey === `${modIdx}_${lIdx}` ? (
-                                      <div className="py-1 text-xs text-primary font-semibold flex items-center justify-center gap-2">
-                                        <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                                        <span>Uploading PDF handout...</span>
-                                      </div>
-                                    ) : (
-                                      <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-primary font-medium py-1 px-2">
-                                        <Upload className="h-3.5 w-3.5 text-slate-400" />
-                                        <span>Upload lesson PDF document (e.g. slides, notes)</span>
-                                        <input
-                                          type="file"
-                                          accept=".pdf,application/pdf"
-                                          className="hidden"
-                                          onChange={(e) => {
-                                            const file = e.target.files?.[0];
-                                            if (file) handleLessonPdfUpload(file, modIdx, lIdx);
-                                          }}
-                                        />
-                                      </label>
-                                    )}
-                                  </div>
+                            <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
+                              <div className="flex items-center justify-between">
+                                <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                                  <FileText className="h-3.5 w-3.5 text-primary" />
+                                  <span>Lesson PDF Handout / Notes (Optional)</span>
+                                </label>
+                                {lesson.pdfUrl && (
+                                  <Badge variant="success" size="xs">
+                                    ✓ PDF Attached
+                                  </Badge>
                                 )}
                               </div>
+
+                              {lesson.pdfUrl ? (
+                                <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <FileText className="h-4 w-4 text-rose-600 shrink-0" />
+                                    <span className="text-xs font-semibold text-slate-800 truncate">
+                                      {lesson.pdfOriginalName || "Lesson-Handout.pdf"}
+                                    </span>
+                                  </div>
+                                  <div className="flex items-center gap-1.5 shrink-0">
+                                    <a
+                                      href={lesson.pdfUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="p-1.5 rounded-md hover:bg-slate-100 text-slate-600 text-xs"
+                                      title="Preview PDF"
+                                    >
+                                      <Eye className="h-3.5 w-3.5" />
+                                    </a>
+                                    <Button
+                                      type="button"
+                                      variant="danger-ghost"
+                                      size="xs"
+                                      onClick={() => {
+                                        updateLesson(modIdx, lIdx, "pdfUrl", "");
+                                        updateLesson(modIdx, lIdx, "pdfOriginalName", "");
+                                      }}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="bg-white p-2 rounded-lg border border-dashed border-slate-300 text-center">
+                                  {uploadingLessonPdfKey === `${modIdx}_${lIdx}` ? (
+                                    <div className="py-1 text-xs text-primary font-semibold flex items-center justify-center gap-2">
+                                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                      <span>Uploading PDF handout...</span>
+                                    </div>
+                                  ) : (
+                                    <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-primary font-medium py-1 px-2">
+                                      <Upload className="h-3.5 w-3.5 text-slate-400" />
+                                      <span>Upload lesson PDF document (e.g. slides, notes)</span>
+                                      <input
+                                        type="file"
+                                        accept=".pdf,application/pdf"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                          const file = e.target.files?.[0];
+                                          if (file) handleLessonPdfUpload(file, modIdx, lIdx);
+                                        }}
+                                      />
+                                    </label>
+                                  )}
+                                </div>
+                              )}
                             </div>
+                          </div>
                         ))}
                       </div>
 
@@ -1309,21 +1288,46 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                     />
                                   </div>
 
-                                  {/* 4 Options & Correct Answer Selector */}
+                                  {/* Options & Correct Answer Selector */}
                                   <div className="space-y-2 pt-1">
-                                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                                      Multiple Choice Options (Select circular checkmark for the correct answer)
-                                    </label>
+                                    <div className="flex items-center justify-between">
+                                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                                        Answer Options (Select circular checkmark for the correct answer)
+                                      </label>
+                                      <div className="flex items-center gap-1.5">
+                                        <span className="text-[10px] text-slate-500 font-medium">Type:</span>
+                                        <select
+                                          value={q.type || (q.options?.length === 2 ? "true_false" : "single")}
+                                          onChange={(e) => {
+                                            const newType = e.target.value;
+                                            if (newType === "true_false") {
+                                              updateQuizQuestion(modIdx, activeQ, "type", "true_false");
+                                              updateQuizQuestion(modIdx, activeQ, "options", ["True", "False"]);
+                                              updateQuizQuestion(modIdx, activeQ, "optionsBn", ["সত্য", "মিথ্যা"]);
+                                              if (q.correctAnswer > 1) updateQuizQuestion(modIdx, activeQ, "correctAnswer", 0);
+                                            } else {
+                                              updateQuizQuestion(modIdx, activeQ, "type", "single");
+                                              updateQuizQuestion(modIdx, activeQ, "options", ["", "", "", ""]);
+                                              updateQuizQuestion(modIdx, activeQ, "optionsBn", ["", "", "", ""]);
+                                            }
+                                          }}
+                                          className="text-xs border border-slate-200 rounded px-2 py-0.5 bg-white text-slate-700 font-medium cursor-pointer"
+                                        >
+                                          <option value="single">Multiple Choice (4 Options)</option>
+                                          <option value="true_false">True / False</option>
+                                        </select>
+                                      </div>
+                                    </div>
 
                                     <div className="space-y-2">
-                                      {[0, 1, 2, 3].map((optIdx) => {
+                                      {(q.options && q.options.length > 0 ? q.options : ["", "", "", ""]).map((optText, optIdx) => {
                                         const isCorrect = q.correctAnswer === optIdx;
                                         return (
                                           <div
                                             key={optIdx}
                                             className={`flex items-center gap-2.5 p-2.5 rounded-xl border transition-all ${isCorrect
-                                                ? "border-emerald-300 bg-emerald-50/70 ring-1 ring-emerald-200"
-                                                : "border-slate-200 bg-white"
+                                              ? "border-emerald-300 bg-emerald-50/70 ring-1 ring-emerald-200"
+                                              : "border-slate-200 bg-white"
                                               }`}
                                           >
                                             <Button
@@ -1450,81 +1454,70 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
             />
           </div>
 
-          {/* Pricing & Free Preview Policy */}
+          {/* Pricing & Monetization */}
           <div className="p-4 rounded-xl border border-secondary/20 bg-secondary/5 space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-secondary">
                 Pricing & Monetization (BDT ৳)
               </label>
-              <span className="text-[11px] font-semibold text-secondary">
-                {formData.price > 0 ? "Premium Course" : "Free Course"}
+              <span
+                className={`text-[11px] font-bold px-2 py-0.5 rounded ${formData.price > 0
+                  ? "bg-amber-100 text-amber-900 border border-amber-200"
+                  : "bg-emerald-100 text-emerald-900 border border-emerald-200"
+                  }`}
+              >
+                {formData.price > 0 ? "Premium Paid Course" : " 100% Free Course"}
               </span>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Input
-                  type="number"
-                  min="0"
-                  label="Course Price (BDT ৳)"
-                  value={formData.price}
-                  onChange={(e) =>
-                    setFormData({ ...formData, price: Math.max(0, Number(e.target.value) || 0) })
-                  }
-                  placeholder="0 for 100% Free, or enter amount (e.g. 1500)"
-                />
-                <p className="text-[11px] text-slate-500 mt-1">
-                  Enter 0 for completely free course. Enter amount in BDT for Premium courses.
-                </p>
-              </div>
 
-              <div className="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200">
-                <p className="font-semibold text-slate-800">💡 Free Module Rule:</p>
-                <p className="text-[11px] text-slate-500 mt-0.5">
-                  Even if price is set (e.g. ৳ 1,500), any module with &quot;Free Module Preview&quot;
-                  enabled will be accessible to all registered users without purchasing.
+            <div className="max-w-md">
+              <Input
+                type="number"
+                min={formData.price > 0 ? "1" : "0"}
+                label="Course Price (BDT ৳)"
+                disabled={formData.price === 0}
+                value={formData.price}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    price: Math.max(1, parseInt(e.target.value) || 0),
+                  })
+                }
+                placeholder="0"
+                className={
+                  formData.price === 0
+                    ? "bg-slate-100 cursor-not-allowed text-slate-500 font-semibold"
+                    : ""
+                }
+              />
+              {formData.price === 0 ? (
+                <p className="text-[11px] text-emerald-700 font-medium mt-1.5 flex items-center gap-1">
+
+                  <span>ফ্রি কোর্সের মূল্য স্থায়ীভাবে ৳ 0 (পরিবর্তন করতে চাইলে Curriculum ট্যাব থেকে Paid Course নির্বাচন করুন)।</span>
                 </p>
-              </div>
+              ) : (
+                <p className="text-[11px] text-slate-500 mt-1.5">
+                  পেইড কোর্সের ক্ষেত্রে মোট মূল্য নির্ধারণ করুন (টাকায়)।
+                </p>
+              )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Category
-              </label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden"
-              >
-                <option value="Consumer Safety">Consumer Safety</option>
-                <option value="Industrial Safety">Industrial Safety</option>
-                <option value="First Aid & Emergency">First Aid & Emergency</option>
-                <option value="Government Compliance">Government Compliance</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
-                Skill Level
-              </label>
-              <select
-                value={formData.level}
-                onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs focus:border-primary focus:outline-hidden"
-              >
-                <option value="Beginner">Beginner</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-              </select>
-            </div>
-            <div>
-              <Input
-                label="Estimated Duration"
-                value={formData.duration}
-                onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                placeholder="e.g. 2h 45m"
-              />
-            </div>
+          {/* Estimated Duration */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              label="Estimated Duration (e.g. 2h 45m)"
+              value={formData.duration}
+              onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+              placeholder="e.g. 2h 45m"
+            />
+            <Input
+              label="সময়কাল (যেমন: ২ ঘণ্টা ৪৫ মিনিট)"
+              value={formData.durationBn || ""}
+              onChange={(e) => setFormData({ ...formData, durationBn: e.target.value })}
+              placeholder="যেমন: ২ ঘণ্টা ৪৫ মিনিট"
+              className="font-serif"
+            />
           </div>
 
           {/* Descriptions */}
@@ -1560,11 +1553,11 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         </div>
       )}
 
-      {/* TAB 3: INSTRUCTOR & MEDIA */}
+      {/* TAB 3: INSTRUCTOR & BANNER */}
       {activeTab === "instructor" && (
         <div className="bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 space-y-6">
           <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
-            Course Banner, Promo Video & Instructor
+            Course Banner & Instructor Profile
           </h2>
 
           {/* Course Thumbnail Image Upload (Direct Upload Only - No Link) */}
@@ -1623,215 +1616,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Promo Video (Direct Upload Only - No Link) */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-slate-700">
-                Course Overview / Promo Video
-              </label>
-              {formData.videoUrl && (
-                <Badge variant="success" size="xs">
-                  ✓ Video Uploaded
-                </Badge>
-              )}
-            </div>
-
-            {formData.videoUrl ? (
-              <div className="space-y-2 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                <div className="relative rounded-lg overflow-hidden bg-black max-w-md border border-slate-300">
-                  <video
-                    src={formData.videoUrl}
-                    controls
-                    className="w-full max-h-48 object-contain"
-                  />
-                </div>
-                <div className="flex items-center gap-2">
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer border border-slate-300 transition-colors">
-                    <Upload className="h-3.5 w-3.5" />
-                    <span>{isUploadingPromoVideo ? "Uploading..." : "Change / Replace Video"}</span>
-                    <input
-                      type="file"
-                      accept="video/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handlePromoVideoUpload(file);
-                      }}
-                      disabled={isUploadingPromoVideo}
-                    />
-                  </label>
-                  <Button
-                    type="button"
-                    variant="danger-ghost"
-                    size="xs"
-                    onClick={() => setFormData({ ...formData, videoUrl: "" })}
-                  >
-                    Remove Video
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const file = e.dataTransfer.files?.[0];
-                  if (file) handlePromoVideoUpload(file);
-                }}
-                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${isUploadingPromoVideo
-                    ? "border-primary bg-primary/5"
-                    : "border-slate-300 bg-slate-50 hover:border-primary/60 hover:bg-slate-100/50"
-                  }`}
-              >
-                {isUploadingPromoVideo ? (
-                  <div className="py-2 space-y-2">
-                    <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    <p className="text-xs font-semibold text-primary">Uploading overview video... Please wait</p>
-                  </div>
-                ) : (
-                  <label className="cursor-pointer block space-y-1.5">
-                    <div className="mx-auto h-9 w-9 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-1">
-                      <Upload className="h-4 w-4" />
-                    </div>
-                    <p className="text-xs font-bold text-slate-800">
-                      Upload course intro / promo video
-                    </p>
-                    <p className="text-[11px] text-slate-500">
-                      Drag and drop MP4, WebM, MOV file or click to browse
-                    </p>
-                    <input
-                      type="file"
-                      accept="video/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handlePromoVideoUpload(file);
-                      }}
-                    />
-                  </label>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Course PDF Guide / Study Material (Direct Upload) */}
-          <div className="space-y-2 pt-4 border-t border-slate-100">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                <FileText className="h-4 w-4 text-primary" />
-                <span>Course Study Material / Guide (PDF Upload)</span>
-              </label>
-              {formData.pdfUrl && (
-                <Badge variant="success" size="xs">
-                  ✓ PDF Uploaded
-                </Badge>
-              )}
-            </div>
-
-            {formData.pdfUrl ? (
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border border-slate-200 bg-slate-50">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-10 w-10 rounded-lg bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
-                    <FileText className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-slate-900 truncate">
-                      {formData.pdfOriginalName || "Course-Study-Guide.pdf"}
-                    </p>
-                    <p className="text-[11px] text-slate-500">
-                      {formData.pdfSize || "PDF Document"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <a
-                    href={formData.pdfUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-300 transition-colors"
-                  >
-                    <Eye className="h-3.5 w-3.5" />
-                    <span>View</span>
-                  </a>
-                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold cursor-pointer border border-slate-300 transition-colors">
-                    <Upload className="h-3.5 w-3.5" />
-                    <span>Change PDF</span>
-                    <input
-                      type="file"
-                      accept=".pdf,application/pdf"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleCoursePdfUpload(file);
-                      }}
-                      disabled={isUploadingCoursePdf}
-                    />
-                  </label>
-                  <Button
-                    type="button"
-                    variant="danger-ghost"
-                    size="xs"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        pdfUrl: "",
-                        pdfOriginalName: "",
-                        pdfSize: "",
-                      }))
-                    }
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  const file = e.dataTransfer.files?.[0];
-                  if (file) handleCoursePdfUpload(file);
-                }}
-                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${
-                  isUploadingCoursePdf
-                    ? "border-primary bg-primary/5"
-                    : "border-slate-300 bg-slate-50 hover:border-primary/60 hover:bg-slate-100/50"
-                }`}
-              >
-                {isUploadingCoursePdf ? (
-                  <div className="py-2 space-y-2">
-                    <div className="mx-auto h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                    <p className="text-xs font-semibold text-primary">
-                      Uploading course PDF document... Please wait
-                    </p>
-                  </div>
-                ) : (
-                  <label className="cursor-pointer block space-y-1.5">
-                    <div className="mx-auto h-9 w-9 flex items-center justify-center rounded-full bg-rose-50 border border-rose-200 text-rose-600 mb-1">
-                      <FileText className="h-4 w-4" />
-                    </div>
-                    <p className="text-xs font-bold text-slate-800">
-                      Upload Course PDF Guide / Standard Operating Manual
-                    </p>
-                    <p className="text-[11px] text-slate-500">
-                      Drag and drop PDF document or click to browse (up to 10MB)
-                    </p>
-                    <input
-                      type="file"
-                      accept=".pdf,application/pdf"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleCoursePdfUpload(file);
-                      }}
-                    />
-                  </label>
-                )}
-              </div>
-            )}
           </div>
 
           {/* Instructor Details */}

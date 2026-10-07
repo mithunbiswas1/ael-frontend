@@ -162,8 +162,8 @@ export default async function CourseOverviewSection({ course }) {
             const moduleTitle = isBn
               ? module.moduleTitleBn || module.moduleTitle
               : module.moduleTitle;
-            const isModuleFree =
-              module.isFree || (mIdx === 0 && course.price > 0 && module.isFree !== false);
+            const isCourseFree = !course.price || Number(course.price) === 0;
+            const isModuleFree = isCourseFree || mIdx === 0;
             const hasQuiz = module.quiz?.questions && module.quiz.questions.length > 0;
             const isGatedPrereq = mIdx > 0;
 
@@ -196,9 +196,16 @@ export default async function CourseOverviewSection({ course }) {
                       </span>
                     )}
 
-                    {isModuleFree && (
+                    {isModuleFree ? (
                       <span className="rounded bg-emerald-50 text-emerald-800 border border-emerald-300 px-2 py-0.5 text-[10px] font-bold">
-                        {isBn ? "ফ্রি মডিউল (রেজিস্ট্রেশন করলেই উন্মুক্ত)" : "Free Preview Module"}
+                        {isCourseFree
+                          ? (isBn ? "১০০% ফ্রি মডিউল" : "100% Free Module")
+                          : (isBn ? "১ম ফ্রি মডিউল (রেজিস্ট্রেশন করলেই উন্মুক্ত)" : "Free Preview (Module 1 Open to All)")}
+                      </span>
+                    ) : (
+                      <span className="rounded bg-amber-50 text-amber-800 border border-amber-300 px-2 py-0.5 text-[10px] font-bold flex items-center gap-1">
+                        <Lock className="h-2.5 w-2.5 text-amber-600" />
+                        <span>{isBn ? "ভর্তি আবশ্যক" : "Enrolled Only"}</span>
                       </span>
                     )}
 
@@ -223,7 +230,7 @@ export default async function CourseOverviewSection({ course }) {
                       const lessonDuration = isBn
                         ? lesson.durationBn || lesson.duration
                         : lesson.duration;
-                      const isLessonFree = isModuleFree || lesson.freePreview;
+                      const isLessonFree = isModuleFree;
 
                       return (
                         <div
@@ -239,9 +246,13 @@ export default async function CourseOverviewSection({ course }) {
                             <span className="font-medium text-slate-800 truncate">
                               {lessonTitle}
                             </span>
-                            {isLessonFree && (
+                            {isLessonFree ? (
                               <span className="rounded bg-emerald-50 text-emerald-700 border border-emerald-200 px-1.5 py-0.2 text-[9px] font-bold shrink-0">
-                                {isBn ? "ফ্রি প্রিভিউ" : "Free"}
+                                {isBn ? "ফ্রি" : "Free"}
+                              </span>
+                            ) : (
+                              <span className="rounded bg-slate-100 text-slate-500 border border-slate-200 px-1.5 py-0.2 text-[9px] font-medium shrink-0">
+                                {isBn ? "লক" : "Locked"}
                               </span>
                             )}
                           </div>

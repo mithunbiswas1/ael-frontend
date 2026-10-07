@@ -52,7 +52,7 @@ export default function CourseCard({
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  const cid = course?.courseId || courseId || id || course?._id || "1";
+  const cid = course?.courseId || course?._id || courseId || id || course?.slug || "1";
   const courseSlug = slug || course?.slug || cid;
   const detailsHref = href || `/courses/${courseSlug}`;
 
@@ -75,7 +75,12 @@ export default function CourseCard({
     typeof rawPrice === "number"
       ? rawPrice
       : parseInt(String(rawPrice || "").replace(/[^0-9]/g, ""), 10) || 0;
-  const isPaid = isPaidProp !== undefined ? isPaidProp : numericPrice > 0;
+  const isPaid =
+    course?.isFree === true
+      ? false
+      : isPaidProp !== undefined
+      ? isPaidProp
+      : numericPrice > 0;
 
   const courseCategory = isBn
     ? course?.categoryBn || category || course?.category
@@ -116,6 +121,28 @@ export default function CourseCard({
   const hasAccess = isEnrolled || isSubscribed;
 
   const handleEnroll = async () => {
+    // 1. Free Course: Instant auto-enroll for logged-in user
+    if (!isPaid) {
+      if (isLoggedIn) {
+        try {
+          await enrollCourse(cid).unwrap();
+          toast.success(
+            isBn
+              ? "সফলভাবে ফ্রি কোর্সে এনরোল সম্পন্ন হয়েছে!"
+              : "Successfully enrolled in this course!"
+          );
+        } catch {
+          // If already enrolled, continue straight to classroom
+        }
+        router.push(`/courses/learn/${courseSlug}`);
+        return;
+      } else {
+        setIsAuthModalOpen(true);
+        return;
+      }
+    }
+
+    // 2. Paid Course
     if (hasAccess) {
       router.push(`/courses/learn/${courseSlug}`);
       return;
@@ -126,22 +153,7 @@ export default function CourseCard({
       return;
     }
 
-    if (isPaid) {
-      setIsCheckoutModalOpen(true);
-      return;
-    }
-
-    try {
-      await enrollCourse(cid).unwrap();
-      toast.success(
-        isBn
-          ? "সফলভাবে ফ্রি কোর্সে এনরোল সম্পন্ন হয়েছে!"
-          : "Successfully enrolled in this course!"
-      );
-      router.push(`/courses/learn/${courseSlug}`);
-    } catch (err) {
-      toast.error(err?.data?.message || "Enrollment failed");
-    }
+    setIsCheckoutModalOpen(true);
   };
 
   const handleAuthSuccess = () => {
@@ -158,7 +170,9 @@ export default function CourseCard({
           );
           router.push(`/courses/learn/${courseSlug}`);
         })
-        .catch((err) => toast.error(err?.data?.message || "Enrollment failed"));
+        .catch(() => {
+          router.push(`/courses/learn/${courseSlug}`);
+        });
     }
   };
 

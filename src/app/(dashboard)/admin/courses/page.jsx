@@ -39,10 +39,6 @@ export default function AdminCoursesPage() {
     router.push("/admin/courses/add");
   };
 
-  const handleEdit = (course) => {
-    router.push(`/admin/courses/edit/${course._id || course.courseId}`);
-  };
-
   const handleDeleteClick = (id) => {
     const course = allCourses.find((c) => (c._id || c.courseId) === id);
     setDeleteTarget(course || { _id: id, titleEn: "Selected Course" });
@@ -82,7 +78,6 @@ export default function AdminCoursesPage() {
           <CourseTable
             courses={paginatedCourses}
             isLoading={isLoading}
-            onEdit={handleEdit}
             onDelete={handleDeleteClick}
           />
 

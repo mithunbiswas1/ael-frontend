@@ -10,6 +10,7 @@ import {
   Download,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useUpdateCourseProgressMutation } from "@/redux/api/courseApi";
 import { Button } from "@/components/ui/Button";
@@ -22,6 +23,8 @@ export default function ClassroomVideoPlayer({
   totalLessons,
   completedLessonIds,
   setCompletedLessonIds,
+  lessonProgressMap = {},
+  setLessonProgressMap,
   handlePrevLesson,
   handleNextLesson,
   activeTab,
@@ -51,23 +54,73 @@ export default function ClassroomVideoPlayer({
       ? `http://localhost:8005${rawVideoUrl}`
       : rawVideoUrl;
 
+  const { user } = useSelector((state) => state.auth);
+  const userScope = user?._id ? `user_${user._id}` : "guest";
+
   const [updateCourseProgress] = useUpdateCourseProgressMutation();
   const lastHeartbeatRef = useRef(0);
   const videoRef = useRef(null);
+  const hasResumedRef = useRef(false);
+
+  const formatSeconds = (totalSec) => {
+    const mins = Math.floor(totalSec / 60);
+    const secs = Math.floor(totalSec % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
+  // Reset resume flag when lesson changes
+  useEffect(() => {
+    hasResumedRef.current = false;
+  }, [currentLesson?.id]);
+
+  // Attempt to resume from saved position on loadedmetadata
+  const handleLoadedMetadata = () => {
+    if (hasResumedRef.current || !videoRef.current) return;
+    try {
+      const savedSec =
+        Number(lessonProgressMap?.[currentLesson?.id]) ||
+        Number(
+          localStorage.getItem(
+            `lpg_${userScope}_course_${courseId}_lesson_${currentLesson?.id}_pos`
+          )
+        ) ||
+        0;
+      if (
+        savedSec > 3 &&
+        videoRef.current.duration &&
+        savedSec < videoRef.current.duration - 5
+      ) {
+        videoRef.current.currentTime = savedSec;
+        hasResumedRef.current = true;
+        toast.info(
+          isBn
+            ? `পূর্ববর্তী সময় (${formatSeconds(savedSec)}) থেকে ভিডিও শুরু করা হয়েছে`
+            : `Resumed from last position (${formatSeconds(savedSec)})`
+        );
+      }
+    } catch (err) {
+      // Storage access fail-safe
+    }
+  };
 
   // 10-second heartbeat interval for active tracking
   useEffect(() => {
     lastHeartbeatRef.current = 0;
     const interval = setInterval(() => {
-      lastHeartbeatRef.current += 10;
-      updateCourseProgress({
-        courseId,
-        data: {
-          lessonId: currentLesson.id,
-          watchedSeconds: lastHeartbeatRef.current,
-          isCompleted: false,
-        },
-      });
+      if (videoRef.current && !videoRef.current.paused) {
+        const cur = Math.floor(videoRef.current.currentTime);
+        if (cur > 0) {
+          lastHeartbeatRef.current = cur;
+          updateCourseProgress({
+            courseId,
+            data: {
+              lessonId: currentLesson.id,
+              watchedSeconds: cur,
+              isCompleted: false,
+            },
+          });
+        }
+      }
     }, 10000);
 
     return () => clearInterval(interval);
@@ -77,32 +130,89 @@ export default function ClassroomVideoPlayer({
     if (!completedLessonIds.includes(currentLesson.id)) {
       setCompletedLessonIds((prev) => [...prev, currentLesson.id]);
     }
+    const finalSeconds = Math.floor(videoRef.current?.duration || 600);
+    if (setLessonProgressMap) {
+      setLessonProgressMap((prev) => ({
+        ...prev,
+        [currentLesson.id]: finalSeconds,
+      }));
+    }
+    try {
+      localStorage.setItem(
+        `lpg_${userScope}_course_${courseId}_lesson_${currentLesson.id}_pos`,
+        String(finalSeconds)
+      );
+    } catch (e) {}
+
     updateCourseProgress({
       courseId,
       data: {
         lessonId: currentLesson.id,
-        watchedSeconds: 600,
+        watchedSeconds: finalSeconds,
         isCompleted: true,
       },
     });
     toast.success(isBn ? "পাঠটি সম্পন্ন হয়েছে" : "Lesson completed");
-    if (onTriggerQuiz) {
-      onTriggerQuiz();
-    }
   };
 
   const handleTimeUpdate = (e) => {
     const currentTime = Math.floor(e.target.currentTime);
-    if (currentTime > 0 && currentTime % 10 === 0 && currentTime !== lastHeartbeatRef.current) {
-      lastHeartbeatRef.current = currentTime;
-      updateCourseProgress({
-        courseId,
-        data: {
-          lessonId: currentLesson.id,
-          watchedSeconds: currentTime,
-          isCompleted: false,
-        },
-      });
+    if (currentTime > 0) {
+      if (setLessonProgressMap) {
+        setLessonProgressMap((prev) => ({
+          ...prev,
+          [currentLesson.id]: currentTime,
+        }));
+      }
+      try {
+        localStorage.setItem(
+          `lpg_${userScope}_course_${courseId}_lesson_${currentLesson.id}_pos`,
+          String(currentTime)
+        );
+      } catch (err) {}
+
+      if (
+        currentTime % 10 === 0 &&
+        currentTime !== lastHeartbeatRef.current
+      ) {
+        lastHeartbeatRef.current = currentTime;
+        updateCourseProgress({
+          courseId,
+          data: {
+            lessonId: currentLesson.id,
+            watchedSeconds: currentTime,
+            isCompleted: false,
+          },
+        });
+      }
+    }
+  };
+
+  const handlePause = () => {
+    if (videoRef.current) {
+      const cur = Math.floor(videoRef.current.currentTime);
+      if (cur > 0) {
+        if (setLessonProgressMap) {
+          setLessonProgressMap((prev) => ({
+            ...prev,
+            [currentLesson.id]: cur,
+          }));
+        }
+        try {
+          localStorage.setItem(
+            `lpg_${userScope}_course_${courseId}_lesson_${currentLesson.id}_pos`,
+            String(cur)
+          );
+        } catch (e) {}
+        updateCourseProgress({
+          courseId,
+          data: {
+            lessonId: currentLesson.id,
+            watchedSeconds: cur,
+            isCompleted: false,
+          },
+        });
+      }
     }
   };
 
@@ -130,7 +240,9 @@ export default function ClassroomVideoPlayer({
             preload="metadata"
             className="w-full h-full object-contain bg-black"
             src={videoSrc}
+            onLoadedMetadata={handleLoadedMetadata}
             onTimeUpdate={handleTimeUpdate}
+            onPause={handlePause}
             onEnded={() => {
               handleCompleteCurrent();
               if (handleNextLesson) handleNextLesson();
@@ -165,7 +277,11 @@ export default function ClassroomVideoPlayer({
             className="gap-1 font-bold text-xs"
           >
             <span>
-              {currentLessonIdx === totalLessons - 1
+              {currentLesson?.isLastInModule && currentLesson?.hasModuleQuiz
+                ? isBn
+                  ? "সম্পন্ন করে কুইজে যান"
+                  : "Complete & Go to Quiz"
+                : currentLessonIdx === totalLessons - 1
                 ? isBn
                   ? "সম্পন্ন করে মূল্যায়ন কুইজে যান"
                   : "Finish & Take Quiz"

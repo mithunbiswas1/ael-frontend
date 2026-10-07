@@ -94,15 +94,20 @@ export const endpoints = {
     uploadImage: "courses/upload-image",
     uploadPdf: "courses/upload-pdf",
     updateProgress: (id) => `courses/${id}/progress`,
+    submitModuleQuiz: (id) => `courses/${id}/module-quiz`,
   },
 
   // Quizzes API
   quizzes: {
     getByCourseId: (courseId) => `quizzes/course/${courseId}`,
+    getAttempt: (courseId) => `quizzes/course/${courseId}/attempt`,
     submit: "quizzes/submit",
     adminAll: "quizzes/admin/all",
     save: "quizzes/save",
     delete: (id) => `quizzes/${id}`,
+    questionBank: (courseId) => `quizzes/admin/${courseId}/questions`,
+    questionItem: (courseId, qId) => `quizzes/admin/${courseId}/questions/${qId}`,
+    settings: (courseId) => `quizzes/admin/${courseId}/settings`,
   },
 
   // CMS Pages API
@@ -176,6 +181,17 @@ export const endpoints = {
     settings: "admin/settings",
     publicSettings: "admin/settings/public",
     updateSettings: "admin/settings",
+  },
+
+  // Coupons & Gift Vouchers API
+  coupons: {
+    validate: "coupons/validate",
+    adminList: "coupons",
+    create: "coupons",
+    getById: (id) => `coupons/${id}`,
+    update: (id) => `coupons/${id}`,
+    delete: (id) => `coupons/${id}`,
+    toggle: (id) => `coupons/${id}/toggle`,
   },
 };
 

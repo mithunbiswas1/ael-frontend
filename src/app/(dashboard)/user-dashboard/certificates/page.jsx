@@ -73,10 +73,10 @@ export default function UserCertificatesPage() {
       enrolledAt,
       issueDate: isCompleted
         ? new Date().toLocaleDateString(isBn ? "bn-BD" : "en-US", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          })
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        })
         : null,
       grade: isCompleted ? "Pass (92%)" : null,
       status: isCompleted ? "Verified & Authentic" : "Pending Completion",
@@ -198,33 +198,30 @@ export default function UserCertificatesPage() {
           <button
             type="button"
             onClick={() => setActiveTab("all")}
-            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-              activeTab === "all"
+            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${activeTab === "all"
                 ? "bg-white text-slate-900 font-bold shadow-2xs"
                 : "text-slate-600 hover:text-slate-900"
-            }`}
+              }`}
           >
             {isBn ? `সকল (${certificateItems.length})` : `All (${certificateItems.length})`}
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("completed")}
-            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-              activeTab === "completed"
+            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${activeTab === "completed"
                 ? "bg-white text-emerald-700 font-bold shadow-2xs"
                 : "text-slate-600 hover:text-slate-900"
-            }`}
+              }`}
           >
             {isBn ? `অর্জিত (${completedCerts.length})` : `Earned (${completedCerts.length})`}
           </button>
           <button
             type="button"
             onClick={() => setActiveTab("pending")}
-            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-              activeTab === "pending"
+            className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${activeTab === "pending"
                 ? "bg-white text-amber-700 font-bold shadow-2xs"
                 : "text-slate-600 hover:text-slate-900"
-            }`}
+              }`}
           >
             {isBn ? `পেন্ডিং (${pendingCerts.length})` : `Pending (${pendingCerts.length})`}
           </button>
@@ -268,22 +265,20 @@ export default function UserCertificatesPage() {
             return (
               <div
                 key={item.certificateId}
-                className={`overflow-hidden rounded-2xl border bg-white transition-all shadow-2xs ${
-                  isCompleted
+                className={`overflow-hidden rounded-2xl border bg-white transition-all shadow-2xs ${isCompleted
                     ? "border-slate-200/90 hover:border-slate-300"
                     : "border-amber-200/80 bg-amber-50/20"
-                }`}
+                  }`}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between p-5 sm:p-6 gap-6">
                   {/* Left: Icon & Details */}
                   <div className="flex items-start gap-4">
                     {/* Status Badge Icon */}
                     <div
-                      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${
-                        isCompleted
+                      className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${isCompleted
                           ? "bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-xs"
                           : "bg-amber-100 text-amber-700 border border-amber-200"
-                      }`}
+                        }`}
                     >
                       {isCompleted ? (
                         <FaAward className="h-7 w-7" />
@@ -334,7 +329,7 @@ export default function UserCertificatesPage() {
                             />
                           </div>
                           <p className="text-xs text-amber-800/90 leading-relaxed font-medium">
-                            💡{" "}
+                            {" "}
                             {isBn
                               ? "সার্টিফিকেট আনলক ও ডাউনলোড করতে এই কোর্সের সকল ভিডিও লেকচার ও অ্যাসেসমেন্ট কুইজ ১০০% সম্পন্ন করুন।"
                               : "Complete 100% of this course's video lectures and gating assessment quiz to unlock and download your certified credential."}

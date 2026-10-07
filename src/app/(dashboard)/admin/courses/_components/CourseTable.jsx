@@ -18,7 +18,6 @@ import { H4, P } from "@/components/ui/Typography";
 export default function CourseTable({
   courses = [],
   isLoading,
-  onEdit,
   onDelete,
 }) {
   if (isLoading) {
@@ -151,7 +150,7 @@ export default function CourseTable({
 
                 <Link
                   href={`/admin/courses/edit/${course._id || course.courseId}`}
-                  className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-primary transition-colors border border-slate-200"
+                  className="inline-flex items-center justify-center p-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-primary transition-colors border border-slate-200 cursor-pointer"
                   title="Edit Course & Modules"
                 >
                   <FaEdit className="h-3 w-3" />

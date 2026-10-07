@@ -1,7 +1,7 @@
 // src/app/(dashboard)/admin/courses/edit/[id]/page.jsx
 "use client";
 
-import { use } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 import PermissionGuard from "@/components/ui/PermissionGuard";
@@ -9,10 +9,12 @@ import { useGetCourseByIdQuery } from "@/redux/api/courseApi";
 import CourseBuilderForm from "../../_components/CourseBuilderForm";
 
 export default function EditCoursePage({ params }) {
-  const resolvedParams = use(params);
-  const { id } = resolvedParams;
+  const routeParams = useParams();
+  const id = routeParams?.id || params?.id;
 
-  const { data: courseData, isLoading, error } = useGetCourseByIdQuery(id);
+  const { data: courseData, isLoading, error } = useGetCourseByIdQuery(id, {
+    skip: !id,
+  });
   const course = courseData?.data;
 
   return (
@@ -39,7 +41,11 @@ export default function EditCoursePage({ params }) {
             </Link>
           </div>
         ) : (
-          <CourseBuilderForm initialData={course} isEdit={true} />
+          <CourseBuilderForm
+            key={course._id || course.courseId}
+            initialData={course}
+            isEdit={true}
+          />
         )}
       </div>
     </PermissionGuard>

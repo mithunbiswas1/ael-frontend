@@ -1,7 +1,7 @@
 // src/app/(pages)/courses/learn/[slug]/_view/ClassroomContent.jsx
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -13,18 +13,18 @@ import {
   LogIn,
   BookOpen,
   ArrowRight,
-  HelpCircle,
 } from "lucide-react";
 import ClassroomHeader from "../_components/ClassroomHeader";
 import ClassroomVideoPlayer from "../_components/ClassroomVideoPlayer";
 import ClassroomPlaylistSidebar from "../_components/ClassroomPlaylistSidebar";
-import ModuleQuizModal from "../_components/ModuleQuizModal";
+import ClassroomQuizView from "../_components/ClassroomQuizView";
 import AuthModal from "@/components/shared/AuthModal";
 import { useDictionary } from "@/context/DictionaryContext";
 import {
   useGetCourseByIdQuery,
   useGetMyLearningCoursesQuery,
   useEnrollCourseMutation,
+  useSubmitModuleQuizMutation,
 } from "@/redux/api/courseApi";
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
@@ -57,64 +57,98 @@ export default function ClassroomContent({ courseSlug }) {
     refetch: refetchLearning,
   } = useGetMyLearningCoursesQuery(undefined, { skip: !isLoggedIn });
 
-  const [enrollCourse, { isLoading: isEnrolling }] = useEnrollCourseMutation();
+  const [enrollCourse] = useEnrollCourseMutation();
+  const [submitModuleQuizApi] = useSubmitModuleQuizMutation();
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   // Gating & Locked Lesson Modals
   const [lockedLessonModalOpen, setLockedLessonModalOpen] = useState(false);
   const [lockedLessonTarget, setLockedLessonTarget] = useState(null);
 
-  // Module Quiz state
-  const [activeModuleQuizData, setActiveModuleQuizData] = useState(null);
-  const [activeModuleQuizIdx, setActiveModuleQuizIdx] = useState(0);
-  const [showModuleQuizModal, setShowModuleQuizModal] = useState(false);
+  // Active learning view: { type: "video", lessonIdx: number, moduleIdx: number } | { type: "quiz", moduleIdx: number, lessonIdx: -1 }
+  const [activeView, setActiveView] = useState({
+    type: "video",
+    lessonIdx: 0,
+    moduleIdx: 0,
+  });
 
-  // Passed module quizzes state: { [moduleIndex]: scorePercent }
-  const [passedModuleQuizzes, setPassedModuleQuizzes] = useState({});
+  // Learning Progress States
+  const [completedLessonIds, setCompletedLessonIds] = useState([]);
+  const [lessonProgressMap, setLessonProgressMap] = useState({});
+  const [moduleQuizResults, setModuleQuizResults] = useState({});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("notes");
 
-  // Sync passed quizzes with localStorage
+  // Reset learning state whenever logged-in user changes (prevents progress bleed between accounts)
+  const lastUserIdRef = useRef(user?._id);
   useEffect(() => {
-    if (typeof window !== "undefined" && canonicalCourseId) {
-      try {
-        const stored = localStorage.getItem(`lpg_course_${canonicalCourseId}_passed_quizzes`);
-        if (stored) {
-          setPassedModuleQuizzes(JSON.parse(stored));
-        }
-      } catch (err) {
-        console.error("Failed to load passed quizzes from storage", err);
-      }
+    if (lastUserIdRef.current !== user?._id) {
+      lastUserIdRef.current = user?._id;
+      setCompletedLessonIds([]);
+      setLessonProgressMap({});
+      setModuleQuizResults({});
+      hasAutoEnrolledRef.current = false;
+      setActiveView({ type: "video", lessonIdx: 0, moduleIdx: 0 });
     }
-  }, [canonicalCourseId]);
+  }, [user?._id]);
 
-  const handleQuizPassed = (moduleIndex, scorePercent) => {
-    const updated = {
-      ...passedModuleQuizzes,
-      [moduleIndex]: scorePercent,
-    };
-    setPassedModuleQuizzes(updated);
-    if (typeof window !== "undefined" && canonicalCourseId) {
-      try {
-        localStorage.setItem(
-          `lpg_course_${canonicalCourseId}_passed_quizzes`,
-          JSON.stringify(updated)
-        );
-      } catch (err) {
-        console.error("Failed to persist passed quiz", err);
+  // Auto-enroll guard to prevent repeated mutation or infinite re-fetching loops
+  const hasAutoEnrolledRef = useRef(false);
+
+  // Helper to reliably determine if course is 100% free
+  const checkIsCourseFree = (c) => {
+    if (!c) return false;
+    if (c.isFree === true) return true;
+    if (!c.price || Number(c.price) === 0 || String(c.price).trim() === "0") return true;
+    return false;
+  };
+
+  const isCourseFree = checkIsCourseFree(course);
+
+  // Auto-enroll logged-in user in free course if not enrolled (strictly once per load)
+  useEffect(() => {
+    if (hasAutoEnrolledRef.current) return;
+    if (isLoggedIn && course && isCourseFree) {
+      const myCourses = Array.isArray(learningData?.data) ? learningData.data : [];
+      const alreadyEnrolled = myCourses.some(
+        (c) =>
+          String(c.courseId) === String(canonicalCourseId) ||
+          String(c.slug) === String(canonicalSlug) ||
+          String(c._id) === String(course?._id)
+      );
+      if (alreadyEnrolled) {
+        hasAutoEnrolledRef.current = true;
+      } else if (!isLearningLoading) {
+        hasAutoEnrolledRef.current = true;
+        const enrollId = course.courseId || course._id || course.slug;
+        if (enrollId) {
+          enrollCourse(enrollId)
+            .unwrap()
+            .then(() => {
+              if (refetchLearning) refetchLearning();
+            })
+            .catch(() => {});
+        }
       }
     }
-    toast.success(
-      isBn
-        ? `অভিনন্দন! মডিউল ${moduleIndex + 1} কুইজ পাস করেছেন (${scorePercent}%)। পরবর্তী মডিউল উন্মুক্ত হয়েছে!`
-        : `Congratulations! Passed Module ${moduleIndex + 1} Quiz (${scorePercent}%). Next module unlocked!`
-    );
-  };
+  }, [
+    isLoggedIn,
+    course,
+    isCourseFree,
+    canonicalCourseId,
+    canonicalSlug,
+    learningData,
+    isLearningLoading,
+    enrollCourse,
+    refetchLearning,
+  ]);
 
   // Determine if user has full access to this course
   const hasFullAccess = useMemo(() => {
     if (!isLoggedIn) return false;
 
     // Free courses are accessible to any logged in user
-    if (!course?.price || course?.price === 0) return true;
+    if (isCourseFree) return true;
 
     // Admin & manager roles have preview access to all courses
     const adminRoles = ["super_admin", "admin", "instructor", "course_admin", "manager"];
@@ -146,14 +180,133 @@ export default function ClassroomContent({ courseSlug }) {
       return (
         String(eId) === String(canonicalCourseId) ||
         (course?.courseId && String(eId) === String(course.courseId)) ||
-        (course?._id && String(eId) === String(course._id))
+        (course?._id && String(eId) === String(course._id)) ||
+        (canonicalSlug && String(eId) === String(canonicalSlug))
       );
     });
 
     return inUserEnrolled;
-  }, [isLoggedIn, user, learningData, canonicalCourseId, canonicalSlug, course]);
+  }, [isLoggedIn, user, isCourseFree, learningData, canonicalCourseId, canonicalSlug, course]);
 
-  // Structured Modules with free status & strict sequential gating
+  // Sync completed lessons, lesson positions, and module quiz results
+  useEffect(() => {
+    if (!canonicalCourseId) return;
+
+    // Purge legacy unscoped keys from localStorage so old tester sessions never bleed
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(`lpg_course_${canonicalCourseId}_completed_lessons`);
+        localStorage.removeItem(`lpg_course_${canonicalCourseId}_quiz_results`);
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("lpg_course_")) {
+            localStorage.removeItem(k);
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (isLoggedIn) {
+      // 1. Authenticated User: Authoritative backend learningData is the single source of truth
+      const myCourse = Array.isArray(learningData?.data)
+        ? learningData.data.find(
+            (c) =>
+              String(c.courseId) === String(canonicalCourseId) ||
+              String(c.slug) === String(canonicalSlug) ||
+              String(c._id) === String(course?._id)
+          )
+        : null;
+
+      if (myCourse?.enrollment) {
+        // Completed lessons from backend
+        const backendLessons = Array.isArray(myCourse.enrollment.completedLessons)
+          ? myCourse.enrollment.completedLessons
+          : [];
+        setCompletedLessonIds(backendLessons);
+
+        // Lesson playback progress from backend
+        const lpMap = {};
+        if (Array.isArray(myCourse.enrollment.lessonProgress)) {
+          myCourse.enrollment.lessonProgress.forEach((lp) => {
+            if (lp.lessonId) lpMap[lp.lessonId] = Number(lp.lastPositionSeconds) || 0;
+          });
+        }
+        setLessonProgressMap(lpMap);
+
+        // Module Quiz results from backend
+        const mqMap = {};
+        if (Array.isArray(myCourse.enrollment.moduleQuizResults)) {
+          myCourse.enrollment.moduleQuizResults.forEach((qr) => {
+            if (qr && qr.moduleIndex !== undefined) {
+              mqMap[qr.moduleIndex] = qr;
+            }
+          });
+        }
+        setModuleQuizResults(mqMap);
+      } else if (!isLearningLoading) {
+        // New user or not enrolled yet -> clean empty slate!
+        setCompletedLessonIds([]);
+        setLessonProgressMap({});
+        setModuleQuizResults({});
+      }
+    } else {
+      // 2. Guest User: Isolated guest cache in localStorage
+      if (typeof window !== "undefined") {
+        try {
+          const storedLessons = localStorage.getItem(
+            `lpg_guest_course_${canonicalCourseId}_completed_lessons`
+          );
+          if (storedLessons) {
+            const parsed = JSON.parse(storedLessons);
+            setCompletedLessonIds(Array.isArray(parsed) ? parsed : []);
+          } else {
+            setCompletedLessonIds([]);
+          }
+
+          const storedQuizResults = localStorage.getItem(
+            `lpg_guest_course_${canonicalCourseId}_quiz_results`
+          );
+          if (storedQuizResults) {
+            const parsed = JSON.parse(storedQuizResults);
+            setModuleQuizResults(parsed && typeof parsed === "object" ? parsed : {});
+          } else {
+            setModuleQuizResults({});
+          }
+        } catch (e) {
+          setCompletedLessonIds([]);
+          setModuleQuizResults({});
+        }
+      }
+    }
+  }, [
+    isLoggedIn,
+    learningData,
+    isLearningLoading,
+    canonicalCourseId,
+    canonicalSlug,
+    course?._id,
+  ]);
+
+  // Persist completedLessonIds in localStorage (strictly scoped per user or guest)
+  useEffect(() => {
+    if (typeof window !== "undefined" && canonicalCourseId) {
+      try {
+        const userScope = user?._id ? `user_${user._id}` : "guest";
+        if (completedLessonIds.length > 0) {
+          localStorage.setItem(
+            `lpg_${userScope}_course_${canonicalCourseId}_completed_lessons`,
+            JSON.stringify(completedLessonIds)
+          );
+        } else {
+          localStorage.removeItem(
+            `lpg_${userScope}_course_${canonicalCourseId}_completed_lessons`
+          );
+        }
+      } catch (e) {}
+    }
+  }, [completedLessonIds, canonicalCourseId, user?._id]);
+
+  // Structured Modules with sequential video gating & module quiz passing rules
   const modules = useMemo(() => {
     if (!course?.curriculum || course.curriculum.length === 0) {
       return [
@@ -178,6 +331,7 @@ export default function ClassroomContent({ courseSlug }) {
               isFree: true,
               isGatedLocked: false,
               moduleIdx: 0,
+              lessonIdx: 0,
             },
           ],
           quiz: {
@@ -191,24 +345,71 @@ export default function ClassroomContent({ courseSlug }) {
     }
 
     return course.curriculum.map((mod, mIdx) => {
-      const isModFree = Boolean(
-        mod.isFree || (mIdx === 0 && course.price > 0 && mod.isFree !== false)
-      );
+      // Paid course: Module 1 is ALWAYS free preview for registered users; Module 2+ requires enrollment
+      // Free course: All modules are 100% free
+      const isModFree = isCourseFree || mIdx === 0;
 
-      // Sequential Gating Rule:
-      // Module 0 is never gated by a previous quiz.
-      // Module M (M > 0) is locked if Module (M - 1) quiz is not yet passed!
-      const isGatedLocked = mIdx > 0 && !Boolean(passedModuleQuizzes[mIdx - 1]);
+      // Previous module quiz gating check:
+      let isGatedLocked = false;
+      if (mIdx > 0) {
+        const prevMod = course.curriculum[mIdx - 1];
+        const prevQuizResult = moduleQuizResults[mIdx - 1];
+        const hasPrevQuiz = prevMod.quiz?.questions && prevMod.quiz.questions.length > 0;
+        if (hasPrevQuiz) {
+          isGatedLocked = !prevQuizResult?.isPassed;
+        } else {
+          // Fallback if previous module had no quiz questions
+          const prevLessons = prevMod.lessons || [];
+          const allPrevCompleted = prevLessons.every((pl, pIdx) => {
+            const plId = pl._id ? String(pl._id) : `m${mIdx - 1}-l${pIdx}`;
+            return (
+              completedLessonIds.includes(plId) ||
+              completedLessonIds.includes(String(pl._id))
+            );
+          });
+          isGatedLocked = !allPrevCompleted;
+        }
+      }
 
       const lessons = (mod.lessons || []).map((l, lIdx) => {
-        const isLessonFree = isModFree || Boolean(l.freePreview);
+        const lessonId = l._id ? String(l._id) : `m${mIdx}-l${lIdx}`;
+        const isLessonFree = isModFree;
         const isPremiumLocked = !hasFullAccess && !isLessonFree;
-        const isLocked = isGatedLocked || isPremiumLocked;
+
+        // Sequential lesson gating within module:
+        let isSequentialLocked = false;
+        if (isGatedLocked) {
+          isSequentialLocked = true;
+        } else if (lIdx > 0) {
+          const prevLesson = mod.lessons[lIdx - 1];
+          const prevLessonId = prevLesson._id
+            ? String(prevLesson._id)
+            : `m${mIdx}-l${lIdx - 1}`;
+          const isPrevCompleted =
+            completedLessonIds.includes(prevLessonId) ||
+            completedLessonIds.includes(String(prevLesson._id));
+          if (!isPrevCompleted) {
+            isSequentialLocked = true;
+          }
+        }
+
+        // A completed lesson is NEVER locked for replay!
+        const isAlreadyCompleted =
+          completedLessonIds.includes(lessonId) ||
+          completedLessonIds.includes(String(l._id));
+
+        const isLocked = !isAlreadyCompleted && (isPremiumLocked || isSequentialLocked);
+
+        const isLastInModule = lIdx === (mod.lessons?.length || 1) - 1;
+        const hasModuleQuiz = Boolean(mod.quiz?.questions && mod.quiz.questions.length > 0);
 
         return {
           ...l,
-          id: l._id || `m${mIdx}-l${lIdx}`,
+          id: lessonId,
           moduleIdx: mIdx,
+          lessonIdx: lIdx,
+          isLastInModule,
+          hasModuleQuiz,
           moduleTitle: mod.moduleTitle,
           moduleTitleBn: mod.moduleTitleBn,
           isModuleFree: isModFree,
@@ -216,7 +417,6 @@ export default function ClassroomContent({ courseSlug }) {
           isGatedLocked,
           isPremiumLocked,
           isLocked,
-          requiredQuizModuleIdx: isGatedLocked ? mIdx - 1 : null,
           videoUrl: l.videoUrl || course.videoUrl || "/sample-course-video.mp4",
         };
       });
@@ -225,11 +425,10 @@ export default function ClassroomContent({ courseSlug }) {
         ...mod,
         isFree: isModFree,
         isGatedLocked,
-        requiredQuizModuleIdx: isGatedLocked ? mIdx - 1 : null,
         lessons,
       };
     });
-  }, [course, hasFullAccess, passedModuleQuizzes]);
+  }, [course, isCourseFree, hasFullAccess, moduleQuizResults, completedLessonIds]);
 
   // Flattened lessons list for video player navigation
   const lessons = useMemo(() => {
@@ -237,25 +436,81 @@ export default function ClassroomContent({ courseSlug }) {
   }, [modules]);
 
   const firstPlayableIdx = useMemo(() => {
+    // 1. Is there an in-progress paused lesson?
+    const inProgressIdx = lessons.findIndex(
+      (l) =>
+        !l.isLocked &&
+        !completedLessonIds.includes(l.id) &&
+        (lessonProgressMap[l.id] || 0) > 3
+    );
+    if (inProgressIdx >= 0) return inProgressIdx;
+
+    // 2. Otherwise first unlocked incomplete lesson
+    const firstIncomplete = lessons.findIndex(
+      (l) => !l.isLocked && !completedLessonIds.includes(l.id)
+    );
+    if (firstIncomplete >= 0) return firstIncomplete;
+
+    // 3. Fallback to first unlocked lesson
     const idx = lessons.findIndex((l) => !l.isLocked);
     return idx >= 0 ? idx : 0;
-  }, [lessons]);
+  }, [lessons, completedLessonIds, lessonProgressMap]);
 
-  const [currentLessonIdx, setCurrentLessonIdx] = useState(firstPlayableIdx);
-  const [completedLessonIds, setCompletedLessonIds] = useState([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("notes");
-
+  // Synchronize initial playable lesson when lessons load
   useEffect(() => {
-    if (lessons[currentLessonIdx]?.isLocked) {
-      const available = lessons.findIndex((l) => !l.isLocked);
-      if (available >= 0) setCurrentLessonIdx(available);
+    if (firstPlayableIdx >= 0 && lessons[firstPlayableIdx]) {
+      setActiveView((prev) => {
+        if (prev.type === "video" && prev.lessonIdx === 0 && firstPlayableIdx !== 0) {
+          return {
+            type: "video",
+            lessonIdx: firstPlayableIdx,
+            moduleIdx: lessons[firstPlayableIdx]?.moduleIdx ?? 0,
+          };
+        }
+        return prev;
+      });
     }
-  }, [lessons, currentLessonIdx]);
+  }, [firstPlayableIdx, lessons]);
+
+  const currentLessonIdx =
+    activeView.type === "video" && activeView.lessonIdx >= 0
+      ? activeView.lessonIdx
+      : 0;
+
+  // Auto-switch away if active video lesson is locked
+  useEffect(() => {
+    if (activeView.type === "video" && lessons[activeView.lessonIdx]?.isLocked) {
+      const available = lessons.findIndex((l) => !l.isLocked);
+      if (available >= 0 && available !== activeView.lessonIdx) {
+        setActiveView({
+          type: "video",
+          lessonIdx: available,
+          moduleIdx: lessons[available]?.moduleIdx ?? 0,
+        });
+      }
+    }
+  }, [lessons, activeView.lessonIdx, activeView.type]);
 
   const hasAnyFreeLesson = useMemo(() => {
     return lessons.some((l) => !l.isLocked);
   }, [lessons]);
+
+  // Active Lesson State & Overall Progress (Must be called unconditionally before early returns)
+  const currentLesson = lessons[currentLessonIdx] || lessons[0];
+  const progressPercent = useMemo(() => {
+    const totalVideos = lessons.length;
+    const totalQuizzes = (modules || []).filter(
+      (m) => m.quiz?.questions && m.quiz.questions.length > 0
+    ).length;
+    const totalItems = totalVideos + totalQuizzes;
+    if (totalItems === 0) return 0;
+
+    const completedQuizzesCount = Object.values(moduleQuizResults || {}).filter(
+      (r) => r?.isPassed
+    ).length;
+    const completedItems = (completedLessonIds || []).length + completedQuizzesCount;
+    return Math.min(100, Math.round((completedItems / totalItems) * 100));
+  }, [lessons?.length, modules, moduleQuizResults, completedLessonIds?.length]);
 
   if (isLoading || (isLoggedIn && isLearningLoading)) {
     return (
@@ -354,7 +609,7 @@ export default function ClassroomContent({ courseSlug }) {
   }
 
   // Guard 2: Paid course, no full access, no free lessons
-  if (!hasFullAccess && !hasAnyFreeLesson) {
+  if (!isCourseFree && !hasFullAccess && !hasAnyFreeLesson) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 text-slate-800 p-4">
         <div className="w-full max-w-md text-center p-8 rounded-xl bg-white border border-slate-200 shadow-sm relative">
@@ -411,82 +666,305 @@ export default function ClassroomContent({ courseSlug }) {
     );
   }
 
-  // Active Lesson State
-  const currentLesson = lessons[currentLessonIdx] || lessons[0];
-  const progressPercent =
-    lessons.length > 0
-      ? Math.round((completedLessonIds.length / lessons.length) * 100)
-      : 0;
-
-  // Gating & Next Lesson Trigger Logic
+  // Next Lesson & Quiz Transition Logic (In-place transitions!)
   const handleNextLesson = () => {
-    if (currentLesson && !completedLessonIds.includes(currentLesson.id)) {
-      setCompletedLessonIds((prev) => [...prev, currentLesson.id]);
+    // 1. Mark current lesson completed
+    if (currentLesson?.id) {
+      setCompletedLessonIds((prev) =>
+        prev.includes(currentLesson.id) ? prev : [...prev, currentLesson.id]
+      );
     }
 
     const currentModIdx = currentLesson?.moduleIdx ?? 0;
     const currentMod = modules[currentModIdx];
-    const currentModLessons = currentMod?.lessons || [];
-    const isLastLessonOfModule =
-      currentModLessons.length > 0 &&
-      currentLesson.id === currentModLessons[currentModLessons.length - 1].id;
+    const isLastLessonInMod =
+      currentLesson?.lessonIdx === (currentMod?.lessons?.length || 1) - 1;
+    const hasModQuiz = Boolean(
+      currentMod?.quiz?.questions && currentMod.quiz.questions.length > 0
+    );
 
-    // Last lesson of module -> Trigger module quiz if not passed
-    if (isLastLessonOfModule && currentMod?.quiz?.questions?.length > 0) {
-      const isQuizPassed = Boolean(passedModuleQuizzes[currentModIdx]);
-      if (!isQuizPassed) {
-        setActiveModuleQuizData(currentMod);
-        setActiveModuleQuizIdx(currentModIdx);
-        setShowModuleQuizModal(true);
-        toast.info(
-          isBn
-            ? `মডিউল ${currentModIdx + 1} শেষ হয়েছে! পরবর্তী মডিউলে যাওয়ার জন্য কুইজে অংশ নিন।`
-            : `Module ${currentModIdx + 1} completed! Pass the quiz to unlock the next module.`
-        );
-        return;
-      }
+    // If last lesson in module and module has a quiz -> SWITCH VIEW TO QUIZ IN-PLACE!
+    if (isLastLessonInMod && hasModQuiz) {
+      setActiveView({
+        type: "quiz",
+        moduleIdx: currentModIdx,
+        lessonIdx: -1,
+      });
+      return;
     }
 
     if (currentLessonIdx < lessons.length - 1) {
       const nextLesson = lessons[currentLessonIdx + 1];
-      if (nextLesson.isLocked) {
+
+      // Check 1: Is next lesson premium locked (Paid course & not enrolled)?
+      if (nextLesson.isPremiumLocked && !isCourseFree && !hasFullAccess) {
         setLockedLessonTarget(nextLesson);
         setLockedLessonModalOpen(true);
-      } else {
-        setCurrentLessonIdx((prev) => prev + 1);
+        return;
       }
+
+      // Check 2: Is next lesson in a new module that is gated by quiz?
+      if (nextLesson.moduleIdx > currentModIdx && nextLesson.isGatedLocked) {
+        toast.warning(
+          isBn
+            ? "পূর্ববর্তী মডিউলের কুইজ সফলভাবে সম্পন্ন না করে পরবর্তী মডিউলে যাওয়া যাবে না।"
+            : "Please pass the previous module quiz before advancing to the next module."
+        );
+        return;
+      }
+
+      // Advance directly to next lesson!
+      setActiveView({
+        type: "video",
+        lessonIdx: currentLessonIdx + 1,
+        moduleIdx: nextLesson.moduleIdx,
+      });
     } else {
+      // Check if current module has a quiz first
+      if (currentMod && hasModQuiz) {
+        setActiveView({
+          type: "quiz",
+          moduleIdx: currentModIdx,
+          lessonIdx: -1,
+        });
+        return;
+      }
+
+      // Or check if next module is an exam-only module (0 videos, quiz only)
+      const nextModIdx = currentModIdx + 1;
+      const nextMod = modules[nextModIdx];
+      if (
+        nextMod &&
+        (!nextMod.lessons || nextMod.lessons.length === 0) &&
+        nextMod.quiz?.questions?.length > 0
+      ) {
+        setActiveView({
+          type: "quiz",
+          moduleIdx: nextModIdx,
+          lessonIdx: -1,
+        });
+        return;
+      }
+
       toast.success(
         isBn
           ? "🎉 অভিনন্দন! আপনি এই কোর্সের সকল পাঠ সফলভাবে সম্পন্ন করেছেন।"
-          : "🎉 All lessons completed in this course!"
+          : "🎉 Congratulations! All lessons completed."
       );
     }
   };
 
   const handlePrevLesson = () => {
     if (currentLessonIdx > 0) {
-      setCurrentLessonIdx((prev) => prev - 1);
+      const prevLesson = lessons[currentLessonIdx - 1];
+      // If previous lesson was in a previous module that has a quiz:
+      if (prevLesson.moduleIdx < currentLesson.moduleIdx) {
+        const prevMod = modules[prevLesson.moduleIdx];
+        if (prevMod?.quiz?.questions?.length > 0) {
+          setActiveView({
+            type: "quiz",
+            moduleIdx: prevLesson.moduleIdx,
+            lessonIdx: -1,
+          });
+          return;
+        }
+      }
+      setActiveView({
+        type: "video",
+        lessonIdx: currentLessonIdx - 1,
+        moduleIdx: prevLesson.moduleIdx,
+      });
+    }
+  };
+
+  const handlePrevFromQuiz = (modIdx) => {
+    const currentModLessons = lessons.filter((l) => l.moduleIdx === modIdx);
+    if (currentModLessons.length > 0) {
+      const lastLesson = currentModLessons[currentModLessons.length - 1];
+      const lastGlobalIdx = lessons.findIndex((l) => l.id === lastLesson.id);
+      if (lastGlobalIdx >= 0) {
+        setActiveView({
+          type: "video",
+          lessonIdx: lastGlobalIdx,
+          moduleIdx: modIdx,
+        });
+        return;
+      }
+    }
+    if (modIdx > 0) {
+      const prevMod = modules[modIdx - 1];
+      if (prevMod?.quiz?.questions?.length > 0) {
+        setActiveView({
+          type: "quiz",
+          moduleIdx: modIdx - 1,
+          lessonIdx: -1,
+        });
+      } else {
+        const prevLessons = lessons.filter((l) => l.moduleIdx === modIdx - 1);
+        if (prevLessons.length > 0) {
+          const lastPrev = prevLessons[prevLessons.length - 1];
+          const lastPrevIdx = lessons.findIndex((l) => l.id === lastPrev.id);
+          if (lastPrevIdx >= 0) {
+            setActiveView({
+              type: "video",
+              lessonIdx: lastPrevIdx,
+              moduleIdx: modIdx - 1,
+            });
+          }
+        }
+      }
     }
   };
 
   const handleSelectLockedLesson = (lesson) => {
-    setLockedLessonTarget(lesson);
-    setLockedLessonModalOpen(true);
+    if (lesson.isPremiumLocked && !isCourseFree && !hasFullAccess) {
+      setLockedLessonTarget(lesson);
+      setLockedLessonModalOpen(true);
+    } else if (lesson.isGatedLocked) {
+      toast.warning(
+        isBn
+          ? `এই মডিউলটি লক করা রয়েছে। পূর্ববর্তী মডিউলের কুইজ সম্পন্ন করুন।`
+          : `This module is locked. Please pass the previous module quiz first.`
+      );
+    } else {
+      toast.warning(
+        isBn
+          ? `অনুগ্রহ করে পূর্ববর্তী পাঠ (${lesson.moduleIdx + 1}.${lesson.lessonIdx}) সম্পূর্ণ করুন।`
+          : `Please complete the previous lesson first before advancing.`
+      );
+    }
   };
 
   const handleTakeModuleQuiz = (mod, modIdx) => {
-    setActiveModuleQuizData(mod);
-    setActiveModuleQuizIdx(modIdx);
-    setShowModuleQuizModal(true);
+    const modLessons = mod.lessons || [];
+    const allCompleted =
+      modLessons.length === 0 ||
+      modLessons.every((l) => completedLessonIds.includes(l.id));
+    if (!allCompleted) {
+      toast.warning(
+        isBn
+          ? `কুইজ আনলক করতে এই মডিউলের সকল ভিডিও পাঠ সম্পন্ন করুন।`
+          : `Please complete all video lessons in this module to unlock the quiz.`
+      );
+      return;
+    }
+    setActiveView({
+      type: "quiz",
+      moduleIdx: modIdx,
+      lessonIdx: -1,
+    });
+  };
+
+  const handleQuizSubmitted = async ({
+    moduleIndex,
+    scorePercent,
+    isPassed,
+    submittedAnswers,
+  }) => {
+    // 1. Update state
+    setModuleQuizResults((prev) => {
+      const next = {
+        ...prev,
+        [moduleIndex]: {
+          moduleIndex,
+          scorePercent,
+          isPassed,
+          submittedAnswers,
+          attemptedAt: new Date().toISOString(),
+        },
+      };
+      if (typeof window !== "undefined" && canonicalCourseId) {
+        try {
+          const userScope = user?._id ? `user_${user._id}` : "guest";
+          localStorage.setItem(
+            `lpg_${userScope}_course_${canonicalCourseId}_quiz_results`,
+            JSON.stringify(next)
+          );
+        } catch (e) {}
+      }
+      return next;
+    });
+
+    // 2. Sync to Backend
+    try {
+      await submitModuleQuizApi({
+        courseId: canonicalCourseId,
+        data: {
+          moduleIndex,
+          scorePercent,
+          isPassed,
+          submittedAnswers,
+        },
+      }).unwrap();
+      if (refetchLearning) refetchLearning();
+    } catch (err) {
+      // Sync fail-safe
+    }
+
+    if (isPassed) {
+      const totalMods = modules.length;
+      if (moduleIndex >= totalMods - 1) {
+        toast.success(
+          isBn
+            ? "🎓 অভিনন্দন! আপনি ফাইনাল সার্টিফিকেশন পরীক্ষায় পাস করেছেন এবং আপনার সার্টিফিকেট তৈরি হয়েছে!"
+            : "🎓 Congratulations! You passed the Certification Exam and earned your certificate!"
+        );
+      } else {
+        toast.success(
+          isBn
+            ? `🎉 চমৎকার! মডিউল ${moduleIndex + 1} কুইজ পাস করেছেন। মডিউল ${moduleIndex + 2} আনলক হয়েছে!`
+            : `🎉 Great job! Module ${moduleIndex + 1} passed. Module ${moduleIndex + 2} is now unlocked!`
+        );
+      }
+    }
   };
 
   const handleProceedToNextModule = (fromModuleIdx) => {
+    const nextModIdx = fromModuleIdx + 1;
+    const nextMod = modules[nextModIdx];
+    if (!nextMod) return;
+
+    // If paid course and user does not have full access, enrollment is mandatory to access Module 2+!
+    if (!isCourseFree && !hasFullAccess) {
+      setIsCheckoutModalOpen(true);
+      toast.warning(
+        isBn
+          ? `মডিউল ${nextModIdx + 1} দেখতে অনুগ্রহ করে সম্পূর্ণ কোর্সে ভর্তি সম্পন্ন করুন।`
+          : `Please enroll in the course to unlock Module ${nextModIdx + 1}.`
+      );
+      return;
+    }
+
+    const nextModLessons = nextMod.lessons || [];
+    // If next module has NO video lessons, only a final exam/quiz:
+    if (nextModLessons.length === 0 && nextMod.quiz?.questions?.length > 0) {
+      setActiveView({
+        type: "quiz",
+        moduleIdx: nextModIdx,
+        lessonIdx: -1,
+      });
+      toast.info(
+        isBn
+          ? `মডিউল ${nextModIdx + 1}: সমাপনী পরীক্ষা শুরু হয়েছে`
+          : `Module ${nextModIdx + 1}: Final Exam started`
+      );
+      return;
+    }
+
     const nextModLessonIdx = lessons.findIndex(
-      (l) => l.moduleIdx === fromModuleIdx + 1
+      (l) => l.moduleIdx === nextModIdx
     );
     if (nextModLessonIdx >= 0) {
-      setCurrentLessonIdx(nextModLessonIdx);
+      setActiveView({
+        type: "video",
+        lessonIdx: nextModLessonIdx,
+        moduleIdx: nextModIdx,
+      });
+      toast.info(
+        isBn
+          ? `মডিউল ${nextModIdx + 1} শুরু হয়েছে`
+          : `Module ${nextModIdx + 1} started`
+      );
     }
   };
 
@@ -494,7 +972,7 @@ export default function ClassroomContent({ courseSlug }) {
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-slate-50 text-slate-800">
-      {/* 1. Light Theme Header */}
+      {/* 1. Header */}
       <ClassroomHeader
         courseSlug={canonicalSlug}
         courseTitle={courseTitle}
@@ -505,8 +983,8 @@ export default function ClassroomContent({ courseSlug }) {
         setSidebarOpen={setSidebarOpen}
       />
 
-      {/* Free Module Banner */}
-      {!hasFullAccess && (
+      {/* Free Module Preview Banner for Paid Courses */}
+      {!isCourseFree && !hasFullAccess && (
         <div className="bg-emerald-50 border-b border-emerald-200 px-4 sm:px-6 py-2.5 flex items-center justify-between text-xs text-emerald-800">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
@@ -526,42 +1004,63 @@ export default function ClassroomContent({ courseSlug }) {
         </div>
       )}
 
-      {/* 2. Main Classroom Body (Video Player + Sidebar) */}
+      {/* 2. Main Classroom Body (Video Player OR In-Place Quiz + Sidebar) */}
       <div className="flex flex-1 overflow-hidden">
-        <ClassroomVideoPlayer
-          courseId={canonicalCourseId}
-          course={course}
-          currentLesson={currentLesson}
-          currentLessonIdx={currentLessonIdx}
-          totalLessons={lessons.length}
-          completedLessonIds={completedLessonIds}
-          setCompletedLessonIds={setCompletedLessonIds}
-          handlePrevLesson={handlePrevLesson}
-          handleNextLesson={handleNextLesson}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          onTriggerQuiz={() => {
-            const currentMod = modules[currentLesson?.moduleIdx ?? 0];
-            if (currentMod?.quiz?.questions?.length > 0) {
-              setActiveModuleQuizData(currentMod);
-              setActiveModuleQuizIdx(currentLesson?.moduleIdx ?? 0);
-              setShowModuleQuizModal(true);
-            }
-          }}
-        />
+        {activeView.type === "quiz" ? (
+          <ClassroomQuizView
+            courseId={canonicalCourseId}
+            moduleData={modules[activeView.moduleIdx]}
+            moduleIndex={activeView.moduleIdx}
+            totalModules={modules.length}
+            displayNumber={`${activeView.moduleIdx + 1}.${(modules[activeView.moduleIdx]?.lessons?.length || 0) + 1}`}
+            previousSubmission={moduleQuizResults[activeView.moduleIdx]}
+            onQuizSubmitted={handleQuizSubmitted}
+            onProceedToNextModule={handleProceedToNextModule}
+            onPrevLesson={() => handlePrevFromQuiz(activeView.moduleIdx)}
+            hasPrevLesson={Boolean(modules[activeView.moduleIdx]?.lessons?.length > 0)}
+            isCoursePaid={Boolean((course?.price || 0) > 0)}
+            hasFullAccess={hasFullAccess}
+            coursePrice={course?.price || 0}
+          />
+        ) : (
+          <ClassroomVideoPlayer
+            courseId={canonicalCourseId}
+            course={course}
+            currentLesson={currentLesson}
+            currentLessonIdx={currentLessonIdx}
+            totalLessons={lessons.length}
+            completedLessonIds={completedLessonIds}
+            setCompletedLessonIds={setCompletedLessonIds}
+            lessonProgressMap={lessonProgressMap}
+            setLessonProgressMap={setLessonProgressMap}
+            handlePrevLesson={handlePrevLesson}
+            handleNextLesson={handleNextLesson}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+          />
+        )}
 
         <ClassroomPlaylistSidebar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           modules={modules}
           lessons={lessons}
+          activeView={activeView}
           currentLessonIdx={currentLessonIdx}
-          setCurrentLessonIdx={setCurrentLessonIdx}
+          onSelectLesson={(globalIdx, mIdx) => {
+            setActiveView({
+              type: "video",
+              lessonIdx: globalIdx,
+              moduleIdx: mIdx,
+            });
+          }}
           completedLessonIds={completedLessonIds}
+          lessonProgressMap={lessonProgressMap}
+          moduleQuizResults={moduleQuizResults}
           courseSlug={canonicalSlug}
-          passedModuleQuizzes={passedModuleQuizzes}
           onTakeModuleQuiz={handleTakeModuleQuiz}
           onSelectLockedLesson={handleSelectLockedLesson}
+          hasFullAccess={hasFullAccess}
         />
       </div>
 
@@ -570,15 +1069,7 @@ export default function ClassroomContent({ courseSlug }) {
         isOpen={lockedLessonModalOpen}
         onClose={() => setLockedLessonModalOpen(false)}
         maxWidth="md"
-        title={
-          lockedLessonTarget?.isGatedLocked
-            ? isBn
-              ? "পরবর্তী মডিউলটি লক করা রয়েছে"
-              : "Module Locked: Quiz Required"
-            : isBn
-            ? "প্রিমিয়াম মডিউল আনলক করুন"
-            : "Unlock Premium Module"
-        }
+        title={isBn ? "কোর্সে ভর্তি আবশ্যক" : "Enrollment Required"}
       >
         <div className="p-6 text-center space-y-4">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-amber-50 text-amber-600 border border-amber-200">
@@ -592,29 +1083,9 @@ export default function ClassroomContent({ courseSlug }) {
                 : lockedLessonTarget?.title || "Locked Lesson"}
             </h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              {lockedLessonTarget?.isGatedLocked ? (
-                isBn ? (
-                  <>
-                    পরবর্তী মডিউলে প্রবেশ করতে পূর্ববর্তী{" "}
-                    <strong>
-                      মডিউল {((lockedLessonTarget?.requiredQuizModuleIdx ?? 0) + 1)}
-                    </strong>{" "}
-                    এর মূল্যায়ন কুইজে ন্যূনতম ৭০% নম্বর পেয়ে পাস করতে হবে।
-                  </>
-                ) : (
-                  <>
-                    Passing the{" "}
-                    <strong>
-                      Module {(lockedLessonTarget?.requiredQuizModuleIdx ?? 0) + 1} Assessment Quiz
-                    </strong>{" "}
-                    (minimum 70%) is required before accessing this module.
-                  </>
-                )
-              ) : isBn ? (
-                `সম্পূর্ণ কোর্স, হ্যান্ডআউট ও সার্টিফিকেট পেতে অনুগ্রহ করে ভর্তি সম্পন্ন করুন।`
-              ) : (
-                `Enroll in the full course to unlock all modules, resources, and your certificate.`
-              )}
+              {isBn
+                ? `সম্পূর্ণ কোর্স, হ্যান্ডআউট ও সার্টিফিকেট পেতে অনুগ্রহ করে ভর্তি সম্পন্ন করুন।`
+                : `Enroll in the full course to unlock all modules, resources, and your certificate.`}
             </p>
           </div>
 
@@ -629,60 +1100,24 @@ export default function ClassroomContent({ courseSlug }) {
               {isBn ? "ফিরে যান" : "Close"}
             </Button>
 
-            {lockedLessonTarget?.isGatedLocked ? (
-              <Button
-                type="button"
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  const reqIdx = lockedLessonTarget.requiredQuizModuleIdx ?? 0;
-                  setLockedLessonModalOpen(false);
-                  if (modules[reqIdx]) {
-                    handleTakeModuleQuiz(modules[reqIdx], reqIdx);
-                  }
-                }}
-                className="gap-1.5 font-bold w-full sm:w-auto"
-              >
-                <HelpCircle className="h-4 w-4" />
-                <span>
-                  {isBn
-                    ? `মডিউল ${(lockedLessonTarget?.requiredQuizModuleIdx ?? 0) + 1} কুইজ দিন`
-                    : `Take Module ${(lockedLessonTarget?.requiredQuizModuleIdx ?? 0) + 1} Quiz`}
-                </span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="primary"
-                size="sm"
-                onClick={() => {
-                  setShowGatingDialog(false);
-                  setIsCheckoutModalOpen(true);
-                }}
-                className="gap-2 font-bold w-full sm:w-auto"
-              >
-                <span>{isBn ? `কোর্সে ভর্তি হন (৳ ${course?.price})` : `Enroll (৳ ${course?.price})`}</span>
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={() => {
+                setLockedLessonModalOpen(false);
+                setIsCheckoutModalOpen(true);
+              }}
+              className="gap-2 font-bold w-full sm:w-auto"
+            >
+              <span>{isBn ? `কোর্সে ভর্তি হন (৳ ${course?.price})` : `Enroll (৳ ${course?.price})`}</span>
+              <ArrowRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </Dialog>
 
-      {/* 4. Module Quiz Modal */}
-      {activeModuleQuizData && (
-        <ModuleQuizModal
-          isOpen={showModuleQuizModal}
-          onClose={() => setShowModuleQuizModal(false)}
-          moduleData={activeModuleQuizData}
-          moduleIndex={activeModuleQuizIdx}
-          onQuizPassed={handleQuizPassed}
-          onProceedToNextModule={handleProceedToNextModule}
-        />
-      )}
-
-      {/* Checkout Modal */}
+      {/* 5. Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutModalOpen}
         onClose={() => setIsCheckoutModalOpen(false)}

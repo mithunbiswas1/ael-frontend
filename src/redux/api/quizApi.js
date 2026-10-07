@@ -7,10 +7,19 @@ export const quizApi = apiSlice.injectEndpoints({
   overrideExisting: true,
 
   endpoints: (builder) => ({
-    // Get Quiz for a specific Course
+    // Get Quiz for a specific Course (public/sanitized)
     getQuizByCourseId: builder.query({
       query: (courseId) => ({
         url: endpoints.quizzes.getByCourseId(courseId),
+        method: "GET",
+      }),
+      providesTags: ["Quizzes"],
+    }),
+
+    // Get Active Quiz Attempt for Enrolled Learner (enforces 100% lessons prerequisite & anti-cheat)
+    getQuizForAttempt: builder.query({
+      query: (courseId) => ({
+        url: endpoints.quizzes.getAttempt(courseId),
         method: "GET",
       }),
       providesTags: ["Quizzes"],
@@ -23,7 +32,7 @@ export const quizApi = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["Quizzes", "Certificates"],
+      invalidatesTags: ["Quizzes", "Certificates", "Courses", "User"],
     }),
 
     // Admin: Get all quizzes
@@ -35,7 +44,55 @@ export const quizApi = apiSlice.injectEndpoints({
       providesTags: ["Quizzes"],
     }),
 
-    // Admin: Save or update quiz
+    // Admin: Get Question Bank for a Course
+    getQuestionBank: builder.query({
+      query: (courseId) => ({
+        url: endpoints.quizzes.questionBank(courseId),
+        method: "GET",
+      }),
+      providesTags: ["Quizzes"],
+    }),
+
+    // Admin: Add Question to Bank
+    addQuestionToBank: builder.mutation({
+      query: ({ courseId, data }) => ({
+        url: endpoints.quizzes.questionBank(courseId),
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Quizzes"],
+    }),
+
+    // Admin: Update Question in Bank
+    updateQuestionInBank: builder.mutation({
+      query: ({ courseId, questionId, data }) => ({
+        url: endpoints.quizzes.questionItem(courseId, questionId),
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Quizzes"],
+    }),
+
+    // Admin: Delete Question from Bank
+    deleteQuestionFromBank: builder.mutation({
+      query: ({ courseId, questionId }) => ({
+        url: endpoints.quizzes.questionItem(courseId, questionId),
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Quizzes"],
+    }),
+
+    // Admin: Update Quiz Settings (timer, cooldown, passing percentage, questionsPerQuiz)
+    updateQuizSettings: builder.mutation({
+      query: ({ courseId, data }) => ({
+        url: endpoints.quizzes.settings(courseId),
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Quizzes"],
+    }),
+
+    // Admin: Save or update quiz (legacy)
     saveQuiz: builder.mutation({
       query: (data) => ({
         url: endpoints.quizzes.save,
@@ -58,9 +115,14 @@ export const quizApi = apiSlice.injectEndpoints({
 
 export const {
   useGetQuizByCourseIdQuery,
-  useGetAllQuizzesQuery,
+  useGetQuizForAttemptQuery,
   useSubmitQuizMutation,
+  useGetAllQuizzesQuery,
+  useGetQuestionBankQuery,
+  useAddQuestionToBankMutation,
+  useUpdateQuestionInBankMutation,
+  useDeleteQuestionFromBankMutation,
+  useUpdateQuizSettingsMutation,
   useSaveQuizMutation,
   useDeleteQuizMutation,
 } = quizApi;
-

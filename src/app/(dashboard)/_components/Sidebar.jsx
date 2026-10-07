@@ -97,6 +97,12 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "subscriptions",
   },
   {
+    name: "Coupons & Gift Vouchers",
+    href: "/admin/coupons",
+    icon: FaTag,
+    module: "subscriptions",
+  },
+  {
     name: "Advertisements",
     href: "/admin/advertisements",
     icon: FaBullhorn,

@@ -29,9 +29,10 @@ export default function PermissionGuard({
   if (!isLoggedIn) return fallback;
   if (isLoading) return null;
 
-  // 1. Super Admin master override
+  // 1. Super Admin & Admin master override
   if (
     user?.role === "super_admin" ||
+    user?.role === "admin" ||
     (Boolean(permData?.data?.isSuperAdmin) && permData?.data?.role === "super_admin")
   ) {
     return <>{children}</>;

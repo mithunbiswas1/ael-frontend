@@ -48,6 +48,17 @@ const authSlice = createSlice({
       if (typeof window !== "undefined") {
         localStorage.setItem("accessToken", token);
         localStorage.setItem("user", JSON.stringify(user));
+        // Clean legacy unscoped keys
+        try {
+          const keysToRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith("lpg_course_")) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach((k) => localStorage.removeItem(k));
+        } catch (e) {}
       }
     },
     setLogout: (state) => {
@@ -61,6 +72,17 @@ const authSlice = createSlice({
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
         sessionStorage.removeItem("sidebar_scroll_pos");
+        // Clear all course learning keys from localStorage
+        try {
+          const keysToRemove = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith("lpg_") || key.startsWith("lpg_course_"))) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach((k) => localStorage.removeItem(k));
+        } catch (e) {}
       }
     },
     updateUser: (state, action) => {

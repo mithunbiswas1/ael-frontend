@@ -10,23 +10,12 @@ import { useGetCoursesQuery } from "@/redux/api/courseApi";
 export default function CoursesContent({
   initialCourses = [],
   initialPriceFilter = "all",
-  initialSearch = "",
   bannerData = null,
 }) {
-  const [searchQuery, setSearchQuery] = useState(initialSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [priceFilter, setPriceFilter] = useState(initialPriceFilter);
   const isFirstRender = useRef(true);
 
-  // Debounce search input to avoid spamming the backend
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-    }, 350);
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  // Keep browser URL query params synced
+  // Keep browser URL query params synced with priceFilter
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
@@ -37,9 +26,6 @@ export default function CoursesContent({
     if (priceFilter && priceFilter !== "all") {
       params.set("priceType", priceFilter);
     }
-    if (debouncedSearch && debouncedSearch.trim()) {
-      params.set("search", debouncedSearch.trim());
-    }
 
     const qs = params.toString();
     const newUrl = qs ? `/courses?${qs}` : "/courses";
@@ -49,12 +35,11 @@ export default function CoursesContent({
     ) {
       window.history.replaceState(null, "", newUrl);
     }
-  }, [priceFilter, debouncedSearch]);
+  }, [priceFilter]);
 
-  // Query courses from backend with priceType and search filters
+  // Query courses from backend with priceType filter (all, free, paid)
   const { data: coursesData, isLoading, isFetching } = useGetCoursesQuery({
     priceType: priceFilter,
-    search: debouncedSearch.trim() || undefined,
   });
 
   // Use backend query data when available; fallback to initialCourses for initial render
@@ -72,12 +57,10 @@ export default function CoursesContent({
 
       {/* 2. Course Catalog with Backend Filtering */}
       <CourseCatalogSection
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         priceFilter={priceFilter}
         setPriceFilter={setPriceFilter}
         filteredCourses={filteredCourses}
-        isLoading={isFetching || (isLoading && !coursesData)}
+        isLoading={(!coursesData && initialCourses.length === 0) && (isLoading || isFetching)}
       />
 
       {/* 3. How It Works Section */}

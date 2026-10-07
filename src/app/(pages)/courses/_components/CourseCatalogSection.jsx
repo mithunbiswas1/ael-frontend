@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 import {
-  Search,
   User,
   BookOpen,
   ArrowRight,
@@ -20,7 +19,6 @@ import {
 } from "lucide-react";
 
 import { H2, H4, P } from "@/components/ui/Typography";
-import SectionHeader from "@/components/ui/SectionHeader";
 import { Button } from "@/components/ui/Button";
 import { useDictionary } from "@/context/DictionaryContext";
 import { useEnrollCourseMutation } from "@/redux/api/courseApi";
@@ -30,14 +28,12 @@ import Pagination from "@/components/ui/Pagination";
 
 export const PRICE_TABS = [
   { id: "all", label: "All Courses", labelBn: "সকল কোর্স" },
-  { id: "paid", label: "Premium", labelBn: "প্রিমিয়াম" },
-  { id: "free", label: "Free", labelBn: "ফ্রি" },
+  { id: "free", label: "Free Courses", labelBn: "ফ্রি কোর্স" },
+  { id: "paid", label: "Paid Courses", labelBn: "পেইড কোর্স" },
 ];
 
 export default function CourseCatalogSection({
-  searchQuery,
-  setSearchQuery,
-  priceFilter,
+  priceFilter = "all",
   setPriceFilter,
   filteredCourses = [],
   isLoading = false,
@@ -55,7 +51,7 @@ export default function CourseCatalogSection({
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery, priceFilter, filteredCourses.length]);
+  }, [priceFilter, filteredCourses.length]);
 
   const totalItems = filteredCourses.length;
   const totalPages = Math.ceil(totalItems / 10) || 1;
@@ -94,10 +90,33 @@ export default function CourseCatalogSection({
 
   // Handle Enrollment
   const handleEnrollClick = async (course) => {
-    const cid = course.courseId || course.id;
+    const cid = course.courseId || course._id || course.id || course.slug;
     const courseSlug = course.slug || cid;
-    const isPaid = course.price > 0;
+    const isPaid = course.isFree === true ? false : Number(course.price || 0) > 0;
 
+    // 1. Free Course: Instant auto-enroll for logged-in user
+    if (!isPaid) {
+      if (isLoggedIn) {
+        try {
+          await enrollCourse(cid).unwrap();
+          toast.success(
+            isBn
+              ? "অভিনন্দন! আপনি সফলভাবে এই কোর্সে এনরোল করেছেন।"
+              : "Successfully enrolled in this course!"
+          );
+        } catch {
+          // If already enrolled, continue straight to classroom
+        }
+        router.push(`/courses/learn/${courseSlug}`);
+        return;
+      } else {
+        setPendingCourse(course);
+        setIsAuthModalOpen(true);
+        return;
+      }
+    }
+
+    // 2. Paid Course
     if (hasCourseAccess(course)) {
       router.push(`/courses/learn/${courseSlug}`);
       return;
@@ -109,30 +128,17 @@ export default function CourseCatalogSection({
       return;
     }
 
-    if (isPaid) {
-      setCheckoutCourse(course);
-      setIsCheckoutModalOpen(true);
-      return;
-    }
-
-    try {
-      await enrollCourse(cid).unwrap();
-      toast.success(
-        isBn
-          ? "অভিনন্দন! আপনি সফলভাবে এই কোর্সে এনরোল করেছেন।"
-          : "Successfully enrolled in this course!"
-      );
-      router.push(`/courses/learn/${courseSlug}`);
-    } catch (err) {
-      toast.error(err?.data?.message || (isBn ? "এনরোলমেন্ট ব্যর্থ হয়েছে।" : "Enrollment failed"));
-    }
+    setCheckoutCourse(course);
+    setIsCheckoutModalOpen(true);
   };
 
   const handleAuthSuccess = () => {
     if (!pendingCourse) return;
-    const cid = pendingCourse.courseId || pendingCourse.id;
+    const cid = pendingCourse.courseId || pendingCourse._id || pendingCourse.id || pendingCourse.slug;
     const courseSlug = pendingCourse.slug || cid;
-    if (pendingCourse.price > 0) {
+    const isPaid = pendingCourse.isFree === true ? false : Number(pendingCourse.price || 0) > 0;
+
+    if (isPaid) {
       setCheckoutCourse(pendingCourse);
       setIsCheckoutModalOpen(true);
     } else {
@@ -146,85 +152,47 @@ export default function CourseCatalogSection({
           );
           router.push(`/courses/learn/${courseSlug}`);
         })
-        .catch((err) => toast.error(err?.data?.message || "Enrollment failed"));
+        .catch(() => {
+          router.push(`/courses/learn/${courseSlug}`);
+        });
     }
   };
 
   return (
     <section id="catalog" className="py-12 sm:py-16 bg-slate-50">
       <div className="site-container">
-        {/* Section Header */}
-        <div className="mb-8">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
-            {isBn ? "প্রশিক্ষণ কারিকুলাম" : "Professional Training Catalog"}
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
+        {/* Section Header (Centered) */}
+        <div className="mb-8 sm:mb-10 text-center max-w-3xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight">
             {isBn ? "উপলব্ধ সকল নিরাপত্তা কোর্স" : "Available Safety Courses"}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm md:text-base text-slate-500 mt-2 sm:mt-2.5 max-w-2xl mx-auto leading-relaxed">
             {isBn
               ? "জাতীয় মানদণ্ড অনুযায়ী পরিচালিত কারিগরি ও ব্যবহারিক কোর্স। প্রতিটি মডিউলে রয়েছে ভিডিও লেকচার ও মূল্যায়ন পরীক্ষা।"
               : "Technical safety curricula adhering to national regulations. Each module includes structured video lectures and gating assessments."}
           </p>
         </div>
 
-        {/* Search & Price Filter Toolbar (No category filter) */}
-        <div className="mb-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={
-                isBn ? "কোর্স বা বিষয়ের নাম দিয়ে খুঁজুন..." : "Search by course title or keyword..."
-              }
-              className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:border-primary focus:outline-hidden"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-
-          {/* Clean Segmented Price Tabs */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200/80 self-start sm:self-auto">
+        {/* Centered, Bigger & Eye-Catching Price Filter Tabs (All, Free, Paid) - No icons */}
+        <div className="flex justify-center items-center my-6 sm:my-8">
+          <div className="inline-flex items-center p-1.5 sm:p-2 rounded-2xl bg-white border border-slate-200/90 shadow-md shadow-slate-200/60 gap-1.5 sm:gap-2.5 max-w-full overflow-x-auto">
             {PRICE_TABS.map((tab) => {
               const isActive = priceFilter === tab.id;
               return (
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setPriceFilter(tab.id)}
-                  className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors cursor-pointer ${
-                    isActive
-                      ? "bg-white text-slate-900 font-bold shadow-2xs"
-                      : "text-slate-600 hover:text-slate-900"
-                  }`}
+                  onClick={() => setPriceFilter?.(tab.id)}
+                  className={`relative flex items-center justify-center rounded-xl px-6 sm:px-9 py-2.5 sm:py-3.5 text-xs sm:text-sm font-bold tracking-wide transition-all duration-200 cursor-pointer select-none whitespace-nowrap ${isActive
+                    ? "bg-primary text-white shadow-lg shadow-primary/30 scale-[1.02]"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 active:scale-98"
+                    }`}
                 >
-                  {isBn ? tab.labelBn : tab.label}
+                  <span>{isBn ? tab.labelBn : tab.label}</span>
                 </button>
               );
             })}
           </div>
-        </div>
-
-        {/* Results Counter */}
-        <div className="flex items-center justify-between text-xs text-slate-500 mb-6">
-          <span>
-            {isBn
-              ? `মোট ${filteredCourses.length}টি কোর্স পাওয়া গেছে`
-              : `Showing ${filteredCourses.length} course${filteredCourses.length === 1 ? "" : "s"}`}
-          </span>
-          <span className="text-slate-400 text-[11px]">
-            {isBn ? "পরপর মডিউল সম্পন্ন করার নিয়ম প্রযোজ্য" : "Sequential Module Completion Required"}
-          </span>
         </div>
 
         {/* Full-Width Courses Grid */}
@@ -248,24 +216,8 @@ export default function CourseCatalogSection({
           <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-500">
             <BookOpen className="h-10 w-10 text-slate-300 mx-auto mb-3" />
             <p className="text-sm font-bold text-slate-800">
-              {isBn ? "কোনো কোর্স খুঁজে পাওয়া যায়নি" : "No courses match your query"}
+              {isBn ? "কোনো কোর্স খুঁজে পাওয়া যায়নি" : "No courses available"}
             </p>
-            <p className="text-xs text-slate-500 mt-1 mb-4">
-              {isBn
-                ? "অনুগ্রহ করে অনুসন্ধানের শব্দ পরিবর্তন করে পুনরায় চেষ্টা করুন।"
-                : "Try resetting your search query."}
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setSearchQuery("");
-                setPriceFilter("all");
-              }}
-            >
-              {isBn ? "ফিল্টার রিসেট করুন" : "Reset Filters"}
-            </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -274,7 +226,6 @@ export default function CourseCatalogSection({
               const courseTitle = isBn ? course.titleBn || course.title : course.title;
               const courseDesc = isBn ? course.descriptionBn || course.description : course.description;
               const courseDuration = isBn ? course.durationBn || course.duration : course.duration;
-              const courseLevel = isBn ? course.levelBn || course.level : course.level;
               const isPaid = course.price > 0;
               const hasAccess = hasCourseAccess(course);
 
@@ -303,7 +254,7 @@ export default function CourseCatalogSection({
                         }}
                       />
 
-                      {/* Clean Badges (no rounded pills, crisp tags) */}
+                      {/* Badges */}
                       <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
                         <span className="rounded bg-slate-900/90 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
                           {isPaid ? "Premium" : "Free"}
@@ -337,7 +288,7 @@ export default function CourseCatalogSection({
                         {courseDesc}
                       </p>
 
-                      {/* Professional Meta Line */}
+                      {/* Meta Line */}
                       <div className="mt-4 flex flex-wrap items-center gap-3 text-[11px] text-slate-500 border-t border-slate-100 pt-3">
                         <div className="flex items-center gap-1">
                           <Layers className="h-3.5 w-3.5 text-slate-400" />

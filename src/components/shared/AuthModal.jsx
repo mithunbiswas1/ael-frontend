@@ -1,25 +1,13 @@
 // src/components/shared/AuthModal.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import {
-  FaPhoneAlt,
-  FaEnvelope,
-  FaLock,
-  FaUser,
-  FaEye,
-  FaEyeSlash,
-  FaArrowRight,
-  FaSignInAlt,
-  FaUserPlus,
-} from "react-icons/fa";
+import { Eye, EyeOff, ArrowRight, Loader2, X } from "lucide-react";
 
-import { Dialog, DialogBody } from "@/components/ui/Dialog";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { H3, P } from "@/components/ui/Typography";
+import { Dialog } from "@/components/ui/Dialog";
 import { useLoginMutation, useRegistrationMutation } from "@/redux/api/authApi";
 import { setLogin } from "@/redux/slice/authSlice";
 import { useDictionary } from "@/context/DictionaryContext";
@@ -35,18 +23,30 @@ export default function AuthModal({
   const { locale } = useDictionary();
   const isBn = locale === "bn";
 
-  const [activeTab, setActiveTab] = useState(defaultTab || initialTab || "login");
-  const [loginMethod, setLoginMethod] = useState("phone"); // "phone" | "email"
-  const [showPassword, setShowPassword] = useState(false);
+  // false = Login Form, true = Registration Form (Switched via link, NO tabs)
+  const [isRegisterView, setIsRegisterView] = useState(
+    (defaultTab || initialTab) === "register"
+  );
 
-  // Login form state
+  const [showPassword, setShowPassword] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Sync state when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsRegisterView((defaultTab || initialTab) === "register");
+      setShowPassword(false);
+      setErrors({});
+    }
+  }, [isOpen, defaultTab, initialTab]);
+
+  // Login Form State
   const [loginForm, setLoginForm] = useState({
-    phone: "",
-    email: "",
+    identifier: "",
     password: "",
   });
 
-  // Register form state
+  // Registration Form State
   const [registerForm, setRegisterForm] = useState({
     fullName: "",
     phone: "",
@@ -57,53 +57,74 @@ export default function AuthModal({
   const [loginApi, { isLoading: isLoggingIn }] = useLoginMutation();
   const [registerApi, { isLoading: isRegistering }] = useRegistrationMutation();
 
-  // Reset password visibility when tab changes
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-    setShowPassword(false);
+  const handleLoginChange = (e) => {
+    const { name, value } = e.target;
+    setLoginForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
-  // Handle Login Submit
+  const handleRegisterChange = (e) => {
+    const { name, value } = e.target;
+    setRegisterForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  // Login Submit
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {};
 
-    if (loginMethod === "phone" && !loginForm.phone.trim()) {
-      toast.error(isBn ? "মোবাইল নম্বর প্রদান করুন" : "Please enter phone number");
-      return;
+    const rawInput = loginForm.identifier.trim();
+    if (!rawInput) {
+      newErrors.identifier = isBn
+        ? "ইমেইল অথবা মোবাইল নম্বর লিখুন"
+        : "Email or phone number is required";
     }
-    if (loginMethod === "email" && !loginForm.email.trim()) {
-      toast.error(isBn ? "ইমেইল প্রদান করুন" : "Please enter email");
-      return;
-    }
+
     if (!loginForm.password) {
-      toast.error(isBn ? "পাসওয়ার্ড প্রদান করুন" : "Please enter password");
+      newErrors.password = isBn
+        ? "পাসওয়ার্ড লিখুন"
+        : "Password is required";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
     try {
+      const isEmail = rawInput.includes("@");
       const payload = {
         password: loginForm.password,
-        ...(loginMethod === "phone"
-          ? { phone: loginForm.phone.trim() }
-          : { email: loginForm.email.trim() }),
+        identifier: rawInput,
+        ...(isEmail
+          ? { email: rawInput.toLowerCase() }
+          : { phone: rawInput }),
       };
 
-      const res = await loginApi(payload).unwrap();
+      const result = await loginApi(payload).unwrap();
 
-      if (res?.data) {
+      if (result?.data) {
         dispatch(
           setLogin({
-            user: res.data.user,
-            token: res.data.accessToken,
+            user: result.data.user,
+            token: result.data.accessToken,
           })
         );
+
         toast.success(
           isBn
-            ? `স্বাগতম ${res.data.user?.fullName || "ব্যবহারকারী"}!`
-            : `Welcome back ${res.data.user?.fullName || "User"}!`
+            ? `স্বাগতম ${result.data.user?.fullName || "ব্যবহারকারী"}!`
+            : `Welcome back ${result.data.user?.fullName || "User"}!`
         );
+
+        setLoginForm({ identifier: "", password: "" });
         if (onSuccess) {
-          onSuccess(res.data.user);
+          onSuccess(result.data.user);
         } else {
           onClose?.();
         }
@@ -111,32 +132,52 @@ export default function AuthModal({
     } catch (err) {
       toast.error(
         err?.data?.message ||
-          err?.message ||
-          (isBn
-            ? "লগইন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।"
-            : "Login failed. Please check credentials.")
+        err?.data?.errors?.[0] ||
+        (isBn
+          ? "লগইন ব্যর্থ হয়েছে। নম্বর/ইমেইল ও পাসওয়ার্ড যাচাই করুন।"
+          : "Login failed. Please verify credentials.")
       );
     }
   };
 
-  // Handle Register Submit
+  // Register Submit
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    const newErrors = {};
 
     if (!registerForm.fullName.trim()) {
-      toast.error(isBn ? "পূর্ণ নাম প্রদান করুন" : "Full name is required");
-      return;
+      newErrors.fullName = isBn ? "পূর্ণ নাম লিখুন" : "Full Name is required";
     }
-    if (!registerForm.phone.trim()) {
-      toast.error(isBn ? "মোবাইল নম্বর প্রদান করুন" : "Phone number is required");
-      return;
+
+    const cleanPhone = registerForm.phone.trim().replace(/^(\+88)/, "");
+    if (!cleanPhone) {
+      newErrors.phone = isBn ? "মোবাইল নম্বর লিখুন" : "Phone number is required";
+    } else if (!/^[0-9+]+$/.test(registerForm.phone.trim())) {
+      newErrors.phone = isBn
+        ? "শুধুমাত্র সংখ্যা লিখুন"
+        : "Phone must contain numbers only";
+    } else if (cleanPhone.length < 10) {
+      newErrors.phone = isBn
+        ? "কমপক্ষে ১০ ডিজিটের নম্বর দিন"
+        : "Phone must be at least 10 digits";
     }
-    if (!registerForm.password || registerForm.password.length < 6) {
-      toast.error(
-        isBn
-          ? "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে"
-          : "Password must be at least 6 characters"
-      );
+
+    if (registerForm.email && !/\S+@\S+\.\S+/.test(registerForm.email.trim())) {
+      newErrors.email = isBn
+        ? "সঠিক ইমেইল ঠিকানা দিন"
+        : "Please enter a valid email address";
+    }
+
+    if (!registerForm.password) {
+      newErrors.password = isBn ? "পাসওয়ার্ড লিখুন" : "Password is required";
+    } else if (registerForm.password.length < 6) {
+      newErrors.password = isBn
+        ? "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে"
+        : "Password must be at least 6 characters";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -151,7 +192,7 @@ export default function AuthModal({
         userName,
         fullName: registerForm.fullName.trim(),
         phone: registerForm.phone.trim(),
-        email: registerForm.email.trim(),
+        email: registerForm.email.trim() || undefined,
         password: registerForm.password,
         role: "user",
       };
@@ -161,14 +202,14 @@ export default function AuthModal({
       if (res?.success) {
         toast.success(
           isBn
-            ? "নিবন্ধন সফল হয়েছে! এখন লগইন হচ্ছে..."
-            : "Registration successful! Logging you in..."
+            ? "নিবন্ধন সফল হয়েছে! লগইন করা হচ্ছে..."
+            : "Registration successful! Logging in..."
         );
 
         // Auto login after registration
         try {
           const loginRes = await loginApi({
-            phone: registerForm.phone.trim(),
+            identifier: registerForm.phone.trim(),
             password: registerForm.password,
           }).unwrap();
 
@@ -187,19 +228,20 @@ export default function AuthModal({
             return;
           }
         } catch (_) {
-          // If auto login fails, switch to login tab with prefilled phone
-          setActiveTab("login");
-          setLoginForm((prev) => ({
-            ...prev,
-            phone: registerForm.phone,
-          }));
+          // Fallback to login form with phone prefilled
+          setIsRegisterView(false);
+          setLoginForm({
+            identifier: registerForm.phone,
+            password: "",
+          });
         }
       }
     } catch (err) {
       toast.error(
         err?.data?.message ||
-          err?.message ||
-          (isBn ? "নিবন্ধন ব্যর্থ হয়েছে। আবার চেষ্টা করুন।" : "Registration failed.")
+        (isBn
+          ? "নিবন্ধন ব্যর্থ হয়েছে। তথ্য যাচাই করুন।"
+          : "Registration failed. Please check credentials.")
       );
     }
   };
@@ -209,317 +251,297 @@ export default function AuthModal({
       isOpen={isOpen}
       onClose={onClose}
       maxWidth="md"
-      title={
-        activeTab === "login"
-          ? isBn
-            ? "অ্যাকাউন্টে লগইন করুন"
-            : "Sign In to Your Account"
-          : isBn
-            ? "নতুন অ্যাকাউন্ট তৈরি করুন"
-            : "Create New Account"
-      }
-      description={
-        isBn
-          ? "কোর্সে ভর্তি, ক্লাসরুম অ্যাক্সেস ও সার্টিফিকেট পেতে লগইন করুন।"
-          : "Sign in or register to access courses, track learning, and earn verified certificates."
-      }
+      showCloseButton={false}
     >
-      <DialogBody className="p-5 sm:p-6 space-y-5">
-        {/* Segmented Tab Switcher */}
-        <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 border border-slate-200/80">
-          <Button
-            type="button"
-            variant={activeTab === "login" ? "primary" : "ghost"}
-            size="sm"
-            onClick={() => handleTabChange("login")}
-            className={`gap-2 transition-all ${
-              activeTab === "login"
-                ? "shadow-xs"
-                : "text-slate-600 hover:text-slate-900 bg-transparent"
-            }`}
-          >
-            <FaSignInAlt className="h-3 w-3" />
-            <span>{isBn ? "লগইন" : "Sign In"}</span>
-          </Button>
+      <div className="relative p-6 sm:p-8 bg-white">
+        {/* Modal Close Button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 p-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100 transition-colors cursor-pointer z-10"
+          aria-label="Close dialog"
+        >
+          <X className="h-5 w-5" />
+        </button>
 
-          <Button
-            type="button"
-            variant={activeTab === "register" ? "primary" : "ghost"}
-            size="sm"
-            onClick={() => handleTabChange("register")}
-            className={`gap-2 transition-all ${
-              activeTab === "register"
-                ? "shadow-xs"
-                : "text-slate-600 hover:text-slate-900 bg-transparent"
-            }`}
-          >
-            <FaUserPlus className="h-3 w-3" />
-            <span>{isBn ? "নিবন্ধন" : "Register"}</span>
-          </Button>
-        </div>
-
-        {/* 1. LOGIN TAB CONTENT */}
-        {activeTab === "login" && (
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
-            {/* Phone vs Email Switcher */}
-            <div className="flex gap-2">
-              <Button
-                type="button"
-                variant={loginMethod === "phone" ? "secondary" : "outline"}
-                size="xs"
-                onClick={() => setLoginMethod("phone")}
-                className={`flex-1 gap-1.5 ${
-                  loginMethod === "phone"
-                    ? "border-primary text-primary bg-primary/5 font-bold"
-                    : "text-slate-600 border-slate-200"
-                }`}
-              >
-                <FaPhoneAlt className="h-2.5 w-2.5" />
-                <span>{isBn ? "মোবাইল লগইন" : "Phone Login"}</span>
-              </Button>
-
-              <Button
-                type="button"
-                variant={loginMethod === "email" ? "secondary" : "outline"}
-                size="xs"
-                onClick={() => setLoginMethod("email")}
-                className={`flex-1 gap-1.5 ${
-                  loginMethod === "email"
-                    ? "border-primary text-primary bg-primary/5 font-bold"
-                    : "text-slate-600 border-slate-200"
-                }`}
-              >
-                <FaEnvelope className="h-2.5 w-2.5" />
-                <span>{isBn ? "ইমেইল লগইন" : "Email Login"}</span>
-              </Button>
+        {!isRegisterView ? (
+          /* ========================================================= */
+          /* 1. LOGIN FORM VIEW (Exact Login Page Form Side Design)     */
+          /* ========================================================= */
+          <div>
+            {/* Header */}
+            <div className="mb-6 pr-8">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                {isBn ? "অ্যাকাউন্টে লগইন করুন" : "Sign In to Your Account"}
+              </h2>
             </div>
 
-            {/* Input: Phone or Email */}
-            {loginMethod === "phone" ? (
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
+              {/* Unified Email or Phone Input */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  {isBn ? "মোবাইল নম্বর" : "Phone Number"}{" "}
-                  <span className="text-red-500">*</span>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {isBn ? "ইমেইল অথবা মোবাইল নম্বর *" : "Email or Phone Number *"}
                 </label>
-                <div className="flex">
-                  <span className="inline-flex items-center px-3.5 rounded-l-lg border border-r-0 border-slate-200 bg-slate-50 text-slate-600 text-xs font-mono font-bold select-none">
-                    +88
-                  </span>
+                <div className="relative">
                   <input
-                    type="tel"
-                    value={loginForm.phone}
-                    onChange={(e) =>
-                      setLoginForm((prev) => ({ ...prev, phone: e.target.value }))
+                    type="text"
+                    name="identifier"
+                    value={loginForm.identifier}
+                    onChange={handleLoginChange}
+                    placeholder={
+                      isBn
+                        ? "ইমেইল বা ফোন নম্বর (যেমন: name@example.com বা 01XXXXXXXXX)"
+                        : "Enter email or phone (e.g. name@example.com or 01XXXXXXXXX)"
                     }
-                    placeholder={isBn ? "০১XXXXXXXXX" : "01XXXXXXXXX"}
-                    className="flex-1 rounded-r-lg border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary focus:outline-hidden shadow-2xs"
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${errors.identifier ? "border-rose-500" : "border-slate-300"
+                      }`}
                   />
                 </div>
+                {errors.identifier && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {errors.identifier}
+                  </p>
+                )}
               </div>
-            ) : (
-              <Input
-                label={isBn ? "ইমেইল অ্যাড্রেস" : "Email Address"}
-                required
-                type="email"
-                placeholder="name@example.com"
-                value={loginForm.email}
-                onChange={(e) =>
-                  setLoginForm((prev) => ({ ...prev, email: e.target.value }))
-                }
-                prefix={<FaEnvelope className="h-3.5 w-3.5 text-slate-400" />}
-              />
-            )}
 
-            {/* Input: Password */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {isBn ? "পাসওয়ার্ড" : "Password"}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={loginForm.password}
-                  onChange={(e) =>
-                    setLoginForm((prev) => ({ ...prev, password: e.target.value }))
-                  }
-                  placeholder="••••••••"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 pr-10 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary focus:outline-hidden shadow-2xs"
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 text-slate-400 hover:text-slate-600 rounded-md"
-                  aria-label="Toggle password visibility"
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className="h-3.5 w-3.5" />
-                  ) : (
-                    <FaEye className="h-3.5 w-3.5" />
-                  )}
-                </Button>
+              {/* Password Input */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-slate-700">
+                    {isBn ? "পাসওয়ার্ড *" : "Password *"}
+                  </label>
+                  <Link
+                    href="/reset-password"
+                    onClick={onClose}
+                    className="text-[11px] font-semibold text-primary hover:underline transition-colors"
+                  >
+                    {isBn ? "পাসওয়ার্ড ভুলে গেছেন?" : "Forgot Password?"}
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={loginForm.password}
+                    onChange={handleLoginChange}
+                    placeholder="••••••••"
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${errors.password ? "border-rose-500" : "border-slate-300"
+                      }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {errors.password}
+                  </p>
+                )}
               </div>
-            </div>
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              variant="primary"
-              size="default"
-              fullWidth
-              disabled={isLoggingIn}
-              className="gap-2 shadow-xs font-bold"
-            >
-              {isLoggingIn ? (
-                <>
-                  <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  <span>{isBn ? "যাচাই হচ্ছে..." : "Signing in..."}</span>
-                </>
-              ) : (
-                <>
-                  <span>{isBn ? "লগইন করুন" : "Sign In"}</span>
-                  <FaArrowRight className="h-3 w-3" />
-                </>
-              )}
-            </Button>
-
-            {/* Footer switch prompt */}
-            <div className="pt-2 text-center text-xs text-slate-500">
-              <span>
-                {isBn ? "অ্যাকাউন্ট নেই?" : "Don't have an account?"}{" "}
-              </span>
+              {/* Submit Button (Matching Login Page) */}
               <button
-                type="button"
-                onClick={() => handleTabChange("register")}
-                className="font-bold text-primary hover:underline cursor-pointer"
+                type="submit"
+                disabled={isLoggingIn}
+                className="w-full mt-2 flex items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary/90 transition-all disabled:opacity-60 cursor-pointer active:scale-98"
               >
-                {isBn ? "নতুন অ্যাকাউন্ট খুলুন" : "Create one now"}
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* 2. REGISTER TAB CONTENT */}
-        {activeTab === "register" && (
-          <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
-            <Input
-              label={isBn ? "পূর্ণ নাম" : "Full Name"}
-              required
-              type="text"
-              placeholder={isBn ? "আপনার পূর্ণ নাম" : "Enter your full name"}
-              value={registerForm.fullName}
-              onChange={(e) =>
-                setRegisterForm((prev) => ({ ...prev, fullName: e.target.value }))
-              }
-              prefix={<FaUser className="h-3.5 w-3.5 text-slate-400" />}
-            />
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {isBn ? "মোবাইল নম্বর" : "Phone Number"}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <div className="flex">
-                <span className="inline-flex items-center px-3.5 rounded-l-lg border border-r-0 border-slate-200 bg-slate-50 text-slate-600 text-xs font-mono font-bold select-none">
-                  +88
+                <span>
+                  {isLoggingIn
+                    ? isBn
+                      ? "লগইন হচ্ছে..."
+                      : "Verifying..."
+                    : isBn
+                      ? "লগইন করুন"
+                      : "Sign In"}
                 </span>
+                {isLoggingIn ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-3.5 w-3.5" />
+                )}
+              </button>
+            </form>
+
+            {/* Switch to Registration Link (No Tab - Matches Login Page button/link) */}
+            <div className="mt-6 pt-4 border-t border-slate-200 text-center">
+              <p className="text-xs text-slate-500">
+                {isBn ? "এখনও কোনো অ্যাকাউন্ট নেই? " : "Don't have an account? "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsRegisterView(true);
+                    setErrors({});
+                  }}
+                  className="font-bold text-primary hover:underline transition-colors ml-1 cursor-pointer"
+                >
+                  {isBn ? "এখানে নিবন্ধন করুন" : "Register here"}
+                </button>
+              </p>
+            </div>
+          </div>
+        ) : (
+          /* ========================================================= */
+          /* 2. REGISTRATION FORM VIEW (Switched smoothly, NO tabs)     */
+          /* ========================================================= */
+          <div>
+            {/* Header */}
+            <div className="mb-6 pr-8">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                {isBn ? "নতুন অ্যাকাউন্ট তৈরি করুন" : "Create an Account"}
+              </h2>
+
+            </div>
+
+            <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
+              {/* Full Name */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {isBn ? "পূর্ণ নাম *" : "Full Name *"}
+                </label>
+                <input
+                  type="text"
+                  name="fullName"
+                  value={registerForm.fullName}
+                  onChange={handleRegisterChange}
+                  placeholder={
+                    isBn ? "উদাঃ মোঃ আনোয়ার হোসেন" : "e.g. Md. Anwar Hossain"
+                  }
+                  className={`w-full rounded-lg border bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${errors.fullName ? "border-rose-500" : "border-slate-300"
+                    }`}
+                />
+                {errors.fullName && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {errors.fullName}
+                  </p>
+                )}
+              </div>
+
+              {/* Mobile Number */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {isBn ? "মোবাইল নম্বর *" : "Phone Number *"}
+                </label>
                 <input
                   type="tel"
+                  name="phone"
                   value={registerForm.phone}
-                  onChange={(e) =>
-                    setRegisterForm((prev) => ({ ...prev, phone: e.target.value }))
-                  }
-                  placeholder={isBn ? "০১XXXXXXXXX" : "01XXXXXXXXX"}
-                  className="flex-1 rounded-r-lg border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary focus:outline-hidden shadow-2xs"
+                  onChange={handleRegisterChange}
+                  placeholder="01XXXXXXXXX"
+                  className={`w-full rounded-lg border bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${errors.phone ? "border-rose-500" : "border-slate-300"
+                    }`}
                 />
+                {errors.phone && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {errors.phone}
+                  </p>
+                )}
               </div>
-            </div>
 
-            <Input
-              label={isBn ? "ইমেইল (ঐচ্ছিক)" : "Email (Optional)"}
-              type="email"
-              placeholder="name@example.com"
-              value={registerForm.email}
-              onChange={(e) =>
-                setRegisterForm((prev) => ({ ...prev, email: e.target.value }))
-              }
-              prefix={<FaEnvelope className="h-3.5 w-3.5 text-slate-400" />}
-            />
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                {isBn ? "পাসওয়ার্ড" : "Password"}{" "}
-                <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
+              {/* Email (Optional) */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {isBn ? "ইমেইল ঠিকানা (ঐচ্ছিক)" : "Email Address (Optional)"}
+                </label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  value={registerForm.password}
-                  onChange={(e) =>
-                    setRegisterForm((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }))
-                  }
-                  placeholder={isBn ? "কমপক্ষে ৬ অক্ষর" : "Minimum 6 characters"}
-                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 pr-10 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-primary focus:outline-hidden shadow-2xs"
+                  type="email"
+                  name="email"
+                  value={registerForm.email}
+                  onChange={handleRegisterChange}
+                  placeholder="name@example.com"
+                  className={`w-full rounded-lg border bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${errors.email ? "border-rose-500" : "border-slate-300"
+                    }`}
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowPassword((prev) => !prev)}
-                  className="absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 text-slate-400 hover:text-slate-600 rounded-md"
-                  aria-label="Toggle password visibility"
-                >
-                  {showPassword ? (
-                    <FaEyeSlash className="h-3.5 w-3.5" />
-                  ) : (
-                    <FaEye className="h-3.5 w-3.5" />
-                  )}
-                </Button>
+                {errors.email && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {errors.email}
+                  </p>
+                )}
               </div>
-            </div>
 
-            <Button
-              type="submit"
-              variant="primary"
-              size="default"
-              fullWidth
-              disabled={isRegistering}
-              className="gap-2 shadow-xs font-bold mt-2"
-            >
-              {isRegistering ? (
-                <>
-                  <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                  <span>{isBn ? "নিবন্ধন সম্পন্ন হচ্ছে..." : "Creating account..."}</span>
-                </>
-              ) : (
-                <>
-                  <span>{isBn ? "নিবন্ধন সম্পন্ন করুন" : "Complete Registration"}</span>
-                  <FaArrowRight className="h-3 w-3" />
-                </>
-              )}
-            </Button>
+              {/* Password */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  {isBn ? "পাসওয়ার্ড *" : "Password *"}
+                </label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={registerForm.password}
+                    onChange={handleRegisterChange}
+                    placeholder="••••••••"
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2 pr-10 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${errors.password ? "border-rose-500" : "border-slate-300"
+                      }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-[11px] font-medium text-rose-500">
+                    {errors.password}
+                  </p>
+                )}
+              </div>
 
-            {/* Footer switch prompt */}
-            <div className="pt-2 text-center text-xs text-slate-500">
-              <span>
-                {isBn ? "পূর্বেই অ্যাকাউন্ট আছে?" : "Already have an account?"}{" "}
-              </span>
+              {/* Submit Button */}
               <button
-                type="button"
-                onClick={() => handleTabChange("login")}
-                className="font-bold text-primary hover:underline cursor-pointer"
+                type="submit"
+                disabled={isRegistering}
+                className="w-full mt-2 flex items-center justify-center gap-2 rounded-lg bg-primary py-2.5 text-xs font-bold text-white shadow-md hover:bg-primary/90 transition-all disabled:opacity-60 cursor-pointer active:scale-98"
               >
-                {isBn ? "লগইন করুন" : "Sign in here"}
+                <span>
+                  {isRegistering
+                    ? isBn
+                      ? "নিবন্ধন হচ্ছে..."
+                      : "Creating Account..."
+                    : isBn
+                      ? "নিবন্ধন সম্পন্ন করুন"
+                      : "Create Account"}
+                </span>
+                {isRegistering ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <ArrowRight className="h-3.5 w-3.5" />
+                )}
               </button>
+            </form>
+
+            {/* Switch back to Login Link (No Tab - Matches Login Page format) */}
+            <div className="mt-6 pt-4 border-t border-slate-200 text-center">
+              <p className="text-xs text-slate-500">
+                {isBn ? "ইতিমধ্যে একটি অ্যাকাউন্ট আছে? " : "Already have an account? "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsRegisterView(false);
+                    setErrors({});
+                  }}
+                  className="font-bold text-primary hover:underline transition-colors ml-1 cursor-pointer"
+                >
+                  {isBn ? "লগইন করুন" : "Sign In"}
+                </button>
+              </p>
             </div>
-          </form>
+          </div>
         )}
-      </DialogBody>
+      </div>
     </Dialog>
   );
 }

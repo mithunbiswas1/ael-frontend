@@ -99,8 +99,8 @@ export default function LoginPage() {
       } catch (err) {
         toast.error(
           err?.data?.message ||
-            err?.data?.errors?.[0] ||
-            (isBn ? "লগইন ব্যর্থ হয়েছে। নম্বর/ইমেইল ও পাসওয়ার্ড যাচাই করুন।" : "Login failed. Please verify credentials.")
+          err?.data?.errors?.[0] ||
+          (isBn ? "লগইন ব্যর্থ হয়েছে। নম্বর/ইমেইল ও পাসওয়ার্ড যাচাই করুন।" : "Login failed. Please verify credentials.")
         );
       }
     },
@@ -151,11 +151,6 @@ export default function LoginPage() {
               <h2 className="text-xl font-black text-slate-900">
                 {isBn ? "অ্যাকাউন্টে লগইন করুন" : "Sign In to Your Account"}
               </h2>
-              <p className="mt-1 text-xs text-slate-500">
-                {isBn
-                  ? "আপনার ইমেইল অথবা মোবাইল নম্বর ও পাসওয়ার্ড দিয়ে লগইন করুন।"
-                  : "Enter your email or phone number and password to sign in."}
-              </p>
             </div>
 
             {/* Form */}
@@ -177,11 +172,10 @@ export default function LoginPage() {
                         ? "ইমেইল বা ফোন নম্বর (যেমন: name@example.com বা 01XXXXXXXXX)"
                         : "Enter email or phone (e.g. name@example.com or 01XXXXXXXXX)"
                     }
-                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
-                      formik.touched.identifier && formik.errors.identifier
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${formik.touched.identifier && formik.errors.identifier
                         ? "border-rose-500"
                         : "border-slate-300"
-                    }`}
+                      }`}
                   />
                 </div>
                 {formik.touched.identifier && formik.errors.identifier && (
@@ -212,11 +206,10 @@ export default function LoginPage() {
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     placeholder="••••••••"
-                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${
-                      formik.touched.password && formik.errors.password
+                    className={`w-full rounded-lg border bg-white px-3.5 py-2.5 pr-10 text-xs text-slate-900 placeholder:text-slate-400 shadow-2xs focus:border-primary focus:outline-hidden transition-all ${formik.touched.password && formik.errors.password
                         ? "border-rose-500"
                         : "border-slate-300"
-                    }`}
+                      }`}
                   />
                   <button
                     type="button"

@@ -39,7 +39,7 @@ export default async function CourseDetailPage({ params }) {
     redirect(`/courses/${course.slug}`);
   }
 
-  const isFree = course.price === 0;
+  const isFree = !course.price || Number(course.price) === 0;
 
   return (
     <main className="min-h-screen bg-slate-50">

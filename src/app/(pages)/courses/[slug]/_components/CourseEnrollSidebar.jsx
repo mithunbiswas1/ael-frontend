@@ -35,7 +35,17 @@ export default function CourseEnrollSidebar({ course, isFree }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-  const cid = course.courseId || course.id;
+  const isCourseFree =
+    isFree !== undefined
+      ? isFree
+      : Boolean(
+          course?.isFree === true ||
+          !course?.price ||
+          Number(course?.price) === 0 ||
+          String(course?.price).trim() === "0"
+        );
+
+  const cid = course?.courseId || course?._id || course?.id || course?.slug;
   const targetSlug = course.slug || cid;
   const title = isBn ? course.titleBn || course.title : course.title;
   const duration = isBn
@@ -71,7 +81,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
       return;
     }
 
-    if (!isFree) {
+    if (!isCourseFree) {
       setIsCheckoutModalOpen(true);
       return;
     }
@@ -83,17 +93,14 @@ export default function CourseEnrollSidebar({ course, isFree }) {
           ? "অভিনন্দন! আপনি সফলভাবে এই কোর্সে এনরোল করেছেন।"
           : "Successfully enrolled in this course!"
       );
-      router.push(`/courses/learn/${targetSlug}`);
-    } catch (err) {
-      toast.error(
-        err?.data?.message ||
-          (isBn ? "এনরোলমেন্ট ব্যর্থ হয়েছে।" : "Enrollment failed.")
-      );
+    } catch {
+      // Continue if already enrolled
     }
+    router.push(`/courses/learn/${targetSlug}`);
   };
 
   const handleAuthSuccess = () => {
-    if (!isFree) {
+    if (!isCourseFree) {
       setIsCheckoutModalOpen(true);
     } else {
       enrollCourse(cid)
@@ -106,8 +113,8 @@ export default function CourseEnrollSidebar({ course, isFree }) {
           );
           router.push(`/courses/learn/${targetSlug}`);
         })
-        .catch((err) => {
-          toast.error(err?.data?.message || "Enrollment failed.");
+        .catch(() => {
+          router.push(`/courses/learn/${targetSlug}`);
         });
     }
   };
@@ -195,10 +202,10 @@ export default function CourseEnrollSidebar({ course, isFree }) {
                   className="gap-2 font-bold"
                 >
                   <span>
-                    {isFree
+                    {isCourseFree
                       ? isBn
-                        ? "বিনামূল্যে ক্লাসরুমে যান"
-                        : "Enroll for Free"
+                        ? "ফ্রি ভর্তি"
+                        : "Start Free"
                       : isBn
                         ? `এখনই ভর্তি হন (৳ ${course.price})`
                         : `Enroll Now (৳ ${course.price})`}
@@ -207,7 +214,7 @@ export default function CourseEnrollSidebar({ course, isFree }) {
                 </Button>
 
                 {/* Free Module Preview Button for Premium Courses */}
-                {!isFree && (
+                {!isCourseFree && (
                   <Button
                     type="button"
                     variant="outline"
@@ -225,8 +232,8 @@ export default function CourseEnrollSidebar({ course, isFree }) {
                     <PlayCircle className="h-4 w-4 text-emerald-600" />
                     <span>
                       {isBn
-                        ? "১ম ফ্রি মডিউল দেখুন (রেজিস্ট্রেশন করলেই উন্মুক্ত)"
-                        : "Watch Free Module 1 (Sign Up to Stream)"}
+                        ? "১ম ফ্রি মডিউল দেখুন (লগইন করলেই উন্মুক্ত)"
+                        : "Watch Free Module 1 (Free Preview)"}
                     </span>
                   </Button>
                 )}

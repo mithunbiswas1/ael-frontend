@@ -19,7 +19,7 @@ export default async function CoursesPage({ searchParams }) {
   const initialSearch = resolvedSearchParams?.search || "";
 
   const [courses, cmsData] = await Promise.all([
-    getCourses({ priceType: initialPriceType, search: initialSearch }),
+    getCourses({ priceType: initialPriceType }),
     getPageContent("courses"),
   ]);
 
@@ -27,7 +27,6 @@ export default async function CoursesPage({ searchParams }) {
     <CoursesContent
       initialCourses={courses}
       initialPriceFilter={initialPriceType}
-      initialSearch={initialSearch}
       bannerData={cmsData?.banner || null}
     />
   );

@@ -8,6 +8,7 @@ import { getLocale, getDict } from "@/lib/i18n";
 import { DictionaryProvider } from "@/context/DictionaryContext";
 import ReduxProvider from "@/redux/redux-provider/ReduxProvider";
 import LanguageModal from "@/components/common/LanguageModal";
+import RouteScrollReset from "@/components/common/RouteScrollReset";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }) {
       >
         <ReduxProvider>
           <DictionaryProvider locale={locale} dict={dict}>
+            <RouteScrollReset />
             {children}
             <LanguageModal currentLocale={locale} />
             <Toaster position="top-center" richColors closeButton />

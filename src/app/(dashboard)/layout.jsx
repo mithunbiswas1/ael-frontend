@@ -28,6 +28,7 @@ const ROUTE_PERMISSION_MAP = [
   { prefix: "/admin/email", module: "email" },
   { prefix: "/admin/newsletter", module: "newsletter" },
   { prefix: "/admin/subscriptions", module: "subscriptions" },
+  { prefix: "/admin/coupons", module: "subscriptions" },
   { prefix: "/admin/pages/home", module: "pages_home" },
   { prefix: "/admin/pages/about", module: "pages_about" },
   { prefix: "/admin/pages/blogs", module: "pages_blogs" },

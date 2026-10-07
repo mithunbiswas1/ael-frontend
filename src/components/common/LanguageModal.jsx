@@ -195,7 +195,7 @@ export default function LanguageModal({ currentLocale = "en" }) {
     }, 120);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
       clearTimeout(timer);
     };

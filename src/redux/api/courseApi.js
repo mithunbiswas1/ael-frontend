@@ -155,6 +155,16 @@ export const courseApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Courses"],
     }),
+
+    // Subscriber: Submit Module Quiz & Gating
+    submitModuleQuiz: builder.mutation({
+      query: ({ courseId, data }) => ({
+        url: endpoints.courses.submitModuleQuiz(courseId),
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Courses"],
+    }),
   }),
 });
 
@@ -172,4 +182,5 @@ export const {
   useUploadCourseImageMutation,
   useUploadCoursePdfMutation,
   useUpdateCourseProgressMutation,
+  useSubmitModuleQuizMutation,
 } = courseApi;
