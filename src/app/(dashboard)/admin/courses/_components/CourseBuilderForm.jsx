@@ -369,10 +369,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
   };
 
   const removeModule = (index) => {
-    if (formData.curriculum.length <= 1) {
-      toast.error("At least one module is required for a course.");
-      return;
-    }
     setFormData((prev) => ({
       ...prev,
       curriculum: prev.curriculum.filter((_, idx) => idx !== index),
@@ -539,34 +535,93 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.title || !formData.title.trim()) {
-      toast.error("English course title is required.");
+    const titleEn = formData.title?.trim();
+    const titleBn = formData.titleBn?.trim();
+
+    if (!titleEn && !titleBn) {
+      toast.error("Course title is required.");
       setActiveTab("info");
       return;
     }
 
-    if (formData.curriculum.length === 0) {
-      toast.error("Please add at least one module with lessons.");
-      setActiveTab("modules");
-      return;
-    }
+    // Clean and sanitize curriculum modules
+    const cleanedCurriculum = (formData.curriculum || []).map((m, mIdx) => {
+      // Clean lessons
+      const cleanedLessons = (m.lessons || []).map((l, lIdx) => ({
+        ...l,
+        title: l.title?.trim() || l.titleBn?.trim() || `Lesson ${lIdx + 1}`,
+        titleBn: l.titleBn?.trim() || l.title?.trim() || `পাঠ ${lIdx + 1}`,
+        freePreview: formData.price === 0 || mIdx === 0 || Boolean(l.freePreview),
+      }));
+
+      // Filter and sanitize quiz questions
+      // Prune ghost questions that have no question text AND no options filled
+      const rawQuestions = m.quiz?.questions || [];
+      const cleanedQuestions = rawQuestions
+        .filter((q) => {
+          const hasQ = Boolean(q.question?.trim() || q.questionBn?.trim());
+          const hasAnyOpt =
+            Array.isArray(q.options) &&
+            q.options.some((opt) => opt && String(opt).trim());
+          return hasQ || hasAnyOpt;
+        })
+        .map((q) => {
+          const rawOptions = Array.isArray(q.options) ? q.options : [];
+          const rawOptionsBn = Array.isArray(q.optionsBn) ? q.optionsBn : [];
+          const options = [0, 1, 2, 3].map((i) =>
+            rawOptions[i] !== undefined && rawOptions[i] !== null ? String(rawOptions[i]) : ""
+          );
+          const optionsBn = [0, 1, 2, 3].map((i) =>
+            rawOptionsBn[i] !== undefined && rawOptionsBn[i] !== null ? String(rawOptionsBn[i]) : ""
+          );
+          return {
+            ...q,
+            question: q.question || "",
+            questionBn: q.questionBn || "",
+            options,
+            optionsBn,
+            correctAnswer: typeof q.correctAnswer === "number" ? q.correctAnswer : 0,
+            explanation: q.explanation || "",
+            explanationBn: q.explanationBn || "",
+          };
+        });
+
+      return {
+        ...m,
+        moduleTitle: m.moduleTitle?.trim() || m.moduleTitleBn?.trim() || `Module ${mIdx + 1}`,
+        moduleTitleBn: m.moduleTitleBn?.trim() || m.moduleTitle?.trim() || `মডিউল ${mIdx + 1}`,
+        isFree: formData.price === 0 || mIdx === 0 || Boolean(m.isFree),
+        lessons: cleanedLessons,
+        quiz: {
+          title: m.quiz?.title?.trim() || `Module ${mIdx + 1} Quiz`,
+          titleBn: m.quiz?.titleBn?.trim() || `মডিউল ${mIdx + 1} কুইজ`,
+          durationMinutes: Number(m.quiz?.durationMinutes) || 10,
+          passingScore: Number(m.quiz?.passingScore) || 70,
+          questions: cleanedQuestions,
+        },
+      };
+    });
+
+    const totalLessons = cleanedCurriculum.reduce(
+      (acc, m) => acc + (m.lessons?.length || 0),
+      0
+    );
+    const totalQuizzes = cleanedCurriculum.reduce(
+      (acc, m) => acc + (m.quiz?.questions?.length > 0 ? 1 : 0),
+      0
+    );
 
     const payload = {
       ...formData,
-      titleBn: formData.titleBn || formData.title,
-      descriptionBn: formData.descriptionBn || formData.description,
-      totalLessons: totalLessonsCount,
-      totalQuizzes: totalQuizzesCount,
+      title: titleEn || titleBn,
+      titleBn: titleBn || titleEn,
+      description: formData.description || formData.descriptionBn || "",
+      descriptionBn: formData.descriptionBn || formData.description || "",
+      totalLessons,
+      totalQuizzes,
       badge: formData.price > 0 ? "PREMIUM" : "FREE",
       badgeColor: formData.price > 0 ? "bg-amber-600" : "bg-emerald-600",
-      curriculum: formData.curriculum.map((m, mIdx) => ({
-        ...m,
-        isFree: formData.price === 0 || mIdx === 0,
-        lessons: (m.lessons || []).map((l) => ({
-          ...l,
-          freePreview: formData.price === 0 || mIdx === 0,
-        })),
-      })),
+      curriculum: cleanedCurriculum,
     };
 
     try {
@@ -576,7 +631,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
         toast.success("Course and modules updated successfully!");
       } else {
         await createCourse(payload).unwrap();
-        toast.success("Course with all modules & quizzes created successfully!");
+        toast.success("Course saved successfully!");
       }
       router.push("/admin/courses");
     } catch (err) {
@@ -754,7 +809,27 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
           {/* Modules List */}
           <div className="space-y-4">
-            {formData.curriculum.map((module, modIdx) => {
+            {(!formData.curriculum || formData.curriculum.length === 0) ? (
+              <div className="bg-white p-8 rounded-2xl border border-dashed border-slate-300 text-center space-y-3">
+                <div className="mx-auto w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                  <BookOpen className="h-6 w-6" />
+                </div>
+                <p className="text-sm font-semibold text-slate-700">No modules added yet</p>
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
+                  You can save this course draft now and add curriculum modules, video lessons, and quizzes later whenever you are ready.
+                </p>
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="sm"
+                  onClick={addModule}
+                  icon={Plus}
+                >
+                  Add First Module
+                </Button>
+              </div>
+            ) : (
+              formData.curriculum.map((module, modIdx) => {
               const isExpanded = expandedModules.has(modIdx);
               const lessonCount = module.lessons?.length || 0;
               const quizQuestionsCount = module.quiz?.questions?.length || 0;
@@ -852,7 +927,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
                         <Input
                           label="Module Title"
-                          required
                           value={module.moduleTitle}
                           onChange={(e) =>
                             updateModuleField(modIdx, "moduleTitle", e.target.value)
@@ -912,7 +986,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                               <div className="sm:col-span-2">
                                 <Input
                                   label="Lesson Title"
-                                  required
                                   size="sm"
                                   value={lesson.title}
                                   onChange={(e) =>
@@ -1184,7 +1257,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                           <Input
                             label="Quiz Title"
-                            required
                             size="sm"
                             value={module.quiz?.title || ""}
                             onChange={(e) => {
@@ -1196,7 +1268,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
                           <Input
                             label="কুইজের শিরোনাম"
-                            required
                             size="sm"
                             value={module.quiz?.titleBn || ""}
                             onChange={(e) => {
@@ -1331,7 +1402,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <Textarea
                                       label="Question Statement"
-                                      required
                                       rows={2}
                                       value={q.question || ""}
                                       onChange={(e) =>
@@ -1341,7 +1411,6 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                     />
                                     <Textarea
                                       label="প্রশ্ন"
-                                      required
                                       rows={2}
                                       value={q.questionBn || ""}
                                       onChange={(e) =>
@@ -1475,7 +1544,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                   )}
                 </div>
               );
-            })}
+            }))}
           </div>
 
           <div className="flex justify-center pt-2">
@@ -1503,14 +1572,12 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Course Title"
-              required
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="e.g. Master Industrial Fire & Gas Safety Compliance"
             />
             <Input
               label="কোর্সের শিরোনাম"
-              required
               value={formData.titleBn}
               onChange={(e) => setFormData({ ...formData, titleBn: e.target.value })}
               placeholder="যেমন: শিল্প কলকারখানা ও গৃহস্থালির অগ্নিনিরাপত্তা"
