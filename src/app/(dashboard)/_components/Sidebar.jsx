@@ -134,6 +134,12 @@ const ALL_ADMIN_NAV_ITEMS = [
     module: "users",
   },
   {
+    name: "Roles & Permissions",
+    href: "/admin/roles",
+    icon: FaShieldAlt,
+    module: "roles",
+  },
+  {
     name: "Contact Messages",
     href: "/admin/messages",
     icon: FaEnvelope,
@@ -280,12 +286,12 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
 
   const permissions = permData?.data?.permissions || [];
 
-  const isStaff = [
-    "super_admin",
-    "admin",
-    "instructor",
-    "course_admin",
-  ].includes(user?.role);
+  const isStaff =
+    user?.role === "super_admin" ||
+    user?.role === "admin" ||
+    user?.role === "instructor" ||
+    user?.role === "course_admin" ||
+    (Boolean(user?.role) && user?.role !== "user" && user?.role !== "subscriber");
 
   const isSubscriberOnly = !isStaff;
 
@@ -306,10 +312,11 @@ const Sidebar = ({ isMobileOpen, onMobileClose }) => {
     if (item.href === "/admin") {
       return permissions.some((p) => p.actions?.includes("view"));
     }
+    const norm = (s) => (s ? String(s).toLowerCase().replace(/[-_]/g, "") : "");
     const perm = permissions.find(
       (p) =>
         (p.page && p.page === item.href) ||
-        (item.module && p.module === item.module)
+        (item.module && norm(p.module) === norm(item.module))
     );
     return perm ? perm.actions?.includes("view") : false;
   };

@@ -82,9 +82,10 @@ function renderAccessiblePages(user) {
   const isSuperAdmin = user.role === "super_admin";
   const isAdmin = user.role === "admin";
   const isInstructor = user.role === "instructor" || user.role === "course_admin";
+  const isCustomStaff = Boolean(user.role) && user.role !== "user" && user.role !== "subscriber" && !isSuperAdmin && !isAdmin && !isInstructor;
 
-  // Only display page access pills for Admin and Instructor (and Super Admin)
-  if (!isSuperAdmin && !isAdmin && !isInstructor) {
+  // Only display page access pills for Admin, Instructor, and Custom Staff (and Super Admin)
+  if (!isSuperAdmin && !isAdmin && !isInstructor && !isCustomStaff) {
     return <span className="text-slate-300 text-xs font-mono">—</span>;
   }
 
@@ -247,7 +248,9 @@ export default function UserTable({
       </TableHeader>
       <TableBody>
         {users.map((user) => {
-          const roleClass = ROLE_BADGES[user.role] || ROLE_BADGES.customer;
+          const roleClass =
+            ROLE_BADGES[user.role] ||
+            "bg-amber-100 text-amber-800 border-amber-200";
           const initials = (user.fullName || user.userName || "U")
             .slice(0, 2)
             .toUpperCase();

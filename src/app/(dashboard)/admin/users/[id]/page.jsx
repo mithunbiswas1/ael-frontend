@@ -10,6 +10,7 @@ import {
   useGetUserByIdAdminQuery,
   useUpdateUserByAdminMutation,
 } from "@/redux/api/userApi";
+import { useGetRolesQuery } from "@/redux/api/roleApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
@@ -440,6 +441,8 @@ export default function UserPermissionsSlugPage() {
     refetch,
   } = useGetUserByIdAdminQuery(userId, { skip: !userId });
 
+  const { data: rolesData } = useGetRolesQuery();
+
   const [updateUser, { isLoading: isSaving }] = useUpdateUserByAdminMutation();
 
   const user = userData?.data;
@@ -449,6 +452,24 @@ export default function UserPermissionsSlugPage() {
   const [isActive, setIsActive] = useState(true);
   const [permissions, setPermissions] = useState([]);
   const [hasChanges, setHasChanges] = useState(false);
+
+  // Dynamic role options from DB
+  const dynamicRoleOptions = useMemo(() => {
+    const list =
+      rolesData?.data?.map((r) => ({
+        value: r.name,
+        label: r.label || r.name,
+      })) || ROLE_OPTIONS;
+
+    const result = [...list];
+    if (selectedRole && !result.some((r) => r.value === selectedRole)) {
+      result.push({
+        value: selectedRole,
+        label: selectedRole.replace(/_/g, " "),
+      });
+    }
+    return result;
+  }, [rolesData, selectedRole]);
 
   // Initialize state when user data is loaded
   useEffect(() => {
@@ -611,7 +632,18 @@ export default function UserPermissionsSlugPage() {
   // Load default preset pages for current role
   const handleLoadRoleDefaults = () => {
     if (isSuperAdminRole) return;
-    const defaultPages = ROLE_DEFAULT_PAGES[selectedRole] || [];
+    const roleInDb = rolesData?.data?.find((r) => r.name === selectedRole);
+    let defaultPages = ROLE_DEFAULT_PAGES[selectedRole] || [];
+
+    if (defaultPages.length === 0 && roleInDb?.permissions?.length) {
+      defaultPages = roleInDb.permissions.map((p) => ({
+        path: p.page || `/admin/${p.module}`,
+        module: p.module || "",
+        description: p.description || "",
+        actions: p.actions || ["view"],
+      }));
+    }
+
     if (defaultPages.length === 0) {
       toast.info(
         `No default presets defined for ${selectedRole}. You can customize pages freely.`
@@ -627,7 +659,7 @@ export default function UserPermissionsSlugPage() {
     }));
     setPermissions(mapped);
     toast.success(
-      `Loaded standard default pages for ${selectedRole.replace("_", " ")}`
+      `Loaded standard default pages for ${roleInDb?.label || selectedRole.replace("_", " ")}`
     );
   };
 
@@ -639,9 +671,23 @@ export default function UserPermissionsSlugPage() {
     if (newRole === "super_admin") {
       toast.info("Super Admin selected: Full master platform access granted.");
     } else {
-      toast.success(
-        `Switched to ${newRole.replace("_", " ")}. You can configure page permissions below.`
-      );
+      const roleInDb = rolesData?.data?.find((r) => r.name === newRole);
+      if (roleInDb?.permissions?.length) {
+        const mapped = roleInDb.permissions.map((p) => ({
+          page: p.page || `/admin/${p.module}`,
+          module: p.module || "",
+          description: p.description || "",
+          actions: p.actions || ["view"],
+        }));
+        setPermissions(mapped);
+        toast.success(
+          `Switched to ${roleInDb.label || newRole} with default permissions loaded.`
+        );
+      } else {
+        toast.success(
+          `Switched to ${newRole.replace("_", " ")}. You can configure page permissions below.`
+        );
+      }
     }
   };
 
@@ -805,7 +851,7 @@ export default function UserPermissionsSlugPage() {
                 <Select
                   value={selectedRole}
                   onChange={(e) => handleRoleChange(e.target.value)}
-                  options={ROLE_OPTIONS}
+                  options={dynamicRoleOptions}
                 />
               </div>
 

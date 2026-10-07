@@ -10,8 +10,9 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { Switch } from "@/components/ui/Switch";
 import { FaUserShield, FaSave, FaKey } from "react-icons/fa";
+import { useGetRolesQuery } from "@/redux/api/roleApi";
 
-const ROLE_OPTIONS = [
+const DEFAULT_ROLE_OPTIONS = [
   { value: "super_admin", label: "Super Admin" },
   { value: "admin", label: "Admin" },
   { value: "instructor", label: "Instructor" },
@@ -26,6 +27,8 @@ export default function UserEditModal({
   onSave,
   isUpdating,
 }) {
+  const { data: rolesData } = useGetRolesQuery();
+
   const [formData, setFormData] = useState({
     fullName: "",
     role: "user",
@@ -34,6 +37,20 @@ export default function UserEditModal({
     phone: "",
     description: "",
   });
+
+  const availableRoles = [
+    ...(rolesData?.data?.map((r) => ({
+      value: r.name,
+      label: r.label || r.name,
+    })) || DEFAULT_ROLE_OPTIONS),
+  ];
+
+  if (formData.role && !availableRoles.some((r) => r.value === formData.role)) {
+    availableRoles.push({
+      value: formData.role,
+      label: formData.role.replace(/_/g, " "),
+    });
+  }
 
   useEffect(() => {
     if (user) {
@@ -125,7 +142,7 @@ export default function UserEditModal({
           label="Assigned System Role"
           value={formData.role}
           onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-          options={ROLE_OPTIONS}
+          options={availableRoles}
           required
         />
 

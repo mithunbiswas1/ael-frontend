@@ -16,9 +16,11 @@ import { H2, P } from "@/components/ui/Typography";
 // Comprehensive route to module permission mapping
 const ROUTE_PERMISSION_MAP = [
   { prefix: "/admin/blogs", module: "blogs" },
+  { prefix: "/admin/market-updates", module: "market_updates" },
   { prefix: "/admin/courses", module: "courses" },
   { prefix: "/admin/certificates", module: "certificates" },
   { prefix: "/admin/users", module: "users" },
+  { prefix: "/admin/roles", module: "roles" },
   { prefix: "/admin/messages", module: "messages" },
   { prefix: "/admin/comments", module: "comments" },
   { prefix: "/admin/safety-guidelines", module: "safety_guidelines" },
@@ -74,12 +76,12 @@ function DashboardContent({ children }) {
   // Determine if current pathname requires access check
   let isAccessDenied = false;
 
-  const isStaff = [
-    "super_admin",
-    "admin",
-    "instructor",
-    "course_admin",
-  ].includes(user?.role);
+  const isStaff =
+    user?.role === "super_admin" ||
+    user?.role === "admin" ||
+    user?.role === "instructor" ||
+    user?.role === "course_admin" ||
+    (Boolean(user?.role) && user?.role !== "user" && user?.role !== "subscriber");
 
   if (isLoggedIn && !isSuperAdmin && pathname.startsWith("/admin")) {
     // Non-staff users cannot access any administrative routes
@@ -97,13 +99,14 @@ function DashboardContent({ children }) {
       const matched = sortedRules.find((r) => pathname.startsWith(r.prefix));
 
       if (matched) {
+        const norm = (s) => (s ? String(s).toLowerCase().replace(/[-_]/g, "") : "");
         const hasAccess = permissions.some((p) => {
           // Check page match
           if (p.page && (p.page === matched.prefix || pathname.startsWith(p.page))) {
             return p.actions?.includes("view");
           }
           // Check module match
-          if (p.module && p.module === matched.module) {
+          if (p.module && norm(p.module) === norm(matched.module)) {
             return p.actions?.includes("view");
           }
           return false;

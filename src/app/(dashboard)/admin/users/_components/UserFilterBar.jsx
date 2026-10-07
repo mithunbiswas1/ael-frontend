@@ -6,7 +6,9 @@ import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { Select } from "@/components/ui/Select";
 
-const ROLE_OPTIONS = [
+import { useGetRolesQuery } from "@/redux/api/roleApi";
+
+const DEFAULT_ROLE_OPTIONS = [
   { value: "ALL", label: "All Roles" },
   { value: "super_admin", label: "Super Admin" },
   { value: "admin", label: "Admin" },
@@ -22,6 +24,15 @@ export default function UserFilterBar({
   onRoleChange,
   totalUsers = 0,
 }) {
+  const { data: rolesData } = useGetRolesQuery();
+
+  const roleOptions = [
+    { value: "ALL", label: "All Roles" },
+    ...(rolesData?.data?.map((r) => ({
+      value: r.name,
+      label: r.label || r.name,
+    })) || DEFAULT_ROLE_OPTIONS.slice(1)),
+  ];
   return (
     <div className="space-y-4">
       {/* Header & Action */}
@@ -46,7 +57,7 @@ export default function UserFilterBar({
           <Select
             value={selectedRole}
             onChange={(e) => onRoleChange(e.target.value)}
-            options={ROLE_OPTIONS}
+            options={roleOptions}
             placeholder="Filter by role"
           />
         </div>
