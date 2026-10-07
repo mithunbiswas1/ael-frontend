@@ -232,14 +232,14 @@ export default function BannerEditorTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Textarea
-              label="Official Summary Description (English)"
+              label="Official Summary Description"
               rows={3}
               value={activeBanner.description || ""}
               onChange={(e) => updateField("description", e.target.value)}
               placeholder="Enter official English summary..."
             />
             <Textarea
-              label="অফিশিয়াল বিবরণ (বাংলা)"
+              label="অফিশিয়াল বিবরণ"
               rows={3}
               value={activeBanner.descriptionBn || ""}
               onChange={(e) => updateField("descriptionBn", e.target.value)}
@@ -304,7 +304,7 @@ export default function BannerEditorTab({
                       placeholder="e.g. Safe LPG Platform Infrastructure"
                     />
                     <Input
-                      label="ছবির বিবরণ (বাংলা)"
+                      label="ছবির বিবরণ"
                       value={activeBanner.imageAltBn || ""}
                       onChange={(e) => updateField("imageAltBn", e.target.value)}
                       placeholder="যেমন: নিরাপদ এলপিজি প্ল্যাটফর্ম"

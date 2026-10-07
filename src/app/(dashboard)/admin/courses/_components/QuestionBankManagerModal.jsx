@@ -341,7 +341,7 @@ export default function QuestionBankManagerModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input
-                    label="Question Text (English) *"
+                    label="Question Text *"
                     required
                     value={questionFormData.question}
                     onChange={(e) =>
@@ -351,7 +351,7 @@ export default function QuestionBankManagerModal({
                   />
 
                   <Input
-                    label="Question Text (Bangla)"
+                    label="প্রশ্নের বিবরণ"
                     value={questionFormData.questionBn}
                     onChange={(e) =>
                       setQuestionFormData((prev) => ({ ...prev, questionBn: e.target.value }))
@@ -411,7 +411,7 @@ export default function QuestionBankManagerModal({
                           nextOpts[oIdx].text = e.target.value;
                           setQuestionFormData((prev) => ({ ...prev, options: nextOpts }));
                         }}
-                        placeholder={`Option ${oIdx + 1} (EN)`}
+                        placeholder={`Option ${oIdx + 1}`}
                         className="flex-1 px-2.5 py-1 text-xs border border-slate-200 rounded focus:outline-none focus:border-primary"
                       />
 
@@ -423,7 +423,7 @@ export default function QuestionBankManagerModal({
                           nextOpts[oIdx].textBn = e.target.value;
                           setQuestionFormData((prev) => ({ ...prev, options: nextOpts }));
                         }}
-                        placeholder={`বিকল্প ${oIdx + 1} (BN)`}
+                        placeholder={`বিকল্প ${oIdx + 1}`}
                         className="flex-1 px-2.5 py-1 text-xs border border-slate-200 rounded focus:outline-none focus:border-primary"
                       />
 
@@ -447,7 +447,7 @@ export default function QuestionBankManagerModal({
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                   <Textarea
-                    label="Explanation / SOP Reference (English)"
+                    label="Explanation / SOP Reference"
                     rows={2}
                     value={questionFormData.explanation}
                     onChange={(e) =>
@@ -457,7 +457,7 @@ export default function QuestionBankManagerModal({
                   />
 
                   <Textarea
-                    label="Explanation (Bangla)"
+                    label="ব্যাখ্যার বিবরণ"
                     rows={2}
                     value={questionFormData.explanationBn}
                     onChange={(e) =>

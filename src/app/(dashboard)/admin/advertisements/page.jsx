@@ -31,6 +31,8 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import Input from "@/components/ui/Input";
+import { SearchInput } from "@/components/ui/SearchInput";
+import { DateInput } from "@/components/ui/DateInput";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { Switch } from "@/components/ui/Switch";
@@ -297,13 +299,18 @@ export default function AdminAdvertisementsPage() {
       {/* Filter Row */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
         <div className="w-full sm:w-72">
-          <Input
+          <SearchInput
             placeholder="Search by campaign title..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setPage(1);
             }}
+            onClear={() => {
+              setSearchTerm("");
+              setPage(1);
+            }}
+            size="sm"
           />
         </div>
 
@@ -790,18 +797,18 @@ export default function AdminAdvertisementsPage() {
           )}
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <Input
+            <DateInput
               label="Campaign Start Date"
-              type="date"
               value={formData.startDate}
               onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              max={formData.endDate || undefined}
             />
-            <Input
-              label="Campaign End Date *"
-              type="date"
+            <DateInput
+              label="Campaign End Date"
+              required
               value={formData.endDate}
               onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-              required
+              min={formData.startDate || undefined}
             />
           </div>
 

@@ -11,7 +11,6 @@ export default function BercMessagesEditorTab({ messages = [], onChange }) {
 
   const handleAdd = () => {
     const next = [
-      ...list,
       {
         id: `BERC-2026-${String(Date.now()).slice(-4)}`,
         slug: `BERC-2026-${String(Date.now()).slice(-4)}`,
@@ -24,6 +23,7 @@ export default function BercMessagesEditorTab({ messages = [], onChange }) {
         summary: "",
         summaryBn: "",
       },
+      ...list,
     ];
     onChange(next);
   };
@@ -99,13 +99,13 @@ export default function BercMessagesEditorTab({ messages = [], onChange }) {
                   placeholder="BERC-2026-01"
                 />
                 <Input
-                  label="Category / Tag (English)"
+                  label="Category / Tag"
                   value={item.tag || ""}
                   onChange={(e) => handleChange(idx, "tag", e.target.value)}
                   placeholder="Price Circular / Regulatory"
                 />
                 <Input
-                  label="ট্যাগ (বাংলা)"
+                  label="ট্যাগ"
                   value={item.tagBn || ""}
                   onChange={(e) => handleChange(idx, "tagBn", e.target.value)}
                   placeholder="মূল্য বিজ্ঞপ্তি / প্রবিধান"
@@ -120,13 +120,13 @@ export default function BercMessagesEditorTab({ messages = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
-                  label="Notice Headline (English)"
+                  label="Notice Headline"
                   value={item.title || ""}
                   onChange={(e) => handleChange(idx, "title", e.target.value)}
                   placeholder="Monthly LPG Price Revision Circular"
                 />
                 <Input
-                  label="বিজ্ঞপ্তির শিরোনাম (বাংলা)"
+                  label="বিজ্ঞপ্তির শিরোনাম"
                   value={item.titleBn || ""}
                   onChange={(e) => handleChange(idx, "titleBn", e.target.value)}
                   placeholder="মাসিক এলপিজি মূল্য সমন্বয় বিজ্ঞপ্তি"
@@ -135,14 +135,14 @@ export default function BercMessagesEditorTab({ messages = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Textarea
-                  label="Executive Summary (English)"
+                  label="Executive Summary"
                   rows={2}
                   value={item.summary || ""}
                   onChange={(e) => handleChange(idx, "summary", e.target.value)}
                   placeholder="Summary of circular guidelines and price revisions..."
                 />
                 <Textarea
-                  label="বিজ্ঞপ্তির সারসংক্ষেপ (বাংলা)"
+                  label="বিজ্ঞপ্তির সারসংক্ষেপ"
                   rows={2}
                   value={item.summaryBn || ""}
                   onChange={(e) => handleChange(idx, "summaryBn", e.target.value)}

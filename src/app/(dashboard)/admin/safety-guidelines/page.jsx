@@ -188,34 +188,15 @@ export default function SafetyGuidelinesListPage() {
     <PermissionGuard module="safety_guidelines" action="view">
       <div className="space-y-6">
         {/* Top Header */}
-        {/* Page Title & Action */}
         <AdminPageHeader
           icon={FaFilePdf}
           title="Safety Guidelines & Regulatory Authorities"
-          action={
-            <div className="flex items-center gap-2">
-              <Link
-                href="/safety-guidelines"
-                target="_blank"
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-slate-900 transition-colors"
-              >
-                <FaEye className="h-3.5 w-3.5" />
-                <span>View Live Page</span>
-              </Link>
-
-              <PermissionGuard module="safety_guidelines" action="create">
-                <Button
-                  onClick={() => router.push("/admin/safety-guidelines/add")}
-                  variant="primary"
-                  size="default"
-                  className="gap-2"
-                >
-                  <FaPlus className="h-3.5 w-3.5" />
-                  <span>Add New Entry</span>
-                </Button>
-              </PermissionGuard>
-            </div>
-          }
+          description="Manage official regulatory documents, government standards, and compliance gazettes."
+          secondaryActionLabel="View Live Page"
+          secondaryActionHref="/safety-guidelines"
+          secondaryActionIcon={FaEye}
+          actionLabel="Add New Entry"
+          actionHref="/admin/safety-guidelines/add"
         />
 
         {/* 4 Category Filter Bar */}

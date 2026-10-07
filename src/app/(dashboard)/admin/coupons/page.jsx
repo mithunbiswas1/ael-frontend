@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { AdminPageHeader } from "@/components/ui/AdminPageHeader";
 import { Button } from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import { Select } from "@/components/ui/Select";
+import { SearchInput } from "@/components/ui/SearchInput";
 import {
   Table,
   TableHeader,
@@ -40,6 +42,18 @@ import {
 } from "@/redux/api/couponApi";
 import CouponFormModal from "./_components/CouponFormModal";
 import CouponDetailsModal from "./_components/CouponDetailsModal";
+
+const TARGET_FILTER_OPTIONS = [
+  { value: "all", label: "All Targets" },
+  { value: "subscription", label: "Subscriptions Only" },
+  { value: "course", label: "Courses Only" },
+];
+
+const STATUS_FILTER_OPTIONS = [
+  { value: "all", label: "All Status" },
+  { value: "active", label: "Active Only" },
+  { value: "inactive", label: "Inactive Only" },
+];
 
 export default function AdminCouponsPage() {
   const [search, setSearch] = useState("");
@@ -125,21 +139,11 @@ export default function AdminCouponsPage() {
         icon={Tag}
         title="Discount Coupons & Vouchers"
         description="Create dynamic promotional codes, flat/percentage discounts, or grant 100% free lifetime access to any subscription or course."
-        action={
-          <Button
-            type="button"
-            variant="primary"
-            size="default"
-            onClick={() => {
-              setEditingCoupon(null);
-              setIsFormModalOpen(true);
-            }}
-            className="gap-2 font-bold"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Create Coupon / Voucher</span>
-          </Button>
-        }
+        actionLabel="Create Coupon / Voucher"
+        onActionClick={() => {
+          setEditingCoupon(null);
+          setIsFormModalOpen(true);
+        }}
       />
 
       {/* 2. Top Stats Overview Cards */}
@@ -184,46 +188,48 @@ export default function AdminCouponsPage() {
       {/* 3. Search & Filters Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 p-4 rounded-xl border border-slate-200 bg-white shadow-2xs">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-            <Input
-              type="text"
+          <div className="flex-1 max-w-sm">
+            <SearchInput
               placeholder="Search by code or title..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="pl-8 text-xs"
+              onClear={() => {
+                setSearch("");
+                setPage(1);
+              }}
+              size="sm"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <select
-              value={targetFilter}
-              onChange={(e) => {
-                setTargetFilter(e.target.value);
-                setPage(1);
-              }}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:border-primary focus:outline-none"
-            >
-              <option value="all">All Targets</option>
-              <option value="subscription">Subscriptions Only</option>
-              <option value="course">Courses Only</option>
-            </select>
+            <div className="w-40">
+              <Select
+                value={targetFilter}
+                onChange={(e) => {
+                  const val = typeof e === "object" ? e?.target?.value : e;
+                  setTargetFilter(val || "all");
+                  setPage(1);
+                }}
+                options={TARGET_FILTER_OPTIONS}
+                size="sm"
+              />
+            </div>
 
-            <select
-              value={statusFilter}
-              onChange={(e) => {
-                setStatusFilter(e.target.value);
-                setPage(1);
-              }}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:border-primary focus:outline-none"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active Only</option>
-              <option value="inactive">Inactive Only</option>
-            </select>
+            <div className="w-36">
+              <Select
+                value={statusFilter}
+                onChange={(e) => {
+                  const val = typeof e === "object" ? e?.target?.value : e;
+                  setStatusFilter(val || "all");
+                  setPage(1);
+                }}
+                options={STATUS_FILTER_OPTIONS}
+                size="sm"
+              />
+            </div>
           </div>
         </div>
 

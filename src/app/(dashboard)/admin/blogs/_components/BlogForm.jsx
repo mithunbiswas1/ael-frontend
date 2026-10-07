@@ -25,6 +25,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { Input } from "@/components/ui/Input";
+import SlugInput, { slugify } from "@/components/ui/SlugInput";
 import { Select } from "@/components/ui/Select";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 import DragDropUploadZone from "@/app/(dashboard)/_components/DragDropUploadZone";
@@ -160,25 +161,10 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
     setFormData((prev) => {
       const updates = { ...prev, titleEn: val };
       if (!isEdit && !prev.slug) {
-        updates.slug = val
-          .toLowerCase()
-          .trim()
-          .replace(/[^\w\s-]/g, "")
-          .replace(/\s+/g, "-");
+        updates.slug = slugify(val);
       }
       return updates;
     });
-  };
-
-  const handleGenerateSlug = () => {
-    const source = formData.titleEn || formData.titleBn || "article";
-    const generated = source
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/\s+/g, "-");
-    setFormData((prev) => ({ ...prev, slug: generated }));
-    toast.success("Slug generated from title");
   };
 
   const handleFileUpload = async (files) => {
@@ -363,31 +349,18 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
               />
             </div>
 
-            {/* URL Slug with Auto-generate helper */}
+            {/* URL Slug with SlugInput */}
             <div className="pt-2">
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-slate-700">
-                  URL Slug *
-                </label>
-                <Button
-                  type="button"
-                  variant="link"
-                  size="xs"
-                  onClick={handleGenerateSlug}
-                >
-                  Generate from Title
-                </Button>
-              </div>
-              <Input
+              <SlugInput
                 required
-                size="sm"
-                placeholder="lpg-safety-compliance-standards"
+                label="URL Slug"
                 value={formData.slug}
+                sourceValue={formData.titleEn || formData.titleBn}
+                prefix="/blogs/"
+                placeholder="lpg-safety-compliance-standards"
                 onChange={(e) =>
                   setFormData({ ...formData, slug: e.target.value })
                 }
-                prefix={<span className="font-mono text-xs text-slate-400">/blogs/</span>}
-                className="font-mono pl-16"
               />
             </div>
           </div>
@@ -410,7 +383,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-slate-100">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Card Short Summary (English)
+                  Card Short Summary
                 </label>
                 <textarea
                   rows={3}
@@ -424,7 +397,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  কার্ড সংক্ষিপ্ত বিবরণী (বাংলা)
+                  কার্ড সংক্ষিপ্ত বিবরণী
                 </label>
                 <textarea
                   rows={3}
@@ -623,7 +596,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
           {/* Publishing & Category Settings */}
           <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-2xs space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2">
-              Publishing Options / প্রকাশনা সেটিংস
+              Publishing Options
             </h3>
 
             {/* Publish Toggle */}
@@ -672,43 +645,34 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
             {/* Access Type: Free vs Paid */}
             <div className="pt-2 border-t border-slate-100 space-y-1.5">
               <label className="block text-xs font-bold text-slate-800">
-                Content Access Type / অ্যাক্সেস ধরন *
+                Content Access Type *
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, accessType: "free" })}
-                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                    formData.accessType === "free"
-                      ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-500/20"
-                      : "border-slate-200 bg-white hover:bg-slate-50"
-                  }`}
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${formData.accessType === "free"
+                    ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-500/20"
+                    : "border-slate-200 bg-white hover:bg-slate-50"
+                    }`}
                 >
-                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
-                    <span>Free (উন্মুক্ত)</span>
-                    {formData.accessType === "free" && (
-                      <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Open to all public visitors</p>
+                  <span className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                    Free
+                  </span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setFormData({ ...formData, accessType: "paid" })}
-                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                    formData.accessType === "paid"
-                      ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20"
-                      : "border-slate-200 bg-white hover:bg-slate-50"
-                  }`}
+                  className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${formData.accessType === "paid"
+                    ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20"
+                    : "border-slate-200 bg-white hover:bg-slate-50"
+                    }`}
                 >
-                  <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
-                    <span>Paid (সাবস্ক্রাইবার)</span>
-                    {formData.accessType === "paid" && (
-                      <span className="h-2 w-2 rounded-full bg-amber-500" />
-                    )}
-                  </div>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Subscribers & Admins only</p>
+                  <span className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                    Paid
+
+                  </span>
                 </button>
               </div>
             </div>
@@ -780,7 +744,7 @@ export default function BlogForm({ initialData = null, isEdit = false }) {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center justify-between">
-                  <span>Author / লেখক (Posting User)</span>
+                  <span>Author (Posting User)</span>
                   <span className="text-[10px] text-slate-400 font-normal">
                     Auto-assigned
                   </span>

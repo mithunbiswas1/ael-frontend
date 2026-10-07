@@ -11,7 +11,6 @@ export default function GlobalNewsEditorTab({ news = [], onChange }) {
 
   const handleAdd = () => {
     const next = [
-      ...list,
       {
         id: `GLOBAL-2026-${String(Date.now()).slice(-4)}`,
         slug: `GLOBAL-2026-${String(Date.now()).slice(-4)}`,
@@ -24,6 +23,7 @@ export default function GlobalNewsEditorTab({ news = [], onChange }) {
         summary: "",
         summaryBn: "",
       },
+      ...list,
     ];
     onChange(next);
   };
@@ -99,13 +99,13 @@ export default function GlobalNewsEditorTab({ news = [], onChange }) {
                   placeholder="GLOBAL-2026-01"
                 />
                 <Input
-                  label="Category / Tag (English)"
+                  label="Category / Tag"
                   value={item.tag || ""}
                   onChange={(e) => handleChange(idx, "tag", e.target.value)}
                   placeholder="Aramco CP / Freight"
                 />
                 <Input
-                  label="ট্যাগ (বাংলা)"
+                  label="ট্যাগ"
                   value={item.tagBn || ""}
                   onChange={(e) => handleChange(idx, "tagBn", e.target.value)}
                   placeholder="আরামকো সিপি / ফ্রেইট"
@@ -120,13 +120,13 @@ export default function GlobalNewsEditorTab({ news = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
-                  label="Headline (English)"
+                  label="Headline"
                   value={item.title || ""}
                   onChange={(e) => handleChange(idx, "title", e.target.value)}
                   placeholder="Saudi Aramco Sets Contract Price for June"
                 />
                 <Input
-                  label="শিরোনাম (বাংলা)"
+                  label="শিরোনাম"
                   value={item.titleBn || ""}
                   onChange={(e) => handleChange(idx, "titleBn", e.target.value)}
                   placeholder="জুন মাসের জন্য সৌদি আরামকো সিপি নির্ধারণ"
@@ -135,14 +135,14 @@ export default function GlobalNewsEditorTab({ news = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Textarea
-                  label="Market Analysis Summary (English)"
+                  label="Market Analysis Summary"
                   rows={2}
                   value={item.summary || ""}
                   onChange={(e) => handleChange(idx, "summary", e.target.value)}
                   placeholder="Propane set at $580/MT, Butane at $565/MT..."
                 />
                 <Textarea
-                  label="বাজার বিশ্লেষণের সারসংক্ষেপ (বাংলা)"
+                  label="বাজার বিশ্লেষণের সারসংক্ষেপ"
                   rows={2}
                   value={item.summaryBn || ""}
                   onChange={(e) => handleChange(idx, "summaryBn", e.target.value)}

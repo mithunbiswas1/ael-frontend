@@ -51,6 +51,10 @@ const buttonVariants = cva(
           "border border-primary/30 text-primary hover:bg-primary/10 bg-transparent",
         "outline-muted":
           "border border-slate-300 text-slate-700 bg-white hover:bg-slate-50",
+        "header-primary":
+          "bg-primary text-white hover:bg-secondary shadow-xs border border-transparent font-bold",
+        "header-outline":
+          "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:text-slate-900 shadow-2xs font-bold",
         "success-circle":
           "rounded-full border border-emerald-600 bg-emerald-600 text-white shadow-xs",
         "subtle-circle":

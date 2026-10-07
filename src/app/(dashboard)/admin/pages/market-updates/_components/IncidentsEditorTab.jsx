@@ -8,16 +8,16 @@ import { Textarea } from "@/components/ui/Textarea";
 import { H3, P } from "@/components/ui/Typography";
 
 const STATUS_OPTIONS = [
-  { value: "Resolved", label: "Resolved (সমাধানকৃত)" },
-  { value: "Under Investigation", label: "Under Investigation (তদন্তাধীন)" },
-  { value: "Pending Review", label: "Pending Review (পর্যালোচনার অপেক্ষায়)" },
+  { value: "Resolved", label: "Resolved" },
+  { value: "Under Investigation", label: "Under Investigation" },
+  { value: "Pending Review", label: "Pending Review" },
 ];
 
 const SEVERITY_OPTIONS = [
-  { value: "Low", label: "Low (নিম্ন)" },
-  { value: "Medium", label: "Medium (মাঝারি)" },
-  { value: "High", label: "High (উচ্চ)" },
-  { value: "Critical", label: "Critical (মারাত্মক)" },
+  { value: "Low", label: "Low" },
+  { value: "Medium", label: "Medium" },
+  { value: "High", label: "High" },
+  { value: "Critical", label: "Critical" },
 ];
 
 export default function IncidentsEditorTab({ incidents = [], onChange }) {
@@ -25,7 +25,6 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
 
   const handleAdd = () => {
     const next = [
-      ...list,
       {
         id: `INC-2026-${String(Date.now()).slice(-4)}`,
         type: "Leakage",
@@ -47,6 +46,7 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
         casualtiesBn: "০ হতাহত",
         investigationReport: `INQ-2026-${String(Date.now()).slice(-3)}`,
       },
+      ...list,
     ];
     onChange(next);
   };
@@ -125,7 +125,7 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
                   placeholder="May 20, 2026"
                 />
                 <Input
-                  label="তারিখ (বাংলা)"
+                  label="তারিখ"
                   value={item.dateBn || ""}
                   onChange={(e) => handleChange(idx, "dateBn", e.target.value)}
                   placeholder="২০ মে, ২০২৬"
@@ -140,13 +140,13 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <Input
-                  label="Incident Type (English)"
+                  label="Incident Type"
                   value={item.type || ""}
                   onChange={(e) => handleChange(idx, "type", e.target.value)}
                   placeholder="Leakage / Fire / Explosion"
                 />
                 <Input
-                  label="ধরণ (বাংলা)"
+                  label="ধরণ"
                   value={item.typeBn || ""}
                   onChange={(e) => handleChange(idx, "typeBn", e.target.value)}
                   placeholder="গ্যাস লিকেজ / অগ্নিকাণ্ড"
@@ -158,7 +158,7 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
                   placeholder="Dhaka / Chattogram"
                 />
                 <Input
-                  label="জেলা / বিভাগ (বাংলা)"
+                  label="জেলা / বিভাগ"
                   value={item.locationBn || ""}
                   onChange={(e) => handleChange(idx, "locationBn", e.target.value)}
                   placeholder="ঢাকা / চট্টগ্রাম"
@@ -190,13 +190,13 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Input
-                  label="Specific Location (English)"
+                  label="Specific Location"
                   value={item.specificLocation || ""}
                   onChange={(e) => handleChange(idx, "specificLocation", e.target.value)}
                   placeholder="e.g. Patenga Depot Area, Chattogram"
                 />
                 <Input
-                  label="নির্দিষ্ট অবস্থান (বাংলা)"
+                  label="নির্দিষ্ট অবস্থান"
                   value={item.specificLocationBn || ""}
                   onChange={(e) => handleChange(idx, "specificLocationBn", e.target.value)}
                   placeholder="যেমন: পতেঙ্গা ডিপো এলাকা, চট্টগ্রাম"
@@ -205,14 +205,14 @@ export default function IncidentsEditorTab({ incidents = [], onChange }) {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Textarea
-                  label="Incident Summary / Technical Findings (English)"
+                  label="Incident Summary / Technical Findings"
                   rows={2}
                   value={item.details || ""}
                   onChange={(e) => handleChange(idx, "details", e.target.value)}
                   placeholder="Describe technical events and control measures..."
                 />
                 <Textarea
-                  label="ঘটনার বিবরণ / কারিগরি ফলাফল (বাংলা)"
+                  label="ঘটনার বিবরণ / কারিগরি ফলাফল"
                   rows={2}
                   value={item.detailsBn || ""}
                   onChange={(e) => handleChange(idx, "detailsBn", e.target.value)}

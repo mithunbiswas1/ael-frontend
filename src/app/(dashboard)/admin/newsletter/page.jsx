@@ -139,6 +139,8 @@ export default function AdminNewsletterPage() {
       <AdminPageHeader
         icon={FaNewspaper}
         title="Newsletter Subscribers"
+        description="Manage active email newsletter subscribers, export subscriber lists, and manual registrations."
+        badge={`${subscribers.length} Active`}
         action={
           <div className="flex flex-wrap items-center gap-2.5">
             <Button

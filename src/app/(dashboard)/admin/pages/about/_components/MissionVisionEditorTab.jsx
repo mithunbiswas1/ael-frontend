@@ -186,7 +186,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. CORE FOUNDATION"
             />
             <Input
-              label="ট্যাগ (বাংলা)"
+              label="ট্যাগ"
               value={data?.tagBn || ""}
               onChange={(e) => updateField("tagBn", e.target.value)}
               placeholder="যেমন: মূল ভিত্তি"
@@ -201,7 +201,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. MISSION &"
             />
             <Input
-              label="শিরোনাম লাইন (বাংলা)"
+              label="শিরোনাম লাইন"
               value={data?.titleBn || ""}
               onChange={(e) => updateField("titleBn", e.target.value)}
               placeholder="যেমন: লক্ষ্য ও"
@@ -216,7 +216,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. VISION."
             />
             <Input
-              label="হাইলাইট শব্দ (বাংলা)"
+              label="হাইলাইট শব্দ"
               value={data?.accentBn || ""}
               onChange={(e) => updateField("accentBn", e.target.value)}
               placeholder="যেমন: উদ্দেশ্য।"
@@ -232,7 +232,7 @@ export default function MissionVisionEditorTab({
               placeholder="Enter section subtitle..."
             />
             <Textarea
-              label="সেকশন সাবটাইটেল (বাংলা)"
+              label="সেকশন সাবটাইটেল"
               rows={2}
               value={data?.subtitleBn || ""}
               onChange={(e) => updateField("subtitleBn", e.target.value)}
@@ -263,7 +263,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. OUR MISSION"
             />
             <Input
-              label="ব্যাজ লেবেল (বাংলা)"
+              label="ব্যাজ লেবেল"
               value={data?.missionBadgeBn || ""}
               onChange={(e) => updateField("missionBadgeBn", e.target.value)}
               placeholder="যেমন: আমাদের লক্ষ্য"
@@ -278,7 +278,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. Mission"
             />
             <Input
-              label="কার্ডের শিরোনাম (বাংলা)"
+              label="কার্ডের শিরোনাম"
               value={data?.missionHeadBn || ""}
               onChange={(e) => updateField("missionHeadBn", e.target.value)}
               placeholder="যেমন: মিশন"
@@ -294,7 +294,7 @@ export default function MissionVisionEditorTab({
               placeholder="Enter mission statement..."
             />
             <Textarea
-              label="মিশন বার্তা (বাংলা)"
+              label="মিশন বার্তা"
               rows={3}
               value={data?.missionBn || ""}
               onChange={(e) => updateField("missionBn", e.target.value)}
@@ -325,7 +325,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. OUR VISION"
             />
             <Input
-              label="ব্যাজ লেবেল (বাংলা)"
+              label="ব্যাজ লেবেল"
               value={data?.visionBadgeBn || ""}
               onChange={(e) => updateField("visionBadgeBn", e.target.value)}
               placeholder="যেমন: আমাদের ভিশন"
@@ -340,7 +340,7 @@ export default function MissionVisionEditorTab({
               placeholder="e.g. Vision"
             />
             <Input
-              label="কার্ডের শিরোনাম (বাংলা)"
+              label="কার্ডের শিরোনাম"
               value={data?.visionHeadBn || ""}
               onChange={(e) => updateField("visionHeadBn", e.target.value)}
               placeholder="যেমন: ভিশন"
@@ -356,7 +356,7 @@ export default function MissionVisionEditorTab({
               placeholder="Enter vision statement..."
             />
             <Textarea
-              label="ভিশন বার্তা (বাংলা)"
+              label="ভিশন বার্তা"
               rows={3}
               value={data?.visionBn || ""}
               onChange={(e) => updateField("visionBn", e.target.value)}

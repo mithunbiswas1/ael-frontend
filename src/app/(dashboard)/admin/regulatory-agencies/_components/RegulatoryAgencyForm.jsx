@@ -27,11 +27,11 @@ import {
 import { useUploadCoursePdfMutation } from "@/redux/api/courseApi";
 
 export const BADGE_COLOR_OPTIONS = [
-  { value: "bg-red-50 text-red-600 border-red-200", label: "Red Accent (বিস্ফোরক / জরুরি)" },
-  { value: "bg-amber-50 text-amber-600 border-amber-200", label: "Amber / Orange (ফায়ার সার্ভিস / সতর্কতা)" },
-  { value: "bg-emerald-50 text-emerald-600 border-emerald-200", label: "Emerald Green (অপারেটর অ্যাসোসিয়েশন)" },
-  { value: "bg-blue-50 text-blue-600 border-blue-200", label: "Blue Accent (জ্বালানি মন্ত্রণালয় / বিইআরসি)" },
-  { value: "bg-purple-50 text-purple-600 border-purple-200", label: "Purple Accent (স্ট্যান্ডার্ড / পলিসি)" },
+  { value: "bg-red-50 text-red-600 border-red-200", label: "Red Accent (DoE / Emergency)" },
+  { value: "bg-amber-50 text-amber-600 border-amber-200", label: "Amber / Orange (Fire Service / Caution)" },
+  { value: "bg-emerald-50 text-emerald-600 border-emerald-200", label: "Emerald Green (Operators Association)" },
+  { value: "bg-blue-50 text-blue-600 border-blue-200", label: "Blue Accent (Ministry / BERC)" },
+  { value: "bg-purple-50 text-purple-600 border-purple-200", label: "Purple Accent (Standards / Policy)" },
 ];
 
 export default function RegulatoryAgencyForm({ agencyId = null, isEdit = false }) {
@@ -237,7 +237,7 @@ export default function RegulatoryAgencyForm({ agencyId = null, isEdit = false }
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Full Official Name (English) *"
+                label="Full Official Name *"
                 value={formData.titleEn}
                 onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
                 placeholder="e.g. Department of Explosives"
@@ -245,7 +245,7 @@ export default function RegulatoryAgencyForm({ agencyId = null, isEdit = false }
               />
 
               <Input
-                label="পূর্ণ প্রাতিষ্ঠানিক নাম (বাংলা) *"
+                label="পূর্ণ প্রাতিষ্ঠানিক নাম *"
                 value={formData.titleBn}
                 onChange={(e) => setFormData({ ...formData, titleBn: e.target.value })}
                 placeholder="যেমন: বিস্ফোরক পরিদপ্তর"
@@ -264,7 +264,7 @@ export default function RegulatoryAgencyForm({ agencyId = null, isEdit = false }
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Authority Description (English)
+                  Authority Description
                 </label>
                 <textarea
                   value={formData.descEn}
@@ -277,7 +277,7 @@ export default function RegulatoryAgencyForm({ agencyId = null, isEdit = false }
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  কর্তৃপক্ষের বিবরণ (বাংলা)
+                  কর্তৃপক্ষের বিবরণ
                 </label>
                 <textarea
                   value={formData.descBn}

@@ -24,6 +24,9 @@ import {
 import Input from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
+import { Select } from "@/components/ui/Select";
+import { DateInput } from "@/components/ui/DateInput";
+import { SearchInput } from "@/components/ui/SearchInput";
 import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import {
   Table,
@@ -36,6 +39,16 @@ import {
 import Pagination from "@/components/ui/Pagination";
 import AssignSubscriptionModal from "./_components/AssignSubscriptionModal";
 import { cn } from "@/lib/cn";
+
+const PLAN_TIER_OPTIONS = [
+  { value: "all", label: "All Plans" },
+  { value: "consumer", label: "Consumer" },
+  { value: "dealer", label: "LPG Dealer" },
+  { value: "enterprise", label: "Enterprise" },
+  { value: "monthly", label: "Monthly" },
+  { value: "half_yearly", label: "Half Yearly" },
+  { value: "course_single", label: "Course Single" },
+];
 
 function AdminSubscriptionsContent() {
   const router = useRouter();
@@ -99,26 +112,15 @@ function AdminSubscriptionsContent() {
   return (
     <div className="space-y-6">
       {/* 1. Header with Direct Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-200 pb-5">
-        <AdminPageHeader
-          icon={CreditCard}
-          title="Subscribers & Transactions Ledger"
-          description="Real-time financial audit, subscriber ledger, automated invoice records, access grants, and payment refunds."
-        />
-
-        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto shrink-0">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setIsAssignModalOpen(true)}
-            icon={UserPlus}
-            className="shadow-2xs font-bold"
-          >
-            Grant Access to User
-          </Button>
-        </div>
-      </div>
+      <AdminPageHeader
+        icon={CreditCard}
+        title="Subscribers & Transactions Ledger"
+        description="Real-time financial audit, subscriber ledger, automated invoice records, access grants, and payment refunds."
+        actionLabel="Grant Access to User"
+        actionIcon={UserPlus}
+        actionVariant="header-outline"
+        onActionClick={() => setIsAssignModalOpen(true)}
+      />
 
       {/* 2. 4 Real-time KPI Metric Cards (Interactive quick-filters) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -346,56 +348,52 @@ function AdminSubscriptionsContent() {
         {/* Date-to-Date inputs, Search & Plan */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-end">
           {/* Search */}
-          <div className="relative sm:col-span-2">
+          <div className="sm:col-span-2">
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
               Search
             </label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <Input
-                type="text"
-                placeholder="Search by customer, phone, or TRX ID..."
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setSubPage(1);
-                }}
-                className="pl-8 h-9 text-xs w-full bg-slate-50 border-slate-200"
-              />
-            </div>
+            <SearchInput
+              placeholder="Search by customer, phone, or TRX ID..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setSubPage(1);
+              }}
+              onClear={() => {
+                setSearchQuery("");
+                setSubPage(1);
+              }}
+              size="sm"
+            />
           </div>
 
           {/* Start Date */}
           <div>
-            <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-              From Date
-            </label>
-            <input
-              type="date"
+            <DateInput
+              label="From Date"
               value={startDate}
               onChange={(e) => {
                 setStartDate(e.target.value);
                 setTimeRange("all");
                 setSubPage(1);
               }}
-              className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs font-medium text-slate-700 focus:border-primary focus:outline-hidden"
+              max={endDate || undefined}
+              size="sm"
             />
           </div>
 
           {/* End Date */}
           <div>
-            <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
-              To Date
-            </label>
-            <input
-              type="date"
+            <DateInput
+              label="To Date"
               value={endDate}
               onChange={(e) => {
                 setEndDate(e.target.value);
                 setTimeRange("all");
                 setSubPage(1);
               }}
-              className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs font-medium text-slate-700 focus:border-primary focus:outline-hidden"
+              min={startDate || undefined}
+              size="sm"
             />
           </div>
 
@@ -404,22 +402,16 @@ function AdminSubscriptionsContent() {
             <label className="block text-[10px] uppercase font-bold text-slate-400 mb-1">
               Plan Tier
             </label>
-            <select
+            <Select
               value={selectedPlan}
               onChange={(e) => {
-                setSelectedPlan(e.target.value);
+                const val = typeof e === "object" ? e?.target?.value : e;
+                setSelectedPlan(val || "all");
                 setSubPage(1);
               }}
-              className="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 px-2 text-xs font-medium text-slate-700 focus:border-primary focus:outline-hidden"
-            >
-              <option value="all">All Plans</option>
-              <option value="consumer">Consumer</option>
-              <option value="dealer">LPG Dealer</option>
-              <option value="enterprise">Enterprise</option>
-              <option value="monthly">Monthly</option>
-              <option value="half_yearly">Half Yearly</option>
-              <option value="course_single">Course Single</option>
-            </select>
+              options={PLAN_TIER_OPTIONS}
+              size="sm"
+            />
           </div>
         </div>
       </div>

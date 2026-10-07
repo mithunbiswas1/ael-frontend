@@ -81,7 +81,7 @@ export default function CertificateFormModal({
         {/* Recipient Information */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="Recipient Full Name (English) *"
+            label="Recipient Full Name *"
             value={formData.studentName}
             onChange={(e) =>
               setFormData({ ...formData, studentName: e.target.value })
@@ -112,7 +112,7 @@ export default function CertificateFormModal({
         {/* Course Details */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <Input
-            label="Course Curriculum Title (English) *"
+            label="Course Curriculum Title *"
             value={formData.courseTitle}
             onChange={(e) =>
               setFormData({ ...formData, courseTitle: e.target.value })

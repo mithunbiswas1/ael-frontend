@@ -146,7 +146,7 @@ export default function StatsEditorTab({
               placeholder="e.g. 25,000+"
             />
             <Input
-              label="পরিসংখ্যান মান (বাংলা)"
+              label="পরিসংখ্যান মান"
               value={data?.certifiedLearnersBn || ""}
               onChange={(e) => updateField("certifiedLearnersBn", e.target.value)}
               placeholder="যেমন: ২৫,০০০+"
@@ -155,13 +155,13 @@ export default function StatsEditorTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Label (English)"
+              label="Label"
               value={data?.certifiedLearnersLabel || ""}
               onChange={(e) => updateField("certifiedLearnersLabel", e.target.value)}
               placeholder="e.g. Certified Learners"
             />
             <Input
-              label="লেবেল (বাংলা)"
+              label="লেবেল"
               value={data?.certifiedLearnersLabelBn || ""}
               onChange={(e) => updateField("certifiedLearnersLabelBn", e.target.value)}
               placeholder="যেমন: প্রত্যয়িত প্রশিক্ষণার্থী"
@@ -191,7 +191,7 @@ export default function StatsEditorTab({
               placeholder="e.g. 64 Districts"
             />
             <Input
-              label="পরিসংখ্যান মান (বাংলা)"
+              label="পরিসংখ্যান মান"
               value={data?.districtsCoveredBn || ""}
               onChange={(e) => updateField("districtsCoveredBn", e.target.value)}
               placeholder="যেমন: ৬৪ জেলা"
@@ -200,13 +200,13 @@ export default function StatsEditorTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Label (English)"
+              label="Label"
               value={data?.districtsCoveredLabel || ""}
               onChange={(e) => updateField("districtsCoveredLabel", e.target.value)}
               placeholder="e.g. Districts Covered"
             />
             <Input
-              label="লেবেল (বাংলা)"
+              label="লেবেল"
               value={data?.districtsCoveredLabelBn || ""}
               onChange={(e) => updateField("districtsCoveredLabelBn", e.target.value)}
               placeholder="যেমন: দেশব্যাপী কভারেজ"
@@ -236,7 +236,7 @@ export default function StatsEditorTab({
               placeholder="e.g. 92%"
             />
             <Input
-              label="পরিসংখ্যান মান (বাংলা)"
+              label="পরিসংখ্যান মান"
               value={data?.incidentReductionBn || ""}
               onChange={(e) => updateField("incidentReductionBn", e.target.value)}
               placeholder="যেমন: ৯২%"
@@ -245,13 +245,13 @@ export default function StatsEditorTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Label (English)"
+              label="Label"
               value={data?.incidentReductionLabel || ""}
               onChange={(e) => updateField("incidentReductionLabel", e.target.value)}
               placeholder="e.g. Risk Mitigation"
             />
             <Input
-              label="লেবেল (বাংলা)"
+              label="লেবেল"
               value={data?.incidentReductionLabelBn || ""}
               onChange={(e) => updateField("incidentReductionLabelBn", e.target.value)}
               placeholder="যেমন: ঝুঁকি হ্রাস সূচক"
@@ -281,7 +281,7 @@ export default function StatsEditorTab({
               placeholder="e.g. 15+"
             />
             <Input
-              label="পরিসংখ্যান মান (বাংলা)"
+              label="পরিসংখ্যান মান"
               value={data?.partnerOrganizationsBn || ""}
               onChange={(e) => updateField("partnerOrganizationsBn", e.target.value)}
               placeholder="যেমন: ১৫+"
@@ -290,13 +290,13 @@ export default function StatsEditorTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
-              label="Label (English)"
+              label="Label"
               value={data?.partnerOrganizationsLabel || ""}
               onChange={(e) => updateField("partnerOrganizationsLabel", e.target.value)}
               placeholder="e.g. Partner Regulators"
             />
             <Input
-              label="লেবেল (বাংলা)"
+              label="লেবেল"
               value={data?.partnerOrganizationsLabelBn || ""}
               onChange={(e) => updateField("partnerOrganizationsLabelBn", e.target.value)}
               placeholder="যেমন: সহযোগী নিয়ন্ত্রক সংস্থা"

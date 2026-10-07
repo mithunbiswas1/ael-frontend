@@ -4,12 +4,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import { FaImage, FaAward, FaFilePdf, FaBuilding, FaArrowRight } from "react-icons/fa";
+import { FaImage, FaFilePdf, FaArrowRight } from "react-icons/fa";
 import PageConfigShell from "../_components/PageConfigShell";
 import BannerEditorTab from "../_components/BannerEditorTab";
-import StandardsEditorTab from "./_components/StandardsEditorTab";
-import DocumentsEditorTab from "./_components/DocumentsEditorTab";
-import AgenciesEditorTab from "./_components/AgenciesEditorTab";
 import {
   useGetPageByKeyQuery,
   useUpdatePageByKeyMutation,
@@ -34,11 +31,7 @@ export default function AdminSafetyGuidelinesPage() {
       imageAlt: "",
       imageAltBn: "",
     },
-    sections: {
-      standardsList: [],
-      documentDownloads: [],
-      regulatoryAgencies: [],
-    },
+    sections: {},
   });
 
   useEffect(() => {
@@ -58,12 +51,7 @@ export default function AdminSafetyGuidelinesPage() {
           imageAlt: pageData.data.banner?.imageAlt || "",
           imageAltBn: pageData.data.banner?.imageAltBn || "",
         },
-        sections: {
-          standardsList: pageData.data.sections?.standardsList || [],
-          documentDownloads: pageData.data.sections?.documentDownloads || [],
-          regulatoryAgencies: pageData.data.sections?.regulatoryAgencies || [],
-          ...(pageData.data.sections || {}),
-        },
+        sections: pageData.data.sections || prev.sections || {},
       }));
     }
   }, [pageData]);
@@ -75,7 +63,7 @@ export default function AdminSafetyGuidelinesPage() {
         pageKey: "safety-guidelines",
         data: cleanFormData,
       }).unwrap();
-      toast.success("Safety guidelines configuration updated successfully!");
+      toast.success("Safety guidelines banner configuration updated successfully!");
     } catch (err) {
       toast.error(err?.data?.message || err?.message || "Failed to update safety guidelines");
     }
@@ -83,16 +71,13 @@ export default function AdminSafetyGuidelinesPage() {
 
   const tabs = [
     { id: "banner", label: "Hero Banner", icon: FaImage },
-    { id: "standards", label: "Standards List", icon: FaAward },
-    { id: "documents", label: "Guidelines & Downloads", icon: FaFilePdf },
-    { id: "agencies", label: "Regulatory Authorities", icon: FaBuilding },
   ];
 
   return (
     <PageConfigShell
       pageKey="safety-guidelines"
       title="Safety Guidelines Configuration"
-      subtitle="Manage hero banner, ISO/NFPA standards, downloadable manuals, and regulatory authorities displayed on the public safety guidelines page."
+      subtitle="Configure hero banner presentation for the public safety guidelines page."
       previewUrl="/safety-guidelines"
       tabs={tabs}
       activeTab={activeTab}
@@ -134,42 +119,6 @@ export default function AdminSafetyGuidelinesPage() {
           }
           previewBreadcrumb="Safety Guidelines"
           previewBreadcrumbBn="নিরাপত্তা নির্দেশিকা"
-        />
-      )}
-
-      {activeTab === "standards" && (
-        <StandardsEditorTab
-          standards={formData.sections?.standardsList}
-          onChange={(newList) =>
-            setFormData((prev) => ({
-              ...prev,
-              sections: { ...prev.sections, standardsList: newList },
-            }))
-          }
-        />
-      )}
-
-      {activeTab === "documents" && (
-        <DocumentsEditorTab
-          documents={formData.sections?.documentDownloads}
-          onChange={(newDocs) =>
-            setFormData((prev) => ({
-              ...prev,
-              sections: { ...prev.sections, documentDownloads: newDocs },
-            }))
-          }
-        />
-      )}
-
-      {activeTab === "agencies" && (
-        <AgenciesEditorTab
-          agencies={formData.sections?.regulatoryAgencies}
-          onChange={(newAgencies) =>
-            setFormData((prev) => ({
-              ...prev,
-              sections: { ...prev.sections, regulatoryAgencies: newAgencies },
-            }))
-          }
         />
       )}
     </PageConfigShell>

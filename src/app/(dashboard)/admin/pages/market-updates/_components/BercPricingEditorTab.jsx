@@ -41,13 +41,13 @@ export default function BercPricingEditorTab({ pricing = {}, onChange }) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input
-          label="Effective Cycle / Month (English)"
+          label="Effective Cycle / Month"
           value={data.effectiveMonth || ""}
           onChange={(e) => handleChange("effectiveMonth", e.target.value)}
           placeholder="e.g. Current Month / June 2026"
         />
         <Input
-          label="কার্যকর মাস / সময়কাল (বাংলা)"
+          label="কার্যকর মাস / সময়কাল"
           value={data.effectiveMonthBn || ""}
           onChange={(e) => handleChange("effectiveMonthBn", e.target.value)}
           placeholder="যেমন: চলতি মাস / জুন ২০২৬"

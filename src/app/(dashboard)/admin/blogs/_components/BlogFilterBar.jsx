@@ -35,10 +35,10 @@ export default function BlogFilterBar({
   }
 
   const categoryOptions = [
-    { value: "all", label: "All Categories / সকল ক্যাটাগরি" },
+    { value: "all", label: "All Categories" },
     ...merged.map((c) => ({
       value: c.slug || c.id,
-      label: `${c.labelEn || c.nameEn} (${c.labelBn || c.nameBn})`,
+      label: c.labelEn || c.nameEn,
     })),
   ];
 
@@ -48,8 +48,9 @@ export default function BlogFilterBar({
       <AdminPageHeader
         icon={FaNewspaper}
         title="Blog & Article Management"
+        description="Publish editorial insights, LPG technical articles, and safety analyses."
         actionLabel="Write New Article"
-        onActionClick={handleCreate}
+        actionHref="/admin/blogs/add"
       />
 
       {/* Search and Category Filter */}

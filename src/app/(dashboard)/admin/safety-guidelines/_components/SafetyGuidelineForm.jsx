@@ -32,37 +32,36 @@ import {
 import { useUploadCoursePdfMutation } from "@/redux/api/courseApi";
 
 export const STAKEHOLDER_CATEGORIES = [
-  { value: "investors", label: "Investors (শিল্প কারখানা ও বিনিয়োগকারী)" },
-  { value: "dealer", label: "Dealer (এলপিজি রিটেইলার ও ডিলার)" },
-  { value: "distributor", label: "Distributor (পরিবেশক ও পরিবহনকারী)" },
-  { value: "customer", label: "Customer (গৃহস্থালি ও সাধারণ ভোক্তা)" },
-  { value: "all", label: "All Stakeholders (সকল অংশীজন)" },
+  { value: "investors", label: "Investors" },
+  { value: "dealer", label: "Dealer" },
+  { value: "distributor", label: "Distributor" },
+  { value: "customer", label: "Customer" },
 ];
 
 export const CONTENT_TYPE_OPTIONS = [
   {
     value: "guideline",
-    label: "Safety Guidelines & Manuals (নিরাপত্তা নির্দেশিকা ও ম্যানুয়াল)",
+    label: "Safety Guidelines & Manuals",
     description: "Downloadable SOPs, compliance guidelines and technical manuals.",
   },
   {
     value: "agency",
-    label: "Regulatory Agencies & Authorities (নিয়ন্ত্রক কর্তৃপক্ষ ও অধিদপ্তর)",
+    label: "Regulatory Agencies & Authorities",
     description: "Official government regulatory bodies, ministry portals & circulars.",
   },
 ];
 
 export const ACCESS_OPTIONS = [
-  { value: "Public", label: "Public Access (সবার জন্য উন্মুক্ত)" },
-  { value: "Login Required", label: "Login Required (নিবন্ধিত ব্যবহারকারীদের জন্য)" },
+  { value: "Public", label: "Public Access" },
+  { value: "Login Required", label: "Login Required" },
 ];
 
 export const BADGE_COLOR_OPTIONS = [
-  { value: "bg-blue-50 text-blue-700 border-blue-200", label: "Blue Accent (বিইআরসি / জ্বালানি মন্ত্রণালয়)" },
-  { value: "bg-red-50 text-red-700 border-red-200", label: "Red Accent (বিস্ফোরক পরিদপ্তর / জরুরি)" },
-  { value: "bg-amber-50 text-amber-700 border-amber-200", label: "Amber / Orange (ফায়ার সার্ভিস ও সিভিল ডিফেন্স)" },
-  { value: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Emerald Green (অপারেটর অ্যাসোসিয়েশন / লোয়াব)" },
-  { value: "bg-purple-50 text-purple-700 border-purple-200", label: "Purple Accent (নীতিমালা / আন্তর্জাতিক গবেষণা)" },
+  { value: "bg-blue-50 text-blue-700 border-blue-200", label: "Blue Accent (BERC / Ministry)" },
+  { value: "bg-red-50 text-red-700 border-red-200", label: "Red Accent (DoE / Emergency)" },
+  { value: "bg-amber-50 text-amber-700 border-amber-200", label: "Amber / Orange (Fire Service)" },
+  { value: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Emerald Green (LOAB / Operators)" },
+  { value: "bg-purple-50 text-purple-700 border-purple-200", label: "Purple Accent (Standards / Research)" },
 ];
 
 export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdit = false }) {
@@ -81,15 +80,13 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
   // Unified Form State
   const [formData, setFormData] = useState({
     id: activeId || (contentType === "agency" ? `agency-${Date.now()}` : Date.now()),
-    category: "investors", // 4 categories: investors, dealer, distributor, customer (or all)
+    category: "investors", // 4 categories: investors, dealer, distributor, customer
 
     // Fields for "Safety Guidelines & Manuals"
     nameEn: "",
     nameBn: "",
     access: "Public",
     formatType: "PDF",
-    descriptionEn: "",
-    descriptionBn: "",
 
     // Fields for "Regulatory Agencies & Authorities"
     agencyName: "", // e.g., BERC, DoE, FSCD
@@ -119,13 +116,11 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
         setContentType("guideline");
         setFormData({
           id: foundDoc.id,
-          category: foundDoc.targetTab || "all",
+          category: foundDoc.targetTab || "investors",
           nameEn: foundDoc.nameEn || "",
           nameBn: foundDoc.nameBn || "",
           access: foundDoc.access || "Public",
           formatType: foundDoc.type || "PDF",
-          descriptionEn: foundDoc.descriptionEn || "",
-          descriptionBn: foundDoc.descriptionBn || "",
           agencyName: "",
           titleEn: "",
           titleBn: "",
@@ -146,13 +141,11 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
         setContentType("agency");
         setFormData({
           id: foundAgency.id,
-          category: foundAgency.targetTab || "all",
+          category: foundAgency.targetTab || "investors",
           nameEn: "",
           nameBn: "",
           access: "Public",
           formatType: "PDF",
-          descriptionEn: "",
-          descriptionBn: "",
           agencyName: foundAgency.name || "",
           titleEn: foundAgency.titleEn || "",
           titleBn: foundAgency.titleBn || "",
@@ -281,14 +274,12 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
           itemType: "guideline",
           nameEn: (formData.nameEn || "").trim(),
           nameBn: (formData.nameBn || "").trim(),
-          targetTab: formData.category || "all", // investors, dealer, distributor, customer, all
+          targetTab: formData.category || "investors", // investors, dealer, distributor, customer
           type: formData.formatType || "PDF",
           access: formData.access || "Public",
           fileName: formData.fileName || "",
           pdfUrl: formData.pdfUrl || "",
           pdfSize: formData.pdfSize || "",
-          descriptionEn: (formData.descriptionEn || "").trim(),
-          descriptionBn: (formData.descriptionBn || "").trim(),
         };
 
         if (isEdit) {
@@ -311,7 +302,7 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
           name: (formData.agencyName || "").trim(),
           titleEn: (formData.titleEn || "").trim(),
           titleBn: (formData.titleBn || "").trim(),
-          targetTab: formData.category || "all", // investors, dealer, distributor, customer, all
+          targetTab: formData.category || "investors", // investors, dealer, distributor, customer
           descEn: (formData.descEn || "").trim(),
           descBn: (formData.descBn || "").trim(),
           badgeBg: formData.badgeBg || "bg-blue-50 text-blue-700 border-blue-200",
@@ -560,39 +551,6 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
                     }
                     placeholder="PDF, DOCX, ZIP"
                     className="text-xs font-semibold uppercase"
-                  />
-                </div>
-              </div>
-
-              {/* Descriptions */}
-              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Overview / Notes
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="Brief description of the guideline, applicable regulations, or target audience..."
-                    value={formData.descriptionEn}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, descriptionEn: e.target.value }))
-                    }
-                    className="w-full rounded-lg border border-slate-200 p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5 font-bengali">
-                    সংক্ষিপ্ত বিবরণ
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder="নির্দেশিকার সংক্ষিপ্ত বিবরণ বা পালনীয় নিয়মাবলী..."
-                    value={formData.descriptionBn}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, descriptionBn: e.target.value }))
-                    }
-                    className="w-full rounded-lg border border-slate-200 p-2.5 text-xs font-bengali text-slate-800 placeholder-slate-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                   />
                 </div>
               </div>

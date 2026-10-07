@@ -46,7 +46,6 @@ export default function TrainersEditorTab({
 
   const addTrainer = () => {
     const updated = [
-      ...trainersList,
       {
         name: "",
         nameBn: "",
@@ -56,6 +55,7 @@ export default function TrainersEditorTab({
         bioBn: "",
         imageUrl: "",
       },
+      ...trainersList,
     ];
     onChange({
       ...data,
@@ -249,7 +249,7 @@ export default function TrainersEditorTab({
               placeholder="e.g. CONSULTATION POOL"
             />
             <Input
-              label="ট্যাগ (বাংলা)"
+              label="ট্যাগ"
               value={data?.tagBn || ""}
               onChange={(e) => updateField("tagBn", e.target.value)}
               placeholder="যেমন: পরামর্শক প্যানেল"
@@ -264,7 +264,7 @@ export default function TrainersEditorTab({
               placeholder="e.g. EXPERT TRAINERS"
             />
             <Input
-              label="প্রধান শিরোনাম (বাংলা)"
+              label="প্রধান শিরোনাম"
               value={data?.titleBn || ""}
               onChange={(e) => updateField("titleBn", e.target.value)}
               placeholder="যেমন: প্রশিক্ষকবৃন্দ"
@@ -280,7 +280,7 @@ export default function TrainersEditorTab({
               placeholder="Enter section subtitle..."
             />
             <Textarea
-              label="সেকশন সাবটাইটেল (বাংলা)"
+              label="সেকশন সাবটাইটেল"
               rows={2}
               value={data?.subtitleBn || ""}
               onChange={(e) => updateField("subtitleBn", e.target.value)}
@@ -416,7 +416,7 @@ export default function TrainersEditorTab({
                       placeholder="e.g. Engr. Md. Shafiqul Islam"
                     />
                     <Input
-                      label="প্রশিক্ষকের নাম (বাংলা)"
+                      label="প্রশিক্ষকের নাম"
                       value={trainer.nameBn || ""}
                       onChange={(e) => updateTrainer(idx, "nameBn", e.target.value)}
                       placeholder="যেমন: ইঞ্জি. মোঃ শফিকুল ইসলাম"
@@ -431,7 +431,7 @@ export default function TrainersEditorTab({
                       placeholder="e.g. Safety & Risk Management"
                     />
                     <Input
-                      label="পদবি / বিশেষজ্ঞ ক্ষেত্র (বাংলা)"
+                      label="পদবি / বিশেষজ্ঞ ক্ষেত্র"
                       value={trainer.roleBn || ""}
                       onChange={(e) => updateTrainer(idx, "roleBn", e.target.value)}
                       placeholder="যেমন: নিরাপত্তা ও ঝুঁকি ব্যবস্থাপনা"
@@ -448,7 +448,7 @@ export default function TrainersEditorTab({
                       placeholder="Enter short biography..."
                     />
                     <Textarea
-                      label="সংক্ষিপ্ত জীবনী / পরিচিতি (বাংলা)"
+                      label="সংক্ষিপ্ত জীবনী / পরিচিতি"
                       rows={2}
                       value={trainer.bioBn || ""}
                       onChange={(e) => updateTrainer(idx, "bioBn", e.target.value)}

@@ -29,13 +29,13 @@ export default function WhoWeAreEditorTab({
 
   const addFeature = () => {
     const updated = [
-      ...featuresList,
       {
         title: "",
         titleBn: "",
         desc: "",
         descBn: "",
       },
+      ...featuresList,
     ];
     onChange({
       ...data,
@@ -213,7 +213,7 @@ export default function WhoWeAreEditorTab({
               placeholder="e.g. WHO WE ARE"
             />
             <Input
-              label="ট্যাগ (বাংলা)"
+              label="ট্যাগ"
               value={data?.tagBn || ""}
               onChange={(e) => updateField("tagBn", e.target.value)}
               placeholder="যেমন: আমরা কারা"
@@ -228,7 +228,7 @@ export default function WhoWeAreEditorTab({
               placeholder="e.g. DEDICATED TO"
             />
             <Input
-              label="প্রধান শিরোনাম (বাংলা)"
+              label="প্রধান শিরোনাম"
               value={data?.titleBn || ""}
               onChange={(e) => updateField("titleBn", e.target.value)}
               placeholder="যেমন: নিবেদিত"
@@ -243,7 +243,7 @@ export default function WhoWeAreEditorTab({
               placeholder="e.g. LPG SAFETY."
             />
             <Input
-              label="হাইলাইট শব্দ (বাংলা)"
+              label="হাইলাইট শব্দ"
               value={data?.accentBn || ""}
               onChange={(e) => updateField("accentBn", e.target.value)}
               placeholder="যেমন: এলপিজি নিরাপত্তায়।"
@@ -259,7 +259,7 @@ export default function WhoWeAreEditorTab({
               placeholder="Enter lead introductory text..."
             />
             <Textarea
-              label="সূচনা টেক্সট (বাংলা)"
+              label="সূচনা টেক্সট"
               rows={3}
               value={data?.leadTextBn || ""}
               onChange={(e) => updateField("leadTextBn", e.target.value)}
@@ -276,7 +276,7 @@ export default function WhoWeAreEditorTab({
               placeholder="Enter detailed narrative text..."
             />
             <Textarea
-              label="বিস্তারিত বিবরণ (বাংলা)"
+              label="বিস্তারিত বিবরণ"
               rows={3}
               value={data?.paragraphsBn || ""}
               onChange={(e) => updateField("paragraphsBn", e.target.value)}
@@ -360,7 +360,7 @@ export default function WhoWeAreEditorTab({
                         placeholder="e.g. Safety First"
                       />
                       <Input
-                        label="কার্ডের শিরোনাম (বাংলা)"
+                        label="কার্ডের শিরোনাম"
                         value={feature.titleBn || ""}
                         onChange={(e) => updateFeature(idx, "titleBn", e.target.value)}
                         placeholder="যেমন: নিরাপত্তা সবার আগে"
@@ -376,7 +376,7 @@ export default function WhoWeAreEditorTab({
                         placeholder="Card description in English..."
                       />
                       <Textarea
-                        label="কার্ডের বিবরণ (বাংলা)"
+                        label="কার্ডের বিবরণ"
                         rows={2}
                         value={feature.descBn || ""}
                         onChange={(e) => updateFeature(idx, "descBn", e.target.value)}

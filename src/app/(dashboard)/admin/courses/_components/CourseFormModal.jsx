@@ -8,6 +8,7 @@ import { FaVideo, FaUpload, FaCheckCircle, FaPlay, FaTrash } from "react-icons/f
 import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import SlugInput from "@/components/ui/SlugInput";
 import { Textarea } from "@/components/ui/Textarea";
 import { Select } from "@/components/ui/Select";
 import { P } from "@/components/ui/Typography";
@@ -21,16 +22,16 @@ import { getMediaUrl } from "@/utils/mediaUrl";
 import DragDropUploadZone from "@/app/(dashboard)/_components/DragDropUploadZone";
 
 const CATEGORY_OPTIONS = [
-  { value: "Consumer Safety", label: "Consumer Safety (ভোক্তা নিরাপত্তা)" },
-  { value: "Dealer Compliance", label: "Dealer Compliance (ডিলার ও খুচরা বিক্রেতা)" },
-  { value: "Auto-Gas & Transport", label: "Auto-Gas & Transport (অটো-গ্যাস ও পরিবহন)" },
-  { value: "Industrial & Commercial", label: "Industrial & Commercial (শিল্প ও বাণিজ্যিক)" },
+  { value: "Consumer Safety", label: "Consumer Safety" },
+  { value: "Dealer Compliance", label: "Dealer Compliance" },
+  { value: "Auto-Gas & Transport", label: "Auto-Gas & Transport" },
+  { value: "Industrial & Commercial", label: "Industrial & Commercial" },
 ];
 
 const LEVEL_OPTIONS = [
-  { value: "Beginner", label: "Beginner (প্রাথমিক)" },
-  { value: "Intermediate", label: "Intermediate (মাধ্যমিক)" },
-  { value: "Professional", label: "Professional (পেশাদার)" },
+  { value: "Beginner", label: "Beginner" },
+  { value: "Intermediate", label: "Intermediate" },
+  { value: "Professional", label: "Professional" },
 ];
 
 export default function CourseFormModal({
@@ -135,8 +136,8 @@ export default function CourseFormModal({
       maxWidth="4xl"
       title={
         isEditing
-          ? "Edit Course / কোর্স সম্পাদনা"
-          : "Create New LMS Course / নতুন কোর্স তৈরি করুন"
+          ? "Edit Course"
+          : "Create New LMS Course"
       }
       description="Provide English and Bengali curriculum details side-by-side with a single unified course link."
     >
@@ -144,7 +145,7 @@ export default function CourseFormModal({
         {/* Section 1: Course Title (Side by Side) */}
           <div className="space-y-3">
             <div className="text-xs font-bold text-primary uppercase tracking-wider">
-              1. Course Titles / কোর্সের শিরোনাম
+              1. Course Titles
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
@@ -171,7 +172,7 @@ export default function CourseFormModal({
           {/* Section 2: Audience & Duration (Side by Side) */}
           <div className="space-y-3 border-t border-slate-100 pt-4">
             <div className="text-xs font-bold text-primary uppercase tracking-wider">
-              2. Target Audience & Duration / কাদের জন্য ও সময়কাল
+              2. Target Audience & Duration
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
               <Input
@@ -212,7 +213,7 @@ export default function CourseFormModal({
           {/* Section 3: Course Description (Side by Side) */}
           <div className="space-y-3 border-t border-slate-100 pt-4">
             <div className="text-xs font-bold text-primary uppercase tracking-wider">
-              3. Course Description / কোর্সের পূর্ণাঙ্গ বিবরণ
+              3. Course Description
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Textarea
@@ -241,12 +242,12 @@ export default function CourseFormModal({
           {/* Section 4: Common Shared Metadata */}
           <div className="space-y-4 border-t border-slate-200 pt-4">
             <div className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-              4. Curriculum Metadata & Pricing / মেটাডাটা ও মূল্য
+              4. Curriculum Metadata & Pricing
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Select
-                label="Category / ক্যাটাগরি"
+                label="Category"
                 value={formData.category}
                 onChange={(e) =>
                   setFormData({ ...formData, category: e.target.value })
@@ -255,7 +256,7 @@ export default function CourseFormModal({
               />
 
               <Select
-                label="Skill Level / স্তর"
+                label="Skill Level"
                 value={formData.level}
                 onChange={(e) =>
                   setFormData({ ...formData, level: e.target.value })
@@ -264,7 +265,7 @@ export default function CourseFormModal({
               />
 
               <Input
-                label="Price (BDT, 0 = Free / বিনামূল্যে)"
+                label="Price (BDT, 0 = Free)"
                 type="number"
                 min="0"
                 value={formData.price}
@@ -284,10 +285,12 @@ export default function CourseFormModal({
                 }
               />
 
-              <Input
-                label="URL Slug (Shared Link / একই লিংক)"
+              <SlugInput
+                label="URL Slug (Shared Link)"
                 placeholder="safe-domestic-lpg-handling"
                 value={formData.slug}
+                sourceValue={formData.titleEn || formData.titleBn}
+                prefix="/courses/"
                 onChange={(e) =>
                   setFormData({ ...formData, slug: e.target.value })
                 }
@@ -297,7 +300,7 @@ export default function CourseFormModal({
             {/* Drag & Drop Course Banner Image */}
             <div className="space-y-3">
               <label className="block text-xs font-bold text-slate-700">
-                Course Banner Image (Drag & Drop) / কোর্স ব্যানার *
+                Course Banner Image (Drag & Drop) *
               </label>
 
               {formData.imageUrl ? (
@@ -359,7 +362,7 @@ export default function CourseFormModal({
                 className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/20"
               />
               <span className="text-xs font-semibold text-slate-800">
-                Publish to public Academy LMS catalog / সর্বজনীন ক্যাটালগে প্রকাশ করুন
+                Publish to public Academy LMS catalog
               </span>
             </label>
           </div>
@@ -369,7 +372,7 @@ export default function CourseFormModal({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
                 <FaVideo className="h-3.5 w-3.5" />
-                <span>5. Direct Course Video / সরাসরি ভিডিও আপলোড</span>
+                <span>5. Direct Course Video</span>
               </div>
 
               {/* Sample 2s video quick-select button */}

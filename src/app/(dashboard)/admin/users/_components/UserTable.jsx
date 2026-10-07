@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { FaUserShield, FaEdit, FaTrash, FaCheckCircle, FaBan, FaKey } from "react-icons/fa";
+import { FaUserShield, FaEdit, FaTrash, FaCheckCircle, FaBan, FaKey, FaStickyNote } from "react-icons/fa";
 import {
   Table,
   TableHeader,
@@ -240,7 +240,7 @@ export default function UserTable({
           <TableHead className="w-56">User Profile</TableHead>
           <TableHead>Contact Information</TableHead>
           <TableHead className="w-32">Role</TableHead>
-          <TableHead className="w-80 min-w-[290px]">Accessible Pages</TableHead>
+          <TableHead className="w-80 min-w-[260px]">Admin Notes</TableHead>
           <TableHead className="w-24 text-center">Status</TableHead>
           <TableHead className="w-28">Joined Date</TableHead>
           <TableHead className="w-28 text-right">Actions</TableHead>
@@ -319,9 +319,31 @@ export default function UserTable({
                 </span>
               </TableCell>
 
-              {/* Accessible Pages (for Admin & Instructor) */}
+              {/* Super Admin Notes */}
               <TableCell>
-                {renderAccessiblePages(user)}
+                {user.notes && user.notes.trim() ? (
+                  <Link
+                    href={`/admin/users/${user._id}`}
+                    className="group/note flex items-start gap-2 p-2 rounded-lg bg-slate-50 hover:bg-primary/5 border border-slate-200/80 hover:border-primary/30 transition-all max-w-[320px]"
+                    title={`Admin Note:\n${user.notes}`}
+                  >
+                    <FaStickyNote className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
+                    <span className="text-xs text-slate-700 line-clamp-2 leading-relaxed group-hover/note:text-slate-900">
+                      {user.notes}
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    href={`/admin/users/${user._id}`}
+                    className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-primary transition-colors group/empty"
+                    title="Click to add admin note"
+                  >
+                    <span className="text-slate-300 font-mono">—</span>
+                    <span className="text-[10px] opacity-0 group-hover/empty:opacity-100 transition-opacity text-primary font-semibold">
+                      + Add note
+                    </span>
+                  </Link>
+                )}
               </TableCell>
 
               {/* Status */}

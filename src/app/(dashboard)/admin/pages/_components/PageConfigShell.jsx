@@ -48,12 +48,12 @@ export default function PageConfigShell({
             <LinkButton
               href={previewUrl}
               target="_blank"
-              variant="secondary"
+              variant="header-outline"
               size="sm"
-              className="gap-2 text-slate-700"
+              className="gap-1.5 text-xs font-bold"
             >
-              <span>View Public Page</span>
               <FaExternalLinkAlt className="h-3 w-3 text-slate-400" />
+              <span>View Public Page</span>
             </LinkButton>
           )}
 

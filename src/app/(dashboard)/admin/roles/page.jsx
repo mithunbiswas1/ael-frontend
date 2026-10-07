@@ -152,17 +152,9 @@ export default function RolesManagementPage() {
         title="Roles & Access Control"
         description="Configure custom organizational roles, manage module and page access privileges, and define granular action permissions."
         badge={`${stats.total} Roles`}
-      >
-        <Button
-          type="button"
-          variant="primary"
-          onClick={handleOpenCreate}
-          className="gap-2"
-        >
-          <FaPlus className="h-3.5 w-3.5" />
-          <span>Create New Role</span>
-        </Button>
-      </AdminPageHeader>
+        actionLabel="Create New Role"
+        onActionClick={handleOpenCreate}
+      />
 
       {/* Summary Stat Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

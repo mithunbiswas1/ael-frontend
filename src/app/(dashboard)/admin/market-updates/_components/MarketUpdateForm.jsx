@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { LinkButton } from "@/components/ui/LinkButton";
 import { Input } from "@/components/ui/Input";
+import SlugInput, { slugify } from "@/components/ui/SlugInput";
 import { Select } from "@/components/ui/Select";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 import DragDropUploadZone from "@/app/(dashboard)/_components/DragDropUploadZone";
@@ -58,7 +59,6 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
     pdfSize: 0,
     authorEn: "Safe LPG Research & Intelligence",
     authorBn: "সেইফ এলপিজি রিসার্চ অ্যান্ড ইন্টেলিজেন্স",
-    publishDate: new Date().toISOString().split("T")[0],
     isPublished: true,
     accessType: "free",
     isFeatured: false,
@@ -88,9 +88,6 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
         pdfSize: initialData.pdfSize || 0,
         authorEn: initialData.authorEn || "Safe LPG Research & Intelligence",
         authorBn: initialData.authorBn || "সেইফ এলপিজি রিসার্চ অ্যান্ড ইন্টেলিজেন্স",
-        publishDate: initialData.publishDate
-          ? new Date(initialData.publishDate).toISOString().split("T")[0]
-          : new Date().toISOString().split("T")[0],
         isPublished: initialData.isPublished !== false,
         accessType: initialData.accessType || "free",
         isFeatured: Boolean(initialData.isFeatured),
@@ -119,15 +116,6 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
     }
   };
 
-  const slugify = (text) => {
-    return text
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/[^\w\s-]/g, "")
-      .replace(/[\s_-]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  };
 
   const handleCategoryChange = (e) => {
     const catId = e.target.value;
@@ -330,19 +318,14 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  URL Slug
-                </label>
-                <Input
-                  value={formData.slug}
-                  onChange={(e) => setFormData((p) => ({ ...p, slug: e.target.value }))}
-                  placeholder="chattogram-port-lpg-safety-probe"
-                />
-                <span className="text-[11px] text-slate-400 mt-1 block font-mono">
-                  /market-updates/{formData.slug || "slug-placeholder"}
-                </span>
-              </div>
+              <SlugInput
+                label="URL Slug"
+                value={formData.slug}
+                sourceValue={formData.titleEn || formData.titleBn}
+                prefix="/market-updates/"
+                placeholder="chattogram-port-lpg-safety-probe"
+                onChange={(e) => setFormData((p) => ({ ...p, slug: e.target.value }))}
+              />
             </div>
           </div>
 
@@ -490,19 +473,8 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
                 onChange={handleCategoryChange}
                 options={MARKET_UPDATE_CATEGORIES.map((cat) => ({
                   value: cat.id,
-                  label: `${cat.labelEn} (${cat.labelBn})`,
+                  label: cat.labelEn,
                 }))}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                Publication Date
-              </label>
-              <Input
-                type="date"
-                value={formData.publishDate}
-                onChange={(e) => setFormData((p) => ({ ...p, publishDate: e.target.value }))}
               />
             </div>
 
@@ -515,50 +487,41 @@ export default function MarketUpdateForm({ initialData = null, isEdit = false })
                   className="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary"
                 />
                 <span className="text-xs font-semibold text-slate-700">
-                  Publish Immediately (পাবলিশ করুন)
+                  Publish Immediately
                 </span>
               </label>
 
               {/* Access Type: Free vs Paid */}
               <div className="pt-2 border-t border-slate-100 space-y-1.5">
                 <label className="block text-xs font-bold text-slate-800">
-                  Content Access Type / অ্যাক্সেস ধরন *
+                  Content Access Type *
                 </label>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setFormData((p) => ({ ...p, accessType: "free" }))}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                      formData.accessType === "free"
-                        ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-500/20"
-                        : "border-slate-200 bg-white hover:bg-slate-50"
-                    }`}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${formData.accessType === "free"
+                      ? "border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-500/20"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
+                      }`}
                   >
-                    <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
-                      <span>Free (উন্মুক্ত)</span>
-                      {formData.accessType === "free" && (
-                        <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                      )}
-                    </div>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Open to all public visitors</p>
+                    <span className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                      Free
+                    </span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setFormData((p) => ({ ...p, accessType: "paid" }))}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
-                      formData.accessType === "paid"
-                        ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20"
-                        : "border-slate-200 bg-white hover:bg-slate-50"
-                    }`}
+                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${formData.accessType === "paid"
+                      ? "border-amber-500 bg-amber-50/60 ring-2 ring-amber-500/20"
+                      : "border-slate-200 bg-white hover:bg-slate-50"
+                      }`}
                   >
-                    <div className="text-xs font-bold text-slate-900 flex items-center justify-between">
-                      <span>Paid (সাবস্ক্রাইবার)</span>
-                      {formData.accessType === "paid" && (
-                        <span className="h-2 w-2 rounded-full bg-amber-500" />
-                      )}
-                    </div>
-                    <p className="text-[10px] text-slate-500 mt-0.5">Subscribers & Admins only</p>
+                    <span className="text-xs font-bold text-slate-900 flex items-center justify-between">
+                      Paid
+
+                    </span>
                   </button>
                 </div>
               </div>

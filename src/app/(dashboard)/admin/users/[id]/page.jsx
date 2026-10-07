@@ -14,6 +14,7 @@ import { useGetRolesQuery } from "@/redux/api/roleApi";
 import PermissionGuard from "@/components/ui/PermissionGuard";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
+import { Textarea } from "@/components/ui/Textarea";
 import { H1, H2, H3, H4, P } from "@/components/ui/Typography";
 import {
   FaArrowLeft,
@@ -37,6 +38,7 @@ import {
   FaGraduationCap,
   FaLayerGroup,
   FaUserCheck,
+  FaStickyNote,
 } from "react-icons/fa";
 
 // Master list of all admin pages categorized for page-wise permission management
@@ -451,6 +453,7 @@ export default function UserPermissionsSlugPage() {
   const [selectedRole, setSelectedRole] = useState("user");
   const [isActive, setIsActive] = useState(true);
   const [permissions, setPermissions] = useState([]);
+  const [notes, setNotes] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
 
   // Dynamic role options from DB
@@ -484,6 +487,7 @@ export default function UserPermissionsSlugPage() {
       setSelectedRole(canonicalRole);
       setIsActive(user.is_active !== false);
       setPermissions(Array.isArray(user.permissions) ? user.permissions : []);
+      setNotes(user.notes || "");
       setHasChanges(false);
     }
   }, [user]);
@@ -704,6 +708,7 @@ export default function UserPermissionsSlugPage() {
           role: selectedRole,
           is_active: isActive,
           permissions: payloadPermissions,
+          notes: notes,
         },
       }).unwrap();
 
@@ -889,6 +894,29 @@ export default function UserPermissionsSlugPage() {
                 </Button>
               </div>
             </div>
+          </div>
+
+          {/* Super Admin Internal Notes Textbox */}
+          <div className="mt-5 pt-4 border-t border-slate-100">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <label className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <FaStickyNote className="h-3.5 w-3.5 text-primary" />
+                <span>Super Admin Notes (অভ্যন্তরীণ নোট)</span>
+              </label>
+              <span className="text-[11px] text-slate-400">
+                Only visible in User Registry & Access Profile
+              </span>
+            </div>
+            <Textarea
+              rows={3}
+              value={notes}
+              onChange={(e) => {
+                setNotes(e.target.value);
+                setHasChanges(true);
+              }}
+              placeholder="Write internal notes about this user (e.g. why access was granted, verification details, authorized by management on [date])..."
+              className="w-full text-xs text-slate-800 bg-slate-50/70 focus:bg-white border-slate-200 resize-y"
+            />
           </div>
         </div>
 

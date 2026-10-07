@@ -233,7 +233,7 @@ export default function AdminActsAndRulesPage() {
                     placeholder="Principal statutory foundation for manufacture and transport..."
                   />
                   <Input
-                    label="সংক্ষিপ্ত বিবরণ (বাংলা)"
+                    label="সংক্ষিপ্ত বিবরণ"
                     value={gazette.subtitleBn || ""}
                     onChange={(e) =>
                       handleGazetteChange(gazette.id, "subtitleBn", e.target.value)
@@ -244,7 +244,7 @@ export default function AdminActsAndRulesPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                   <Input
-                    label="Category (English)"
+                    label="Category"
                     value={gazette.category || ""}
                     onChange={(e) =>
                       handleGazetteChange(gazette.id, "category", e.target.value)
@@ -252,7 +252,7 @@ export default function AdminActsAndRulesPage() {
                     placeholder="Explosives Rules / Gas Rules"
                   />
                   <Input
-                    label="ক্যাটাগরি (বাংলা)"
+                    label="ক্যাটাগরি"
                     value={gazette.categoryBn || ""}
                     onChange={(e) =>
                       handleGazetteChange(gazette.id, "categoryBn", e.target.value)
@@ -268,7 +268,7 @@ export default function AdminActsAndRulesPage() {
                     placeholder="Department of Explosives"
                   />
                   <Input
-                    label="কর্তৃপক্ষ (বাংলা)"
+                    label="কর্তৃপক্ষ"
                     value={gazette.authorityBn || ""}
                     onChange={(e) =>
                       handleGazetteChange(gazette.id, "authorityBn", e.target.value)

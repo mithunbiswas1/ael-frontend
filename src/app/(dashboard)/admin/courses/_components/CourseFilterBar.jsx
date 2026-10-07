@@ -32,28 +32,11 @@ export default function CourseFilterBar({
         icon={FaGraduationCap}
         title="LMS Course Management"
         description="Create, edit, and organize training curricula, lessons, and certification criteria."
-        action={
-          <div className="flex items-center gap-2">
-            <LinkButton
-              href="/admin/courses/enrollments"
-              variant="outline"
-              size="sm"
-              className="text-xs font-bold gap-1.5 border-slate-300 hover:bg-slate-50"
-            >
-              <FaGraduationCap className="h-3.5 w-3.5 text-secondary" />
-              <span>Enrollments & Sales</span>
-            </LinkButton>
-            <Button
-              type="button"
-              onClick={handleCreate}
-              variant="primary"
-              size="sm"
-              className="text-xs font-bold gap-1.5"
-            >
-              <span>+ Create New Course</span>
-            </Button>
-          </div>
-        }
+        secondaryActionLabel="Enrollments & Sales"
+        secondaryActionHref="/admin/courses/enrollments"
+        secondaryActionIcon={FaGraduationCap}
+        actionLabel="Create New Course"
+        onActionClick={handleCreate}
       />
 
       {/* Search Bar & Price Filter */}

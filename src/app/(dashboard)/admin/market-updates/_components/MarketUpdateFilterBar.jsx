@@ -28,8 +28,9 @@ export default function MarketUpdateFilterBar({
       <AdminPageHeader
         icon={FaChartLine}
         title="LPG Market Updates Management"
+        description="Track official BERC circulars, price notices, incident investigations, and global trends."
         actionLabel="New Market Update"
-        onActionClick={onOpenCreate}
+        actionHref="/admin/market-updates/add"
       />
 
       {/* Search and Category Filter */}

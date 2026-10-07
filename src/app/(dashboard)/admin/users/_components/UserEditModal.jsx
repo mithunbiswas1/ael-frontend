@@ -36,6 +36,7 @@ export default function UserEditModal({
     email: "",
     phone: "",
     description: "",
+    notes: "",
   });
 
   const availableRoles = [
@@ -61,6 +62,7 @@ export default function UserEditModal({
         email: user.email || "",
         phone: user.phone || "",
         description: user.description || user.bio || "",
+        notes: user.notes || "",
       });
     }
   }, [user]);
@@ -107,13 +109,22 @@ export default function UserEditModal({
           />
         </div>
 
+        {/* Super Admin Internal Notes */}
+        <Textarea
+          label="Super Admin Notes (অভ্যন্তরীণ নোট)"
+          rows={2}
+          value={formData.notes}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+          placeholder="Super admin internal notes (grant reason, verification, etc.)..."
+        />
+
         {/* Description / Bio */}
         <Textarea
           label="Profile Description"
           rows={2}
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-          placeholder="User bio or administrative remarks..."
+          placeholder="User bio or remarks..."
         />
 
         {/* Subscription Info Card */}
