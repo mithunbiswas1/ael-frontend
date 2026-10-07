@@ -97,7 +97,7 @@ export default function AdminActsAndRulesPage() {
       ...prev,
       sections: {
         ...prev.sections,
-        gazettes: [...(prev.sections?.gazettes || []), newGazette],
+        gazettes: [newGazette, ...(prev.sections?.gazettes || [])],
       },
     }));
   };

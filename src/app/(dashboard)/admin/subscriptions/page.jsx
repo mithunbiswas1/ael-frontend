@@ -8,7 +8,6 @@ import {
   Search,
   Eye,
   UserPlus,
-  Plus,
   Ban,
   Calendar,
   TrendingUp,
@@ -117,17 +116,6 @@ function AdminSubscriptionsContent() {
             className="shadow-2xs font-bold"
           >
             Grant Access to User
-          </Button>
-
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={() => router.push("/admin/subscriptions/add")}
-            icon={Plus}
-            className="shadow-2xs font-bold"
-          >
-            Create New Plan
           </Button>
         </div>
       </div>

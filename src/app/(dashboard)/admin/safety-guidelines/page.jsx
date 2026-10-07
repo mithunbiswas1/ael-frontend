@@ -99,9 +99,15 @@ export default function SafetyGuidelinesListPage() {
       : [];
   }, [pageData]);
 
-  // Unified items list
+  // Unified items list (LIFO: last added first show)
   const allItems = useMemo(() => {
-    return [...documents, ...agencies];
+    const combined = [...documents, ...agencies];
+    return combined.sort((a, b) => {
+      const aTime = Number(a.id) || 0;
+      const bTime = Number(b.id) || 0;
+      if (aTime && bTime) return bTime - aTime;
+      return 0;
+    });
   }, [documents, agencies]);
 
   // Filtered Items

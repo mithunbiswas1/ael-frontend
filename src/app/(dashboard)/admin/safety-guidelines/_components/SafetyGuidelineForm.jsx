@@ -296,12 +296,12 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
           if (docIndex >= 0) {
             updatedDocs[docIndex] = guidelineItem;
           } else {
-            updatedDocs.push(guidelineItem);
+            updatedDocs.unshift(guidelineItem);
           }
           // Remove from agencies if previously was an agency
           updatedAgencies = updatedAgencies.filter((a) => String(a.id) !== String(targetId));
         } else {
-          updatedDocs.push(guidelineItem);
+          updatedDocs.unshift(guidelineItem);
         }
       } else {
         // Construct Agency Object
@@ -326,12 +326,12 @@ export default function SafetyGuidelineForm({ itemId = null, docId = null, isEdi
           if (agencyIndex >= 0) {
             updatedAgencies[agencyIndex] = agencyItem;
           } else {
-            updatedAgencies.push(agencyItem);
+            updatedAgencies.unshift(agencyItem);
           }
           // Remove from docs if previously was a guideline
           updatedDocs = updatedDocs.filter((d) => String(d.id) !== String(targetId));
         } else {
-          updatedAgencies.push(agencyItem);
+          updatedAgencies.unshift(agencyItem);
         }
       }
 

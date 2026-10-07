@@ -44,9 +44,18 @@ export default function GuidelinesGridSection({ activeTab, sections = {} }) {
   const { isLoggedIn } = useSelector((state) => state.auth);
   const isAuthenticated = mounted && Boolean(isLoggedIn);
 
+  const sortLifo = (arr) => {
+    return [...arr].sort((a, b) => {
+      const aTime = Number(a?.id) || 0;
+      const bTime = Number(b?.id) || 0;
+      if (aTime && bTime) return bTime - aTime;
+      return 0;
+    });
+  };
+
   const dynamicStandards = Array.isArray(sections?.standardsList) ? sections.standardsList : [];
-  const dynamicAgencies = Array.isArray(sections?.regulatoryAgencies) ? sections.regulatoryAgencies : [];
-  const dynamicDocs = Array.isArray(sections?.documentDownloads) ? sections.documentDownloads : [];
+  const dynamicAgencies = Array.isArray(sections?.regulatoryAgencies) ? sortLifo(sections.regulatoryAgencies) : [];
+  const dynamicDocs = Array.isArray(sections?.documentDownloads) ? sortLifo(sections.documentDownloads) : [];
 
   const [downloadingId, setDownloadingId] = useState(null);
 

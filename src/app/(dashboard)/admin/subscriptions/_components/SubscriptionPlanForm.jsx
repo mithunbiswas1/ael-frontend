@@ -122,7 +122,7 @@ export default function SubscriptionPlanForm({ initialData = null, isEdit = fals
         await createPlan(payload).unwrap();
         toast.success("New subscription plan created successfully!");
       }
-      router.push("/admin/subscriptions");
+      router.push("/admin/pages/subscription");
     } catch (err) {
       toast.error(err?.data?.message || "Failed to save subscription plan");
     }
@@ -134,7 +134,7 @@ export default function SubscriptionPlanForm({ initialData = null, isEdit = fals
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
         <div className="flex items-center gap-3">
           <Link
-            href="/admin/subscriptions"
+            href="/admin/pages/subscription"
             className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -153,7 +153,7 @@ export default function SubscriptionPlanForm({ initialData = null, isEdit = fals
 
         <div className="flex items-center gap-2.5">
           <Link
-            href="/admin/subscriptions"
+            href="/admin/pages/subscription"
             className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors"
           >
             Cancel

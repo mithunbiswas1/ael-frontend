@@ -162,7 +162,7 @@ export default function AdminSubscriptionPageConfig() {
               type="button"
               variant="primary"
               size="sm"
-              onClick={() => router.push("/admin/subscriptions/add")}
+              onClick={() => router.push("/admin/pages/subscription/add")}
               icon={FaPlus}
               className="self-start sm:self-auto"
             >
@@ -185,7 +185,7 @@ export default function AdminSubscriptionPageConfig() {
                 type="button"
                 variant="primary"
                 size="sm"
-                onClick={() => router.push("/admin/subscriptions/add")}
+                onClick={() => router.push("/admin/pages/subscription/add")}
                 icon={FaPlus}
                 className="mt-4"
               >
@@ -269,7 +269,7 @@ export default function AdminSubscriptionPageConfig() {
                       type="button"
                       variant="primary"
                       size="sm"
-                      onClick={() => router.push(`/admin/subscriptions/edit/${plan._id}`)}
+                      onClick={() => router.push(`/admin/pages/subscription/edit/${plan._id}`)}
                       className="flex-1 text-xs font-bold gap-1.5"
                     >
                       <FaEdit className="h-3.5 w-3.5" />

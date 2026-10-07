@@ -1,16 +1,19 @@
-// src/app/(dashboard)/admin/subscriptions/add/page.jsx
+// src/app/(dashboard)/admin/subscriptions/create/page.jsx
 "use client";
 
-import PermissionGuard from "@/components/ui/PermissionGuard";
-import SubscriptionPlanForm from "../_components/SubscriptionPlanForm";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function AddSubscriptionPlanPage() {
+export default function CreateSubscriptionPlanPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/admin/pages/subscription/add");
+  }, [router]);
+
   return (
-    <PermissionGuard module="subscriptions" page="/admin/subscriptions" action="create">
-      <title>Create New Subscription Plan | Safe LPG Admin</title>
-      <div className="max-w-7xl mx-auto py-2">
-        <SubscriptionPlanForm isEdit={false} />
-      </div>
-    </PermissionGuard>
+    <div className="flex h-48 items-center justify-center">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
   );
 }

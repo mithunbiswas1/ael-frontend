@@ -19,9 +19,18 @@ export default function FaqAccordionSection({ items = [] }) {
   const isBn = locale === "bn";
   const faqDict = dict?.faq || {};
 
+  const rawItems = Array.isArray(items) ? [...items] : [];
+  // LIFO: newest added first show
+  const sortedItems = rawItems.sort((a, b) => {
+    const aTime = Number(a?.id) || 0;
+    const bTime = Number(b?.id) || 0;
+    if (aTime && bTime) return bTime - aTime;
+    return 0;
+  });
+
   const faqItems =
-    Array.isArray(items) && items.length > 0
-      ? items.map((item) => ({
+    sortedItems.length > 0
+      ? sortedItems.map((item) => ({
           question: isBn && item.questionBn ? item.questionBn : (item.question || ""),
           answer: isBn && item.answerBn ? item.answerBn : (item.answer || ""),
         }))

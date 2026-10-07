@@ -84,7 +84,7 @@ export default function AdminFaqPage() {
       ...prev,
       sections: {
         ...prev.sections,
-        faqItems: [...(prev.sections?.faqItems || []), newItem],
+        faqItems: [newItem, ...(prev.sections?.faqItems || [])],
       },
     }));
   };

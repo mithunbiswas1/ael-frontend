@@ -131,7 +131,7 @@ export default function RegulatoryAgencyForm({ agencyId = null, isEdit = false }
           ...formData,
           id: formData.name.toLowerCase().replace(/[^a-z0-9]/g, "-") || `agency-${Date.now()}`,
         };
-        updatedAgencies = [...existingAgencies, newAgency];
+        updatedAgencies = [newAgency, ...existingAgencies];
       }
 
       const updatedSections = {

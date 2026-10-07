@@ -14,9 +14,18 @@ export default function ActsLibrarySection({ gazettes = [] }) {
   const isBn = locale === "bn";
   const actsDict = dict?.actsAndRules || {};
 
+  const sortedGazettes = Array.isArray(gazettes)
+    ? [...gazettes].sort((a, b) => {
+        const aTime = Number(a?.id?.replace(/\D/g, "")) || 0;
+        const bTime = Number(b?.id?.replace(/\D/g, "")) || 0;
+        if (aTime && bTime) return bTime - aTime;
+        return 0;
+      })
+    : [];
+
   const allStatutes =
-    Array.isArray(gazettes) && gazettes.length > 0
-      ? gazettes.map((g, idx) => ({
+    sortedGazettes.length > 0
+      ? sortedGazettes.map((g, idx) => ({
           id: g.id || `gazette-${idx}`,
           title: g.title || "",
           titleBn: g.titleBn || g.title || "",
