@@ -24,6 +24,7 @@ import {
   Save,
   Eye,
   Check,
+  AlertCircle,
 } from "lucide-react";
 import {
   useCreateCourseMutation,
@@ -42,6 +43,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Checkbox } from "@/components/ui/Checkbox";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 
 export default function CourseBuilderForm({ initialData = null, isEdit = false }) {
   const router = useRouter();
@@ -70,6 +72,9 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
   // Active question tab per module: { [modIdx]: questionIdx }
   const [activeQuestionTabs, setActiveQuestionTabs] = useState({});
+
+  // Delete Confirmation Modal Target
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   // Form State
   const [formData, setFormData] = useState(() => {
@@ -377,6 +382,67 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
       ...prev,
       curriculum: prev.curriculum.filter((_, idx) => idx !== index),
     }));
+  };
+
+  // Prompt removal handlers (opens DeleteConfirmationModal)
+  const promptRemoveModule = (modIdx) => {
+    const mod = formData.curriculum[modIdx];
+    const modTitle = mod?.moduleTitle?.trim() || `Module ${modIdx + 1}`;
+    setDeleteTarget({
+      type: "module",
+      index: modIdx,
+      title: "Delete Module",
+      itemTitle: modTitle,
+      description: "Are you sure you want to delete this module? All lessons and quizzes in this module will be permanently removed.",
+      confirmText: "Delete Module",
+    });
+  };
+
+  const promptRemoveLesson = (modIdx, lessonIdx) => {
+    const l = formData.curriculum[modIdx]?.lessons?.[lessonIdx];
+    const lTitle = l?.title?.trim() || `Lesson ${lessonIdx + 1}`;
+    setDeleteTarget({
+      type: "lesson",
+      modIdx,
+      lessonIdx,
+      title: "Delete Lesson",
+      itemTitle: lTitle,
+      description: "Are you sure you want to remove this lesson? This action cannot be undone.",
+      confirmText: "Delete Lesson",
+    });
+  };
+
+  const promptRemoveQuizQuestion = (modIdx, qIdx) => {
+    const q = formData.curriculum[modIdx]?.quiz?.questions?.[qIdx];
+    const qPreview = q?.question?.trim()
+      ? (q.question.length > 50 ? `${q.question.slice(0, 50)}...` : q.question)
+      : `Question #${qIdx + 1}`;
+    setDeleteTarget({
+      type: "quizQuestion",
+      modIdx,
+      qIdx,
+      title: "Delete Quiz Question",
+      itemTitle: qPreview,
+      description: "Are you sure you want to delete this quiz question from the module?",
+      confirmText: "Delete Question",
+    });
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+
+    if (deleteTarget.type === "module") {
+      removeModule(deleteTarget.index);
+      toast.success(`${deleteTarget.itemTitle || "Module"} deleted.`);
+    } else if (deleteTarget.type === "lesson") {
+      removeLesson(deleteTarget.modIdx, deleteTarget.lessonIdx);
+      toast.success(`${deleteTarget.itemTitle || "Lesson"} deleted.`);
+    } else if (deleteTarget.type === "quizQuestion") {
+      removeQuestionFromQuiz(deleteTarget.modIdx, deleteTarget.qIdx);
+      toast.success("Quiz question deleted.");
+    }
+
+    setDeleteTarget(null);
   };
 
   const updateModuleField = (modIdx, field, value) => {
@@ -925,7 +991,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                           size="icon-sm"
                           onClick={(e) => {
                             e.stopPropagation();
-                            removeModule(modIdx);
+                            promptRemoveModule(modIdx);
                           }}
                           title="Delete Module"
                         >
@@ -989,7 +1055,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                   type="button"
                                   variant="danger-soft"
                                   size="icon-xs"
-                                  onClick={() => removeLesson(modIdx, lIdx)}
+                                  onClick={() => promptRemoveLesson(modIdx, lIdx)}
                                   title="Remove Lesson"
                                 >
                                   <Trash2 className="h-3 w-3" />
@@ -1405,7 +1471,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                                         type="button"
                                         variant="danger-soft"
                                         size="xs"
-                                        onClick={() => removeQuestionFromQuiz(modIdx, activeQ)}
+                                        onClick={() => promptRemoveQuizQuestion(modIdx, activeQ)}
                                         icon={Trash2}
                                       >
                                         Delete Question
@@ -1848,6 +1914,16 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
           )}
         </div>
       )}
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title={deleteTarget?.title || "Confirm Deletion"}
+        description={deleteTarget?.description || "Are you sure you want to delete this item? This action cannot be undone."}
+        itemTitle={deleteTarget?.itemTitle || ""}
+        confirmText={deleteTarget?.confirmText || "Delete Permanently"}
+      />
     </form>
   );
 }

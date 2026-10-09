@@ -23,6 +23,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { Checkbox } from "@/components/ui/Checkbox";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import {
   useGetAdminQuizFullQuery,
   useSaveQuizSetsMutation,
@@ -62,6 +63,7 @@ export default function CourseQuizSetsEditor({ courseId, courseTitle }) {
 
   const [activeSetIndex, setActiveSetIndex] = useState(0);
   const [expandedQuestionMap, setExpandedQuestionMap] = useState({});
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   // Sync data when loaded
   useEffect(() => {
@@ -144,22 +146,68 @@ export default function CourseQuizSetsEditor({ courseId, courseTitle }) {
     toast.success(`Set ${newIndex} added successfully!`);
   };
 
-  // Delete set
-  const handleDeleteSet = (indexToDelete) => {
+  // Prompt delete set (opens confirmation modal)
+  const promptDeleteSet = (indexToDelete) => {
     if (questionSets.length <= 1) {
       toast.error("At least one question set must remain.");
       return;
     }
     const setName = questionSets[indexToDelete]?.setName || `Set ${indexToDelete + 1}`;
-    if (!window.confirm(`Are you sure you want to delete "${setName}"? All questions in this set will be removed.`)) {
-      return;
+    setDeleteTarget({
+      type: "set",
+      index: indexToDelete,
+      itemTitle: setName,
+      title: "Delete Question Set",
+      description: `Are you sure you want to delete "${setName}"? All questions in this set will be permanently removed.`,
+      confirmText: "Delete Set",
+    });
+  };
+
+  // Prompt delete question (opens confirmation modal)
+  const promptDeleteQuestion = (qIndex) => {
+    const qObj = activeSet?.questions?.[qIndex];
+    const preview = qObj?.question?.trim()
+      ? (qObj.question.length > 55 ? `${qObj.question.slice(0, 55)}...` : qObj.question)
+      : `Question #${qIndex + 1}`;
+
+    setDeleteTarget({
+      type: "question",
+      qIndex,
+      itemTitle: preview,
+      title: "Delete Question",
+      description: "Are you sure you want to remove this question from this set? This action cannot be undone.",
+      confirmText: "Delete Question",
+    });
+  };
+
+  // Confirm delete from modal
+  const handleConfirmDelete = () => {
+    if (!deleteTarget) return;
+
+    if (deleteTarget.type === "set") {
+      const { index, itemTitle } = deleteTarget;
+      setQuestionSets((prev) => prev.filter((_, idx) => idx !== index));
+      if (activeSetIndex >= index && activeSetIndex > 0) {
+        setActiveSetIndex(activeSetIndex - 1);
+      }
+      toast.success(`${itemTitle} deleted.`);
+    } else if (deleteTarget.type === "question") {
+      const { qIndex } = deleteTarget;
+      setQuestionSets((prev) => {
+        const updated = [...prev];
+        const targetQuestions = updated[activeSetIndex]?.questions?.filter(
+          (_, idx) => idx !== qIndex
+        );
+        updated[activeSetIndex] = {
+          ...updated[activeSetIndex],
+          questions: targetQuestions,
+        };
+        return updated;
+      });
+      toast.success("Question deleted.");
     }
 
-    setQuestionSets((prev) => prev.filter((_, idx) => idx !== indexToDelete));
-    if (activeSetIndex >= indexToDelete && activeSetIndex > 0) {
-      setActiveSetIndex(activeSetIndex - 1);
-    }
-    toast.success(`${setName} deleted.`);
+    setDeleteTarget(null);
   };
 
   // Update set header (name, bn name)
@@ -213,21 +261,7 @@ export default function CourseQuizSetsEditor({ courseId, courseTitle }) {
     toast.success(`Question #${qCount} added to ${activeSet?.setName || "Set"}`);
   };
 
-  // Delete question from active set
-  const handleDeleteQuestion = (qIndex) => {
-    setQuestionSets((prev) => {
-      const updated = [...prev];
-      const targetQuestions = updated[activeSetIndex]?.questions?.filter(
-        (_, idx) => idx !== qIndex
-      );
-      updated[activeSetIndex] = {
-        ...updated[activeSetIndex],
-        questions: targetQuestions,
-      };
-      return updated;
-    });
-    toast.success("Question deleted");
-  };
+
 
   // Update question field
   const handleUpdateQuestion = (qIndex, field, value) => {
@@ -570,7 +604,7 @@ export default function CourseQuizSetsEditor({ courseId, courseTitle }) {
           {questionSets.length > 1 && (
             <Button
               type="button"
-              onClick={() => handleDeleteSet(activeSetIndex)}
+              onClick={() => promptDeleteSet(activeSetIndex)}
               variant="danger"
               size="xs"
               icon={Trash2}
@@ -686,14 +720,15 @@ export default function CourseQuizSetsEditor({ courseId, courseTitle }) {
                               {q.type || "single"}
                             </span>
 
-                            <button
+                            <Button
                               type="button"
-                              onClick={() => handleDeleteQuestion(qIdx)}
-                              className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors"
+                              variant="danger-soft"
+                              size="icon-xs"
+                              onClick={() => promptDeleteQuestion(qIdx)}
                               title="Delete Question"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
-                            </button>
+                            </Button>
 
                             <button
                               type="button"
@@ -904,6 +939,17 @@ export default function CourseQuizSetsEditor({ courseId, courseTitle }) {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleConfirmDelete}
+        title={deleteTarget?.title || "Confirm Deletion"}
+        description={deleteTarget?.description || "Are you sure you want to permanently delete this item? This action cannot be undone."}
+        itemTitle={deleteTarget?.itemTitle || ""}
+        confirmText={deleteTarget?.confirmText || "Delete Permanently"}
+      />
     </div>
   );
 }

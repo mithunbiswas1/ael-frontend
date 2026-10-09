@@ -21,6 +21,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
+import DeleteConfirmationModal from "@/components/ui/DeleteConfirmationModal";
 import {
   useGetQuestionBankQuery,
   useAddQuestionToBankMutation,
@@ -63,6 +64,9 @@ export default function QuestionBankManagerModal({
     timerEnabled: true,
     shuffleOptions: true,
   });
+
+  // Target question for delete modal
+  const [questionToDelete, setQuestionToDelete] = useState(null);
 
   useEffect(() => {
     if (quizConfig) {
@@ -215,11 +219,17 @@ export default function QuestionBankManagerModal({
     }
   };
 
-  const handleDeleteQuestion = async (qId) => {
-    if (!confirm("Are you sure you want to remove this question from the question bank?")) return;
+  const promptDeleteQuestion = (q) => {
+    setQuestionToDelete(q);
+  };
+
+  const handleConfirmDeleteQuestion = async () => {
+    if (!questionToDelete) return;
+    const qId = questionToDelete.id || questionToDelete._id;
     try {
       await deleteQuestionFromBank({ courseId, questionId: qId }).unwrap();
       toast.success("Question removed from bank");
+      setQuestionToDelete(null);
       refetch();
     } catch (err) {
       toast.error(err?.data?.message || "Failed to delete question");
@@ -241,6 +251,7 @@ export default function QuestionBankManagerModal({
   };
 
   return (
+    <>
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
@@ -551,14 +562,15 @@ export default function QuestionBankManagerModal({
                           >
                             <Edit2 className="h-3.5 w-3.5" />
                           </button>
-                          <button
+                          <Button
                             type="button"
-                            onClick={() => handleDeleteQuestion(qId)}
-                            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                            variant="danger-soft"
+                            size="icon-xs"
+                            onClick={() => promptDeleteQuestion(q)}
                             title="Delete Question"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
 
@@ -697,5 +709,18 @@ export default function QuestionBankManagerModal({
         )}
       </div>
     </Dialog>
+
+    {/* Delete Question Confirmation Modal */}
+    <DeleteConfirmationModal
+      isOpen={Boolean(questionToDelete)}
+      onClose={() => setQuestionToDelete(null)}
+      onConfirm={handleConfirmDeleteQuestion}
+      isLoading={isDeleting}
+      title="Delete Question"
+      description="Are you sure you want to remove this question from the question bank? This action cannot be undone."
+      itemTitle={questionToDelete?.question || ""}
+      confirmText="Remove Question"
+    />
+    </>
   );
 }
