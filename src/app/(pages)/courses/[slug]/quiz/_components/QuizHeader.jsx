@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { ArrowLeft, Clock } from "lucide-react";
+import { ArrowLeft, Clock, Layers } from "lucide-react";
 import { H1, P } from "@/components/ui/Typography";
 import AmbientGlow from "@/components/ui/AmbientGlow";
 
-export default function QuizHeader({ courseId, courseSlug, isSubmitted, timeString, isBn }) {
+export default function QuizHeader({ courseId, courseSlug, isSubmitted, timeString, isBn, setName, setNameBn }) {
   const targetSlug = courseSlug || courseId;
   return (
     <section className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 pb-14 pt-10 text-white">
@@ -12,20 +12,30 @@ export default function QuizHeader({ courseId, courseSlug, isSubmitted, timeStri
       <div className="site-container relative z-10">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <Link
-              href={`/courses/learn/${targetSlug}`}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors mb-3"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              <span>{isBn ? "ক্লাসরুমে ফিরে যান" : "Return to Classroom"}</span>
-            </Link>
+            <div className="flex items-center gap-3 mb-3 flex-wrap">
+              <Link
+                href={`/courses/learn/${targetSlug}`}
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                <span>{isBn ? "ক্লাসরুমে ফিরে যান" : "Return to Classroom"}</span>
+              </Link>
+
+              {setName && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  <Layers className="h-3 w-3" />
+                  <span>{isBn ? `প্রশ্ন সেট: ${setNameBn || setName}` : `Assessment: ${setName}`}</span>
+                </span>
+              )}
+            </div>
+
             <H1 color="white" className="leading-tight text-xl sm:text-2xl md:text-3xl">
               {isBn ? "অফিসিয়াল এলপিজি নিরাপত্তা মূল্যায়ন" : "Official LPG Safety Assessment"}
             </H1>
             <P size="xs" color="slate400" className="mt-1">
               {isBn
-                ? "পাস মার্ক: ৮০% (৫টির মধ্যে ৪টি সঠিক) • উত্তীর্ণ হলে স্বয়ংক্রিয় সার্টিফিকেট জেনারেট হবে"
-                : "Pass mark: 80% (4 of 5 correct) • Certificate auto-generated upon passing"}
+                ? "পাস মার্ক সম্পন্ন হলে অবিলম্বে ডিজিটাল ভেরিফাইড সার্টিফিকেট জেনারেট হবে"
+                : "Pass the assessment to immediately receive your official verified certificate"}
             </P>
           </div>
 

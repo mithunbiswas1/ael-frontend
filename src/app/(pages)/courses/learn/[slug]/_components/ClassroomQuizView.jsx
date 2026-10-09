@@ -22,6 +22,7 @@ import { useDictionary } from "@/context/DictionaryContext";
 
 export default function ClassroomQuizView({
   courseId,
+  courseSlug,
   moduleData,
   moduleIndex = 0,
   totalModules = 1,
@@ -81,6 +82,10 @@ export default function ClassroomQuizView({
   const currentQ = questions[currentQIdx];
   const totalQuestions = questions.length;
 
+  // Validation: Check if current question has an answer selected
+  const isCurrentQAnswered =
+    selectedAnswers[currentQIdx] !== undefined && selectedAnswers[currentQIdx] !== null;
+
   const handleSelectOption = (optIdx) => {
     if (isSubmitted) return;
     setSelectedAnswers((prev) => ({
@@ -90,6 +95,7 @@ export default function ClassroomQuizView({
   };
 
   const handleNextQ = () => {
+    if (!isCurrentQAnswered) return;
     if (currentQIdx < totalQuestions - 1) {
       setCurrentQIdx((prev) => prev + 1);
     }
@@ -120,6 +126,7 @@ export default function ClassroomQuizView({
   const isPassed = scorePercent >= passingScore;
 
   const handleSubmitQuiz = () => {
+    if (!isCurrentQAnswered) return;
     setIsSubmitted(true);
     if (onQuizSubmitted) {
       onQuizSubmitted({
@@ -234,6 +241,17 @@ export default function ClassroomQuizView({
                   );
                 })}
               </div>
+
+              {!isCurrentQAnswered && (
+                <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200/80 px-3 py-2 text-xs font-semibold text-amber-800 flex items-center gap-1.5">
+                  <span>⚠️</span>
+                  <span>
+                    {isBn
+                      ? "পরবর্তী প্রশ্নে যেতে অনুগ্রহ করে একটি উত্তর নির্বাচন করুন।"
+                      : "Please select an answer to activate the Next button."}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Bottom Actions */}
@@ -272,7 +290,8 @@ export default function ClassroomQuizView({
                     variant="secondary"
                     size="sm"
                     onClick={handleNextQ}
-                    className="gap-1.5"
+                    disabled={!isCurrentQAnswered}
+                    className="gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <span>{isBn ? "পরবর্তী প্রশ্ন" : "Next Question"}</span>
                     <ChevronRight className="h-3.5 w-3.5" />
@@ -283,8 +302,8 @@ export default function ClassroomQuizView({
                     variant="primary"
                     size="sm"
                     onClick={handleSubmitQuiz}
-                    disabled={Object.keys(selectedAnswers).length === 0}
-                    className="gap-1.5 font-bold"
+                    disabled={!isCurrentQAnswered}
+                    className="gap-1.5 font-bold disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     <CheckCircle2 className="h-4 w-4" />
                     <span>{isBn ? "কুইজ জমা দিন" : "Submit Quiz"}</span>
@@ -326,8 +345,8 @@ export default function ClassroomQuizView({
                       {isPassed
                         ? isFinalExam
                           ? isBn
-                            ? "🎉 উত্তীর্ণ হয়েছেন! ভেরিফাইড সার্টিফিকেট জেনারেট হয়েছে"
-                            : "🎉 Passed! Verified Certificate Generated"
+                            ? "🎉 সকল মডিউল উত্তীর্ণ! এবার চূড়ান্ত সার্টিফিকেশন পরীক্ষা দিন"
+                            : "🎉 All Modules Passed! Take Final Certification Exam"
                           : isEnrollRequiredForNext
                             ? isBn
                               ? "🎉 ১ম মডিউল উত্তীর্ণ! মডিউল ২ দেখতে সম্পূর্ণ কোর্সে ভর্তি আবশ্যক"
@@ -365,10 +384,11 @@ export default function ClassroomQuizView({
 
                 {isPassed && isFinalExam && (
                   <Link
-                    href="/user-dashboard/certificates"
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs"
+                    href={`/courses/${courseSlug || courseId}/quiz`}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-bold transition shadow-xs"
                   >
-                    <span>{isBn ? "সার্টিফিকেট দেখুন" : "View Certificate"}</span>
+                    <Award className="h-4 w-4" />
+                    <span>{isBn ? "চূড়ান্ত সার্টিফিকেশন পরীক্ষা দিন" : "Take Final Certification Exam"}</span>
                     <ArrowRight className="h-4 w-4" />
                   </Link>
                 )}

@@ -37,7 +37,7 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
     data: publicQuizData,
     isLoading: isPublicLoading,
     error: publicError,
-  } = useGetQuizByCourseIdQuery(courseId, { skip: isLoggedIn });
+  } = useGetQuizByCourseIdQuery(courseId);
 
   const [submitQuiz, { isLoading: isSubmitting }] = useSubmitQuizMutation();
   const { data: learningData, isLoading: isLearningLoading } = useGetMyLearningCoursesQuery(
@@ -177,6 +177,42 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
     );
   }
 
+  // Enrollment required gate (403 from attempt API)
+  if (attemptError?.status === 403) {
+    return (
+      <main className="min-h-screen bg-slate-50 py-16">
+        <div className="site-container max-w-lg text-center bg-white p-8 rounded-2xl border border-amber-200 shadow-sm">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200">
+            <Lock className="h-7 w-7" />
+          </div>
+          <h2 className="text-lg font-bold text-slate-900 mb-2">
+            {isBn ? "কোর্সে ভর্তি আবশ্যক" : "Enrollment Required"}
+          </h2>
+          <p className="text-xs text-slate-600 mb-6 leading-relaxed">
+            {isBn
+              ? "চূড়ান্ত সার্টিফিকেশন পরীক্ষায় অংশ নিতে এবং অফিসিয়াল সনদ অর্জন করতে অনুগ্রহ করে এই কোর্সে ভর্তি সম্পন্ন করুন।"
+              : "To take the final certification assessment and earn your verified certificate, please enroll in this course."}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href={`/courses/${courseId}`}
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-lg bg-primary px-5 py-2.5 text-xs font-bold text-white hover:bg-primary/90 shadow-sm"
+            >
+              <span>{isBn ? "কোর্সে ভর্তি হন" : "Enroll in Course"}</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href={`/courses/learn/${courseId}`}
+              className="inline-flex items-center justify-center w-full sm:w-auto rounded-lg border border-slate-200 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              <span>{isBn ? "ক্লাসরুম দেখুন" : "View Classroom"}</span>
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   // 100% lessons prerequisite verification gate
   if (!isEligibleForQuiz) {
     return (
@@ -283,6 +319,24 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
   };
 
   const handleNext = () => {
+    const q = questions[currentQuestionIdx];
+    const qId = q?.id || q?._id || String(currentQuestionIdx);
+    const qType = q?.type || "single";
+    const curAns = selectedAnswers[qId];
+    const isAnswered =
+      qType === "multiple"
+        ? Array.isArray(curAns) && curAns.length > 0
+        : curAns !== undefined && curAns !== null && curAns !== "";
+
+    if (!isAnswered) {
+      toast.warning(
+        isBn
+          ? "অনুগ্রহ করে পরবর্তী প্রশ্নে যাওয়ার আগে একটি উত্তর নির্বাচন করুন।"
+          : "Please select an answer before proceeding to the next question."
+      );
+      return;
+    }
+
     if (currentQuestionIdx < questions.length - 1) {
       setCurrentQuestionIdx((prev) => prev + 1);
     }
@@ -290,12 +344,30 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
 
   const handlePrev = () => {
     if (currentQuestionIdx > 0) {
-      setCurrentQuestionIdx((prev) => prev + 1 - 2);
+      setCurrentQuestionIdx((prev) => prev - 1);
     }
   };
 
   const handleSubmitAnswers = async () => {
     if (isSubmitting) return;
+
+    const q = questions[currentQuestionIdx];
+    const qId = q?.id || q?._id || String(currentQuestionIdx);
+    const qType = q?.type || "single";
+    const curAns = selectedAnswers[qId];
+    const isAnswered =
+      qType === "multiple"
+        ? Array.isArray(curAns) && curAns.length > 0
+        : curAns !== undefined && curAns !== null && curAns !== "";
+
+    if (!isAnswered) {
+      toast.warning(
+        isBn
+          ? "অনুগ্রহ করে কুইজ জমা দেওয়ার আগে উত্তর নির্বাচন করুন।"
+          : "Please select an answer before submitting the quiz."
+      );
+      return;
+    }
 
     try {
       toast.loading(isBn ? "কুইজের উত্তর যাচাই করা হচ্ছে..." : "Submitting assessment...", {
@@ -304,6 +376,7 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
 
       const res = await submitQuiz({
         courseId,
+        setId: activeQuiz?.setId,
         answers: selectedAnswers,
         studentName: user?.fullName || user?.userName,
       }).unwrap();
@@ -321,8 +394,8 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
       } else {
         toast.info(
           isBn
-            ? "কুইজ সম্পন্ন হয়েছে। আপনি ফলাফল পর্যালোচনা করতে পারেন।"
-            : "Quiz submitted. You may review your answers.",
+            ? "মূল্যায়ন সম্পন্ন হয়েছে। ফেইল করলে রিটেকে নতুন প্রশ্ন সেট আসবে।"
+            : "Assessment completed. If retaking, a different question set will be served.",
           { id: "quiz-sub" }
         );
       }
@@ -334,7 +407,7 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
     }
   };
 
-  const handleRetake = () => {
+  const handleRetake = async () => {
     setSelectedAnswers({});
     setCurrentQuestionIdx(0);
     setIsSubmitted(false);
@@ -342,8 +415,12 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
     if (activeQuiz?.durationMinutes) {
       setSecondsRemaining(activeQuiz.durationMinutes * 60);
     }
-    refetchAttempt();
-    toast.info(isBn ? "কুইজ পুনরায় শুরু হয়েছে।" : "Quiz restarted. Best of luck!");
+    await refetchAttempt();
+    toast.success(
+      isBn
+        ? "রিটেক কুইজ শুরু হয়েছে (নতুন প্রশ্ন সেট লোড করা হয়েছে)।"
+        : "Retake quiz started with a new question set. Best of luck!"
+    );
   };
 
   // Format timer
@@ -359,6 +436,8 @@ export default function QuizContent({ courseId: legacyId, courseSlug }) {
         isSubmitted={isSubmitted}
         timeString={timeString}
         isBn={isBn}
+        setName={activeQuiz?.setName}
+        setNameBn={activeQuiz?.setNameBn}
       />
 
       {/* 2. Main Question Card / Result Card */}

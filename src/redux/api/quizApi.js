@@ -102,6 +102,25 @@ export const quizApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Quizzes"],
     }),
 
+    // Admin: Get Full Quiz with Question Sets
+    getAdminQuizFull: builder.query({
+      query: (courseId) => ({
+        url: endpoints.quizzes.adminFull(courseId),
+        method: "GET",
+      }),
+      providesTags: ["Quizzes"],
+    }),
+
+    // Admin: Save Question Sets and settings
+    saveQuizSets: builder.mutation({
+      query: ({ courseId, data }) => ({
+        url: endpoints.quizzes.adminSets(courseId),
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Quizzes"],
+    }),
+
     // Admin: Delete quiz
     deleteQuiz: builder.mutation({
       query: (id) => ({
@@ -119,6 +138,8 @@ export const {
   useSubmitQuizMutation,
   useGetAllQuizzesQuery,
   useGetQuestionBankQuery,
+  useGetAdminQuizFullQuery,
+  useSaveQuizSetsMutation,
   useAddQuestionToBankMutation,
   useUpdateQuestionInBankMutation,
   useDeleteQuestionFromBankMutation,

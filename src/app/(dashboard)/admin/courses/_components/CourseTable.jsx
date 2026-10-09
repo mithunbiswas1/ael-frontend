@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FaEdit, FaTrash, FaPlayCircle, FaEye } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlayCircle, FaEye, FaQuestionCircle } from "react-icons/fa";
 import {
   Table,
   TableHeader,
@@ -147,6 +147,14 @@ export default function CourseTable({
                   target="_blank"
                 >
                   <FaEye className="h-3 w-3" />
+                </Link>
+
+                <Link
+                  href={`/admin/courses/edit/${course._id || course.courseId}?tab=quizSets`}
+                  className="inline-flex items-center justify-center p-2 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors border border-indigo-200"
+                  title="Manage Final Quiz Sets"
+                >
+                  <FaQuestionCircle className="h-3 w-3" />
                 </Link>
 
                 <Link

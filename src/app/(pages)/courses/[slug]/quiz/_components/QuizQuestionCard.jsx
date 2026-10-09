@@ -31,6 +31,12 @@ export default function QuizQuestionCard({
     : currentQ.question;
   const currentAnswer = selectedAnswers[qId];
 
+  // Check if current question has an answer selected
+  const isCurrentAnswered =
+    qType === "multiple"
+      ? Array.isArray(currentAnswer) && currentAnswer.length > 0
+      : currentAnswer !== undefined && currentAnswer !== null && currentAnswer !== "";
+
   // Answered count calculation across all questions
   const answeredCount = Object.keys(selectedAnswers).filter((k) => {
     const val = selectedAnswers[k];
@@ -92,7 +98,7 @@ export default function QuizQuestionCard({
       </div>
 
       {/* Options List */}
-      <div className="space-y-3 mb-8">
+      <div className="space-y-3 mb-6">
         {qType === "true_false" ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {currentQ.options?.map((opt, optIdx) => {
@@ -180,6 +186,18 @@ export default function QuizQuestionCard({
         )}
       </div>
 
+      {/* Answer selection reminder if none selected */}
+      {!isCurrentAnswered && (
+        <div className="mb-4 rounded-lg bg-amber-50 border border-amber-200/80 px-3 py-2 text-xs font-semibold text-amber-800 flex items-center gap-1.5">
+          <span>⚠️</span>
+          <span>
+            {isBn
+              ? "পরবর্তী প্রশ্নে যেতে অনুগ্রহ করে একটি উত্তর নির্বাচন করুন।"
+              : "Please select an answer to activate the Next button."}
+          </span>
+        </div>
+      )}
+
       {/* Navigation & Submit Buttons */}
       <div className="flex items-center justify-between border-t border-slate-100 pt-6 gap-2">
         <button
@@ -196,7 +214,12 @@ export default function QuizQuestionCard({
           <button
             type="button"
             onClick={handleSubmit}
-            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 sm:px-6 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 transition-colors shadow-xs cursor-pointer"
+            disabled={!isCurrentAnswered}
+            className={`flex items-center gap-1.5 rounded-lg px-4 sm:px-6 py-2.5 text-xs font-bold transition-all shadow-xs ${
+              isCurrentAnswered
+                ? "bg-emerald-600 text-white hover:bg-emerald-700 cursor-pointer"
+                : "bg-slate-200 text-slate-400 cursor-not-allowed pointer-events-none"
+            }`}
           >
             <Award className="h-4 w-4" />
             <span>{isBn ? "কুইজ জমা দিন" : "Submit Quiz"}</span>
@@ -205,7 +228,12 @@ export default function QuizQuestionCard({
           <button
             type="button"
             onClick={handleNext}
-            className="flex items-center gap-1 rounded-lg bg-primary px-3.5 sm:px-5 py-2 text-xs font-bold text-white hover:bg-primary/90 transition-colors shadow-xs cursor-pointer"
+            disabled={!isCurrentAnswered}
+            className={`flex items-center gap-1 rounded-lg px-3.5 sm:px-5 py-2 text-xs font-bold transition-all shadow-xs ${
+              isCurrentAnswered
+                ? "bg-primary text-white hover:bg-primary/90 cursor-pointer"
+                : "bg-slate-200 text-slate-400 cursor-not-allowed pointer-events-none"
+            }`}
           >
             <span>{isBn ? "পরবর্তী" : "Next"}</span>
             <ChevronRight className="h-4 w-4" />

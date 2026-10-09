@@ -294,6 +294,40 @@ export default async function CourseOverviewSection({ course }) {
             );
           })}
         </Accordion>
+
+        {/* Culminating Step: Final Course Assessment & Certification */}
+        <div className="mt-4 rounded-xl border border-amber-300/80 bg-amber-50/50 p-4 sm:p-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-amber-100 text-amber-800 shrink-0">
+                <Award className="h-5 w-5" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-mono text-[10px] font-black text-amber-900 bg-amber-200/80 px-2 py-0.5 rounded uppercase">
+                    {isBn ? "কোর্স সমাপনী পরীক্ষা" : "FINAL CERTIFICATION EXAM"}
+                  </span>
+                  <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded">
+                    {isBn ? "ভেরিফাইড সার্টিফিকেট" : "VERIFIED CERTIFICATE"}
+                  </span>
+                </div>
+                <h3 className="font-bold text-xs sm:text-sm text-slate-900 mt-1">
+                  {isBn ? "চূড়ান্ত সার্টিফিকেশন পরীক্ষা ও সনদ প্রদান" : "Course Certification Assessment"}
+                </h3>
+                <p className="text-xs text-slate-600 mt-0.5">
+                  {isBn
+                    ? "সকল মডিউলের পাঠ শেষে স্বয়ংক্রিয়ভাবে ভিন্ন প্রশ্ন সেট দিয়ে পরীক্ষা অনুষ্ঠিত হয়। ৭০% স্কোরে পাস করলেই ডিজিটাল সার্টিফিকেট ইস্যু হবে।"
+                    : "Final exam with dynamic question sets. Score 70% or higher to earn your verifiable certificate."}
+                </p>
+              </div>
+            </div>
+            <div className="shrink-0">
+              <span className="inline-flex items-center gap-1 rounded-lg bg-primary text-white px-3.5 py-1.5 text-xs font-bold shadow-2xs">
+                <span>{isBn ? "পাসিং মার্ক ৭০%" : "70% Pass Mark"}</span>
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Box 4: Lead Instructor */}

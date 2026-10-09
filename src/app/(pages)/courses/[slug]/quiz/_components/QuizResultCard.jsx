@@ -141,9 +141,21 @@ export default function QuizResultCard({
           </div>
         )}
 
+        {/* Retake Notice: Next attempt will be a different question set */}
+        {!isPassed && (
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2 text-xs font-semibold text-indigo-900 bg-indigo-50 border border-indigo-200 px-4 py-2.5 rounded-xl text-center">
+            <RotateCcw className="h-4 w-4 text-indigo-600 shrink-0" />
+            <span>
+              {isBn
+                ? "রিটেক নিয়ম: আপনি এই সেটে উত্তীর্ণ হতে পারেননি। পরবর্তী রিটেক পরীক্ষায় আপনার জন্য সম্পূর্ণ ভিন্ন একটি প্রশ্ন সেট আসবে।"
+                : "Retake Rule: You did not qualify in this set. A different random question set will be provided on your next attempt."}
+            </span>
+          </div>
+        )}
+
         {/* Cooldown Timer Note (When failed) */}
         {!isPassed && cooldownRemaining > 0 && (
-          <div className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl">
+          <div className="mt-2 inline-flex items-center gap-2 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-4 py-2 rounded-xl">
             <Clock className="h-4 w-4 text-amber-600 shrink-0 animate-spin" />
             <span>
               {isBn
@@ -200,8 +212,8 @@ export default function QuizResultCard({
                     ? `অপেক্ষা করুন (${formatCooldown(cooldownRemaining)})`
                     : `Wait (${formatCooldown(cooldownRemaining)})`
                   : isBn
-                    ? "পুনরায় কুইজ শুরু করুন"
-                    : "Retry Assessment"}
+                    ? "নতুন সেটে পুনরায় পরীক্ষা দিন (Retake Exam)"
+                    : "Retake Exam (New Question Set)"}
               </span>
             </button>
           </>

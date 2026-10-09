@@ -322,29 +322,16 @@ export default function ClassroomPlaylistSidebar({
                 </p>
 
                 <div className="mt-3">
-                  {modules.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!hasFullAccess && modules.length > 1) {
-                          if (onSelectLockedLesson) {
-                            onSelectLockedLesson({ moduleIdx: modules.length - 1, isPremiumLocked: true });
-                          }
-                          return;
-                        }
-                        const lastModIdx = modules.length - 1;
-                        const lastMod = modules[lastModIdx];
-                        if (onTakeModuleQuiz) onTakeModuleQuiz(lastMod, lastModIdx);
-                      }}
-                      className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary/90 transition shadow-2xs cursor-pointer"
-                    >
-                      <span>
-                        {completedLessonIds.length >= lessons.length && lessons.length > 0
-                          ? isBn ? "পরীক্ষা শুরু করুন" : "Start Certification Exam"
-                          : isBn ? "সার্টিফিকেশন এক্সাম দেখুন" : "View Certification Exam"}
-                      </span>
-                    </button>
-                  )}
+                  <Link
+                    href={`/courses/${courseSlug}/quiz`}
+                    className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-primary text-white text-xs font-bold hover:bg-primary/90 transition shadow-2xs cursor-pointer"
+                  >
+                    <span>
+                      {completedLessonIds.length >= lessons.length && lessons.length > 0
+                        ? isBn ? "পরীক্ষা শুরু করুন" : "Start Certification Exam"
+                        : isBn ? "সার্টিফিকেশন পরীক্ষা পেইজ" : "Certification Assessment Page"}
+                    </span>
+                  </Link>
                 </div>
               </div>
             </div>

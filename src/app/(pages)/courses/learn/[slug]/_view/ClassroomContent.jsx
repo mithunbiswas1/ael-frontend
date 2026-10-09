@@ -13,6 +13,7 @@ import {
   LogIn,
   BookOpen,
   ArrowRight,
+  Award,
 } from "lucide-react";
 import ClassroomHeader from "../_components/ClassroomHeader";
 import ClassroomVideoPlayer from "../_components/ClassroomVideoPlayer";
@@ -78,6 +79,7 @@ export default function ClassroomContent({ courseSlug }) {
   const [moduleQuizResults, setModuleQuizResults] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("notes");
+  const [isCourseCompletedModalOpen, setIsCourseCompletedModalOpen] = useState(false);
 
   // Reset learning state whenever logged-in user changes (prevents progress bleed between accounts)
   const lastUserIdRef = useRef(user?._id);
@@ -779,6 +781,7 @@ export default function ClassroomContent({ courseSlug }) {
         return;
       }
 
+      setIsCourseCompletedModalOpen(true);
       toast.success(
         isBn
           ? "🎉 অভিনন্দন! আপনি এই কোর্সের সকল পাঠ সফলভাবে সম্পন্ন করেছেন।"
@@ -953,10 +956,11 @@ export default function ClassroomContent({ courseSlug }) {
     if (isPassed) {
       const totalMods = modules.length;
       if (moduleIndex >= totalMods - 1) {
+        setIsCourseCompletedModalOpen(true);
         toast.success(
           isBn
-            ? "🎓 অভিনন্দন! আপনি ফাইনাল সার্টিফিকেশন পরীক্ষায় পাস করেছেন এবং আপনার সার্টিফিকেট তৈরি হয়েছে!"
-            : "🎓 Congratulations! You passed the Certification Exam and earned your certificate!"
+            ? "🎓 চমৎকার! সকল মডিউল সম্পন্ন হয়েছে। এবার সার্টিফিকেট অর্জনে ফাইনাল সার্টিফিকেশন পরীক্ষা দিন!"
+            : "🎓 Great job! All modules completed. Take the Final Certification Exam to earn your certificate!"
         );
       } else if (moduleIndex === 0 && !isCourseFree && !hasFullAccess) {
         // Module 1 finished! Open Checkout Modal immediately!
@@ -1066,6 +1070,7 @@ export default function ClassroomContent({ courseSlug }) {
         {activeView.type === "quiz" ? (
           <ClassroomQuizView
             courseId={canonicalCourseId}
+            courseSlug={canonicalSlug}
             moduleData={modules[activeView.moduleIdx]}
             moduleIndex={activeView.moduleIdx}
             totalModules={modules.length}
@@ -1182,6 +1187,51 @@ export default function ClassroomContent({ courseSlug }) {
             >
               <span>{isBn ? `কোর্সে ভর্তি হন (৳ ${course?.price})` : `Enroll (৳ ${course?.price})`}</span>
               <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </Dialog>
+
+      {/* 4. Course Completion / Final Exam Prompt Modal */}
+      <Dialog
+        isOpen={isCourseCompletedModalOpen}
+        onClose={() => setIsCourseCompletedModalOpen(false)}
+        maxWidth="md"
+        title={isBn ? "কোর্স সম্পন্ন হয়েছে!" : "Course Lessons Completed!"}
+      >
+        <div className="p-6 text-center space-y-4">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200">
+            <Award className="h-9 w-9" />
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold text-slate-900">
+              {isBn ? "🎉 অভিনন্দন! সকল পাঠ সম্পন্ন হয়েছে" : "🎉 Congratulations! All Lessons Completed"}
+            </h3>
+            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+              {isBn
+                ? "আপনি সফলভাবে এই কোর্সের সকল পাঠ শেষ করেছেন। আপনার অফিসিয়াল ডিজিটাল সার্টিফিকেট অর্জন করতে সমাপনী সার্টিফিকেশন পরীক্ষা দিন।"
+                : "You have successfully finished all curriculum lessons. Proceed to the Final Certification Exam to test your knowledge and receive your verified certificate."}
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <Link
+              href={`/courses/${canonicalSlug}/quiz`}
+              className="inline-flex items-center justify-center gap-2 w-full sm:w-auto rounded-lg bg-primary hover:bg-primary/90 px-5 py-2.5 text-xs font-bold text-white transition shadow-sm"
+            >
+              <Award className="h-4 w-4" />
+              <span>{isBn ? "চূড়ান্ত পরীক্ষা শুরু করুন" : "Start Certification Exam"}</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsCourseCompletedModalOpen(false)}
+              className="w-full sm:w-auto"
+            >
+              <span>{isBn ? "ক্লাসরুমে থাকুন" : "Stay in Classroom"}</span>
             </Button>
           </div>
         </div>

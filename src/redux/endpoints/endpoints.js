@@ -108,6 +108,8 @@ export const endpoints = {
     questionBank: (courseId) => `quizzes/admin/${courseId}/questions`,
     questionItem: (courseId, qId) => `quizzes/admin/${courseId}/questions/${qId}`,
     settings: (courseId) => `quizzes/admin/${courseId}/settings`,
+    adminFull: (courseId) => `quizzes/admin/${courseId}/full`,
+    adminSets: (courseId) => `quizzes/admin/${courseId}/sets`,
   },
 
   // CMS Pages API

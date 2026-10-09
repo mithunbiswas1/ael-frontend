@@ -4,8 +4,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import CourseQuizSetsEditor from "./CourseQuizSetsEditor";
 import {
   ArrowLeft,
   Plus,
@@ -53,8 +54,11 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
 
   const isSaving = isCreating || isUpdating;
 
+  const searchParams = useSearchParams();
+  const initialTab = searchParams?.get("tab") || "modules";
+
   // Active navigation tab
-  const [activeTab, setActiveTab] = useState("modules"); // 'info' | 'modules' | 'instructor'
+  const [activeTab, setActiveTab] = useState(initialTab); // 'modules' | 'info' | 'instructor' | 'quizSets'
 
   // Expanded modules state: set of module indices
   const [expandedModules, setExpandedModules] = useState(() => new Set([0]));
@@ -712,6 +716,16 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
           icon={UserCheck}
         >
           Instructor & Banner
+        </Button>
+
+        <Button
+          type="button"
+          variant={activeTab === "quizSets" ? "tab-active" : "tab"}
+          size="sm"
+          onClick={() => setActiveTab("quizSets")}
+          icon={HelpCircle}
+        >
+          <span>Final Quiz Sets</span>
         </Button>
       </div>
 
@@ -1802,6 +1816,36 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
               />
             </div>
           </div>
+        </div>
+      )}
+
+      {/* TAB 4: FINAL QUIZ QUESTION SETS */}
+      {activeTab === "quizSets" && (
+        <div className="space-y-6">
+          {formData.courseId || initialData?.courseId || initialData?._id ? (
+            <CourseQuizSetsEditor
+              courseId={formData.courseId || initialData?.courseId || initialData?._id}
+              courseTitle={formData.title}
+            />
+          ) : (
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-8 text-center space-y-3">
+              <AlertCircle className="h-8 w-8 text-amber-500 mx-auto" />
+              <h3 className="text-sm font-bold text-amber-900">
+                Course Must Be Saved First
+              </h3>
+              <p className="text-xs text-amber-700 max-w-md mx-auto">
+                Please fill in the course details and click &quot;Save Course&quot; first to create this course. Once saved, you can add and manage multiple Question Sets right here.
+              </p>
+              <Button
+                type="button"
+                onClick={() => setActiveTab("info")}
+                variant="secondary"
+                size="xs"
+              >
+                Go to Course Details & Pricing
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </form>
