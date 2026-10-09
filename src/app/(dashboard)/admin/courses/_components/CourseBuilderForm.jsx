@@ -757,7 +757,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                       : "text-slate-600 hover:text-slate-900"
                       }`}
                   >
-                    <span> Free Course (ফ্রি কোর্স)</span>
+                    <span> Free Course</span>
                   </button>
 
                   <button
@@ -775,7 +775,7 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
                       : "text-slate-600 hover:text-slate-900"
                       }`}
                   >
-                    <span>Paid Course (পেইড কোর্স)</span>
+                    <span>Paid Course</span>
                   </button>
                 </div>
               </div>
@@ -844,721 +844,721 @@ export default function CourseBuilderForm({ initialData = null, isEdit = false }
               </div>
             ) : (
               formData.curriculum.map((module, modIdx) => {
-              const isExpanded = expandedModules.has(modIdx);
-              const lessonCount = module.lessons?.length || 0;
-              const quizQuestionsCount = module.quiz?.questions?.length || 0;
-              const isFirstModuleInPaid = formData.price > 0 && modIdx === 0;
+                const isExpanded = expandedModules.has(modIdx);
+                const lessonCount = module.lessons?.length || 0;
+                const quizQuestionsCount = module.quiz?.questions?.length || 0;
+                const isFirstModuleInPaid = formData.price > 0 && modIdx === 0;
 
-              return (
-                <div
-                  key={modIdx}
-                  className={`bg-white rounded-2xl border transition-all ${isFirstModuleInPaid || formData.price === 0
-                    ? "border-emerald-300 ring-1 ring-emerald-200/50"
-                    : "border-slate-200"
-                    }`}
-                >
-                  {/* Module Header Bar (Click anywhere to collapse / expand) */}
+                return (
                   <div
-                    onClick={() => toggleModule(modIdx)}
-                    className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 cursor-pointer select-none hover:bg-slate-50/80 transition-colors"
+                    key={modIdx}
+                    className={`bg-white rounded-2xl border transition-all ${isFirstModuleInPaid || formData.price === 0
+                      ? "border-emerald-300 ring-1 ring-emerald-200/50"
+                      : "border-slate-200"
+                      }`}
                   >
-                    <div className="flex items-center gap-3 flex-1">
-                      <Button
-                        type="button"
-                        variant="subtle"
-                        size="icon-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleModule(modIdx);
-                        }}
-                      >
-                        {isExpanded ? (
-                          <ChevronUp className="h-4 w-4" />
-                        ) : (
-                          <ChevronDown className="h-4 w-4" />
-                        )}
-                      </Button>
-
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="mono" size="xs">
-                            Module {modIdx + 1}
-                          </Badge>
-                          <span className="font-bold text-slate-900 text-sm">
-                            {module.moduleTitle || `Module ${modIdx + 1}`}
-                          </span>
-                          {formData.price === 0 ? (
-                            <Badge variant="pill-success" size="xs" icon={Check}>
-                              100% FREE MODULE
-                            </Badge>
-                          ) : modIdx === 0 ? (
-                            <Badge variant="pill-success" size="xs" icon={Check}>
-                              MODULE 1: ALL-TIME FREE PREVIEW
-                            </Badge>
-                          ) : (
-                            <Badge variant="pill-neutral" size="xs">
-                              MODULE {modIdx + 1}: ENROLLED ONLY
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-0.5">
-                          <span>{lessonCount} Videos/Lessons</span>
-                          <span>•</span>
-                          <span>{quizQuestionsCount} Quiz Questions</span>
-                          {module.moduleTitleBn && (
-                            <>
-                              <span>•</span>
-                              <span className="font-serif text-slate-600">{module.moduleTitleBn}</span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
+                    {/* Module Header Bar (Click anywhere to collapse / expand) */}
                     <div
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-2 self-end sm:self-center"
+                      onClick={() => toggleModule(modIdx)}
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 cursor-pointer select-none hover:bg-slate-50/80 transition-colors"
                     >
-                      <Button
-                        type="button"
-                        variant="danger-soft"
-                        size="icon-sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeModule(modIdx);
-                        }}
-                        title="Delete Module"
+                      <div className="flex items-center gap-3 flex-1">
+                        <Button
+                          type="button"
+                          variant="subtle"
+                          size="icon-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleModule(modIdx);
+                          }}
+                        >
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </Button>
+
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge variant="mono" size="xs">
+                              Module {modIdx + 1}
+                            </Badge>
+                            <span className="font-bold text-slate-900 text-sm">
+                              {module.moduleTitle || `Module ${modIdx + 1}`}
+                            </span>
+                            {formData.price === 0 ? (
+                              <Badge variant="pill-success" size="xs" icon={Check}>
+                                100% FREE MODULE
+                              </Badge>
+                            ) : modIdx === 0 ? (
+                              <Badge variant="pill-success" size="xs" icon={Check}>
+                                MODULE 1: ALL-TIME FREE PREVIEW
+                              </Badge>
+                            ) : (
+                              <Badge variant="pill-neutral" size="xs">
+                                MODULE {modIdx + 1}: ENROLLED ONLY
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-3 text-[11px] text-slate-500 mt-0.5">
+                            <span>{lessonCount} Videos/Lessons</span>
+                            <span>•</span>
+                            <span>{quizQuestionsCount} Quiz Questions</span>
+                            {module.moduleTitleBn && (
+                              <>
+                                <span>•</span>
+                                <span className="font-serif text-slate-600">{module.moduleTitleBn}</span>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center gap-2 self-end sm:self-center"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
+                        <Button
+                          type="button"
+                          variant="danger-soft"
+                          size="icon-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeModule(modIdx);
+                          }}
+                          title="Delete Module"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Module Content Body */}
-                  {isExpanded && (
-                    <div className="p-4 sm:p-5 space-y-6 bg-slate-50/50">
-                      {/* Module Titles */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
-                        <Input
-                          label="Module Title"
-                          value={module.moduleTitle}
-                          onChange={(e) =>
-                            updateModuleField(modIdx, "moduleTitle", e.target.value)
-                          }
-                          placeholder="e.g. Module 1: LPG Cylinder Fire Safety Essentials"
-                        />
-                        <Input
-                          label="মডিউল টাইটেল"
-                          value={module.moduleTitleBn || ""}
-                          onChange={(e) =>
-                            updateModuleField(modIdx, "moduleTitleBn", e.target.value)
-                          }
-                          placeholder="যেমন: মডিউল ১: এলপিজি সিলিন্ডার অগ্নিনিরাপত্তা নির্দেশিকা"
-                          className="font-serif"
-                        />
-                      </div>
-
-                      {/* SECTION: Video Lessons in this Module */}
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                            <Video className="h-4 w-4 text-primary" />
-                            <span>Module Lessons & Videos ({lessonCount})</span>
-                          </h3>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="xs"
-                            onClick={() => addLesson(modIdx)}
-                            icon={Plus}
-                          >
-                            Add Video Lesson
-                          </Button>
-                        </div>
-
-                        {module.lessons?.map((lesson, lIdx) => (
-                          <div
-                            key={lIdx}
-                            className="bg-white p-4 rounded-xl border border-slate-200 space-y-3"
-                          >
-                            <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
-                              <span className="font-bold text-xs text-slate-700">
-                                Lesson {lIdx + 1}
-                              </span>
-                              <Button
-                                type="button"
-                                variant="danger-soft"
-                                size="icon-xs"
-                                onClick={() => removeLesson(modIdx, lIdx)}
-                                title="Remove Lesson"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                              <div className="sm:col-span-2">
-                                <Input
-                                  label="Lesson Title"
-                                  size="sm"
-                                  value={lesson.title}
-                                  onChange={(e) =>
-                                    updateLesson(modIdx, lIdx, "title", e.target.value)
-                                  }
-                                  placeholder="e.g. Lesson 1: Inspection & Leak Testing"
-                                />
-                              </div>
-                              <div>
-                                <Input
-                                  label="Duration"
-                                  size="sm"
-                                  value={lesson.duration}
-                                  onChange={(e) =>
-                                    updateLesson(modIdx, lIdx, "duration", e.target.value)
-                                  }
-                                  placeholder="e.g. 15 mins"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                              <div className="sm:col-span-2">
-                                <Input
-                                  label="পাঠের শিরোনাম"
-                                  size="sm"
-                                  value={lesson.titleBn || ""}
-                                  onChange={(e) =>
-                                    updateLesson(modIdx, lIdx, "titleBn", e.target.value)
-                                  }
-                                  placeholder="যেমন: পাঠ ১: সিলিন্ডার নিরীক্ষণ ও লিকেজ টেস্ট"
-                                  className="font-serif"
-                                />
-                              </div>
-                              <div>
-                                <Input
-                                  label="সময়কাল"
-                                  size="sm"
-                                  value={lesson.durationBn || ""}
-                                  onChange={(e) =>
-                                    updateLesson(modIdx, lIdx, "durationBn", e.target.value)
-                                  }
-                                  placeholder="যেমন: ১৫ মিনিট"
-                                  className="font-serif"
-                                />
-                              </div>
-                            </div>
-
-                            {/* Direct Video Upload for Lesson - NO URL LINK */}
-                            <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                              <div className="flex items-center justify-between">
-                                <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-                                  <Video className="h-3.5 w-3.5 text-primary" />
-                                  <span>Lesson Video File (Direct Video Upload) *</span>
-                                </label>
-                                {lesson.videoUrl && (
-                                  <Badge variant="success" size="xs">
-                                    ✓ Video Uploaded
-                                  </Badge>
-                                )}
-                              </div>
-
-                              {lesson.videoUrl ? (
-                                <div className="space-y-2 bg-white p-3 rounded-lg border border-slate-200">
-                                  <div className="relative rounded-lg overflow-hidden bg-black max-w-sm border border-slate-300">
-                                    <video
-                                      src={lesson.videoUrl}
-                                      controls
-                                      className="w-full max-h-40 object-contain"
-                                    />
-                                  </div>
-                                  <div className="flex items-center gap-2 pt-1">
-                                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer border border-slate-300 transition-colors">
-                                      <Upload className="h-3.5 w-3.5" />
-                                      <span>Change / Re-upload Video</span>
-                                      <input
-                                        type="file"
-                                        accept="video/*"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                          const file = e.target.files?.[0];
-                                          if (file) handleLessonVideoUpload(file, modIdx, lIdx);
-                                        }}
-                                      />
-                                    </label>
-                                    <Button
-                                      type="button"
-                                      variant="danger-ghost"
-                                      size="xs"
-                                      onClick={() => updateLesson(modIdx, lIdx, "videoUrl", "")}
-                                    >
-                                      Remove
-                                    </Button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  onDragOver={(e) => e.preventDefault()}
-                                  onDrop={(e) => {
-                                    e.preventDefault();
-                                    const file = e.dataTransfer.files?.[0];
-                                    if (file) handleLessonVideoUpload(file, modIdx, lIdx);
-                                  }}
-                                  className={`border-2 border-dashed rounded-xl p-5 text-center transition-colors ${uploadingLessonKey === `${modIdx}_${lIdx}`
-                                    ? "border-primary bg-primary/5"
-                                    : "border-slate-300 bg-white hover:border-primary/60 hover:bg-slate-50"
-                                    }`}
-                                >
-                                  {uploadingLessonKey === `${modIdx}_${lIdx}` ? (
-                                    <div className="py-3 px-4 space-y-2.5 max-w-md mx-auto">
-                                      <div className="flex items-center justify-between text-xs font-bold text-slate-800">
-                                        <span className="flex items-center gap-1.5 text-primary">
-                                          <Upload className="h-4 w-4 animate-bounce" />
-                                          <span>ভিডিও ফাইল আপলোড হচ্ছে...</span>
-                                        </span>
-                                        <span className="font-mono text-primary font-bold">
-                                          {uploadProgressMap[`${modIdx}_${lIdx}`]?.percent || 0}%
-                                        </span>
-                                      </div>
-
-                                      {/* Real-time Animated Progress Bar */}
-                                      <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
-                                        <div
-                                          className="bg-primary h-full transition-all duration-200 rounded-full"
-                                          style={{
-                                            width: `${Math.max(5, uploadProgressMap[`${modIdx}_${lIdx}`]?.percent || 0)}%`,
-                                          }}
-                                        />
-                                      </div>
-
-                                      <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
-                                        <span>
-                                          {uploadProgressMap[`${modIdx}_${lIdx}`]?.loadedMB || "0"} MB /{" "}
-                                          {uploadProgressMap[`${modIdx}_${lIdx}`]?.totalMB || "0"} MB
-                                        </span>
-                                        <span className="text-slate-400">
-                                          (১জিবি পর্যন্ত ও ১০ মিনিট সমর্থিত)
-                                        </span>
-                                      </div>
-                                      <p className="text-[10px] text-slate-400">
-                                        আপলোড চলাকালীন পৃষ্ঠাটি বন্ধ বা রিলোড করবেন না।
-                                      </p>
-                                    </div>
-                                  ) : (
-                                    <label className="cursor-pointer block space-y-1.5">
-                                      <div className="mx-auto h-9 w-9 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-1">
-                                        <Upload className="h-4 w-4" />
-                                      </div>
-                                      <p className="text-xs font-bold text-slate-800">
-                                        ভিডিও ফাইল আপলোড করতে ক্লিক করুন বা ড্র্যাগ করুন (১জিবি পর্যন্ত)
-                                      </p>
-                                      <p className="text-[11px] text-slate-500">
-                                        MP4, WebM, MOV, MKV সমর্থিত (সর্বোচ্চ ১জিবি / 1GB)
-                                      </p>
-                                      <input
-                                        type="file"
-                                        accept="video/*"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                          const file = e.target.files?.[0];
-                                          if (file) handleLessonVideoUpload(file, modIdx, lIdx);
-                                        }}
-                                      />
-                                    </label>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Optional Lesson PDF Handout / Reading File */}
-                            <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
-                              <div className="flex items-center justify-between">
-                                <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
-                                  <FileText className="h-3.5 w-3.5 text-primary" />
-                                  <span>Lesson PDF Handout / Notes (Optional)</span>
-                                </label>
-                                {lesson.pdfUrl && (
-                                  <Badge variant="success" size="xs">
-                                    ✓ PDF Attached
-                                  </Badge>
-                                )}
-                              </div>
-
-                              {lesson.pdfUrl ? (
-                                <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <FileText className="h-4 w-4 text-rose-600 shrink-0" />
-                                    <span className="text-xs font-semibold text-slate-800 truncate">
-                                      {lesson.pdfOriginalName || "Lesson-Handout.pdf"}
-                                    </span>
-                                  </div>
-                                  <div className="flex items-center gap-1.5 shrink-0">
-                                    <a
-                                      href={lesson.pdfUrl}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="p-1.5 rounded-md hover:bg-slate-100 text-slate-600 text-xs"
-                                      title="Preview PDF"
-                                    >
-                                      <Eye className="h-3.5 w-3.5" />
-                                    </a>
-                                    <Button
-                                      type="button"
-                                      variant="danger-ghost"
-                                      size="xs"
-                                      onClick={() => {
-                                        updateLesson(modIdx, lIdx, "pdfUrl", "");
-                                        updateLesson(modIdx, lIdx, "pdfOriginalName", "");
-                                      }}
-                                    >
-                                      Remove
-                                    </Button>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="bg-white p-2 rounded-lg border border-dashed border-slate-300 text-center">
-                                  {uploadingLessonPdfKey === `${modIdx}_${lIdx}` ? (
-                                    <div className="py-1 text-xs text-primary font-semibold flex items-center justify-center gap-2">
-                                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-                                      <span>Uploading PDF handout...</span>
-                                    </div>
-                                  ) : (
-                                    <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-primary font-medium py-1 px-2">
-                                      <Upload className="h-3.5 w-3.5 text-slate-400" />
-                                      <span>Upload lesson PDF document (e.g. slides, notes)</span>
-                                      <input
-                                        type="file"
-                                        accept=".pdf,application/pdf"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                          const file = e.target.files?.[0];
-                                          if (file) handleLessonPdfUpload(file, modIdx, lIdx);
-                                        }}
-                                      />
-                                    </label>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* SECTION: Module Quiz Attached directly to this module */}
-                      <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                          <div>
-                            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                              <HelpCircle className="h-4 w-4 text-amber-500" />
-                              <span>Module Quiz ({quizQuestionsCount} Questions)</span>
-                            </h3>
-                            <p className="text-[11px] text-slate-500 mt-0.5">
-                              Students will be tested on this module&apos;s material right after completing its lessons.
-                            </p>
-                          </div>
-
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="xs"
-                            onClick={() => addQuestionToQuiz(modIdx)}
-                            icon={Plus}
-                          >
-                            Add Question
-                          </Button>
-                        </div>
-
-                        {/* Quiz Metadata (Duration, Passing Score, Titles) */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    {/* Module Content Body */}
+                    {isExpanded && (
+                      <div className="p-4 sm:p-5 space-y-6 bg-slate-50/50">
+                        {/* Module Titles */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-200">
                           <Input
-                            label="Quiz Title"
-                            size="sm"
-                            value={module.quiz?.title || ""}
-                            onChange={(e) => {
-                              const quiz = { ...(module.quiz || {}), title: e.target.value };
-                              updateModuleField(modIdx, "quiz", quiz);
-                            }}
-                            placeholder={`Module ${modIdx + 1} Assessment Quiz`}
+                            label="Module Title"
+                            value={module.moduleTitle}
+                            onChange={(e) =>
+                              updateModuleField(modIdx, "moduleTitle", e.target.value)
+                            }
+                            placeholder="e.g. Module 1: LPG Cylinder Fire Safety Essentials"
                           />
-
                           <Input
-                            label="কুইজের শিরোনাম"
-                            size="sm"
-                            value={module.quiz?.titleBn || ""}
-                            onChange={(e) => {
-                              const quiz = { ...(module.quiz || {}), titleBn: e.target.value };
-                              updateModuleField(modIdx, "quiz", quiz);
-                            }}
-                            placeholder={`মডিউল ${modIdx + 1} মূল্যায়ন কুইজ`}
+                            label="মডিউল টাইটেল"
+                            value={module.moduleTitleBn || ""}
+                            onChange={(e) =>
+                              updateModuleField(modIdx, "moduleTitleBn", e.target.value)
+                            }
+                            placeholder="যেমন: মডিউল ১: এলপিজি সিলিন্ডার অগ্নিনিরাপত্তা নির্দেশিকা"
                             className="font-serif"
                           />
-
-                          <Input
-                            type="number"
-                            label="Duration (Minutes)"
-                            size="sm"
-                            min="1"
-                            max="180"
-                            value={module.quiz?.durationMinutes || 10}
-                            onChange={(e) => {
-                              const quiz = {
-                                ...(module.quiz || {}),
-                                durationMinutes: Number(e.target.value) || 10,
-                              };
-                              updateModuleField(modIdx, "quiz", quiz);
-                            }}
-                          />
-
-                          <Input
-                            type="number"
-                            label="Pass Percentage (%)"
-                            size="sm"
-                            min="10"
-                            max="100"
-                            value={module.quiz?.passingScore || 80}
-                            onChange={(e) => {
-                              const quiz = {
-                                ...(module.quiz || {}),
-                                passingScore: Number(e.target.value) || 80,
-                              };
-                              updateModuleField(modIdx, "quiz", quiz);
-                            }}
-                          />
                         </div>
 
-                        {/* Questions Manager with Tab Bar */}
-                        {quizQuestionsCount === 0 ? (
-                          <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50">
-                            <HelpCircle className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                            <p className="text-xs font-semibold text-slate-700">
-                              No questions added to this module quiz yet.
-                            </p>
-                            <p className="text-[11px] text-slate-500 mt-0.5 mb-3">
-                              Add interactive multiple choice questions to evaluate learner understanding.
-                            </p>
+                        {/* SECTION: Video Lessons in this Module */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                              <Video className="h-4 w-4 text-primary" />
+                              <span>Module Lessons & Videos ({lessonCount})</span>
+                            </h3>
                             <Button
                               type="button"
                               variant="secondary"
-                              size="sm"
+                              size="xs"
+                              onClick={() => addLesson(modIdx)}
+                              icon={Plus}
+                            >
+                              Add Video Lesson
+                            </Button>
+                          </div>
+
+                          {module.lessons?.map((lesson, lIdx) => (
+                            <div
+                              key={lIdx}
+                              className="bg-white p-4 rounded-xl border border-slate-200 space-y-3"
+                            >
+                              <div className="flex items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                                <span className="font-bold text-xs text-slate-700">
+                                  Lesson {lIdx + 1}
+                                </span>
+                                <Button
+                                  type="button"
+                                  variant="danger-soft"
+                                  size="icon-xs"
+                                  onClick={() => removeLesson(modIdx, lIdx)}
+                                  title="Remove Lesson"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div className="sm:col-span-2">
+                                  <Input
+                                    label="Lesson Title"
+                                    size="sm"
+                                    value={lesson.title}
+                                    onChange={(e) =>
+                                      updateLesson(modIdx, lIdx, "title", e.target.value)
+                                    }
+                                    placeholder="e.g. Lesson 1: Inspection & Leak Testing"
+                                  />
+                                </div>
+                                <div>
+                                  <Input
+                                    label="Duration"
+                                    size="sm"
+                                    value={lesson.duration}
+                                    onChange={(e) =>
+                                      updateLesson(modIdx, lIdx, "duration", e.target.value)
+                                    }
+                                    placeholder="e.g. 15 mins"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div className="sm:col-span-2">
+                                  <Input
+                                    label="পাঠের শিরোনাম"
+                                    size="sm"
+                                    value={lesson.titleBn || ""}
+                                    onChange={(e) =>
+                                      updateLesson(modIdx, lIdx, "titleBn", e.target.value)
+                                    }
+                                    placeholder="যেমন: পাঠ ১: সিলিন্ডার নিরীক্ষণ ও লিকেজ টেস্ট"
+                                    className="font-serif"
+                                  />
+                                </div>
+                                <div>
+                                  <Input
+                                    label="সময়কাল"
+                                    size="sm"
+                                    value={lesson.durationBn || ""}
+                                    onChange={(e) =>
+                                      updateLesson(modIdx, lIdx, "durationBn", e.target.value)
+                                    }
+                                    placeholder="যেমন: ১৫ মিনিট"
+                                    className="font-serif"
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Direct Video Upload for Lesson - NO URL LINK */}
+                              <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                                    <Video className="h-3.5 w-3.5 text-primary" />
+                                    <span>Lesson Video File (Direct Video Upload) *</span>
+                                  </label>
+                                  {lesson.videoUrl && (
+                                    <Badge variant="success" size="xs">
+                                      ✓ Video Uploaded
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {lesson.videoUrl ? (
+                                  <div className="space-y-2 bg-white p-3 rounded-lg border border-slate-200">
+                                    <div className="relative rounded-lg overflow-hidden bg-black max-w-sm border border-slate-300">
+                                      <video
+                                        src={lesson.videoUrl}
+                                        controls
+                                        className="w-full max-h-40 object-contain"
+                                      />
+                                    </div>
+                                    <div className="flex items-center gap-2 pt-1">
+                                      <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer border border-slate-300 transition-colors">
+                                        <Upload className="h-3.5 w-3.5" />
+                                        <span>Change / Re-upload Video</span>
+                                        <input
+                                          type="file"
+                                          accept="video/*"
+                                          className="hidden"
+                                          onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) handleLessonVideoUpload(file, modIdx, lIdx);
+                                          }}
+                                        />
+                                      </label>
+                                      <Button
+                                        type="button"
+                                        variant="danger-ghost"
+                                        size="xs"
+                                        onClick={() => updateLesson(modIdx, lIdx, "videoUrl", "")}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => {
+                                      e.preventDefault();
+                                      const file = e.dataTransfer.files?.[0];
+                                      if (file) handleLessonVideoUpload(file, modIdx, lIdx);
+                                    }}
+                                    className={`border-2 border-dashed rounded-xl p-5 text-center transition-colors ${uploadingLessonKey === `${modIdx}_${lIdx}`
+                                      ? "border-primary bg-primary/5"
+                                      : "border-slate-300 bg-white hover:border-primary/60 hover:bg-slate-50"
+                                      }`}
+                                  >
+                                    {uploadingLessonKey === `${modIdx}_${lIdx}` ? (
+                                      <div className="py-3 px-4 space-y-2.5 max-w-md mx-auto">
+                                        <div className="flex items-center justify-between text-xs font-bold text-slate-800">
+                                          <span className="flex items-center gap-1.5 text-primary">
+                                            <Upload className="h-4 w-4 animate-bounce" />
+                                            <span>ভিডিও ফাইল আপলোড হচ্ছে...</span>
+                                          </span>
+                                          <span className="font-mono text-primary font-bold">
+                                            {uploadProgressMap[`${modIdx}_${lIdx}`]?.percent || 0}%
+                                          </span>
+                                        </div>
+
+                                        {/* Real-time Animated Progress Bar */}
+                                        <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
+                                          <div
+                                            className="bg-primary h-full transition-all duration-200 rounded-full"
+                                            style={{
+                                              width: `${Math.max(5, uploadProgressMap[`${modIdx}_${lIdx}`]?.percent || 0)}%`,
+                                            }}
+                                          />
+                                        </div>
+
+                                        <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                                          <span>
+                                            {uploadProgressMap[`${modIdx}_${lIdx}`]?.loadedMB || "0"} MB /{" "}
+                                            {uploadProgressMap[`${modIdx}_${lIdx}`]?.totalMB || "0"} MB
+                                          </span>
+                                          <span className="text-slate-400">
+                                            (১জিবি পর্যন্ত ও ১০ মিনিট সমর্থিত)
+                                          </span>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400">
+                                          আপলোড চলাকালীন পৃষ্ঠাটি বন্ধ বা রিলোড করবেন না।
+                                        </p>
+                                      </div>
+                                    ) : (
+                                      <label className="cursor-pointer block space-y-1.5">
+                                        <div className="mx-auto h-9 w-9 flex items-center justify-center rounded-full bg-primary/10 text-primary mb-1">
+                                          <Upload className="h-4 w-4" />
+                                        </div>
+                                        <p className="text-xs font-bold text-slate-800">
+                                          ভিডিও ফাইল আপলোড করতে ক্লিক করুন বা ড্র্যাগ করুন (১জিবি পর্যন্ত)
+                                        </p>
+                                        <p className="text-[11px] text-slate-500">
+                                          MP4, WebM, MOV, MKV সমর্থিত (সর্বোচ্চ ১জিবি / 1GB)
+                                        </p>
+                                        <input
+                                          type="file"
+                                          accept="video/*"
+                                          className="hidden"
+                                          onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) handleLessonVideoUpload(file, modIdx, lIdx);
+                                          }}
+                                        />
+                                      </label>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Optional Lesson PDF Handout / Reading File */}
+                              <div className="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <label className="text-[11px] font-bold text-slate-800 flex items-center gap-1.5">
+                                    <FileText className="h-3.5 w-3.5 text-primary" />
+                                    <span>Lesson PDF Handout / Notes (Optional)</span>
+                                  </label>
+                                  {lesson.pdfUrl && (
+                                    <Badge variant="success" size="xs">
+                                      ✓ PDF Attached
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                {lesson.pdfUrl ? (
+                                  <div className="flex items-center justify-between gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <FileText className="h-4 w-4 text-rose-600 shrink-0" />
+                                      <span className="text-xs font-semibold text-slate-800 truncate">
+                                        {lesson.pdfOriginalName || "Lesson-Handout.pdf"}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 shrink-0">
+                                      <a
+                                        href={lesson.pdfUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="p-1.5 rounded-md hover:bg-slate-100 text-slate-600 text-xs"
+                                        title="Preview PDF"
+                                      >
+                                        <Eye className="h-3.5 w-3.5" />
+                                      </a>
+                                      <Button
+                                        type="button"
+                                        variant="danger-ghost"
+                                        size="xs"
+                                        onClick={() => {
+                                          updateLesson(modIdx, lIdx, "pdfUrl", "");
+                                          updateLesson(modIdx, lIdx, "pdfOriginalName", "");
+                                        }}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="bg-white p-2 rounded-lg border border-dashed border-slate-300 text-center">
+                                    {uploadingLessonPdfKey === `${modIdx}_${lIdx}` ? (
+                                      <div className="py-1 text-xs text-primary font-semibold flex items-center justify-center gap-2">
+                                        <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                                        <span>Uploading PDF handout...</span>
+                                      </div>
+                                    ) : (
+                                      <label className="cursor-pointer inline-flex items-center gap-1.5 text-xs text-slate-600 hover:text-primary font-medium py-1 px-2">
+                                        <Upload className="h-3.5 w-3.5 text-slate-400" />
+                                        <span>Upload lesson PDF document (e.g. slides, notes)</span>
+                                        <input
+                                          type="file"
+                                          accept=".pdf,application/pdf"
+                                          className="hidden"
+                                          onChange={(e) => {
+                                            const file = e.target.files?.[0];
+                                            if (file) handleLessonPdfUpload(file, modIdx, lIdx);
+                                          }}
+                                        />
+                                      </label>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* SECTION: Module Quiz Attached directly to this module */}
+                        <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                            <div>
+                              <h3 className="text-xs font-black uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                                <HelpCircle className="h-4 w-4 text-amber-500" />
+                                <span>Module Quiz ({quizQuestionsCount} Questions)</span>
+                              </h3>
+                              <p className="text-[11px] text-slate-500 mt-0.5">
+                                Students will be tested on this module&apos;s material right after completing its lessons.
+                              </p>
+                            </div>
+
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="xs"
                               onClick={() => addQuestionToQuiz(modIdx)}
                               icon={Plus}
                             >
-                              Add First Question
+                              Add Question
                             </Button>
                           </div>
-                        ) : (
-                          <div className="space-y-3">
-                            {/* Question Tabs Bar */}
-                            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-                              {(module.quiz.questions || []).map((_, qIdx) => {
-                                const activeQ = activeQuestionTabs[modIdx] || 0;
-                                const isCurrent = activeQ === qIdx;
-                                return (
-                                  <Button
-                                    key={qIdx}
-                                    type="button"
-                                    variant={isCurrent ? "primary" : "secondary"}
-                                    size="xs"
-                                    onClick={() =>
-                                      setActiveQuestionTabs((prev) => ({
-                                        ...prev,
-                                        [modIdx]: qIdx,
-                                      }))
-                                    }
-                                    className="shrink-0 font-bold"
-                                  >
-                                    Q{qIdx + 1}
-                                  </Button>
-                                );
-                              })}
 
+                          {/* Quiz Metadata (Duration, Passing Score, Titles) */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                            <Input
+                              label="Quiz Title"
+                              size="sm"
+                              value={module.quiz?.title || ""}
+                              onChange={(e) => {
+                                const quiz = { ...(module.quiz || {}), title: e.target.value };
+                                updateModuleField(modIdx, "quiz", quiz);
+                              }}
+                              placeholder={`Module ${modIdx + 1} Assessment Quiz`}
+                            />
+
+                            <Input
+                              label="কুইজের শিরোনাম"
+                              size="sm"
+                              value={module.quiz?.titleBn || ""}
+                              onChange={(e) => {
+                                const quiz = { ...(module.quiz || {}), titleBn: e.target.value };
+                                updateModuleField(modIdx, "quiz", quiz);
+                              }}
+                              placeholder={`মডিউল ${modIdx + 1} মূল্যায়ন কুইজ`}
+                              className="font-serif"
+                            />
+
+                            <Input
+                              type="number"
+                              label="Duration (Minutes)"
+                              size="sm"
+                              min="1"
+                              max="180"
+                              value={module.quiz?.durationMinutes || 10}
+                              onChange={(e) => {
+                                const quiz = {
+                                  ...(module.quiz || {}),
+                                  durationMinutes: Number(e.target.value) || 10,
+                                };
+                                updateModuleField(modIdx, "quiz", quiz);
+                              }}
+                            />
+
+                            <Input
+                              type="number"
+                              label="Pass Percentage (%)"
+                              size="sm"
+                              min="10"
+                              max="100"
+                              value={module.quiz?.passingScore || 80}
+                              onChange={(e) => {
+                                const quiz = {
+                                  ...(module.quiz || {}),
+                                  passingScore: Number(e.target.value) || 80,
+                                };
+                                updateModuleField(modIdx, "quiz", quiz);
+                              }}
+                            />
+                          </div>
+
+                          {/* Questions Manager with Tab Bar */}
+                          {quizQuestionsCount === 0 ? (
+                            <div className="p-8 text-center border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                              <HelpCircle className="h-8 w-8 text-slate-400 mx-auto mb-2" />
+                              <p className="text-xs font-semibold text-slate-700">
+                                No questions added to this module quiz yet.
+                              </p>
+                              <p className="text-[11px] text-slate-500 mt-0.5 mb-3">
+                                Add interactive multiple choice questions to evaluate learner understanding.
+                              </p>
                               <Button
                                 type="button"
-                                variant="outline-primary"
-                                size="xs"
+                                variant="secondary"
+                                size="sm"
                                 onClick={() => addQuestionToQuiz(modIdx)}
                                 icon={Plus}
-                                title="Add another question"
                               >
-                                Add Question
+                                Add First Question
                               </Button>
                             </div>
-
-                            {/* Active Question Editor */}
-                            {(() => {
-                              const activeQ = Math.min(
-                                activeQuestionTabs[modIdx] || 0,
-                                quizQuestionsCount - 1
-                              );
-                              const q = module.quiz.questions[activeQ];
-                              if (!q) return null;
-
-                              return (
-                                <div className="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
-                                  {/* Question Header */}
-                                  <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
-                                    <div className="flex items-center gap-2">
-                                      <Badge variant="mono-primary" size="xs">
-                                        Question {activeQ + 1} of {quizQuestionsCount}
-                                      </Badge>
-                                    </div>
+                          ) : (
+                            <div className="space-y-3">
+                              {/* Question Tabs Bar */}
+                              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
+                                {(module.quiz.questions || []).map((_, qIdx) => {
+                                  const activeQ = activeQuestionTabs[modIdx] || 0;
+                                  const isCurrent = activeQ === qIdx;
+                                  return (
                                     <Button
+                                      key={qIdx}
                                       type="button"
-                                      variant="danger-soft"
+                                      variant={isCurrent ? "primary" : "secondary"}
                                       size="xs"
-                                      onClick={() => removeQuestionFromQuiz(modIdx, activeQ)}
-                                      icon={Trash2}
+                                      onClick={() =>
+                                        setActiveQuestionTabs((prev) => ({
+                                          ...prev,
+                                          [modIdx]: qIdx,
+                                        }))
+                                      }
+                                      className="shrink-0 font-bold"
                                     >
-                                      Delete Question
+                                      Q{qIdx + 1}
                                     </Button>
-                                  </div>
+                                  );
+                                })}
 
-                                  {/* Question Statements (EN & BN) */}
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <Textarea
-                                      label="Question Statement"
-                                      rows={2}
-                                      value={q.question || ""}
-                                      onChange={(e) =>
-                                        updateQuizQuestion(modIdx, activeQ, "question", e.target.value)
-                                      }
-                                      placeholder="Enter question in English..."
-                                    />
-                                    <Textarea
-                                      label="প্রশ্ন"
-                                      rows={2}
-                                      value={q.questionBn || ""}
-                                      onChange={(e) =>
-                                        updateQuizQuestion(modIdx, activeQ, "questionBn", e.target.value)
-                                      }
-                                      placeholder="বাংলায় প্রশ্ন লিখুন..."
-                                      className="font-serif"
-                                    />
-                                  </div>
+                                <Button
+                                  type="button"
+                                  variant="outline-primary"
+                                  size="xs"
+                                  onClick={() => addQuestionToQuiz(modIdx)}
+                                  icon={Plus}
+                                  title="Add another question"
+                                >
+                                  Add Question
+                                </Button>
+                              </div>
 
-                                  {/* Options & Correct Answer Selector */}
-                                  <div className="space-y-2 pt-1">
-                                    <div className="flex items-center justify-between">
-                                      <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600">
-                                        Answer Options (Select circular checkmark for the correct answer)
-                                      </label>
-                                      <div className="flex items-center gap-1.5">
-                                        <span className="text-[10px] text-slate-500 font-medium">Type:</span>
-                                        <select
-                                          value={q.type || (q.options?.length === 2 ? "true_false" : "single")}
-                                          onChange={(e) => {
-                                            const newType = e.target.value;
-                                            if (newType === "true_false") {
-                                              updateQuizQuestion(modIdx, activeQ, "type", "true_false");
-                                              updateQuizQuestion(modIdx, activeQ, "options", ["True", "False"]);
-                                              updateQuizQuestion(modIdx, activeQ, "optionsBn", ["সত্য", "মিথ্যা"]);
-                                              if (q.correctAnswer > 1) updateQuizQuestion(modIdx, activeQ, "correctAnswer", 0);
-                                            } else {
-                                              updateQuizQuestion(modIdx, activeQ, "type", "single");
-                                              updateQuizQuestion(modIdx, activeQ, "options", ["", "", "", ""]);
-                                              updateQuizQuestion(modIdx, activeQ, "optionsBn", ["", "", "", ""]);
-                                            }
-                                          }}
-                                          className="text-xs border border-slate-200 rounded px-2 py-0.5 bg-white text-slate-700 font-medium cursor-pointer"
-                                        >
-                                          <option value="single">Multiple Choice (4 Options)</option>
-                                          <option value="true_false">True / False</option>
-                                        </select>
+                              {/* Active Question Editor */}
+                              {(() => {
+                                const activeQ = Math.min(
+                                  activeQuestionTabs[modIdx] || 0,
+                                  quizQuestionsCount - 1
+                                );
+                                const q = module.quiz.questions[activeQ];
+                                if (!q) return null;
+
+                                return (
+                                  <div className="bg-slate-50 p-4 sm:p-5 rounded-xl border border-slate-200 space-y-4">
+                                    {/* Question Header */}
+                                    <div className="flex items-center justify-between border-b border-slate-200/80 pb-2.5">
+                                      <div className="flex items-center gap-2">
+                                        <Badge variant="mono-primary" size="xs">
+                                          Question {activeQ + 1} of {quizQuestionsCount}
+                                        </Badge>
+                                      </div>
+                                      <Button
+                                        type="button"
+                                        variant="danger-soft"
+                                        size="xs"
+                                        onClick={() => removeQuestionFromQuiz(modIdx, activeQ)}
+                                        icon={Trash2}
+                                      >
+                                        Delete Question
+                                      </Button>
+                                    </div>
+
+                                    {/* Question Statements (EN & BN) */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                      <Textarea
+                                        label="Question Statement"
+                                        rows={2}
+                                        value={q.question || ""}
+                                        onChange={(e) =>
+                                          updateQuizQuestion(modIdx, activeQ, "question", e.target.value)
+                                        }
+                                        placeholder="Enter question in English..."
+                                      />
+                                      <Textarea
+                                        label="প্রশ্ন"
+                                        rows={2}
+                                        value={q.questionBn || ""}
+                                        onChange={(e) =>
+                                          updateQuizQuestion(modIdx, activeQ, "questionBn", e.target.value)
+                                        }
+                                        placeholder="বাংলায় প্রশ্ন লিখুন..."
+                                        className="font-serif"
+                                      />
+                                    </div>
+
+                                    {/* Options & Correct Answer Selector */}
+                                    <div className="space-y-2 pt-1">
+                                      <div className="flex items-center justify-between">
+                                        <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                                          Answer Options (Select circular checkmark for the correct answer)
+                                        </label>
+                                        <div className="flex items-center gap-1.5">
+                                          <span className="text-[10px] text-slate-500 font-medium">Type:</span>
+                                          <select
+                                            value={q.type || (q.options?.length === 2 ? "true_false" : "single")}
+                                            onChange={(e) => {
+                                              const newType = e.target.value;
+                                              if (newType === "true_false") {
+                                                updateQuizQuestion(modIdx, activeQ, "type", "true_false");
+                                                updateQuizQuestion(modIdx, activeQ, "options", ["True", "False"]);
+                                                updateQuizQuestion(modIdx, activeQ, "optionsBn", ["সত্য", "মিথ্যা"]);
+                                                if (q.correctAnswer > 1) updateQuizQuestion(modIdx, activeQ, "correctAnswer", 0);
+                                              } else {
+                                                updateQuizQuestion(modIdx, activeQ, "type", "single");
+                                                updateQuizQuestion(modIdx, activeQ, "options", ["", "", "", ""]);
+                                                updateQuizQuestion(modIdx, activeQ, "optionsBn", ["", "", "", ""]);
+                                              }
+                                            }}
+                                            className="text-xs border border-slate-200 rounded px-2 py-0.5 bg-white text-slate-700 font-medium cursor-pointer"
+                                          >
+                                            <option value="single">Multiple Choice (4 Options)</option>
+                                            <option value="true_false">True / False</option>
+                                          </select>
+                                        </div>
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        {(q.options && q.options.length > 0 ? q.options : ["", "", "", ""]).map((optText, optIdx) => {
+                                          const isCorrect = q.correctAnswer === optIdx;
+                                          return (
+                                            <div
+                                              key={optIdx}
+                                              className={`flex items-center gap-2.5 p-2.5 rounded-xl border transition-all ${isCorrect
+                                                ? "border-emerald-300 bg-emerald-50/70 ring-1 ring-emerald-200"
+                                                : "border-slate-200 bg-white"
+                                                }`}
+                                            >
+                                              <Button
+                                                type="button"
+                                                variant={isCorrect ? "success-circle" : "subtle-circle"}
+                                                size="icon-circle-sm"
+                                                onClick={() =>
+                                                  updateQuizQuestion(modIdx, activeQ, "correctAnswer", optIdx)
+                                                }
+                                                title={isCorrect ? "Correct answer selected" : "Click to mark as correct answer"}
+                                              >
+                                                <Check className="h-3.5 w-3.5" />
+                                              </Button>
+
+                                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
+                                                <Input
+                                                  size="sm"
+                                                  placeholder={`Option ${optIdx + 1}`}
+                                                  value={q.options?.[optIdx] || ""}
+                                                  onChange={(e) =>
+                                                    updateQuizOption(
+                                                      modIdx,
+                                                      activeQ,
+                                                      optIdx,
+                                                      "en",
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                />
+                                                <Input
+                                                  size="sm"
+                                                  placeholder={`অপশন ${optIdx + 1}`}
+                                                  value={q.optionsBn?.[optIdx] || ""}
+                                                  onChange={(e) =>
+                                                    updateQuizOption(
+                                                      modIdx,
+                                                      activeQ,
+                                                      optIdx,
+                                                      "bn",
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                  className="font-serif"
+                                                />
+                                              </div>
+                                            </div>
+                                          );
+                                        })}
                                       </div>
                                     </div>
 
-                                    <div className="space-y-2">
-                                      {(q.options && q.options.length > 0 ? q.options : ["", "", "", ""]).map((optText, optIdx) => {
-                                        const isCorrect = q.correctAnswer === optIdx;
-                                        return (
-                                          <div
-                                            key={optIdx}
-                                            className={`flex items-center gap-2.5 p-2.5 rounded-xl border transition-all ${isCorrect
-                                              ? "border-emerald-300 bg-emerald-50/70 ring-1 ring-emerald-200"
-                                              : "border-slate-200 bg-white"
-                                              }`}
-                                          >
-                                            <Button
-                                              type="button"
-                                              variant={isCorrect ? "success-circle" : "subtle-circle"}
-                                              size="icon-circle-sm"
-                                              onClick={() =>
-                                                updateQuizQuestion(modIdx, activeQ, "correctAnswer", optIdx)
-                                              }
-                                              title={isCorrect ? "Correct answer selected" : "Click to mark as correct answer"}
-                                            >
-                                              <Check className="h-3.5 w-3.5" />
-                                            </Button>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 flex-1">
-                                              <Input
-                                                size="sm"
-                                                placeholder={`Option ${optIdx + 1}`}
-                                                value={q.options?.[optIdx] || ""}
-                                                onChange={(e) =>
-                                                  updateQuizOption(
-                                                    modIdx,
-                                                    activeQ,
-                                                    optIdx,
-                                                    "en",
-                                                    e.target.value
-                                                  )
-                                                }
-                                              />
-                                              <Input
-                                                size="sm"
-                                                placeholder={`অপশন ${optIdx + 1}`}
-                                                value={q.optionsBn?.[optIdx] || ""}
-                                                onChange={(e) =>
-                                                  updateQuizOption(
-                                                    modIdx,
-                                                    activeQ,
-                                                    optIdx,
-                                                    "bn",
-                                                    e.target.value
-                                                  )
-                                                }
-                                                className="font-serif"
-                                              />
-                                            </div>
-                                          </div>
-                                        );
-                                      })}
+                                    {/* Explanation / Solution Note */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-slate-200/80">
+                                      <Textarea
+                                        label="Explanation Note"
+                                        rows={2}
+                                        value={q.explanation || ""}
+                                        onChange={(e) =>
+                                          updateQuizQuestion(modIdx, activeQ, "explanation", e.target.value)
+                                        }
+                                        placeholder="Explain why this option is correct..."
+                                      />
+                                      <Textarea
+                                        label="উত্তরের ব্যাখ্যা"
+                                        rows={2}
+                                        value={q.explanationBn || ""}
+                                        onChange={(e) =>
+                                          updateQuizQuestion(modIdx, activeQ, "explanationBn", e.target.value)
+                                        }
+                                        placeholder="সঠিক উত্তরের কারণ বা ব্যাখ্যা লিখুন..."
+                                        className="font-serif"
+                                      />
                                     </div>
                                   </div>
-
-                                  {/* Explanation / Solution Note */}
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 border-t border-slate-200/80">
-                                    <Textarea
-                                      label="Explanation Note"
-                                      rows={2}
-                                      value={q.explanation || ""}
-                                      onChange={(e) =>
-                                        updateQuizQuestion(modIdx, activeQ, "explanation", e.target.value)
-                                      }
-                                      placeholder="Explain why this option is correct..."
-                                    />
-                                    <Textarea
-                                      label="উত্তরের ব্যাখ্যা"
-                                      rows={2}
-                                      value={q.explanationBn || ""}
-                                      onChange={(e) =>
-                                        updateQuizQuestion(modIdx, activeQ, "explanationBn", e.target.value)
-                                      }
-                                      placeholder="সঠিক উত্তরের কারণ বা ব্যাখ্যা লিখুন..."
-                                      className="font-serif"
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        )}
+                                );
+                              })()}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              );
-            }))}
+                    )}
+                  </div>
+                );
+              }))}
           </div>
 
           <div className="flex justify-center pt-2">
